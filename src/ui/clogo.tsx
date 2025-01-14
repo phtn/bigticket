@@ -4,27 +4,28 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Image } from "@nextui-org/react";
 
-// Define types
-interface Logo {
+interface Clog {
   id: number;
   name: string;
   src: string;
 }
 
-interface LogoColumnProps {
-  logos: Logo[];
+interface ColProps {
+  clogs: Clog[];
   columnIndex: number;
   currentTime: number;
 }
 
-// Main component
-export function LogoCarousel({ columns = 2 }: { columns?: number }) {
-  const [logoColumns, setLogoColumns] = useState<Logo[][]>([]);
+interface ClogProps {
+  columns?: number;
+}
+export const Clogo = ({ columns = 2 }: ClogProps) => {
+  const [cols, setCols] = useState<Clog[][]>([]);
   const [time, setTime] = useState(0);
   // const CYCLE_DURATION = 2000; // 2 seconds per logo
 
   // Define logos using public SVGs
-  const logos = useMemo<Logo[]>(
+  const clogs = useMemo<Clog[]>(
     () => [
       { id: 1, name: "Dub", src: "/logo/dub.svg" },
       { id: 2, name: "Supabase", src: "/logo/supabase.svg" },
@@ -37,9 +38,9 @@ export function LogoCarousel({ columns = 2 }: { columns?: number }) {
 
   // Distribute logos across columns
   const distributeLogos = useCallback(
-    (logos: Logo[]) => {
+    (logos: Clog[]) => {
       const shuffled = [...logos].sort(() => Math.random() - 0.5);
-      const result: Logo[][] = Array.from({ length: columns }, () => []);
+      const result: Clog[][] = Array.from({ length: columns }, () => []);
 
       shuffled.forEach((logo, index) => {
         result?.[index % columns]?.push(logo);
@@ -60,8 +61,8 @@ export function LogoCarousel({ columns = 2 }: { columns?: number }) {
 
   // Initialize logo columns
   useEffect(() => {
-    setLogoColumns(distributeLogos(logos));
-  }, [logos, distributeLogos]);
+    setCols(distributeLogos(clogs));
+  }, [clogs, distributeLogos]);
 
   // Update time for animation
   useEffect(() => {
@@ -73,26 +74,21 @@ export function LogoCarousel({ columns = 2 }: { columns?: number }) {
 
   return (
     <div className="flex justify-center gap-4 py-8">
-      {logoColumns.map((columnLogos, index) => (
-        <LogoColumn
-          key={index}
-          logos={columnLogos}
-          columnIndex={index}
-          currentTime={time}
-        />
+      {cols.map((col, index) => (
+        <Col key={index} clogs={col} columnIndex={index} currentTime={time} />
       ))}
     </div>
   );
-}
+};
 
 // Column component
-function LogoColumn({ logos, columnIndex, currentTime }: LogoColumnProps) {
+function Col({ clogs, columnIndex, currentTime }: ColProps) {
   const CYCLE_DURATION = 2000;
   const columnDelay = columnIndex * 200;
   const adjustedTime =
-    (currentTime + columnDelay) % (CYCLE_DURATION * logos.length);
+    (currentTime + columnDelay) % (CYCLE_DURATION * clogs.length);
   const currentIndex = Math.floor(adjustedTime / CYCLE_DURATION);
-  const currentLogo = logos[currentIndex];
+  const currentLogo = clogs[currentIndex];
 
   return (
     <motion.div

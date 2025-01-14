@@ -83,6 +83,26 @@ function BouncyArrow(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function Calendar(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g fill="none" fillRule="evenodd">
+        <path d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z"></path>
+        <path
+          fill={props.fill}
+          d="M16 3a1 1 0 0 1 1 1v1h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2V4a1 1 0 0 1 2 0v1h6V4a1 1 0 0 1 1-1M8.01 16H8a1 1 0 0 0-.117 1.993L8.01 18a1 1 0 1 0 0-2m4 0H12a1 1 0 0 0-.117 1.993l.127.007a1 1 0 1 0 0-2m4 0H16a1 1 0 0 0-.117 1.993l.127.007a1 1 0 1 0 0-2m-8-4H8a1 1 0 0 0-.117 1.993L8.01 14a1 1 0 1 0 0-2m4 0H12a1 1 0 0 0-.117 1.993l.127.007a1 1 0 1 0 0-2m4 0H16a1 1 0 0 0-.117 1.993l.127.007a1 1 0 1 0 0-2M19 7H5v2h14z"
+        ></path>
+      </g>
+    </svg>
+  );
+}
+
 function Cocktail(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -149,6 +169,25 @@ function Cocktail(props: SVGProps<SVGSVGElement>) {
       <path
         fill="#FEFEFE"
         d="M72.22 26.22q-3.585 0-7.59-.09c-33.41-.73-44.1-5.48-47.2-9.34c-1.22-1.52-1.06-2.69-1.02-2.91c.11-.54.64-.89 1.18-.78c.53.1.87.6.79 1.13c0 .06.01.66.8 1.54c2.54 2.81 11.83 7.63 45.48 8.36c34.79.76 43.16-3.87 45.14-5.9c.72-.73.7-1.22.7-1.22c-.11-.54.25-1.04.79-1.14c.54-.11 1.07.28 1.18.82c.04.2.18 1.27-.93 2.6c-2.7 3.24-11.85 6.93-39.32 6.93"
+      ></path>
+    </svg>
+  );
+}
+
+function Copy(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 16 16"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke={props.fill}
+        strokeLinejoin="round"
+        d="M12 10.5h1.5v-8h-8V4m-3 9.5h8v-8h-8z"
       ></path>
     </svg>
   );
@@ -371,6 +410,24 @@ function MoreHorizontal(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function Printer(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 16 16"
+      {...props}
+    >
+      <path
+        fill={props.fill}
+        d="M14.25 6.57h-.75v-.05a1.26 1.26 0 0 0-.37-.89L9.37 1.87a1.26 1.26 0 0 0-.89-.37H3.75A1.25 1.25 0 0 0 2.5 2.75v3.82h-.75A1.26 1.26 0 0 0 .5 7.85v3.84A1.26 1.26 0 0 0 1.75 13h.75v.28a1.25 1.25 0 0 0 1.25 1.22h8.5a1.25 1.25 0 0 0 1.25-1.25V13h.75a1.26 1.26 0 0 0 1.25-1.28V7.85a1.26 1.26 0 0 0-1.25-1.28M3.75 2.75h4.73l3.77 3.77v.69h-8.5zm8.5 10.5h-8.5v-.92h8.5zm2-1.56h-.75v-.64h-11v.64h-.74V7.85h.74v.64h11v-.67h.74z"
+      ></path>
+      <ellipse cx="12.88" cy="9.77" fill="#888888" rx=".63" ry=".59"></ellipse>
+    </svg>
+  );
+}
+
 function RightChev(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -450,6 +507,23 @@ function Search(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function ShieldCheck(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 16 16"
+      {...props}
+    >
+      <g fill={props.fill}>
+        <path d="M5.338 1.59a61 61 0 0 0-2.837.856a.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025a1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453a7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625a11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43A63 63 0 0 1 5.072.56"></path>
+        <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0"></path>
+      </g>
+    </svg>
+  );
+}
+
 function SidebarLeft(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -508,12 +582,31 @@ function TicketFill(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+function Toc(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill={props.fill}
+        d="M3 9h14V7H3zm0 4h14v-2H3zm0 4h14v-2H3zm16 0h2v-2h-2zm0-10v2h2V7zm0 6h2v-2h-2z"
+      ></path>
+    </svg>
+  );
+}
 export const icons = {
   Airplane,
   AlertTriLine,
   ArrowRight,
   BouncyArrow,
+  Calendar,
   Cocktail,
+  Copy,
   InfoLine,
   EGuitarFender,
   EGuitarGray,
@@ -524,11 +617,14 @@ export const icons = {
   LeftChev,
   MoreHorizontal,
   MoreVertical,
+  Printer,
   RightChev,
   RightLine,
   RightLineSm,
   Search,
+  ShieldCheck,
   SidebarLeft,
   Squircle,
   TicketFill,
+  Toc,
 };

@@ -1,13 +1,11 @@
-import ts from "@typescript-eslint/eslint-plugin";
+const ts = require("@typescript-eslint/eslint-plugin");
 
 const config = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: true,
   },
-  plugins: {
-    "@typescript-eslint": ts,
-  },
+  plugins: ["@typescript-eslint"],
   extends: [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",

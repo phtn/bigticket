@@ -1,12 +1,18 @@
 "use client";
 
-import { Brand } from "./brand";
+import { Brand, BrandName, HotDealsButton, Tickets, Title } from "./brand";
 import { UserNav } from "./usernav";
 
 export const Navbar = () => {
   return (
     <nav className="flex w-full border-b">
-      <Brand />
+      <Brand>
+        <BrandName>
+          <Tickets />
+          <Title />
+        </BrandName>
+        <HotDealsButton />
+      </Brand>
       <UserNav />
     </nav>
   );

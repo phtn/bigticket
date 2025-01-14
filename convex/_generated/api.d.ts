@@ -13,6 +13,8 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as articles_d from "../articles/d.js";
+import type * as articles_get from "../articles/get.js";
 import type * as users_add from "../users/add.js";
 import type * as users_create from "../users/create.js";
 import type * as users_d from "../users/d.js";
@@ -28,6 +30,8 @@ import type * as users_update from "../users/update.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  "articles/d": typeof articles_d;
+  "articles/get": typeof articles_get;
   "users/add": typeof users_add;
   "users/create": typeof users_create;
   "users/d": typeof users_d;

@@ -82,6 +82,27 @@ export default {
   ],
   theme: {
     extend: {
+      animation: {
+        enter: "enter 0.3s ease-out normal both",
+      },
+      keyframes: {
+        enter: {
+          "0%": {
+            opacity: "0",
+            transform: "translateZ(0) scale(0.90)",
+          },
+          "60%": {
+            opacity: "0.75",
+            transform: "translateZ(0) scale(1.02)",
+            backfaceVisibility: "hidden",
+            webkitFontSmoothing: "antialiased",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateZ(0) scale(1)",
+          },
+        },
+      },
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         inter: ["var(--font-inter)"],

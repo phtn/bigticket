@@ -1,4 +1,5 @@
 import { Icon } from "@/icons";
+import { Clogo } from "@/ui/clogo";
 import {
   Avatar,
   Button,
@@ -370,3 +371,21 @@ const CardItem = () => (
     </CardFooter>
   </Card>
 );
+
+export const Hero = () => {
+  return (
+    <Card>
+      <section className="pt-6">
+        <div className="mb-12 space-y-4 text-center">
+          <p className="text-muted-foreground text-sm font-medium uppercase tracking-widest">
+            {`upgrading people's live even experiences`}
+          </p>
+          <h2 className="text-[3.5rem] font-bold leading-none tracking-tight">
+            The best are already here
+          </h2>
+        </div>
+        <Clogo />
+      </section>
+    </Card>
+  );
+};
