@@ -9,6 +9,7 @@ import type { ConvexCtxValues } from "./types";
 import { createContext, useCallback, useMemo } from "react";
 import type { User } from "@supabase/supabase-js";
 import type { SupabaseUserMetadata } from "@/app/ctx/auth/types";
+import { VxProvider } from "./vx";
 
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 export const ConvexCtx = createContext<ConvexCtxValues | null>(null);
@@ -137,7 +138,9 @@ interface ProviderProps {
 const Provider = ({ children, user }: ProviderProps) => {
   return (
     <ConvexProvider client={convex}>
-      <CtxProvider user={user}>{children}</CtxProvider>
+      <CtxProvider user={user}>
+        <VxProvider>{children}</VxProvider>
+      </CtxProvider>
     </ConvexProvider>
   );
 };

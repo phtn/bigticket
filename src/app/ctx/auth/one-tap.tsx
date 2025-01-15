@@ -12,7 +12,7 @@ import { setUserID } from "@/app/actions";
 import { log } from "@/utils/logger";
 
 export const GoogleOneTap = () => {
-  const supabase = useSupabaseClient();
+  const supabase = useSupabaseClient().auth;
   const { user, updateUser } = use(AuthCtx)!;
   const { pending, userSessionData } = useSession();
 
@@ -73,7 +73,6 @@ export const GoogleOneTap = () => {
             nonce: n?.hashedNonce,
             use_fedcm_for_prompt: true,
             cancel_on_tap_outside: true,
-            log_level: "debug",
           });
         } catch (err) {
           if (err) {
@@ -100,7 +99,7 @@ export const GoogleOneTap = () => {
           log("Response", response.credential.substring(0, 8));
 
           try {
-            const { data, error } = await supabase.auth.signInWithIdToken({
+            const { data, error } = await supabase.signInWithIdToken({
               provider: "google",
               token: response.credential,
               nonce: n?.nonce,

@@ -84,6 +84,8 @@ export default {
     extend: {
       animation: {
         enter: "enter 0.3s ease-out normal both",
+        shine: "shine var(--duration) infinite linear",
+        "line-shadow": "line-shadow 15s linear infinite",
       },
       keyframes: {
         enter: {
@@ -101,6 +103,21 @@ export default {
             opacity: "1",
             transform: "translateZ(0) scale(1)",
           },
+        },
+        shine: {
+          "0%": {
+            "background-position": "0% 0%",
+          },
+          "50%": {
+            "background-position": "100% 100%",
+          },
+          to: {
+            "background-position": "0% 0%",
+          },
+        },
+        "line-shadow": {
+          "0%": { "background-position": "0 0" },
+          "100%": { "background-position": "100% -100%" },
         },
       },
       fontFamily: {

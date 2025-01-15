@@ -1,7 +1,7 @@
 import { type ClassName } from "@/app/types";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "motion/react";
-import { type FC, memo, useCallback, useMemo } from "react";
+import { type FC, memo, type ReactNode, useCallback, useMemo } from "react";
 
 interface HyperListProps<T> {
   keyId?: keyof T;
@@ -12,6 +12,7 @@ interface HyperListProps<T> {
   reversed?: boolean;
   orderBy?: keyof T;
   max?: number;
+  children?: ReactNode;
 }
 export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
   const {
@@ -23,6 +24,7 @@ export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
     component: Item,
     reversed = false,
     orderBy = "updated_at",
+    children,
   } = props;
 
   const baseContainerStyle = useMemo(
@@ -69,6 +71,7 @@ export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
 
   return (
     <AnimatePresence>
+      {children}
       <ul className={baseContainerStyle}>
         {slicedData?.sort(sortFn).map(render)}
       </ul>

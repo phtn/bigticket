@@ -27,11 +27,15 @@ export const Clogo = ({ columns = 2 }: ClogProps) => {
   // Define logos using public SVGs
   const clogs = useMemo<Clog[]>(
     () => [
-      { id: 1, name: "Dub", src: "/logo/dub.svg" },
-      { id: 2, name: "Supabase", src: "/logo/supabase.svg" },
-      { id: 3, name: "Vercel", src: "/logo/vercel.svg" },
-      { id: 4, name: "Resend", src: "/logo/resend.svg" },
-      { id: 5, name: "Shadcn", src: "/logo/shadcn.svg" },
+      { id: 1, name: "re-up", src: "/svg/re-up.svg" },
+      { id: 2, name: "ap", src: "/svg/ap.svg" },
+      { id: 3, name: "fast", src: "/svg/fast.svg" },
+      { id: 4, name: "lav", src: "/svg/lav.svg" },
+      { id: 5, name: "oms", src: "/svg/oms.svg" },
+      { id: 6, name: "goph", src: "/svg/goph.svg" },
+      { id: 7, name: "blue", src: "/svg/blue.svg" },
+      { id: 8, name: "gitfast", src: "/svg/gitfast.svg" },
+      { id: 9, name: "abridge", src: "/svg/abridge.svg" },
     ],
     [],
   );
@@ -75,7 +79,12 @@ export const Clogo = ({ columns = 2 }: ClogProps) => {
   return (
     <div className="flex justify-center gap-4 py-8">
       {cols.map((col, index) => (
-        <Col key={index} clogs={col} columnIndex={index} currentTime={time} />
+        <Col
+          key={`${clogs[index]?.name}-${Number(clogs[index]?.id) + 5}`}
+          clogs={col}
+          columnIndex={index}
+          currentTime={time}
+        />
       ))}
     </div>
   );
@@ -83,8 +92,8 @@ export const Clogo = ({ columns = 2 }: ClogProps) => {
 
 // Column component
 function Col({ clogs, columnIndex, currentTime }: ColProps) {
-  const CYCLE_DURATION = 2000;
-  const columnDelay = columnIndex * 200;
+  const CYCLE_DURATION = 2800;
+  const columnDelay = columnIndex * 750;
   const adjustedTime =
     (currentTime + columnDelay) % (CYCLE_DURATION * clogs.length);
   const currentIndex = Math.floor(adjustedTime / CYCLE_DURATION);
@@ -92,6 +101,7 @@ function Col({ clogs, columnIndex, currentTime }: ColProps) {
 
   return (
     <motion.div
+      key={`${currentLogo?.id}-${currentIndex}`}
       className="relative h-14 w-24 overflow-hidden md:h-24 md:w-48"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -124,9 +134,7 @@ function Col({ clogs, columnIndex, currentTime }: ColProps) {
           <Image
             src={currentLogo?.src}
             alt={currentLogo?.name ?? "logo"}
-            width={120}
-            height={40}
-            className="h-auto max-h-[80%] w-auto max-w-[80%] object-contain"
+            className="h-20 max-h-[80%] w-auto object-cover"
           />
         </motion.div>
       </AnimatePresence>

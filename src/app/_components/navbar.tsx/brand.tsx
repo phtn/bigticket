@@ -1,9 +1,12 @@
+"use client";
+
 import type { ClassName } from "@/app/types";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
+import { log } from "@/utils/logger";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
-import { type ReactNode } from "react";
+import { useCallback, type ReactNode } from "react";
 
 interface BrandProps {
   className?: ClassName;
@@ -13,7 +16,7 @@ export const Brand = ({ className, children }: BrandProps) => {
   return (
     <div
       className={cn(
-        "flex h-full w-[370px] items-center justify-between bg-white p-3",
+        "hidden h-full w-[370px] items-center justify-between bg-white p-3 md:flex",
         className,
       )}
     >
@@ -22,20 +25,27 @@ export const Brand = ({ className, children }: BrandProps) => {
   );
 };
 
-export const HotDealsButton = () => (
-  <Button
-    size="sm"
-    isIconOnly
-    radius="full"
-    color="secondary"
-    className="group bg-ghost text-gray-400 hover:bg-peach"
-  >
-    <Icon
-      name="Fire"
-      className="size-4 stroke-primary-700 stroke-1 text-primary-700 group-hover:stroke-chalk group-hover:text-chalk"
-    />
-  </Button>
-);
+export const HotDealsButton = () => {
+  const handleClick = useCallback(() => {
+    log("Hot", 0);
+  }, []);
+
+  return (
+    <Button
+      size="sm"
+      isIconOnly
+      radius="full"
+      color="secondary"
+      className="group bg-ghost text-gray-400 hover:bg-peach"
+      onPress={handleClick}
+    >
+      <Icon
+        name="Fire"
+        className="size-4 stroke-primary-700 stroke-1 text-primary-700 group-hover:stroke-chalk group-hover:text-chalk"
+      />
+    </Button>
+  );
+};
 
 interface BrandNameProps {
   children?: ReactNode;
@@ -63,10 +73,10 @@ export const Title = () => (
       <span className="font-lucky text-[32px] font-bold text-white">BIG</span>
     </h2>
     <h2 className="absolute top-0 space-x-1">
-      <span className="font-lucky text-3xl font-bold text-primary-700">
+      <span className="font-lucky text-3xl font-bold text-primary-800">
         BIG
       </span>
-      <span className="font-cherry text-3xl font-light text-orange-400 drop-shadow-sm">
+      <span className="font-cherry text-3xl font-light text-orange-400">
         ticket
       </span>
     </h2>

@@ -4,52 +4,46 @@ import { cn } from "@/lib/utils";
 import { Button } from "@nextui-org/react";
 import { memo, type FC, type ReactNode } from "react";
 import { HyperList } from "@/ui/list";
+import { ChineCard } from "@/ui/card/chine";
 
 interface SidebarProps {
+  open: boolean;
   toggleFn: VoidFunction;
 }
-export const Sidebar = ({ toggleFn }: SidebarProps) => (
-  <aside className="h-full border-b bg-white lg:w-[280px] xl:w-[300px] portrait:w-[280px]">
-    <div className="relative portrait:px-4">
-      <Button
-        size="sm"
-        isIconOnly
-        onPress={toggleFn}
-        className="group absolute right-0 top-[1px] rounded-e-none bg-white shadow-sm"
-      >
-        <Icon
-          name="LeftChev"
-          className="size-4 stroke-transparent text-primary-700 group-hover:text-macl-mint"
-        />
-      </Button>
-      <section className="h-[calc(100vh-72px)] w-full space-y-2 overflow-y-scroll border-r bg-ghost p-2">
-        <ListboxTitle title="Events" />
-        <ListWrapper>
-          <EventsList />
-        </ListWrapper>
-        <ListboxTitle title="Get-Aways" />
-        <ListWrapper>
-          <GetAwaysList />
-        </ListWrapper>
+export const Sidebar = ({ toggleFn, open }: SidebarProps) => (
+  <aside className={cn("absolute z-50 h-full")}>
+    <div
+      className={cn(
+        "relative flex h-[calc(87vh)] w-[360px] -translate-x-[360px] items-center px-8 transition-transform duration-300 portrait:px-4",
+        { "translate-x-0": open },
+      )}
+    >
+      <section className="relative h-[calc(80vh)] w-full space-y-2 rounded-xl border-[0.33px] border-primary-100 bg-macl-gray/20 p-2 shadow-lg backdrop-blur-2xl">
+        <Button
+          size="sm"
+          isIconOnly
+          onPress={toggleFn}
+          className="group absolute -right-2 -top-2 z-[60] rounded-full border-[0.33px] border-primary-300 bg-macl-mint shadow-sm backdrop-blur-lg data-[hover=true]:opacity-100"
+        >
+          <Icon
+            name="LeftChev"
+            className="size-4 stroke-transparent text-white"
+          />
+        </Button>
+        <ListTitle title="Events" />
+        <EventsList />
+        <ListTitle title="Get-Aways" />
+        <GetAwaysList />
       </section>
     </div>
   </aside>
 );
 
-const ListWrapper = ({ children }: { children: ReactNode }) => (
-  <div className="bg-gradient-to-t from-ghost via-white to-ghost">
-    <div className="h-2 bg-gradient-to-r from-ghost via-white to-ghost" />
-    {children}
-    <div className="h-2 bg-gradient-to-r from-ghost via-white to-ghost" />
-  </div>
-);
-
-const ListboxTitle: FC<{ title: string }> = ({ title }) => (
+const ListTitle: FC<{ title: string }> = ({ title }) => (
   <div className="flex h-6 w-full items-center justify-between space-x-3 px-2">
-    <p className="whitespace-nowrap text-[11px] font-semibold uppercase text-slate-500 drop-shadow-sm">
+    <p className="whitespace-nowrap text-[11px] font-semibold uppercase text-slate-600 drop-shadow-sm">
       {title}
     </p>
-    {/* <div className="h-[0.33px] w-full bg-primary-100" /> */}
   </div>
 );
 
@@ -62,7 +56,7 @@ const IconWrapper = ({ children, className }: IconWrapperProps) => (
   <div
     className={cn(
       className,
-      "flex size-4 items-center justify-center rounded-full",
+      "flex size-6 flex-shrink-0 items-center justify-center rounded-full",
     )}
   >
     {children}
@@ -102,20 +96,14 @@ const ItemCounter = (props: { count: number; color?: ClassName }) => (
 
 const EventsList = () => {
   return (
-    <div className="bg-gradient-to-r from-ghost via-white to-ghost p-1">
-      <HyperList
-        data={events}
-        component={EventItem}
-        container="space-y-2"
-        itemStyle="p-1.5 hover:bg-ghost"
-        keyId="keyId"
-      />
+    <div className="w-full bg-gradient-to-r from-transparent via-white/30 to-transparent">
+      <HyperList keyId="keyId" data={events} component={EventItem} />
     </div>
   );
 };
 
 const GetAwayListItem = (l: Category) => (
-  <div className="flex w-full items-center justify-between" key={l.keyId}>
+  <div className="spacex-5 flex w-full items-center justify-between rounded-xl p-3 hover:bg-white">
     <div className="flex items-center space-x-2">
       <IconWrapper className={cn("mx-2", l.color)}>
         <Icon name={l.icon} className="size-6 shrink-0" />
@@ -130,28 +118,24 @@ const GetAwayItem = memo(GetAwayListItem);
 
 const GetAwaysList = () => {
   return (
-    <div className="bg-gradient-to-r from-ghost via-white to-ghost p-1">
-      <HyperList
-        data={getaways}
-        component={GetAwayItem}
-        container="space-y-2"
-        itemStyle="p-1.5 hover:bg-ghost rounded-lg"
-        keyId="keyId"
-      />
+    <div className="w-full bg-gradient-to-r from-transparent via-white/30 to-transparent">
+      <HyperList keyId="keyId" data={getaways} component={GetAwayItem} />
     </div>
   );
 };
 
 const EventListItem = (l: Category) => (
-  <div className="flex w-full items-center justify-between" key={l.keyId}>
-    <div className="flex items-center space-x-2">
-      <IconWrapper className={cn("mx-2", l.color)}>
-        <Icon name={l.icon} className="size-6 shrink-0 drop-shadow-sm" />
-      </IconWrapper>
-      <h2 className="text-sm tracking-tight text-primary/80">{l.label}</h2>
+  <ChineCard className="cursor-pointer">
+    <div className="spacex-5 flex w-full items-center justify-between rounded-xl p-3 hover:bg-white">
+      <div className="flex items-center space-x-2">
+        <IconWrapper className={cn("mx-2", l.color)}>
+          <Icon name={l.icon} className="size-6 shrink-0 drop-shadow-sm" />
+        </IconWrapper>
+        <h2 className="text-sm tracking-tight text-primary/80">{l.label}</h2>
+      </div>
+      <ItemCounter count={l.count} color={l.color} />
     </div>
-    <ItemCounter count={l.count} color={l.color} />
-  </div>
+  </ChineCard>
 );
 
 const EventItem = memo(EventListItem);
@@ -174,7 +158,7 @@ const events: Category[] = [
     href: "",
     icon: "Cocktail",
     count: 29,
-    color: "bg-ghost text-macl-teal",
+    color: "bg-white text-macl-teal",
   },
   {
     id: 1,
@@ -193,9 +177,9 @@ const getaways: Category[] = [
     keyId: "flights",
     label: "Flights",
     href: "",
-    icon: "Airplane",
+    icon: "Airplane2",
     count: 0,
-    color: "bg-white text-macl-indigo",
+    color: "bg-amber-50/80 text-slate-800",
   },
   {
     id: 1,
@@ -204,7 +188,7 @@ const getaways: Category[] = [
     href: "",
     icon: "HotelRoom",
     count: 1,
-    color: "bg-macl-blue/10 text-macl-gray",
+    color: "bg-macl-blue/10 text-slate-600",
   },
 ];
 

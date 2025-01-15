@@ -1,4 +1,5 @@
 import { Icon } from "@/icons";
+import { ChineBorder } from "@/ui/card/border";
 import { Clogo } from "@/ui/clogo";
 import {
   Avatar,
@@ -374,18 +375,26 @@ const CardItem = () => (
 
 export const Hero = () => {
   return (
-    <Card>
-      <section className="pt-6">
-        <div className="mb-12 space-y-4 text-center">
-          <p className="text-muted-foreground text-sm font-medium uppercase tracking-widest">
-            {`upgrading people's live even experiences`}
-          </p>
-          <h2 className="text-[3.5rem] font-bold leading-none tracking-tight">
-            The best are already here
-          </h2>
-        </div>
-        <Clogo />
-      </section>
-    </Card>
+    <div className="px-4 pb-8">
+      <ChineBorder
+        color={["#FFBE7B", "#02C7BE"]}
+        borderRadius={32}
+        borderWidth={2}
+        // className="h-fit w-full bg-gradient-to-br from-fade/50 via-shade/50 to-cake px-8 py-12 shadow-xl shadow-shade"
+        className="bg-gradient-to-br from-orange-50 via-amber-50/50 to-teal-50 shadow-xl shadow-shade"
+      >
+        <section className="pt-10">
+          <div className="space-y-4 text-center">
+            <p className="text-sm font-bold uppercase tracking-wider text-slate-500/60">
+              {`live events experience upgrade has arrived.`}
+            </p>
+            <h2 className="text-5xl font-bold leading-none tracking-tight text-primary/80">
+              The best are already here.
+            </h2>
+          </div>
+          <Clogo />
+        </section>
+      </ChineBorder>
+    </div>
   );
 };

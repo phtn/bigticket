@@ -1,5 +1,3 @@
-const ts = require("@typescript-eslint/eslint-plugin");
-
 const config = {
   parser: "@typescript-eslint/parser",
   parserOptions: {

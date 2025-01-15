@@ -9,6 +9,7 @@ import { onAwait } from "../toast";
 import { Err } from "@/utils/helpers";
 import { deleteUserID } from "@/app/actions";
 import type { AuthCtxValues, SupabaseUserMetadata } from "./types";
+import SessionProvider from "./session";
 
 export const AuthCtx = createContext<AuthCtxValues | null>(null);
 interface AuthCtxProps {
@@ -49,9 +50,11 @@ const AuthProvider = ({ children }: AuthCtxProps) => {
   );
 
   return (
-    <AuthCtx value={value}>
-      <Convex user={user}>{children}</Convex>
-    </AuthCtx>
+    <SessionProvider>
+      <AuthCtx value={value}>
+        <Convex user={user}>{children}</Convex>
+      </AuthCtx>
+    </SessionProvider>
   );
 };
 
