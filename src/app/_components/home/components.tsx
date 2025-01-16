@@ -9,6 +9,7 @@ import {
   CardHeader,
   Image,
 } from "@nextui-org/react";
+import { EventCard } from "./components/event-card";
 
 export const CardListItem = ({
   title,
@@ -296,14 +297,14 @@ export const CardList = () => (
       </div>
 
       <section className="h-[calc(100vh-84px)] w-full space-y-2 overflow-y-scroll px-2">
-        <CardItem />
+        <EventCard />
         <CardListItem
           title="Harmony Space"
           subtitle="Wellness & Yoga"
           color="bg-warning"
           isActive
         />
-        <CardItem />
+        <EventCard />
 
         <CardListItem
           title="Harmony Space"
@@ -311,7 +312,7 @@ export const CardList = () => (
           color="bg-warning"
           isActive
         />
-        <CardItem />
+        <EventCard />
       </section>
     </div>
   </aside>
@@ -326,73 +327,25 @@ const Title = () => (
   </h2>
 );
 
-const CardItem = () => (
-  <Card
-    isFooterBlurred
-    className="h-[280px] w-full rounded-[2.5rem] border border-primary-700"
-  >
-    <CardHeader className="absolute left-2 top-2 z-10 flex-col items-start">
-      <p className="text-tiny font-bold uppercase text-white/60">
-        All night Rave + dj Youna
-      </p>
-      <h4 className="text-xl font-medium capitalize text-white/90">
-        Chain breaker night
-      </h4>
-    </CardHeader>
-    <Image
-      removeWrapper
-      radius="none"
-      alt="nightlife"
-      className="z-0 h-full w-full border-0 object-cover"
-      src="https://tripjive.com/wp-content/uploads/2024/11/How-can-I-enjoy-Boracays-nightlife.jpg"
-    />
-    <CardFooter className="absolute bottom-0 z-10 border-t-1 border-primary/60 bg-black/40">
-      <div className="flex flex-grow items-center gap-2">
-        <Image
-          alt="Breathing app icon"
-          className="h-11 w-full rounded-full bg-black"
-          src="https://nextui.org/images/breathing-app-icon.jpeg"
-        />
-        <div className="flex flex-col">
-          <p className="text-tiny font-bold text-white/70">X Club</p>
-          <p className="text-tiny uppercase text-white/70">
-            SAT &middot; feb 1 &middot; 9pm-3am
-          </p>
-        </div>
-      </div>
-      <Button
-        size="sm"
-        isIconOnly
-        radius="full"
-        color="secondary"
-        className="flex items-center font-inter font-semibold tracking-tighter"
-      >
-        <Icon name="ArrowRight" className="size-4" />
-      </Button>
-    </CardFooter>
-  </Card>
-);
-
-export const Hero = () => {
+export const Partners = () => {
   return (
-    <div className="px-4 pb-8">
+    <div className="flex h-fit items-center justify-center bg-coal pb-8 font-inter">
       <ChineBorder
-        color={["#FFBE7B", "#02C7BE"]}
-        borderRadius={32}
-        borderWidth={2}
-        // className="h-fit w-full bg-gradient-to-br from-fade/50 via-shade/50 to-cake px-8 py-12 shadow-xl shadow-shade"
-        className="bg-gradient-to-br from-orange-50 via-amber-50/50 to-teal-50 shadow-xl shadow-shade"
+        color={"#9ca3af"}
+        borderRadius={0}
+        borderWidth={0.66}
+        className="bg-gray-400"
       >
-        <section className="pt-10">
+        <section className="flex w-full items-center justify-evenly bg-coal">
           <div className="space-y-4 text-center">
-            <p className="text-sm font-bold uppercase tracking-wider text-slate-500/60">
-              {`live events experience upgrade has arrived.`}
-            </p>
-            <h2 className="text-5xl font-bold leading-none tracking-tight text-primary/80">
-              The best are already here.
+            {/* <p className="w-fit rounded-full bg-teal-400 px-3 py-1.5 text-lg font-medium tracking-tight text-white drop-shadow-sm xl:text-[18px] xl:text-xl">
+              {`Live events experience upgrade has arrived.`}
+            </p> */}
+            <h2 className="text-3xl font-bold leading-none tracking-tight text-chalk">
+              Our Partners
             </h2>
           </div>
-          <Clogo />
+          <Clogo columns={4} />
         </section>
       </ChineBorder>
     </div>

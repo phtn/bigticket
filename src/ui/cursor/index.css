@@ -1,0 +1,28 @@
+.hyperspaces {
+  position: fixed;
+  width: 40px; /* Adjust size */
+  height: 40px; /* Adjust size */
+  background-color: rgba(0, 0, 0, 0.5); /* Customize outer color */
+  border-radius: 50%; /* Make it circular */
+  pointer-events: none; /* Prevent interference with mouse events */
+  transform: translate(-50%, -50%); /* Center the cursor */
+  z-index: 9999; /* Ensure it appears above other elements */
+  clip-path: circle(50% at 50% 50%); /* Create a circular mask */
+}
+
+.hyperspace {
+  position: fixed;
+  pointer-events: none; /* Prevent interference with mouse events */
+  clip-path: circle(50% at 50% 50%); /* Create a circular mask */
+  width: 20px; /* Adjust inner size */
+  height: 20px; /* Adjust inner size */
+  background-color: rgba(255, 255, 255, 1); /* Customize inner color */
+  border-radius: 50%; /* Make it circular */
+  transform: translate(-50%, -50%); /* Center the inner circle */
+  z-index: 9999; /* Ensure it appears above other elements */
+  mix-blend-mode: difference;
+  transition:
+    width 0.2s ease,
+    height 0.2s ease,
+    border-radius 0.2s ease; /* Smooth transition */
+}

@@ -7,9 +7,7 @@ export interface SupabaseUserMetadata {
 }
 
 export interface AuthCtxValues {
-  loading: boolean;
   user: User | null;
-  signOut: () => Promise<void>;
   updateUser: (user: User | null) => void;
   meta: SupabaseUserMetadata | undefined;
 }

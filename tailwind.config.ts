@@ -83,11 +83,17 @@ export default {
   theme: {
     extend: {
       animation: {
+        "background-position-spin":
+          "background-position-spin 3000ms infinite alternate",
         enter: "enter 0.3s ease-out normal both",
         shine: "shine var(--duration) infinite linear",
         "line-shadow": "line-shadow 15s linear infinite",
       },
       keyframes: {
+        "background-position-spin": {
+          "0%": { backgroundPosition: "top center" },
+          "100%": { backgroundPosition: "bottom center" },
+        },
         enter: {
           "0%": {
             opacity: "0",

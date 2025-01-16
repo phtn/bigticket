@@ -1,34 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import toast from "react-hot-toast";
 import { ChineBorder } from "@/ui/card/border";
-import { LineShadow } from "@/ui/text/line-shadow";
 import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
-import { deleteUserID } from "../actions";
+import { LineShadow } from "@/ui/text/line-shadow";
+import { useSignOut } from "./useSignOut";
+import { useEffect } from "react";
+import { Err } from "@/utils/helpers";
+import { onSuccess } from "../ctx/toast";
 
 export const Content = () => {
-  const router = useRouter();
-  const supabase = useSupabaseClient().auth;
-  const signOut = supabase.signOut();
-
-  const initSignOut = useCallback(async () => {
-    await toast.promise(signOut, {
-      loading: "Signing out...",
-      success: "Successfully signed out!",
-    });
-    await deleteUserID();
-    router.push("/");
-  }, [router, signOut]);
-
-  const signOutButton = useRef<HTMLButtonElement>(null);
-
+  const { cleanUp } = useSignOut();
   useEffect(() => {
-    signOutButton.current?.click();
-  }, [signOutButton]);
-
+    let timer: NodeJS.Timeout;
+    cleanUp()
+      .then(() => {
+        onSuccess("Sign out successful!");
+        timer = setTimeout(() => {
+          window.location.href = "/";
+        }, 3000);
+      })
+      .catch(Err);
+    return () => clearTimeout(timer);
+  }, [cleanUp]);
   return (
     <div className="flex h-[calc(90vh)] justify-center bg-white py-8">
       <motion.div className="h-fit pt-32">
@@ -45,13 +38,10 @@ export const Content = () => {
       </motion.div>
       <LineShadow
         shadowColor="#FFBE7B"
-        className="absolute whitespace-nowrap text-[6rem] font-semibold leading-none tracking-tight text-macl-gray/60"
+        className="absolute whitespace-nowrap text-[5rem] font-semibold leading-none tracking-tight text-macl-gray/60"
       >
-        catch you on a flip!
+        catch you on the flipside!
       </LineShadow>
-      <button className="hidden" ref={signOutButton} onClick={initSignOut}>
-        Sign out
-      </button>
     </div>
   );
 };

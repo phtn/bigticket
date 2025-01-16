@@ -5,7 +5,7 @@ import { UserNav } from "./usernav";
 
 export const Navbar = () => {
   return (
-    <nav className="flex w-full">
+    <nav className="relative z-[100] flex w-full">
       <Brand>
         <BrandName>
           <Tickets />

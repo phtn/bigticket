@@ -1,7 +1,10 @@
 "use client";
 
 import { VxCtx } from "@/app/ctx/convex/vx";
+import { CursorCtx } from "@/app/ctx/cursor";
+import { useToggle } from "@/hooks/useToggle";
 import { Icon } from "@/icons";
+import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { TextLoader } from "@/ui/loader/text";
 import { opts } from "@/utils/helpers";
@@ -14,9 +17,11 @@ import {
   PopoverTrigger,
 } from "@nextui-org/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { use, useCallback } from "react";
 
 export const UserNav = () => {
+  const pathname = usePathname();
   const { vx } = use(VxCtx)!;
   const UserOptions = useCallback(() => {
     const options = opts(
@@ -33,29 +38,33 @@ export const UserNav = () => {
   }, [vx]);
   return (
     <div className="flex w-full items-center justify-between bg-white p-3 font-inter">
-      <div className="z-1 relative flex h-full w-[420px] items-center">
-        <Searchbar />
+      <div
+        className={cn("z-1 relative flex h-full w-[420px] items-center", {})}
+      >
+        {pathname.split("/")[1] === "account" ? null : <Searchbar />}
       </div>
-      <div className="flex items-center px-1">
+      <div className="flex items-center px-1 text-void">
         <UserOptions />
       </div>
     </div>
   );
 };
 const Searchbar = () => {
+  const { handleInputHover } = use(CursorCtx)!;
   return (
-    <div className="relative flex w-full items-center">
+    <div className={cn("relative flex w-full items-center", {})}>
       <Input
-        placeholder="Search events"
         size="lg"
-        variant="flat"
-        color="primary"
         radius="full"
-        className="rounded-full bg-gray-300/60"
+        variant="flat"
+        placeholder="Search events"
+        className="rounded-full bg-ghost"
+        onMouseEnter={handleInputHover(true)}
+        onMouseLeave={handleInputHover(false)}
         classNames={{
           input:
             "placeholder:text-primary/60 text-void dark:text-void font-inter placeholder:text-sm tracking-tight placeholder:tracking-tight placeholder:font-light placeholder:ps-0.5 ps-2 font-inter w-full",
-          inputWrapper: "border-macl-pink border-0 shadow-none w-full",
+          inputWrapper: "shadow-none w-full",
           innerWrapper: "border-0",
         }}
         startContent={
@@ -70,12 +79,19 @@ const Searchbar = () => {
 };
 
 const UserProfile = (props: { photo_url: string | undefined }) => {
+  const { toggle } = useToggle();
   return (
-    <Popover placement="bottom-end">
+    <Popover
+      isDismissable
+      shouldCloseOnBlur
+      shouldCloseOnScroll
+      placement="bottom-end"
+      onOpenChange={toggle}
+    >
       <PopoverTrigger>
         <Avatar alt="user-pfp" src={props?.photo_url} />
       </PopoverTrigger>
-      <PopoverContent className="bg-coal">
+      <PopoverContent onClick={toggle} className="bg-coal">
         <UserContextMenu />
       </PopoverContent>
     </Popover>

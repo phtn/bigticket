@@ -42,7 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${inter.variable} ${cherry.variable} ${lucky.variable} ${poet.variable}`}
+      className={`${GeistSans.variable} ${inter.variable} ${cherry.variable} ${lucky.variable} ${poet.variable} antialiased`}
     >
       <body>
         <Providers>

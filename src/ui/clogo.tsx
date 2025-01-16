@@ -80,7 +80,7 @@ export const Clogo = ({ columns = 2 }: ClogProps) => {
     <div className="flex justify-center gap-4 py-8">
       {cols.map((col, index) => (
         <Col
-          key={`${clogs[index]?.name}-${Number(clogs[index]?.id) + 5}`}
+          key={`${clogs[index]?.name}-${Number(clogs[index]?.id)}`}
           clogs={col}
           columnIndex={index}
           currentTime={time}
@@ -92,8 +92,8 @@ export const Clogo = ({ columns = 2 }: ClogProps) => {
 
 // Column component
 function Col({ clogs, columnIndex, currentTime }: ColProps) {
-  const CYCLE_DURATION = 2800;
-  const columnDelay = columnIndex * 750;
+  const CYCLE_DURATION = 4000;
+  const columnDelay = columnIndex * 500;
   const adjustedTime =
     (currentTime + columnDelay) % (CYCLE_DURATION * clogs.length);
   const currentIndex = Math.floor(adjustedTime / CYCLE_DURATION);
@@ -102,7 +102,7 @@ function Col({ clogs, columnIndex, currentTime }: ColProps) {
   return (
     <motion.div
       key={`${currentLogo?.id}-${currentIndex}`}
-      className="relative h-14 w-24 overflow-hidden md:h-24 md:w-48"
+      className="relative h-14 w-24 overflow-hidden md:h-16 md:w-32 xl:h-20 xl:w-36"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -115,7 +115,7 @@ function Col({ clogs, columnIndex, currentTime }: ColProps) {
         <motion.div
           key={`${currentLogo?.id}-${currentIndex}`}
           className="absolute inset-0 flex items-center justify-center"
-          initial={{ y: "10%", opacity: 0 }}
+          initial={{ y: "10%", opacity: 0.3 }}
           animate={{
             y: "0%",
             opacity: 1,
@@ -127,14 +127,14 @@ function Col({ clogs, columnIndex, currentTime }: ColProps) {
           }}
           exit={{
             y: "-20%",
-            opacity: 0,
-            transition: { duration: 0.3 },
+            opacity: 0.3,
+            transition: { duration: 0.7 },
           }}
         >
           <Image
             src={currentLogo?.src}
             alt={currentLogo?.name ?? "logo"}
-            className="h-20 max-h-[80%] w-auto object-cover"
+            className="h-10 w-auto object-cover grayscale xl:h-12"
           />
         </motion.div>
       </AnimatePresence>

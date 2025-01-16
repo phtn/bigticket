@@ -18,12 +18,12 @@ export const Sidebar = ({ toggleFn, open }: SidebarProps) => (
         { "translate-x-0": open },
       )}
     >
-      <section className="relative h-[calc(80vh)] w-full space-y-2 rounded-xl border-[0.33px] border-primary-100 bg-macl-gray/20 p-2 shadow-lg backdrop-blur-2xl">
+      <section className="relative h-[calc(80vh)] w-full space-y-2 rounded-xl border-[0.33px] border-primary-100 bg-chalk/80 p-2 shadow-lg backdrop-blur-2xl">
         <Button
           size="sm"
           isIconOnly
           onPress={toggleFn}
-          className="group absolute -right-2 -top-2 z-[60] rounded-full border-[0.33px] border-primary-300 bg-macl-mint shadow-sm backdrop-blur-lg data-[hover=true]:opacity-100"
+          className="group absolute -right-2 -top-2 z-[60] rounded-full bg-orange-400 shadow-sm backdrop-blur-lg data-[hover=true]:opacity-100"
         >
           <Icon
             name="LeftChev"

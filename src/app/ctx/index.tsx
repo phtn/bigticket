@@ -5,12 +5,15 @@ import { TRPCProvider } from "@/trpc/react";
 import type { ReactNode } from "react";
 import { Toasts } from "./toast";
 import AuthProvider from "./auth";
+import { CursorProvider } from "./cursor";
 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
     <NextUIProvider>
       <AuthProvider>
-        <TRPCProvider>{children}</TRPCProvider>
+        <TRPCProvider>
+          <CursorProvider>{children}</CursorProvider>
+        </TRPCProvider>
         <Toasts />
       </AuthProvider>
     </NextUIProvider>

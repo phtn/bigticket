@@ -76,34 +76,34 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   //   [createLog, getLogById],
   // );
 
-  // const generateFileUrl = useMutation(api.files.create.url);
-  // const getFileUrl = useMutation(api.files.get.url);
+  const generateFileUrl = useMutation(api.files.create.url);
+  const getFileUrl = useMutation(api.files.get.url);
 
-  // const createUrl = useCallback(
-  //   async (file?: File) => {
-  //     if (!file) return null;
-  //     const postUrl = await generateFileUrl();
-  //     const result = (
-  //       await fetch(postUrl, {
-  //         method: "POST",
-  //         body: file,
-  //         headers: {
-  //           "Content-Type": file?.type ?? "image/*",
-  //         },
-  //       })
-  //     ).json() as Promise<{ storageId: string }>;
-  //     return (await result).storageId;
-  //   },
-  //   [generateFileUrl],
-  // );
+  const createUrl = useCallback(
+    async (file?: File) => {
+      if (!file) return null;
+      const postUrl = await generateFileUrl();
+      const result = (
+        await fetch(postUrl, {
+          method: "POST",
+          body: file,
+          headers: {
+            "Content-Type": file?.type ?? "image/*",
+          },
+        })
+      ).json() as Promise<{ storageId: string }>;
+      return (await result).storageId;
+    },
+    [generateFileUrl],
+  );
 
-  // const files = useMemo(
-  //   () => ({
-  //     create: async (file?: File) => await createUrl(file),
-  //     get: async (storageId: string) => await getFileUrl({ storageId }),
-  //   }),
-  //   [createUrl, getFileUrl],
-  // );
+  const files = useMemo(
+    () => ({
+      create: async (file?: File) => await createUrl(file),
+      get: async (storageId: string) => await getFileUrl({ storageId }),
+    }),
+    [createUrl, getFileUrl],
+  );
 
   const createvx = useCallback(async () => {
     if (!user) return null;
@@ -124,8 +124,9 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
     () => ({
       usr,
       createvx,
+      files,
     }),
-    [usr, createvx],
+    [usr, createvx, files],
   );
 
   return <ConvexCtx value={value}>{children}</ConvexCtx>;
