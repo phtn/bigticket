@@ -1,8 +1,24 @@
 import { useToggle } from "@/hooks/useToggle";
-import { Icon } from "@/icons";
+import { Icon, type IconName } from "@/icons";
+import { TicketStack } from "@/ui/card/ticket";
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
-import { Button } from "@nextui-org/react";
+import moment from "moment";
+import {
+  Button,
+  DatePicker,
+  type DateValue,
+  Form,
+  Input,
+  Select,
+  SelectItem,
+  Textarea,
+  TimeInput,
+  type TimeInputValue,
+} from "@nextui-org/react";
+import { type ChangeEvent, useActionState, useCallback, useState } from "react";
+import { opts } from "@/utils/helpers";
+import { type PrimaryCreateEvent, useEvent } from "./useEvent";
 
 interface CreateNewEventProps {
   pathname: string;
@@ -13,19 +29,115 @@ export const CreateNewEvent = ({
   account_id,
 }: CreateNewEventProps) => {
   const { open, toggle } = useToggle();
+  const [eventName, setEventName] = useState("");
+  const [ticketCount, setTicketCount] = useState("");
+  const [eventType, setEventType] = useState("");
+  const [eventTime, setEventTime] = useState("");
+  const [eventSite, setEventSite] = useState("");
+  const [eventDate, setEventDate] = useState("");
+  const [eventDay, setEventDay] = useState("");
+
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setEventName(e.target.value);
+  }, []);
+
+  const handleChangeSite = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setEventSite(e.target.value);
+  }, []);
+
+  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    switch (e.target.name) {
+      case "ticket_count":
+        return setTicketCount(e.target.value);
+      case "event_type":
+        return setEventType(e.target.value);
+      default:
+        return;
+    }
+  };
+
+  const handleDateChange = (value: DateValue | null) => {
+    // const short = value?.toDate("GMT").toLocaleDateString(); // mm/dd/yyyy
+    const dateString = value?.toDate("GMT");
+    const compact = moment(dateString).format("LL");
+    const day = moment(dateString).format("dddd");
+    setEventDate(compact);
+    setEventDay(day);
+  };
+
+  const handleTimeChange = (value: TimeInputValue | null) => {
+    const time = moment(value).format("LT");
+    setEventTime(time);
+  };
+
+  const { createEvent } = useEvent();
+
+  const initialState: PrimaryCreateEvent = {
+    event_desc: "",
+    event_name: "",
+    event_date: "",
+    event_type: "",
+    event_time: "",
+    ticket_count: "",
+  };
+  const fn = async (initialState: PrimaryCreateEvent, fd: FormData) => {
+    const data: PrimaryCreateEvent = {
+      event_name: fd.get("event_name") as string,
+      event_desc: fd.get("event_desc") as string,
+      event_date: fd.get("event_date") as string,
+      event_type: fd.get("event_type") as string,
+      event_time: fd.get("event_time") as string,
+      ticket_count: fd.get("ticket_count") as string,
+    };
+    await createEvent(data);
+    return data;
+  };
+
+  const [state, action, pending] = useActionState(fn, initialState);
+
+  const EventSite = useCallback(() => {
+    const options = opts(
+      <Input
+        id="event_geo"
+        name="event_geo"
+        label="Venue"
+        onChange={handleChangeSite}
+        defaultValue={eventSite}
+        required
+        classNames={{
+          inputWrapper: "border-[0.33px] border-macd-gray shadow-none",
+          label: "font-semibold",
+        }}
+      />,
+      <Input
+        id="event_url"
+        name="event_url"
+        label="URL"
+        onChange={handleChangeSite}
+        defaultValue={eventSite}
+        required
+        classNames={{
+          inputWrapper: "border-[0.33px] border-macd-gray shadow-none",
+          label: "font-semibold",
+        }}
+      />,
+    );
+    return <>{options.get(eventType === "onsite")}</>;
+  }, [eventType, eventSite, handleChangeSite]);
+
   return (
     <div className="flex h-10 w-full items-center justify-end xl:space-x-1">
       <Button
         href={`${pathname}/edit?page=${account_id}`}
         size="md"
         className="hidden lg:flex"
-        variant="shadow"
-        color="secondary"
+        variant="solid"
+        color="primary"
         onPress={toggle}
       >
-        <Icon name="Plus" className="size-4" />
-        <span className="font-inter text-xs font-medium tracking-tighter">
-          Create an event
+        <Icon name="Sparkles2" className="size-4" />
+        <span className="font-inter text-sm font-medium tracking-tighter">
+          Host an event
         </span>
       </Button>
       <SideVaul
@@ -36,17 +148,217 @@ export const CreateNewEvent = ({
         description={"Description"}
       >
         <FlatWindow
-          // icon={"InfoLine"}
+          icon={"Sparkles2"}
+          closeFn={toggle}
           title={"Create New Event"}
-          variant="god"
-          className={
-            "bg-gradient-to-br from-orange-50 via-orange-50 to-lime-50"
-          }
+          variant="adam"
+          className={"border-macd-gray bg-chalk"}
         >
-          <div className="size-full bg-white">
-            <div className="flex h-full overflow-scroll bg-white py-6 md:h-[calc(85vh)] md:w-[calc(39vw)] md:px-6">
-              <article className="space-y-10">
-                <section className="flex items-center gap-2">
+          <div className="size-full bg-white md:h-[calc(85vh)] md:w-[calc(39vw)]">
+            <div className="flex h-2/5 w-full items-center">
+              <TicketStack
+                title={eventName}
+                date={eventDate}
+                time={eventTime}
+                site={eventSite}
+                day={eventDay}
+                tickets={ticketCount}
+              />
+            </div>
+            <div className="flex h-3/5 w-full overflow-scroll pb-4">
+              <Form
+                action={action}
+                className="w-full space-y-3 rounded-lg border-[0.0px] border-macd-gray bg-white p-4"
+              >
+                <div className="grid w-full grid-cols-4 gap-2 px-2">
+                  {select_data.map((data) => (
+                    <Select
+                      id={data.id}
+                      name={data.id}
+                      key={data.id}
+                      label={data.label}
+                      onChange={handleSelectChange}
+                      className="w-full"
+                      classNames={{
+                        popoverContent: "pointer-events-auto",
+                        trigger:
+                          "font-medium border-[0.33px] border-macd-gray rounded-xl",
+                        label: "font-semibold capitalize",
+                      }}
+                      items={data.items}
+                      variant="flat"
+                    >
+                      {(item) => (
+                        <SelectItem
+                          className="w-full"
+                          key={item.key}
+                          textValue={item.label}
+                        >
+                          {item.label}
+                        </SelectItem>
+                      )}
+                    </Select>
+                  ))}
+                  <DatePicker
+                    label="Event Date"
+                    id="event_date"
+                    name="event_date"
+                    onChange={handleDateChange}
+                    classNames={{
+                      base: [
+                        "font-semibold border-[0.33px] rounded-xl border-macd-gray",
+                        "tracking-tight ",
+                      ],
+                      popoverContent: "pointer-events-auto",
+                      segment:
+                        "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
+                    }}
+                  />
+                  <TimeInput
+                    label="Event Time"
+                    id="event_time"
+                    name="event_time"
+                    onChange={handleTimeChange}
+                    classNames={{
+                      base: [
+                        "font-semibold border-[0.33px] rounded-xl border-macd-gray",
+                        "",
+                      ],
+                      segment:
+                        "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
+                    }}
+                  />
+                </div>
+                <div className="w-full px-2">
+                  <Input
+                    autoFocus
+                    id="event_name"
+                    name="event_name"
+                    label="Event Name"
+                    onChange={handleChange}
+                    defaultValue={state.event_name}
+                    placeholder=""
+                    required
+                    classNames={{
+                      inputWrapper:
+                        "border-[0.33px] border-macd-gray shadow-none",
+                      label: "font-semibold",
+                    }}
+                  />
+                </div>
+                <div className="w-full px-2">
+                  <EventSite />
+                </div>
+                <div className="w-full space-y-2 px-2">
+                  {/* <p className="font-medium tracking-tight">
+                    What best describes your event?
+                  </p> */}
+                  <Textarea
+                    name="event_desc"
+                    label="Description"
+                    defaultValue={state.event_desc}
+                    classNames={{
+                      inputWrapper:
+                        "border-[0.33px] border-macd-gray shadow-none",
+                      input: "",
+                      label: "font-semibold",
+                    }}
+                  />
+                </div>
+                <div className="flex h-1/5 w-full items-center justify-between px-2">
+                  <div className="flex space-x-4">
+                    <p>&middot;</p>
+                    <p>&middot;</p>
+                  </div>
+                  <Button isLoading={pending} type="submit" color="primary">
+                    Next
+                  </Button>
+                </div>
+              </Form>
+            </div>
+          </div>
+        </FlatWindow>
+      </SideVaul>
+    </div>
+  );
+};
+
+interface EventSelectData {
+  id: string;
+  label: string;
+  items: Array<{ key: string; label: string }>;
+  placeholder: string;
+  icon: IconName;
+}
+const select_data: EventSelectData[] = [
+  {
+    id: "ticket_count",
+    label: "Tickets",
+    items: [
+      {
+        key: "50",
+        label: "0-50",
+      },
+      {
+        key: "100",
+        label: "50-100",
+      },
+      {
+        key: "500",
+        label: "100-500",
+      },
+      {
+        key: "1000",
+        label: "500-1000",
+      },
+      {
+        key: "2000",
+        label: "1000-2000",
+      },
+    ],
+    placeholder: "",
+    icon: "TicketFill",
+  },
+  {
+    id: "event_type",
+    label: "Type",
+    items: [
+      {
+        key: "online",
+        label: "Online",
+      },
+      {
+        key: "onsite",
+        label: "On-site",
+      },
+    ],
+    placeholder: "",
+    icon: "Bell",
+  },
+  // {
+  //   id: "audience",
+  //   label: "Age Restriction",
+  //   items: [
+  //     {
+  //       key: "kids",
+  //       label: "Kids - 6 and up",
+  //     },
+  //     {
+  //       key: "teen",
+  //       label: "Teens - 13 and above",
+  //     },
+  //     {
+  //       key: "adult",
+  //       label: "Adult - 18 and above",
+  //     },
+  //   ],
+  //   placeholder: "",
+  //   icon: "Bell",
+  // },
+];
+
+{
+  /* <section className="flex items-center gap-2">
                   {["tag"]?.map((tag) => (
                     <div
                       key={tag}
@@ -55,20 +367,5 @@ export const CreateNewEvent = ({
                       {tag}
                     </div>
                   ))}
-                </section>
-                <h1 className="font-sans text-3xl font-bold tracking-tighter sm:text-5xl">
-                  {"Event Title"}
-                </h1>
-                <div className="flex items-center gap-3">{"host id"}</div>
-                <div className="space-y-6 text-lg">
-                  <p className="font-bold text-darkarmy">{"Description"}</p>
-                  FORM
-                </div>
-              </article>
-            </div>
-          </div>
-        </FlatWindow>
-      </SideVaul>
-    </div>
-  );
-};
+                </section> */
+}

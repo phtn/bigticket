@@ -34,14 +34,14 @@ export const Profile = () => {
         className={cn("h-20 w-full", "overflow-hidden")}
       ></div>
       <div className="flex h-16 w-full items-center justify-between bg-background pe-4 ps-44">
-        <div className="items-center whitespace-nowrap font-inter text-sm">
+        <div className="items-center whitespace-nowrap font-inter">
           <Link
             className="flex items-center"
             href={`${pathname}/preview?page=${vx?.account_id}`}
           >
             <h2 className="font-semibold tracking-tighter">{vx?.nickname}</h2>
           </Link>
-          <h3 className="tracking-tighter">{vx?.email}</h3>
+          <h3 className="text-sm font-light tracking-tighter">{vx?.email}</h3>
         </div>
 
         <CreateNewEvent pathname={pathname} account_id={vx?.account_id} />
@@ -66,8 +66,8 @@ export const Profile = () => {
         />
         <Button
           size="sm"
-          variant="light"
           isIconOnly
+          variant="light"
           onPress={browseFile}
           className="group absolute bottom-[6px] right-[9.7px] z-50 -rotate-[5deg] data-[hover=true]:bg-transparent"
         >

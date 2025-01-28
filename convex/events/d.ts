@@ -1,4 +1,4 @@
-import { type Infer, v, VObject } from "convex/values";
+import { GenericValidator, type Infer, v, VObject } from "convex/values";
 
 const excludeProp = <T extends object>(o: T, ...keys: string[]) => {
   const ex = new Set(keys);
@@ -13,19 +13,23 @@ const SocialMediaSchema = v.object({
 
 export const EventSchema = v.object({
   event_id: v.string(),
+
+  event_name: v.optional(v.string()),
+  event_desc: v.optional(v.string()),
+
   event_code: v.optional(v.string()),
   event_date: v.optional(v.float64()),
   event_time: v.optional(v.float64()),
+  event_geo: v.optional(v.float64()),
   event_url: v.optional(v.string()),
   event_phone: v.optional(v.string()),
   event_email: v.optional(v.string()),
   event_type: v.optional(v.string()),
+
+  //DETAILS
   category: v.optional(v.string()),
   subcategory: v.optional(v.string()),
   status: v.optional(v.string()),
-  //DETAILS
-  title: v.optional(v.string()),
-  description: v.optional(v.string()),
   content: v.optional(v.string()),
   thumbnail: v.optional(v.string()),
   cover_url: v.optional(v.string()),
@@ -50,6 +54,8 @@ export const EventSchema = v.object({
   host_email: v.optional(v.string()),
   support_email: v.optional(v.string()),
   customer_service: v.optional(v.string()),
+  build_progress: v.optional(v.number()),
+  audience: v.optional(v.string()),
   is_free: v.optional(v.string()),
   is_online: v.optional(v.boolean()),
   is_expired: v.optional(v.boolean()),
@@ -65,5 +71,5 @@ const InsertEventSchema = excludeProp(
   "updated_at",
   "host_id",
   "event_code",
-) as VObject<SelectEvent, {}>;
+) as VObject<SelectEvent, Record<string, GenericValidator>>;
 export type InsertEvent = Infer<typeof InsertEventSchema>;

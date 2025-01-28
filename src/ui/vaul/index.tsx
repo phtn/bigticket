@@ -47,7 +47,7 @@ const Handle = ({ close }: { close: VoidFunction }) => (
 );
 
 const Body = ({ children }: PropsWithChildren) => (
-  <div className="border-steel/80 dark:bg-steel flex w-full items-start justify-between overflow-hidden border-[0.33px] border-b-0 bg-chalk text-foreground">
+  <div className="border-steel/80 dark:bg-steel flex w-full items-start justify-between overflow-hidden border-[0.33px] bg-chalk text-foreground">
     {children}
   </div>
 );

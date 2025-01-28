@@ -1,5 +1,5 @@
 import type { Id } from "@vx/dataModel";
-// import type { InsertLog, SelectLog } from "convex/logs/d";
+import type { InsertEvent, SelectEvent } from "convex/events/d";
 import type { InsertUser, SelectUser, UpdateUser } from "convex/users/d";
 
 export interface ConvexCtxValues {
@@ -24,6 +24,22 @@ export interface ConvexCtxValues {
       ) => Promise<Id<"users"> | null>;
     };
   };
+
+  events: {
+    create: (event: InsertEvent) => Promise<Id<"events"> | null>;
+    get: {
+      all: () => SelectEvent[] | undefined;
+      byId: (id: string) => Promise<SelectEvent | null>;
+      byHostId: (id: string) => Promise<SelectEvent[] | undefined>;
+    };
+  };
+
+  files: {
+    create: (file?: File) => Promise<string | null>;
+    get: (storageId: string) => Promise<string | null>;
+  };
+  createvx: () => Promise<string | null>;
+
   // logs: {
   //   create: (
   //     args: InsertLog,
@@ -32,10 +48,4 @@ export interface ConvexCtxValues {
   //     byId: (id: string) => Promise<SelectLog[] | null>;
   //   };
   // };
-
-  files: {
-    create: (file?: File) => Promise<string | null>;
-    get: (storageId: string) => Promise<string | null>;
-  };
-  createvx: () => Promise<string | null>;
 }

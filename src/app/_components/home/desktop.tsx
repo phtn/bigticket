@@ -5,10 +5,9 @@ import { use, useMemo } from "react";
 import { Icon } from "@/icons";
 import { useToggle } from "@/hooks/useToggle";
 import { cn } from "@/lib/utils";
-import { Partners } from "./components";
 import HyperSpace from "@/ui/cursor";
 import { CursorCtx } from "@/app/ctx/cursor";
-import { Hero } from "./components/hero";
+import { HeroSection } from "./components/hero";
 
 export const DesktopView = () => {
   const { open, toggle } = useToggle();
@@ -71,22 +70,12 @@ const MainContent = ({ toggleFn, open }: MainContentProps) => {
             component={ListItem}
             container="columns-3 gap-4 sm:columns-3 px-4"
           >
-            <div className="flex h-96 w-full items-center justify-center bg-coal">
-              <Hero
-                headline="Get tickets to"
-                keywords={[
-                  "events",
-                  "concerts",
-                  "parties",
-                  "flights",
-                  "hotels",
-                  "shops",
-                ]}
-              />
+            <div className="flex h-96 w-full items-center justify-center">
+              <HeroSection />
             </div>
           </HyperList>
 
-          <Partners />
+          {/* <Partners /> */}
         </section>
       </div>
     </main>

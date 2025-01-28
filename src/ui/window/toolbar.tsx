@@ -55,7 +55,14 @@ const Title = (props: { title?: string }) => {
 
 const Indicator = (props: ButtonProps & { name: IconName }) => {
   return (
-    <Button isIconOnly variant="light" size="sm" {...props}>
+    <Button
+      isIconOnly
+      className="pointer-events-none ring-0 focus:outline-0"
+      variant="light"
+      disabled
+      size="sm"
+      {...props}
+    >
       <Icon name={props.name} className="size-4 stroke-0 text-primary/80" />
     </Button>
   );
@@ -115,7 +122,7 @@ export const StaticToolbar = ({
       className={cn(
         "flex h-[49px] items-center justify-between rounded-t-2xl p-2",
         // LIGHT
-        "border-steel border border-b-0",
+        "border-steel border border-b-[0.33px]",
         "fill-goddess",
         { "bg-demigod": variant === "demigod" },
         { "bg-god": variant === "god" },

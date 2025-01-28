@@ -2,7 +2,12 @@
 
 import { env } from "@/env";
 import { api } from "@vx/api";
-import { ConvexProvider, ConvexReactClient, useMutation } from "convex/react";
+import {
+  ConvexProvider,
+  ConvexReactClient,
+  useMutation,
+  useQuery,
+} from "convex/react";
 import type { CreateUser, UpdateUser } from "convex/users/d";
 import type { ReactNode } from "react";
 import type { ConvexCtxValues } from "./types";
@@ -10,6 +15,7 @@ import { createContext, useCallback, useMemo } from "react";
 import type { User } from "@supabase/supabase-js";
 import type { SupabaseUserMetadata } from "@/app/ctx/auth/types";
 import { VxProvider } from "./vx";
+import type { InsertEvent } from "convex/events/d";
 
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 export const ConvexCtx = createContext<ConvexCtxValues | null>(null);
@@ -120,13 +126,32 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
     return await usr.create(userdata);
   }, [user, usr]);
 
+  const createEvent = useMutation(api.events.create.default);
+  const getAllEvents = useQuery(api.events.get.all);
+  const getEventById = useMutation(api.events.get.byId);
+  const getEventsByHostId = useMutation(api.events.get.byHostId);
+
+  const events = useMemo(
+    () => ({
+      create: async (args: InsertEvent) => await createEvent(args),
+      get: {
+        all: () => getAllEvents,
+        byId: async (id: string) => await getEventById({ id }),
+        byHostId: async (host_id: string) =>
+          await getEventsByHostId({ host_id }),
+      },
+    }),
+    [createEvent, getAllEvents, getEventById, getEventsByHostId],
+  );
+
   const value = useMemo(
     () => ({
       usr,
       createvx,
       files,
+      events,
     }),
-    [usr, createvx, files],
+    [usr, createvx, files, events],
   );
 
   return <ConvexCtx value={value}>{children}</ConvexCtx>;

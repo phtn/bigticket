@@ -91,7 +91,10 @@ const UserProfile = (props: { photo_url: string | undefined }) => {
       <PopoverTrigger>
         <Avatar alt="user-pfp" src={props?.photo_url} />
       </PopoverTrigger>
-      <PopoverContent onClick={toggle} className="bg-coal">
+      <PopoverContent
+        onClick={toggle}
+        className="border-[0.33px] border-primary-500 bg-coal"
+      >
         <UserContextMenu />
       </PopoverContent>
     </Popover>
@@ -107,7 +110,7 @@ const UserContextMenu = () => (
 const MenuListItem = (menu: MenuItem) => (
   <Link
     href={menu.href}
-    className="flex w-full items-center justify-between space-x-5 rounded-lg px-4 py-2 hover:bg-primary-300/30"
+    className="flex w-full items-center justify-between space-x-5 rounded-lg px-4 py-2 hover:bg-primary-500/30"
   >
     <div className="flex items-center">
       <h2 className="text-xs font-medium tracking-tighter text-primary-200">
