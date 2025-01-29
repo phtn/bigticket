@@ -11,6 +11,8 @@ export interface PrimaryCreateEvent {
   event_type: string;
   event_date: string;
   event_time: string;
+  event_geo: string;
+  event_url: string;
   ticket_count: string;
 }
 
@@ -37,7 +39,7 @@ export const useEvent = () => {
       await events
         .create(args)
         .then(Ok(setLoading, "Event created successfully!"))
-        .then(() => router.push(`/events/${event_id}`))
+        .then(() => router.push(`/e/${event_id}`))
         .catch(Err);
     },
     [events, router, vx?.email, vx?.nickname, vx?.account_id],

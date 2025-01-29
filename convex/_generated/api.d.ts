@@ -18,6 +18,7 @@ import type * as articles_get from "../articles/get.js";
 import type * as events_create from "../events/create.js";
 import type * as events_d from "../events/d.js";
 import type * as events_get from "../events/get.js";
+import type * as events_update from "../events/update.js";
 import type * as files_create from "../files/create.js";
 import type * as files_get from "../files/get.js";
 import type * as tickets_create from "../tickets/create.js";
@@ -43,6 +44,7 @@ declare const fullApi: ApiFromModules<{
   "events/create": typeof events_create;
   "events/d": typeof events_d;
   "events/get": typeof events_get;
+  "events/update": typeof events_update;
   "files/create": typeof files_create;
   "files/get": typeof files_get;
   "tickets/create": typeof tickets_create;

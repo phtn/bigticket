@@ -16,7 +16,13 @@ import {
   TimeInput,
   type TimeInputValue,
 } from "@nextui-org/react";
-import { type ChangeEvent, useActionState, useCallback, useState } from "react";
+import {
+  type ChangeEvent,
+  useActionState,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { opts } from "@/utils/helpers";
 import { type PrimaryCreateEvent, useEvent } from "./useEvent";
 
@@ -44,6 +50,8 @@ export const CreateNewEvent = ({
   const handleChangeSite = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setEventSite(e.target.value);
   }, []);
+
+  const descRef = useRef<HTMLTextAreaElement | null>(null);
 
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
     switch (e.target.name) {
@@ -78,6 +86,8 @@ export const CreateNewEvent = ({
     event_date: "",
     event_type: "",
     event_time: "",
+    event_geo: "",
+    event_url: "",
     ticket_count: "",
   };
   const fn = async (initialState: PrimaryCreateEvent, fd: FormData) => {
@@ -87,6 +97,8 @@ export const CreateNewEvent = ({
       event_date: fd.get("event_date") as string,
       event_type: fd.get("event_type") as string,
       event_time: fd.get("event_time") as string,
+      event_geo: (fd.get("event_geo") as string) ?? undefined,
+      event_url: (fd.get("event_url") as string) ?? undefined,
       ticket_count: fd.get("ticket_count") as string,
     };
     await createEvent(data);
@@ -102,7 +114,7 @@ export const CreateNewEvent = ({
         name="event_geo"
         label="Venue"
         onChange={handleChangeSite}
-        defaultValue={eventSite}
+        // defaultValue={eventSite}
         required
         classNames={{
           inputWrapper: "border-[0.33px] border-macd-gray shadow-none",
@@ -114,7 +126,7 @@ export const CreateNewEvent = ({
         name="event_url"
         label="URL"
         onChange={handleChangeSite}
-        defaultValue={eventSite}
+        // defaultValue={eventSite}
         required
         classNames={{
           inputWrapper: "border-[0.33px] border-macd-gray shadow-none",
@@ -123,7 +135,7 @@ export const CreateNewEvent = ({
       />,
     );
     return <>{options.get(eventType === "onsite")}</>;
-  }, [eventType, eventSite, handleChangeSite]);
+  }, [eventType, handleChangeSite]);
 
   return (
     <div className="flex h-10 w-full items-center justify-end xl:space-x-1">
@@ -135,9 +147,9 @@ export const CreateNewEvent = ({
         color="primary"
         onPress={toggle}
       >
-        <Icon name="Sparkles2" className="size-4" />
+        <Icon name="Sparkles2" className="size-4 stroke-0" />
         <span className="font-inter text-sm font-medium tracking-tighter">
-          Host an event
+          Create an event
         </span>
       </Button>
       <SideVaul
@@ -256,11 +268,11 @@ export const CreateNewEvent = ({
                   <Textarea
                     name="event_desc"
                     label="Description"
+                    ref={descRef}
                     defaultValue={state.event_desc}
                     classNames={{
                       inputWrapper:
                         "border-[0.33px] border-macd-gray shadow-none",
-                      input: "",
                       label: "font-semibold",
                     }}
                   />

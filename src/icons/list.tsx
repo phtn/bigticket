@@ -103,6 +103,26 @@ function ArrowRight(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function ArrowRightUp(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="m9 15l6-6m0 0h-4.5M15 9v4.5"
+        ></path>
+        <path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"></path>
+      </g>
+    </svg>
+  );
+}
 function Bell(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -179,6 +199,24 @@ function Chats(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function Check(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g fill="none" fillRule="evenodd">
+        <path
+          fill="currentColor"
+          d="M21.546 5.111a1.5 1.5 0 0 1 0 2.121L10.303 18.475a1.6 1.6 0 0 1-2.263 0L2.454 12.89a1.5 1.5 0 1 1 2.121-2.121l4.596 4.596L19.424 5.111a1.5 1.5 0 0 1 2.122 0"
+        ></path>
+      </g>
+    </svg>
+  );
+}
 function CloudUpload(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -386,6 +424,29 @@ function EGuitarGray(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+function ImageIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g fill="none">
+        <path
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          d="M20.33 17.657c.11-.366.17-.755.17-1.157v-9a4 4 0 0 0-4-4h-9a4 4 0 0 0-4 4v9.07m16.83 1.087l-.088-.104l-2.466-2.976a2 2 0 0 0-3.073-.008l-1.312 1.566l-.214.261m7.153 1.26a4 4 0 0 1-3.713 2.842m0 0l-.117.002h-9a4 4 0 0 1-4-3.93m13.117 3.928l-.093-.106l-3.347-3.996m-9.676.175l.177-.201l3.206-3.827a2 2 0 0 1 3.066 0l3.227 3.853"
+        ></path>
+        <circle cx="15.091" cy="8.909" r="1.5" fill="#888888"></circle>
+      </g>
+    </svg>
+  );
+}
 function InfoLine(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -464,6 +525,22 @@ function HotelRoom(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function Launch(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="m3.7 11.287l3.623-3.624q.293-.292.671-.413t.783-.04l1.415.294Q9.073 8.873 8.366 9.98t-1.414 2.688zm4.125 1.62q.652-1.51 1.563-2.89q.91-1.378 2.08-2.548q1.873-1.873 4.073-2.806t4.746-.797q.136 2.546-.795 4.746t-2.803 4.073q-1.164 1.163-2.548 2.07t-2.897 1.559zm6.17-2.768q.44.44 1.066.44t1.066-.44t.44-1.057t-.44-1.057t-1.066-.44t-1.067.44t-.44 1.057t.44 1.056m-1.161 10.314L11.444 17.2q1.581-.706 2.691-1.423q1.111-.717 2.48-1.836l.289 1.415q.08.404-.031.785q-.111.382-.404.675zm-7.687-4.306q.587-.586 1.423-.58t1.423.594q.587.586.587 1.423t-.587 1.423q-.51.51-1.635.873t-2.605.502q.138-1.479.511-2.602t.883-1.633"
+      ></path>
+    </svg>
+  );
+}
 function LeftChev(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -820,6 +897,26 @@ function Toc(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function Upload(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M12 16.349V3.87M6.118 9.132l4.821-4.821c.293-.293.677-.44 1.061-.44m5.882 5.261l-4.821-4.821A1.5 1.5 0 0 0 12 3.87m8.75 12.645v.935a3.3 3.3 0 0 1-3.3 3.3H6.55a3.3 3.3 0 0 1-3.3-3.3v-.935"
+      ></path>
+    </svg>
+  );
+}
 function User(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -843,21 +940,25 @@ export const icons = {
   Airplane,
   Airplane2,
   ArrowRight,
+  ArrowRightUp,
   Bell,
   BouncyArrow,
   Calendar,
   Chats,
+  Check,
   CloudUpload,
   Close,
   Cog,
   Cocktail,
   Copy,
+  ImageIcon,
   InfoLine,
   EGuitarFender,
   EGuitarGray,
   Fire,
   Fullscreen,
   HotelRoom,
+  Launch,
   LeftChev,
   MoreHorizontal,
   MoreVertical,
@@ -877,5 +978,6 @@ export const icons = {
   Squircle,
   TicketFill,
   Toc,
+  Upload,
   User,
 };

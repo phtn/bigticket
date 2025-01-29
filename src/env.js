@@ -7,6 +7,8 @@ export const env = createEnv({
 
     //CONVEX
     CONVEX_DEPLOYMENT: z.string(),
+    //PEXELS
+    PEXELS_API: z.string(),
   },
 
   client: {
@@ -34,6 +36,9 @@ export const env = createEnv({
     //SUPABASE
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+
+    //PEXELS
+    PEXELS_API: process.env.PEXELS_API,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
