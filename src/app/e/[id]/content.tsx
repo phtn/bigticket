@@ -7,6 +7,7 @@ import { EventPhoto } from "./components/event-photo";
 import { TicketPhoto } from "./components/ticket-photo";
 import { CoverPhoto } from "./components/cover-photo";
 import { EventEditorCtxProvider } from "./ctx";
+import { Carousel } from "@/ui/carousel";
 
 interface EventContentProps {
   id: string;
@@ -17,14 +18,16 @@ export const Content = ({ id }: EventContentProps) => {
 
   return (
     <EventEditorCtxProvider>
-      <main>
-        <Topbar event_name={event?.event_name} id={id} />
-        <div className="px-4">
-          <div className="grid h-fit min-h-80 w-full grid-cols-3 overflow-hidden rounded-md border border-primary bg-white">
-            <CoverPhoto />
-            <EventPhoto />
-            <TicketPhoto event={event} />
-          </div>
+      <main className="h-full overflow-y-scroll">
+        <Topbar event_name={event?.event_name} />
+        <div className="h-full px-4">
+          <Carousel>
+            <div className="grid h-fit min-h-80 w-full overflow-hidden rounded-md border border-primary bg-white md:grid-cols-2 xl:grid-cols-3">
+              <CoverPhoto id={id} />
+              <EventPhoto />
+              <TicketPhoto event={event} />
+            </div>
+          </Carousel>
         </div>
       </main>
     </EventEditorCtxProvider>

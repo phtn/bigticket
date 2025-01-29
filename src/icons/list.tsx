@@ -468,6 +468,27 @@ function InfoLine(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function EyeOpen(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      >
+        <path d="M3.182 12.808C4.233 14.613 7.195 18.81 12 18.81c4.813 0 7.77-4.199 8.82-6.002a1.6 1.6 0 0 0-.001-1.615C19.769 9.389 16.809 5.19 12 5.19s-7.768 4.197-8.818 6.001a1.6 1.6 0 0 0 0 1.617Z"></path>
+        <path d="M12 14.625a2.625 2.625 0 1 0 0-5.25a2.625 2.625 0 0 0 0 5.25Z"></path>
+      </g>
+    </svg>
+  );
+}
 function Fire(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -751,6 +772,27 @@ function Search(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function Settings(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M7.05 6.462a2 2 0 0 0 2.63-1.519l.32-1.72a9 9 0 0 1 3.998 0l.322 1.72a2 2 0 0 0 2.63 1.519l1.649-.58a9 9 0 0 1 2.001 3.46l-1.33 1.14a2 2 0 0 0 0 3.037l1.33 1.139a9 9 0 0 1-2.001 3.46l-1.65-.58a2 2 0 0 0-2.63 1.519L14 20.777a9 9 0 0 1-3.998 0l-.322-1.72a2 2 0 0 0-2.63-1.519l-1.649.58a9 9 0 0 1-2.001-3.46l1.33-1.14a2 2 0 0 0 0-3.036L3.4 9.342a9 9 0 0 1 2-3.46zM12 9a3 3 0 1 1 0 6a3 3 0 0 1 0-6"
+        clipRule="evenodd"
+      ></path>
+    </svg>
+  );
+}
 function ShieldCheck(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -861,6 +903,29 @@ function Squircle(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+function Tablet(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      >
+        <rect width="18.5" height="15" x="2.75" y="4.5" rx="3"></rect>
+        <path d="M10 16h4"></path>
+      </g>
+    </svg>
+  );
+}
 function TicketFill(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -955,6 +1020,7 @@ export const icons = {
   InfoLine,
   EGuitarFender,
   EGuitarGray,
+  EyeOpen,
   Fire,
   Fullscreen,
   HotelRoom,
@@ -970,12 +1036,14 @@ export const icons = {
   RightLineSm,
   Screen,
   Search,
+  Settings,
   ShieldCheck,
   SidebarLeft,
   Sparkles,
   Sparkles2,
   Stats,
   Squircle,
+  Tablet,
   TicketFill,
   Toc,
   Upload,

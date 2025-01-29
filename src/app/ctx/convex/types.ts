@@ -32,6 +32,17 @@ export interface ConvexCtxValues {
       byId: (id: string) => Promise<SelectEvent | null>;
       byHostId: (id: string) => Promise<SelectEvent[] | undefined>;
     };
+    update: {
+      status: (id: string, is_active: boolean) => Promise<Id<"events"> | null>;
+      cover_url: (
+        id: string,
+        cover_url: string,
+      ) => Promise<Id<"events"> | null>;
+      photo_url: (
+        id: string,
+        photo_url: string,
+      ) => Promise<Id<"events"> | null>;
+    };
   };
 
   files: {

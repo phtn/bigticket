@@ -69,19 +69,6 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
     ],
   );
 
-  // const createLog = useMutation(api.logs.create.default);
-  // const getLogById = useMutation(api.logs.get.byId);
-
-  // const logs = useMemo(
-  //   () => ({
-  //     create: async (args: InsertLog) => await createLog(args),
-  //     get: {
-  //       byId: async (id: string) => await getLogById({ id }),
-  //     },
-  //   }),
-  //   [createLog, getLogById],
-  // );
-
   const generateFileUrl = useMutation(api.files.create.url);
   const getFileUrl = useMutation(api.files.get.url);
 
@@ -130,6 +117,9 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const getAllEvents = useQuery(api.events.get.all);
   const getEventById = useMutation(api.events.get.byId);
   const getEventsByHostId = useMutation(api.events.get.byHostId);
+  const updateEventStatus = useMutation(api.events.update.status);
+  const updateCoverUrl = useMutation(api.events.update.cover_url);
+  const updatePhotoUrl = useMutation(api.events.update.photo_url);
 
   const events = useMemo(
     () => ({
@@ -140,8 +130,24 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
         byHostId: async (host_id: string) =>
           await getEventsByHostId({ host_id }),
       },
+      update: {
+        status: async (id: string, is_active: boolean) =>
+          await updateEventStatus({ id, is_active }),
+        cover_url: async (id: string, cover_url: string) =>
+          await updateCoverUrl({ id, cover_url }),
+        photo_url: async (id: string, photo_url: string) =>
+          await updatePhotoUrl({ id, photo_url }),
+      },
     }),
-    [createEvent, getAllEvents, getEventById, getEventsByHostId],
+    [
+      createEvent,
+      getAllEvents,
+      getEventById,
+      getEventsByHostId,
+      updateEventStatus,
+      updateCoverUrl,
+      updatePhotoUrl,
+    ],
   );
 
   const value = useMemo(
@@ -171,3 +177,16 @@ const Provider = ({ children, user }: ProviderProps) => {
   );
 };
 export default Provider;
+
+// const createLog = useMutation(api.logs.create.default);
+// const getLogById = useMutation(api.logs.get.byId);
+
+// const logs = useMemo(
+//   () => ({
+//     create: async (args: InsertLog) => await createLog(args),
+//     get: {
+//       byId: async (id: string) => await getLogById({ id }),
+//     },
+//   }),
+//   [createLog, getLogById],
+// );

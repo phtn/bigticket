@@ -2,7 +2,7 @@ import { Icon } from "@/icons";
 import { Button } from "@nextui-org/react";
 
 export const EventPhoto = () => (
-  <div className="relative flex items-center justify-center border-r border-primary/40">
+  <div className="relative flex items-center justify-center border-primary/40 md:border-b lg:border-r xl:border-b-0">
     <div className="absolute">
       <Icon name="ImageIcon" className="size-24 opacity-20" />
     </div>

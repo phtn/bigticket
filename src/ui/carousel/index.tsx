@@ -15,6 +15,7 @@ import {
   useState,
   type HTMLAttributes,
   type KeyboardEvent,
+  useMemo,
 } from "react";
 import { Button } from "@nextui-org/react";
 
@@ -37,17 +38,17 @@ type CarouselContextProps = {
   scrollNext: () => void;
   canScrollPrev: boolean;
   canScrollNext: boolean;
+  currentIndex: number;
+  getCurrentIndex: () => number;
 } & CarouselProps;
 
-const CarouselContext = createContext<CarouselContextProps | null>(null);
+export const CarouselContext = createContext<CarouselContextProps | null>(null);
 
-function useCarousel() {
+export function useCarousel() {
   const context = useContext(CarouselContext);
-
   if (!context) {
     throw new Error("useCarousel must be used within a <Carousel />");
   }
-
   return context;
 }
 
@@ -58,7 +59,7 @@ const Carousel = forwardRef<
   (
     {
       orientation = "horizontal",
-      opts,
+      opts = { align: "center", containScroll: false },
       setApi,
       plugins,
       className,
@@ -76,15 +77,23 @@ const Carousel = forwardRef<
     );
     const [canScrollPrev, setCanScrollPrev] = useState(false);
     const [canScrollNext, setCanScrollNext] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const onSelect = useCallback((api: CarouselApi) => {
       if (!api) {
         return;
       }
 
+      setCurrentIndex(api.selectedScrollSnap());
+
       setCanScrollPrev(api.canScrollPrev());
       setCanScrollNext(api.canScrollNext());
     }, []);
+
+    const getCurrentIndex = useCallback(() => {
+      if (!api) return 0;
+      return api.selectedScrollSnap();
+    }, [api]);
 
     const scrollPrev = useCallback(() => {
       api?.scrollPrev();
@@ -129,20 +138,36 @@ const Carousel = forwardRef<
       };
     }, [api, onSelect]);
 
+    const value = useMemo(
+      () => ({
+        carouselRef,
+        api: api,
+        opts,
+        orientation:
+          orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+        scrollPrev,
+        scrollNext,
+        canScrollPrev,
+        canScrollNext,
+        currentIndex,
+        getCurrentIndex,
+      }),
+      [
+        carouselRef,
+        api,
+        opts,
+        scrollPrev,
+        scrollNext,
+        canScrollPrev,
+        canScrollNext,
+        currentIndex,
+        getCurrentIndex,
+        orientation,
+      ],
+    );
+
     return (
-      <CarouselContext.Provider
-        value={{
-          carouselRef,
-          api: api,
-          opts,
-          orientation:
-            orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
-          scrollPrev,
-          scrollNext,
-          canScrollPrev,
-          canScrollNext,
-        }}
-      >
+      <CarouselContext value={value}>
         <div
           ref={ref}
           onKeyDownCapture={handleKeyDown}
@@ -153,7 +178,7 @@ const Carousel = forwardRef<
         >
           {children}
         </div>
-      </CarouselContext.Provider>
+      </CarouselContext>
     );
   },
 );

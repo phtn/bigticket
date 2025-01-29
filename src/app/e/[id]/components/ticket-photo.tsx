@@ -16,7 +16,7 @@ export const TicketPhoto = ({ event }: TicketPhotoProps) => {
     [event?.event_date],
   );
   return (
-    <div className="relative flex items-center justify-center">
+    <div className="relative flex h-full min-h-80 items-center justify-center border-primary/40 md:border-r xl:border-r-0">
       <div className="absolute top-0 flex h-10 w-full items-center justify-between px-4 text-xs">
         <p>Event Ticket</p>
       </div>

@@ -1,5 +1,4 @@
 import {
-  Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
@@ -11,18 +10,27 @@ import { type Photo } from "pexels";
 interface CardCarouselProps {
   data: Photo[] | undefined;
 }
+
 export function CardCarousel({ data }: CardCarouselProps) {
   return (
-    <Carousel>
-      <CarouselContent>
+    <div className="flex size-full items-center justify-center object-cover">
+      <CarouselContent className="flex-shrink-0 object-cover">
         {data?.map((photo, idx) => (
-          <CarouselItem key={idx} className="bg-void object-cover p-0">
-            <Image alt={photo.alt ?? ""} src={photo.src.large} radius="none" />
+          <CarouselItem
+            key={idx}
+            className="size-full flex-shrink-0 bg-void p-0"
+          >
+            <Image
+              alt={photo.alt ?? ""}
+              src={photo.src.large}
+              radius="none"
+              className="flex-shrink-0 object-fill"
+            />
           </CarouselItem>
         ))}
       </CarouselContent>
       <CarouselPrevious />
       <CarouselNext />
-    </Carousel>
+    </div>
   );
 }

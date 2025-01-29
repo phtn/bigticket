@@ -46,13 +46,15 @@ const Count = (props: { count: number | undefined }) => (
 );
 
 const EventItem = (event: SelectEvent) => (
-  <div className="flex h-14 items-center">
+  <div className="flex h-14 items-center font-inter">
     <div className="flex w-20 justify-center font-mono text-xs">
-      <Link href={`/events/${event.event_id}`}>
+      <Link href={`/e/${event.event_id}`}>
         {event.event_id.substring(0, 6)}
       </Link>
     </div>
-    <div className="w-64 ps-2 font-semibold">{event.event_name}</div>
+    <div className="w-64 ps-2 font-semibold tracking-tighter">
+      {event.event_name}
+    </div>
     <div className="flex w-24 justify-center text-sm">
       {event.status ? "inactive" : "active"}
     </div>
@@ -70,14 +72,14 @@ const EventItem = (event: SelectEvent) => (
     </div>
     <div className="flex flex-1 justify-end space-x-6 px-4 text-sm font-semibold capitalize">
       <Link
-        href={`events/${event.event_id}`}
+        href={`e/${event.event_id}`}
         className="group/link relative flex size-9 items-center justify-center transition-all duration-300 hover:text-gray-200"
       >
         <Icon
           name="Squircle"
           className="absolute z-0 size-9 scale-0 text-gray-900 transition-all duration-300 group-hover/link:scale-100"
         />
-        <Icon name="Printer" className="z-1 relative size-5 stroke-0" />
+        <Icon name="Settings" className="z-1 relative size-5 stroke-0" />
       </Link>
       <Link
         href={`e/${event.event_id}`}
@@ -104,8 +106,6 @@ const EventTableHeader = () => (
     <div className="flex w-56 justify-center capitalize">site</div>
     <div className="flex w-28 justify-end pe-2 capitalize">tickets</div>
     <div className="flex w-28 justify-end pe-2 capitalize">price</div>
-    <div className="flex flex-1 justify-end px-4 capitalize">
-      <Icon name="MoreHorizontal" />
-    </div>
+    <div className="flex flex-1 justify-end px-4 capitalize"></div>
   </div>
 );
