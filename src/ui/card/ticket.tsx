@@ -9,6 +9,7 @@ interface TicketStackProps {
   site?: string;
   time?: string;
   tickets?: string;
+  color?: string;
 }
 export const TicketStack = ({
   title,
@@ -17,6 +18,7 @@ export const TicketStack = ({
   time,
   site,
   day,
+  color,
 }: TicketStackProps) => {
   const url = useMemo(
     () => `https://${title}_${date}_${day}`,
@@ -24,8 +26,13 @@ export const TicketStack = ({
   );
   return (
     <div className="group relative flex h-fit w-full items-center justify-center">
-      <div className="absolute h-[200px] w-[360px] -rotate-3 rounded-2xl bg-macd-mint shadow-lg transition-all duration-700 ease-out group-hover:rotate-[4deg] group-hover:shadow-md" />
-      <Ticket tickets={tickets}>
+      <div
+        className={cn(
+          "absolute h-[200px] w-[360px] -rotate-3 rounded-2xl shadow-lg transition-all duration-700 ease-out group-hover:rotate-[4deg] group-hover:shadow-md",
+          color,
+        )}
+      />
+      <Ticket tickets={tickets} color={color}>
         <div className="flex h-14 items-center justify-center rounded-xl rounded-b-2xl border-[0.33px] border-b-0 border-macl-gray px-2">
           <h1
             className={cn(
@@ -76,16 +83,21 @@ export const TicketStack = ({
 interface TicketProps {
   children: ReactNode;
   tickets?: string;
+  color?: string;
 }
-const Ticket = ({ children, tickets }: TicketProps) => {
+const Ticket = ({ children, tickets, color }: TicketProps) => {
   return (
     <div className="absolute mt-[8px] h-[200px] w-[355px] rotate-2 overflow-hidden rounded-2xl bg-[#eee] p-2 transition-all duration-300 group-hover:rotate-0 group-hover:shadow-lg">
       <p className="absolute left-6 top-1 rounded-sm bg-[#eee] px-1 font-mono text-[8px] leading-none tracking-widest text-primary">
         authentic &middot; valid &middot; {tickets ? `1/${tickets}` : null}
       </p>
 
-      <div className="absolute -left-3 top-16 size-5 rounded-full bg-macd-mint" />
-      <div className="absolute -right-3 top-16 size-5 rounded-full bg-macd-mint" />
+      <div
+        className={cn("absolute -left-3 top-16 size-5 rounded-full", color)}
+      />
+      <div
+        className={cn("absolute -right-3 top-16 size-5 rounded-full", color)}
+      />
       <div className="absolute left-4 top-[72px] h-px w-[322] rounded-full border-b-2 border-dashed border-macd-gray/40" />
       {children}
     </div>

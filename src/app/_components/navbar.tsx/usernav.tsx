@@ -22,10 +22,10 @@ import { use, useCallback } from "react";
 
 export const UserNav = () => {
   const pathname = usePathname();
-  const { vx } = use(VxCtx)!;
+  const { photo_url, vx } = use(VxCtx)!;
   const UserOptions = useCallback(() => {
     const options = opts(
-      <UserProfile photo_url={vx?.photo_url} />,
+      <UserProfile photo_url={photo_url ?? undefined} />,
       <Button
         variant="solid"
         radius="full"
@@ -35,7 +35,7 @@ export const UserNav = () => {
       </Button>,
     );
     return <>{options.get(!!vx)}</>;
-  }, [vx]);
+  }, [photo_url, vx]);
   return (
     <div className="flex w-full items-center justify-between bg-white p-3 font-inter">
       <div

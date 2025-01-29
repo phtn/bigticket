@@ -96,7 +96,7 @@ const EventItem = (event: SelectEvent) => (
 );
 
 const EventTableHeader = () => (
-  <div className="flex h-10 items-center bg-slate-200 text-xs font-medium tracking-tight text-primary/80">
+  <div className="flex h-10 items-center bg-slate-200 text-xs font-semibold tracking-tight text-primary/80">
     <div className="flex w-20 justify-center capitalize">ID</div>
     <div className="w-64 ps-2 capitalize">Event Name</div>
     <div className="flex w-24 justify-center capitalize">Status</div>

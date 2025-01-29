@@ -29,6 +29,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const updateUser = useMutation(api.users.update.info);
   const updateStatus = useMutation(api.users.update.status);
   const updateRole = useMutation(api.users.update.role);
+  const updateUserPhotoUrl = useMutation(api.users.update.photo_url);
   const addMetadata = useMutation(api.users.add.metadata);
 
   const usr = useMemo(
@@ -47,6 +48,8 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
           await updateStatus({ id, is_active }),
         role: async (id: string, role: string) =>
           await updateRole({ id, role }),
+        photo_url: async (id: string, photo_url: string) =>
+          await updateUserPhotoUrl({ id, photo_url }),
       },
       add: {
         metadata: async (
@@ -66,6 +69,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
       getUserByEmail,
       updateStatus,
       updateRole,
+      updateUserPhotoUrl,
     ],
   );
 

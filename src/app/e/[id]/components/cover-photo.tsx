@@ -21,10 +21,11 @@ export const CoverPhoto = ({ id }: { id: string | undefined }) => {
   }, [src, id, createUpload]);
 
   return (
-    <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-tan">
-      <div className="absolute">
+    <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-gradient-to-tr from-tan via-macl-pink to-macl-purple">
+      <div className="absolute hidden">
         <Icon name="ImageIcon" className="size-24 opacity-20" />
       </div>
+
       <div className="absolute top-0 z-10 flex h-10 w-full items-center justify-between text-xs">
         <div className="flex h-7 items-center gap-2 rounded-e-full bg-white/20 pe-2 ps-1 font-semibold text-white backdrop-blur-md">
           Cover Photo

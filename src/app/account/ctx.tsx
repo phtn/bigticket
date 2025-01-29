@@ -3,16 +3,16 @@ import { VxCtx } from "@/app/ctx/convex/vx";
 import { onSuccess } from "@/app/ctx/toast";
 import type { SelectUser } from "convex/users/d";
 
+import type { ChangeEvent, ReactNode, RefObject } from "react";
 import {
-  use,
   createContext,
+  use,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import type { ChangeEvent, ReactNode, RefObject } from "react";
 import { type ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
 
 export interface Point {
@@ -32,6 +32,7 @@ interface AccountCtxValues {
   browseFile: VoidFunction;
   vx: SelectUser | null;
   pending: boolean;
+  photo_url: string | null;
 }
 
 export const AccountCtx = createContext<AccountCtxValues | null>(null);
@@ -40,7 +41,7 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const { files, usr } = use(ConvexCtx)!;
-  const { vx, pending } = use(VxCtx)!;
+  const { vx, pending, photo_url } = use(VxCtx)!;
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -112,26 +113,16 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
     const pfp_url = await createUrl();
 
     if (vx?.id && pfp_url) {
-      const id = await usr.add.metadata(vx.id, { pfp_url });
+      const id = await usr.update.photo_url(vx.id, pfp_url);
       if (id) {
-        onSuccess("Photo uploaded.");
+        onSuccess("Image uploaded!");
         setOpen(false);
         setSaving(false);
       }
       setSaving(false);
     }
-
     setSaving(false);
-  }, [createUrl, usr.add, vx?.id]);
-
-  // const getPfp = useCallback(async () => {
-  //   const metadata = vxuser?.metadata?.[0] as { pfp: string };
-  //   setPfp(await files.get(metadata.pfp));
-  // }, [files, vxuser]);
-
-  // useEffect(() => {
-  //   getPfp().catch(Err);
-  // }, [getPfp]);
+  }, [createUrl, usr.update, vx?.id]);
 
   const value = useMemo(
     () => ({
@@ -146,6 +137,7 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       canvasRef,
       preview,
       transformRef,
+      photo_url,
       vx,
     }),
     [
@@ -160,6 +152,7 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       canvasRef,
       preview,
       transformRef,
+      photo_url,
       vx,
     ],
   );

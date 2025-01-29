@@ -67,3 +67,17 @@ export const score = mutation({
     return user._id;
   },
 });
+
+export const photo_url = mutation({
+  args: { id: v.string(), photo_url: v.string() },
+  handler: async ({ db }, { id, photo_url }) => {
+    const user = await checkUser(db, id);
+
+    if (user === null || !photo_url) {
+      return null;
+    }
+
+    await db.patch(user._id, { photo_url, updated_at: Date.now() });
+    return user._id;
+  },
+});

@@ -11,11 +11,11 @@ export interface ConvexCtxValues {
       byAccountId: (account_id: string) => Promise<SelectUser | null>;
       byRole: (role: string[]) => Promise<SelectUser[]>;
     };
-
     update: {
       info: (args: UpdateUser) => Promise<Id<"users"> | null>;
       status: (id: string, is_active: boolean) => Promise<Id<"users"> | null>;
       role: (id: string, role: string) => Promise<Id<"users"> | null>;
+      photo_url: (id: string, photo_url: string) => Promise<Id<"users"> | null>;
     };
     add: {
       metadata: (

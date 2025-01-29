@@ -8,7 +8,7 @@ export const TabComponent = () => (
     size="md"
     color="primary"
     variant="light"
-    className="top-4 z-[200] flex h-full justify-center md:w-fit"
+    className="top-40 z-[200] flex h-full justify-center md:w-fit"
     classNames={{
       tabList:
         "w-fit justfify-start z-[200] md:space-x-0 lg:space-x-2 xl:space-x-4",

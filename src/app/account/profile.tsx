@@ -10,7 +10,8 @@ import { Icon } from "@/icons";
 import { CreateNewEvent } from "./create-event";
 
 export const Profile = () => {
-  const { vx, fileChange, inputFileRef, browseFile } = use(AccountCtx)!;
+  const { vx, fileChange, inputFileRef, browseFile, photo_url } =
+    use(AccountCtx)!;
   const pathname = usePathname();
 
   const AvatarOptions = useCallback(() => {
@@ -18,14 +19,14 @@ export const Profile = () => {
       <Spinner size="sm" color="primary" />,
       <Image
         alt="user-pfp"
-        src={vx?.photo_url}
+        src={photo_url ?? undefined}
         width={124}
-        height={124}
+        className="aspect-auto"
         isLoading={!vx}
       />,
     );
     return <>{options.get(!vx)}</>;
-  }, [vx]);
+  }, [vx, photo_url]);
 
   return (
     <section id="top-section" className="relative h-fit w-full bg-white">
