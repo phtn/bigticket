@@ -28,7 +28,7 @@ export const EventsContent = () => {
         <HyperList
           data={vxEvents}
           component={EventItem}
-          keyId="event_id"
+          keyId="updated_at"
           itemStyle="border-t border-primary/60  "
         >
           <EventTableHeader />

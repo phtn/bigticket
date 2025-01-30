@@ -1,4 +1,3 @@
-import { Content } from "./content";
-
-const Page = async () => <Content company={"BigTicket"} />;
+import { PrivacyPolicy } from "./content";
+const Page = async () => <PrivacyPolicy />;
 export default Page;

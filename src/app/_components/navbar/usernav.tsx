@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { use, useCallback } from "react";
+import { Collection } from "./brand";
 
 export const UserNav = () => {
   const pathname = usePathname();
@@ -37,13 +38,15 @@ export const UserNav = () => {
     return <>{options.get(!!vx)}</>;
   }, [photo_url, vx]);
   return (
-    <div className="flex w-full items-center justify-between bg-white p-3 font-inter">
+    <div className="flex w-full items-center justify-end gap-14 bg-white px-4 font-inter">
       <div
         className={cn("z-1 relative flex h-full w-[420px] items-center", {})}
       >
         {pathname.split("/")[1] === "account" ? null : <Searchbar />}
       </div>
-      <div className="flex items-center px-1 text-void">
+
+      <Collection />
+      <div className="flex items-center text-void">
         <UserOptions />
       </div>
     </div>

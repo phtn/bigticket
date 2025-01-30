@@ -37,7 +37,7 @@ const Beam = ({
           "--background": `linear-gradient(hsl(${hue / 2} 60% 60%), transparent)`,
         } as React.CSSProperties
       }
-      className={`absolute left-[var(--x)] top-0 animate-pulse shadow-xl [aspect-ratio:1/var(--aspect-ratio)] [background:var(--background)] [width:var(--width)]`}
+      className={`absolute left-[var(--x)] top-0 animate-pulse [aspect-ratio:1/var(--aspect-ratio)] [background:var(--background)] [width:var(--width)]`}
       initial={{ y: "100cqmax", x: "-50%" }}
       animate={{ y: "-100%", x: "-50%" }}
       transition={{
@@ -52,11 +52,11 @@ const Beam = ({
 
 export const WarpDrive: React.FC<WarpBackgroundProps> = ({
   children,
-  perspective = 42,
+  perspective = 60,
   className,
   beamsPerSide = 12,
   beamSize = 1,
-  beamDelayMax = 2,
+  beamDelayMax = 3.5,
   beamDelayMin = 0,
   beamDuration = 2,
   gridColor = "hsl(var(--border))",
@@ -82,10 +82,7 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
   const leftBeams = useMemo(() => generateBeams(), [generateBeams]);
 
   return (
-    <div
-      className={cn("relative rounded-xl border p-44", className)}
-      {...props}
-    >
+    <div className={cn("relative bg-coal", className)} {...props}>
       <div
         style={
           {
@@ -95,7 +92,7 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
           } as React.CSSProperties
         }
         className={
-          "pointer-events-none absolute left-0 top-0 size-full overflow-hidden rounded-full [clip-path:inset(0)] [container-type:size] [perspective:var(--perspective)] [transform-style:preserve-3d]"
+          "pointer-events-none absolute left-0 top-0 size-full overflow-hidden [clip-path:inset(0)] [container-type:size] [perspective:var(--perspective)] [transform-style:preserve-3d]"
         }
       >
         {/* top side */}
@@ -147,7 +144,7 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
           ))}
         </div>
       </div>
-      <div className="relative">{children}</div>
+      <div className="relative shadow-none">{children}</div>
     </div>
   );
 };

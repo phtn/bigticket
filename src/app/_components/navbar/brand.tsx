@@ -1,12 +1,12 @@
 "use client";
 
+import { SidebarCtx } from "@/app/ctx/sidebar";
 import type { ClassName } from "@/app/types";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
-import { log } from "@/utils/logger";
-import { Button } from "@nextui-org/react";
+import { ButtonIcon } from "@/ui/button";
 import Link from "next/link";
-import { useCallback, type ReactNode } from "react";
+import { use, type ReactNode } from "react";
 
 interface BrandProps {
   className?: ClassName;
@@ -25,25 +25,15 @@ export const Brand = ({ className, children }: BrandProps) => {
   );
 };
 
-export const HotDealsButton = () => {
-  const handleClick = useCallback(() => {
-    log("Hot", 0);
-  }, []);
-
+export const Collection = () => {
+  const { toggle } = use(SidebarCtx)!;
   return (
-    <Button
-      size="sm"
-      isIconOnly
-      radius="full"
-      color="secondary"
-      className="group bg-ghost text-gray-400 hover:bg-peach"
-      onPress={handleClick}
-    >
-      <Icon
-        name="Fire"
-        className="size-4 stroke-primary-700 stroke-1 text-primary-700 group-hover:stroke-chalk group-hover:text-chalk"
-      />
-    </Button>
+    <ButtonIcon
+      onClick={toggle}
+      icon="Bookmark2"
+      bg="text-white"
+      color="text-macl-gray"
+    />
   );
 };
 
@@ -69,11 +59,13 @@ export const Tickets = () => (
 
 export const Title = () => (
   <Link href={"/"} className="z-1 relative h-12 px-2">
-    <h2 className="absolute left-[6.5px] top-[1px]">
-      <span className="font-lucky text-[32px] font-bold text-white">BIG</span>
+    <h2 className="absolute left-[6.5px] top-[9px]">
+      <span className="font-lucky text-[33px] font-extrabold text-white">
+        BIG
+      </span>
     </h2>
     <h2 className="absolute top-0 space-x-1">
-      <span className="font-lucky text-3xl font-bold text-primary-800">
+      <span className="font-lucky text-3xl font-bold tracking-[0.8px] text-primary-800">
         BIG
       </span>
       <span className="font-cherry text-3xl font-light text-orange-400">

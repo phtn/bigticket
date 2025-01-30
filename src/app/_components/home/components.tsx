@@ -9,7 +9,6 @@ import {
   CardHeader,
   Image,
 } from "@nextui-org/react";
-import { EventCard } from "./components/event-card";
 
 export const CardListItem = ({
   title,
@@ -297,22 +296,12 @@ export const CardList = () => (
       </div>
 
       <section className="h-[calc(100vh-84px)] w-full space-y-2 overflow-y-scroll px-2">
-        <EventCard />
         <CardListItem
           title="Harmony Space"
           subtitle="Wellness & Yoga"
           color="bg-warning"
           isActive
         />
-        <EventCard />
-
-        <CardListItem
-          title="Harmony Space"
-          subtitle="Wellness & Yoga"
-          color="bg-warning"
-          isActive
-        />
-        <EventCard />
       </section>
     </div>
   </aside>

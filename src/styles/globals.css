@@ -5,3 +5,12 @@
 ::-webkit-scrollbar {
   display: none;
 }
+.big-ticket {
+  --r: 16px; /* cut size */
+  width: 12.5rem;
+  aspect-ratio: 3;
+  border-radius: 2px;
+  background: #fff;
+  mask: radial-gradient(var(--r) at var(--r), #0000 calc(100% - 1px), #000)
+    calc(-1 * var(--r));
+}

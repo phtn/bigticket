@@ -23,8 +23,8 @@ const HyperSpace = ({ isInputHovered }: HyperspaceProps) => {
   const variants = useMemo(
     () => ({
       normal: {
-        width: "16px",
-        height: "16px",
+        width: "8px",
+        height: "8px",
         borderRadius: "50%",
         opacity: 1,
       },

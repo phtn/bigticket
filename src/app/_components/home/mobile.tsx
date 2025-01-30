@@ -1,19 +1,31 @@
-import { Avatar } from "@nextui-org/react";
-import { MobileCards } from "./components";
+import { HyperList } from "@/ui/list";
+import { EventCard } from "./components/event-card";
+import { HeroSection } from "./components/hero";
+import { use } from "react";
+import { VxCtx } from "@/app/ctx/convex/vx";
+import { Proxima } from "../proxima";
+import { Sidebar } from "./components/sidebar";
 
 export const MobileView = () => {
+  const { vxEvents } = use(VxCtx)!;
   return (
-    <div className="min-h-screen space-y-2 bg-black p-2 text-white">
-      <header className="flex h-12 items-center justify-between px-2">
-        <h1 className="font-cherry from-macl-indigo to-macl-gray h-8 bg-gradient-to-r bg-clip-text text-xl font-semibold leading-none text-transparent">
-          Nightlife
-        </h1>
-        <Avatar src="/icon/icon.svg" size="sm" />
-      </header>
-
-      <div className="grid gap-2">
-        <MobileCards />
-      </div>
+    <div className="min-h-screen bg-coal text-white">
+      <Sidebar />
+      <HyperList
+        keyId="event_id"
+        data={vxEvents}
+        component={EventCard}
+        container="space-y-4"
+        itemStyle="px-4"
+      >
+        <div
+          key={"hero"}
+          className="flex h-80 w-full items-center justify-center"
+        >
+          <HeroSection />
+        </div>
+      </HyperList>
+      <Proxima />
     </div>
   );
 };

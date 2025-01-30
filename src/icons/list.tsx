@@ -141,6 +141,79 @@ function Bell(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+function Bookmark(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      >
+        <path d="M4.421 8.45v11.884c0 .763.88 1.19 1.48.718l4.883-3.843a.914.914 0 0 1 1.13 0l4.884 3.843a.914.914 0 0 0 1.48-.718V8.45a3.2 3.2 0 0 0-3.2-3.2H7.621a3.2 3.2 0 0 0-3.2 3.2Z"></path>
+        <path
+          strokeLinecap="round"
+          d="M21.278 16.334V8.25a6 6 0 0 0-6-6H8.421"
+        ></path>
+      </g>
+    </svg>
+  );
+}
+
+function Bookmark2(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      >
+        <path d="M20.5 16.929V10c0-3.771 0-5.657-1.172-6.828S16.271 2 12.5 2h-1C7.729 2 5.843 2 4.672 3.172S3.5 6.229 3.5 10v9.5"></path>
+        <path
+          fill="currentColor"
+          d="M8 3v3.69c0 .74 0 1.11.238 1.254q.014.01.032.017c.248.126.571-.064 1.219-.445c.484-.284.725-.427.992-.432h.037c.268.005.51.148.993.432c.648.381.971.571 1.22.445l.03-.017C13 7.8 13 7.43 13 6.69V3m7.5 14H6a2.5 2.5 0 0 0 0 5h14.5"
+        ></path>
+        <path d="M20.5 17a2.5 2.5 0 0 0 0 5"></path>
+      </g>
+    </svg>
+  );
+}
+
+function BookmarkPlus(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M11 2C7.229 2 5.343 2 4.172 3.129C3 4.257 3 6.074 3 9.708v8.273c0 2.306 0 3.459.773 3.871c1.496.8 4.304-1.867 5.637-2.67c.773-.465 1.16-.698 1.59-.698s.817.233 1.59.698c1.333.803 4.14 3.47 5.637 2.67c.773-.412.773-1.565.773-3.871V13m-2-3V2m-4 4h8"
+      ></path>
+    </svg>
+  );
+}
 function BouncyArrow(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -345,6 +418,31 @@ function Cocktail(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function CollectionIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      >
+        <path
+          fill="currentColor"
+          d="M7.769 7.997c1.34-.822 2.51-.49 3.214.037c.288.216.432.325.517.325s.229-.109.517-.325c.703-.528 1.874-.86 3.214-.037c1.76 1.08 2.158 4.64-1.9 7.645c-.774.572-1.16.858-1.831.858c-.67 0-1.057-.286-1.83-.858c-4.06-3.005-3.661-6.566-1.901-7.645"
+        ></path>
+        <path d="M2 12c0-4.478 0-6.718 1.391-8.109S7.021 2.5 11.5 2.5c4.478 0 6.718 0 8.109 1.391S21 7.521 21 12c0 4.478 0 6.718-1.391 8.109S15.979 21.5 11.5 21.5c-4.478 0-6.718 0-8.109-1.391S2 16.479 2 12"></path>
+      </g>
+    </svg>
+  );
+}
 function Copy(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -600,6 +698,28 @@ function MoreVertical(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function MapPin(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      >
+        <path d="M14.5 9a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0m3.722 8c1.395 1.988 2.062 3.047 1.665 3.9q-.06.128-.14.247c-.575.853-2.06.853-5.03.853H9.283c-2.97 0-4.454 0-5.029-.853a2 2 0 0 1-.14-.247c-.397-.852.27-1.912 1.665-3.9"></path>
+        <path d="M13.257 17.494a1.813 1.813 0 0 1-2.514 0c-3.089-2.993-7.228-6.336-5.21-11.19C6.626 3.679 9.246 2 12 2s5.375 1.68 6.467 4.304c2.016 4.847-2.113 8.207-5.21 11.19"></path>
+      </g>
+    </svg>
+  );
+}
 function MoreHorizontal(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -619,6 +739,27 @@ function MoreHorizontal(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function NumberList(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M11 6h10m-10 6h10m-10 6h10M3 15h1.5c.279 0 .418 0 .534.023a1.2 1.2 0 0 1 .943.943C6 16.082 6 16.22 6 16.5s0 .418-.023.534a1.2 1.2 0 0 1-.943.943C4.918 18 4.78 18 4.5 18s-.418 0-.534.023a1.2 1.2 0 0 0-.943.943C3 19.082 3 19.22 3 19.5v.9c0 .283 0 .424.088.512s.23.088.512.088H6M3 3h1.2a.3.3 0 0 1 .3.3V9m0 0H3m1.5 0H6"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
 function Pen(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -679,6 +820,29 @@ function Printer(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function Printer2(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        color="currentColor"
+      >
+        <path d="M7.354 18c-2.123 0-3.185 0-3.94-.453a3.04 3.04 0 0 1-1.15-1.223c-.392-.77-.287-1.787-.075-3.822c.176-1.698.264-2.547.698-3.171c.285-.41.67-.745 1.121-.977C4.695 8 5.582 8 7.354 8h9.292c1.772 0 2.659 0 3.346.354c.451.232.836.567 1.121.977c.434.624.522 1.473.698 3.172c.212 2.034.317 3.052-.076 3.821a3.04 3.04 0 0 1-1.148 1.223C19.83 18 18.769 18 16.646 18M17 8V6c0-1.886 0-2.828-.586-3.414S14.886 2 13 2h-2c-1.886 0-2.828 0-3.414.586S7 4.114 7 6v2"></path>
+        <path d="M13.989 16H10.01c-.685 0-1.028 0-1.32.109a1.87 1.87 0 0 0-.945.8c-.168.281-.251.642-.417 1.363c-.26 1.128-.39 1.691-.301 2.143c.117.602.484 1.112.995 1.382c.382.203.918.203 1.988.203h3.978c1.07 0 1.606 0 1.988-.203c.51-.27.878-.78.995-1.382c.089-.452-.041-1.015-.3-2.143c-.167-.72-.25-1.082-.418-1.362a1.87 1.87 0 0 0-.946-.801C15.017 16 14.674 16 13.988 16M18 12h.009"></path>
+      </g>
+    </svg>
+  );
+}
 function RightChev(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1007,6 +1171,9 @@ export const icons = {
   ArrowRight,
   ArrowRightUp,
   Bell,
+  Bookmark,
+  Bookmark2,
+  BookmarkPlus,
   BouncyArrow,
   Calendar,
   Chats,
@@ -1015,6 +1182,7 @@ export const icons = {
   Close,
   Cog,
   Cocktail,
+  CollectionIcon,
   Copy,
   ImageIcon,
   InfoLine,
@@ -1026,11 +1194,14 @@ export const icons = {
   HotelRoom,
   Launch,
   LeftChev,
+  MapPin,
   MoreHorizontal,
   MoreVertical,
+  NumberList,
   Pen,
   Plus,
   Printer,
+  Printer2,
   RightChev,
   RightLine,
   RightLineSm,

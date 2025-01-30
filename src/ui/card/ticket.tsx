@@ -28,7 +28,7 @@ export const TicketStack = ({
     <div className="group relative flex h-fit w-full items-center justify-center">
       <div
         className={cn(
-          "absolute h-[200px] w-[360px] -rotate-3 rounded-2xl shadow-lg transition-all duration-700 ease-out group-hover:rotate-[4deg] group-hover:shadow-md",
+          "absolute h-[200px] w-[360px] -rotate-3 rounded-2xl bg-indigo-300 shadow-lg transition-all duration-700 ease-out group-hover:rotate-[4deg] group-hover:shadow-md",
           color,
         )}
       />
@@ -93,10 +93,16 @@ const Ticket = ({ children, tickets, color }: TicketProps) => {
       </p>
 
       <div
-        className={cn("absolute -left-3 top-16 size-5 rounded-full", color)}
+        className={cn(
+          "absolute -left-3 top-16 size-5 rounded-full bg-indigo-300",
+          color,
+        )}
       />
       <div
-        className={cn("absolute -right-3 top-16 size-5 rounded-full", color)}
+        className={cn(
+          "absolute -right-3 top-16 size-5 rounded-full bg-indigo-300",
+          color,
+        )}
       />
       <div className="absolute left-4 top-[72px] h-px w-[322] rounded-full border-b-2 border-dashed border-macd-gray/40" />
       {children}

@@ -1,43 +1,41 @@
+import { SidebarCtx } from "@/app/ctx/sidebar";
 import type { ClassName } from "@/app/types";
 import { Icon, type IconName } from "@/icons";
 import { cn } from "@/lib/utils";
-import { Button } from "@nextui-org/react";
-import { memo, type FC, type ReactNode } from "react";
 import { HyperList } from "@/ui/list";
-import { ChineCard } from "@/ui/card/chine";
+import { Button } from "@nextui-org/react";
+import { memo, use, type FC, type ReactNode } from "react";
 
-interface SidebarProps {
-  open: boolean;
-  toggleFn: VoidFunction;
-}
-export const Sidebar = ({ toggleFn, open }: SidebarProps) => (
-  <aside className={cn("absolute z-50 h-full")}>
-    <div
-      className={cn(
-        "relative flex h-[calc(87vh)] w-[360px] -translate-x-[360px] items-center px-8 transition-transform duration-300 portrait:px-4",
-        { "translate-x-0": open },
-      )}
-    >
-      <section className="relative h-[calc(80vh)] w-full space-y-2 rounded-xl border-[0.33px] border-primary-100 bg-chalk/80 p-2 shadow-lg backdrop-blur-2xl">
-        <Button
-          size="sm"
-          isIconOnly
-          onPress={toggleFn}
-          className="group absolute -right-2 -top-2 z-[60] rounded-full bg-orange-400 shadow-sm backdrop-blur-lg data-[hover=true]:opacity-100"
-        >
-          <Icon
-            name="LeftChev"
-            className="size-4 stroke-transparent text-white"
-          />
-        </Button>
-        <ListTitle title="Events" />
-        <EventsList />
-        <ListTitle title="Get-Aways" />
-        <GetAwaysList />
-      </section>
-    </div>
-  </aside>
-);
+export const Sidebar = () => {
+  const { toggle, open } = use(SidebarCtx)!;
+  return (
+    <aside className={cn("absolute z-50 h-full")}>
+      <div
+        className={cn(
+          "relative flex h-[calc(87vh)] w-[360px] -translate-x-[360px] items-center px-8 transition-transform duration-300 portrait:px-4",
+          { "translate-x-0": open },
+        )}
+      >
+        <section className="relative h-[calc(80vh)] w-full space-y-2 rounded-xl border-[0.33px] border-primary-100 bg-chalk/80 p-2 shadow-lg backdrop-blur-2xl">
+          <Button
+            size="sm"
+            isIconOnly
+            variant="ghost"
+            color="default"
+            onPress={toggle}
+            className="group absolute right-2 z-[60] border-0 data-[hover=true]:opacity-100"
+          >
+            <Icon name="LeftChev" className="size-5 stroke-0 text-slate-500" />
+          </Button>
+          <ListTitle title="Events" />
+          <EventsList />
+          <ListTitle title="Get-Aways" />
+          <GetAwaysList />
+        </section>
+      </div>
+    </aside>
+  );
+};
 
 const ListTitle: FC<{ title: string }> = ({ title }) => (
   <div className="flex h-6 w-full items-center justify-between space-x-3 px-2">
@@ -96,8 +94,8 @@ const ItemCounter = (props: { count: number; color?: ClassName }) => (
 
 const EventsList = () => {
   return (
-    <div className="w-full bg-gradient-to-r from-transparent via-white/30 to-transparent">
-      <HyperList keyId="keyId" data={events} component={EventItem} />
+    <div className="w-full rounded-xl bg-white/80">
+      <HyperList keyId="id" data={events} component={EventItem} />
     </div>
   );
 };
@@ -118,24 +116,22 @@ const GetAwayItem = memo(GetAwayListItem);
 
 const GetAwaysList = () => {
   return (
-    <div className="w-full bg-gradient-to-r from-transparent via-white/30 to-transparent">
-      <HyperList keyId="keyId" data={getaways} component={GetAwayItem} />
+    <div className="w-full rounded-xl bg-white/80">
+      <HyperList keyId="id" data={getaways} component={GetAwayItem} />
     </div>
   );
 };
 
 const EventListItem = (l: Category) => (
-  <ChineCard className="cursor-pointer">
-    <div className="spacex-5 flex w-full items-center justify-between rounded-xl p-3 hover:bg-white">
-      <div className="flex items-center space-x-2">
-        <IconWrapper className={cn("mx-2", l.color)}>
-          <Icon name={l.icon} className="size-6 shrink-0 drop-shadow-sm" />
-        </IconWrapper>
-        <h2 className="text-sm tracking-tight text-primary/80">{l.label}</h2>
-      </div>
-      <ItemCounter count={l.count} color={l.color} />
+  <div className="spacex-5 flex w-full items-center justify-between rounded-xl p-3 hover:bg-white">
+    <div className="flex items-center space-x-2">
+      <IconWrapper className={cn("mx-2", l.color)}>
+        <Icon name={l.icon} className="size-6 shrink-0 drop-shadow-sm" />
+      </IconWrapper>
+      <h2 className="text-sm tracking-tight text-primary/80">{l.label}</h2>
     </div>
-  </ChineCard>
+    <ItemCounter count={l.count} color={l.color} />
+  </div>
 );
 
 const EventItem = memo(EventListItem);
@@ -158,7 +154,7 @@ const events: Category[] = [
     href: "",
     icon: "Cocktail",
     count: 29,
-    color: "bg-white text-macl-teal",
+    color: "bg-macl-indigo text-slate-800",
   },
   {
     id: 1,
@@ -167,7 +163,7 @@ const events: Category[] = [
     href: "",
     icon: "EGuitarFender",
     count: 1,
-    color: "bg-ghost text-macl-pink",
+    color: "bg-macl-mint text-slate-800",
   },
 ];
 
@@ -179,7 +175,7 @@ const getaways: Category[] = [
     href: "",
     icon: "Airplane2",
     count: 0,
-    color: "bg-amber-50/80 text-slate-800",
+    color: "bg-amber-300/80 text-slate-800",
   },
   {
     id: 1,
@@ -188,7 +184,7 @@ const getaways: Category[] = [
     href: "",
     icon: "HotelRoom",
     count: 1,
-    color: "bg-macl-blue/10 text-slate-600",
+    color: "bg-macl-blue/10 text-slate-800",
   },
 ];
 

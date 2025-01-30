@@ -9,7 +9,7 @@ import {
   Poetsen_One,
 } from "next/font/google";
 import Providers from "./ctx";
-import { Navbar } from "./_components/navbar.tsx";
+import { Navbar } from "./_components/navbar";
 
 const inter = Inter({
   variable: "--font-inter",
