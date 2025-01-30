@@ -25,6 +25,7 @@ import {
 } from "react";
 import { opts } from "@/utils/helpers";
 import { type PrimaryCreateEvent, useEvent } from "./useEvent";
+import { useScreen } from "@/hooks/useScreen";
 
 interface CreateNewEventProps {
   pathname: string;
@@ -34,6 +35,7 @@ export const CreateNewEvent = ({
   pathname,
   account_id,
 }: CreateNewEventProps) => {
+  const { isDesktop } = useScreen();
   const { open, toggle } = useToggle();
   const [eventName, setEventName] = useState("");
   const [ticketCount, setTicketCount] = useState("");
@@ -141,14 +143,14 @@ export const CreateNewEvent = ({
     <div className="flex h-10 w-full items-center justify-end xl:space-x-1">
       <Button
         href={`${pathname}/edit?page=${account_id}`}
-        size="md"
-        className="hidden lg:flex"
+        size={isDesktop ? "md" : "sm"}
+        className="lg:flex"
         variant="solid"
         color="primary"
         onPress={toggle}
       >
-        <Icon name="Sparkles2" className="size-4 stroke-0" />
-        <span className="font-inter text-sm font-medium tracking-tighter">
+        <Icon name="Sparkles2" className="size-3 stroke-0 md:size-4" />
+        <span className="font-inter text-xs tracking-tighter md:text-sm md:font-medium">
           Create an event
         </span>
       </Button>
@@ -166,7 +168,7 @@ export const CreateNewEvent = ({
           variant="adam"
           className={"border-macd-gray bg-chalk"}
         >
-          <div className="size-full bg-white md:h-[calc(85vh)] md:w-[calc(39vw)]">
+          <div className="h-[calc(85vh)] w-[calc(80vw)] bg-white md:w-[calc(39vw)]">
             <div className="flex h-2/5 w-full items-center">
               <TicketStack
                 title={eventName}
@@ -180,9 +182,9 @@ export const CreateNewEvent = ({
             <div className="flex h-3/5 w-full overflow-scroll pb-4">
               <Form
                 action={action}
-                className="w-full space-y-3 rounded-lg border-[0.0px] border-macd-gray bg-white p-4"
+                className="w-full space-y-1 rounded-lg border-[0.0px] border-macd-gray bg-white p-4 md:space-y-3"
               >
-                <div className="grid w-full grid-cols-4 gap-2 px-2">
+                <div className="grid w-full grid-cols-2 gap-2 md:grid-cols-4 md:px-2">
                   {select_data.map((data) => (
                     <Select
                       id={data.id}
@@ -190,12 +192,13 @@ export const CreateNewEvent = ({
                       key={data.id}
                       label={data.label}
                       onChange={handleSelectChange}
+                      size={isDesktop ? "md" : "sm"}
                       className="w-full"
                       classNames={{
                         popoverContent: "pointer-events-auto",
                         trigger:
                           "font-medium border-[0.33px] border-macd-gray rounded-xl",
-                        label: "font-semibold capitalize",
+                        label: "text-xs md:text-sm font-semibold capitalize",
                       }}
                       items={data.items}
                       variant="flat"
@@ -212,16 +215,17 @@ export const CreateNewEvent = ({
                     </Select>
                   ))}
                   <DatePicker
-                    label="Event Date"
+                    label={"Event Date"}
                     id="event_date"
                     name="event_date"
                     onChange={handleDateChange}
+                    size={isDesktop ? "md" : "sm"}
                     classNames={{
                       base: [
-                        "font-semibold border-[0.33px] rounded-xl border-macd-gray",
-                        "tracking-tight ",
+                        "font-medium w-full border-[0.33px] h-12 md:h-14 rounded-xl border-macd-gray",
+                        "tracking-tight",
                       ],
-                      popoverContent: "pointer-events-auto",
+                      popoverContent: "pointer-events-auto md:w-full w-44",
                       segment:
                         "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
                     }}
@@ -230,18 +234,19 @@ export const CreateNewEvent = ({
                     label="Event Time"
                     id="event_time"
                     name="event_time"
+                    size={isDesktop ? "md" : "sm"}
                     onChange={handleTimeChange}
                     classNames={{
                       base: [
-                        "font-semibold border-[0.33px] rounded-xl border-macd-gray",
-                        "",
+                        "font-medium border-[0.33px] rounded-xl border-macd-gray",
+                        "h-12 md:h-14",
                       ],
                       segment:
                         "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
                     }}
                   />
                 </div>
-                <div className="w-full px-2">
+                <div className="w-full md:px-2">
                   <Input
                     autoFocus
                     id="event_name"
@@ -258,13 +263,10 @@ export const CreateNewEvent = ({
                     }}
                   />
                 </div>
-                <div className="w-full px-2">
+                <div className="w-full md:px-2">
                   <EventSite />
                 </div>
-                <div className="w-full space-y-2 px-2">
-                  {/* <p className="font-medium tracking-tight">
-                    What best describes your event?
-                  </p> */}
+                <div className="hidden w-full space-y-2 px-2">
                   <Textarea
                     name="event_desc"
                     label="Description"
@@ -273,7 +275,7 @@ export const CreateNewEvent = ({
                     classNames={{
                       inputWrapper:
                         "border-[0.33px] border-macd-gray shadow-none",
-                      label: "font-semibold",
+                      label: "font-medium md:font-semibold",
                     }}
                   />
                 </div>

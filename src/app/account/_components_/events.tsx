@@ -6,9 +6,11 @@ import { VxCtx } from "@/app/ctx/convex/vx";
 import Link from "next/link";
 import { Icon } from "@/icons";
 import { opts } from "@/utils/helpers";
+import { useScreen } from "@/hooks/useScreen";
 
 export const EventsContent = () => {
   const { vxEvents, pending } = use(VxCtx)!;
+  const { isDesktop } = useScreen();
 
   const Counter = useCallback(() => {
     const options = opts(
@@ -19,29 +21,36 @@ export const EventsContent = () => {
   }, [pending, vxEvents?.length]);
 
   return (
-    <div className="size-full min-h-[420px] space-y-4 border-b border-secondary px-6">
-      <section className="flex items-center gap-4">
-        <h1 className="text-2xl font-semibold tracking-tighter">My Events</h1>
+    <div className="size-full min-h-[600px] justify-center space-y-1 rounded-none bg-slate-300/50 pt-3 md:space-y-3 md:rounded-lg md:px-6">
+      <section className="flex items-center gap-2">
+        <h1 className="ps-4 font-semibold tracking-tighter md:ps-4 md:text-2xl">
+          My Events
+        </h1>
         <Counter />
       </section>
-      <div className="overflow-hidden rounded-lg border border-primary/60 bg-white">
-        <HyperList
-          data={vxEvents}
-          component={EventItem}
-          keyId="updated_at"
-          itemStyle="border-t border-primary/60  "
-        >
-          <EventTableHeader />
-        </HyperList>
-      </div>
+      {isDesktop ? (
+        <div className="overflow-auto rounded-lg border border-primary/60 bg-white">
+          <HyperList
+            data={vxEvents}
+            component={EventItem}
+            container="overflow-x-scroll"
+            keyId="updated_at"
+            itemStyle="border-t border-primary/60  "
+          >
+            <EventTableHeader />
+          </HyperList>
+        </div>
+      ) : null}
     </div>
   );
 };
 
 const Count = (props: { count: number | undefined }) => (
   <div className="relative flex size-8 items-center justify-center">
-    <Icon name="Squircle" className="absolute z-0 size-8 text-slate-300" />
-    <p className="z-1 relative font-semibold">{props.count}</p>
+    <Icon name="Squircle" className="absolute z-0 size-6 text-void md:size-8" />
+    <p className="z-1 relative text-sm font-semibold text-chalk md:text-[16px]">
+      {props.count}
+    </p>
   </div>
 );
 
@@ -96,7 +105,7 @@ const EventItem = (event: SelectEvent) => (
 );
 
 const EventTableHeader = () => (
-  <div className="flex h-10 items-center bg-slate-200 text-xs font-semibold tracking-tight text-primary/80">
+  <div className="flex h-10 items-center bg-slate-200/60 text-xs font-semibold tracking-tight text-primary/80">
     <div className="flex w-20 justify-center capitalize">ID</div>
     <div className="w-64 ps-2 capitalize">Event Name</div>
     <div className="flex w-24 justify-center capitalize">Status</div>

@@ -1,39 +1,28 @@
 "use client";
 
-import { SidebarCtx } from "@/app/ctx/sidebar";
 import type { ClassName } from "@/app/types";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
-import { ButtonIcon } from "@/ui/button";
 import Link from "next/link";
-import { use, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
+import { type ReactNode } from "react";
 
 interface BrandProps {
   className?: ClassName;
   children?: ReactNode;
 }
 export const Brand = ({ className, children }: BrandProps) => {
+  const pathname = usePathname();
   return (
     <div
       className={cn(
-        "hidden h-full w-[370px] items-center justify-between bg-white p-3 md:flex",
+        "_md:w-[370px] hidden h-full w-1/3 items-center justify-between bg-white p-3 md:flex",
+        { flex: pathname },
         className,
       )}
     >
       {children}
     </div>
-  );
-};
-
-export const Collection = () => {
-  const { toggle } = use(SidebarCtx)!;
-  return (
-    <ButtonIcon
-      onClick={toggle}
-      icon="Bookmark2"
-      bg="text-white"
-      color="text-macl-gray"
-    />
   );
 };
 

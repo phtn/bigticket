@@ -11,7 +11,7 @@ interface ButtonIconProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const ButtonIcon = (props: ButtonIconProps) => (
   <button
     {...props}
-    className="group/icon flex items-center justify-center transition-all duration-300 active:scale-90 active:opacity-80"
+    className="group/icon flex size-9 items-center justify-center transition-all duration-300 active:scale-90 active:opacity-80"
   >
     <Icon
       name="Squircle"

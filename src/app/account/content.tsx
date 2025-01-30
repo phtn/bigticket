@@ -7,7 +7,7 @@ import { Profile } from "./profile";
 export const Content = () => {
   return (
     <AccountContext>
-      <main className="flex w-full flex-col space-y-8 overflow-y-scroll bg-background">
+      <main className="flex flex-col space-y-8 overflow-y-scroll bg-background">
         <div className="relative w-full">
           <Profile />
         </div>

@@ -2,9 +2,12 @@
 
 import { VxCtx } from "@/app/ctx/convex/vx";
 import { CursorCtx } from "@/app/ctx/cursor";
+import { SidebarCtx } from "@/app/ctx/sidebar";
+import { useScreen } from "@/hooks/useScreen";
 import { useToggle } from "@/hooks/useToggle";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
+import { ButtonIcon } from "@/ui/button";
 import { HyperList } from "@/ui/list";
 import { TextLoader } from "@/ui/loader/text";
 import { opts } from "@/utils/helpers";
@@ -19,7 +22,6 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { use, useCallback } from "react";
-import { Collection } from "./brand";
 
 export const UserNav = () => {
   const pathname = usePathname();
@@ -38,26 +40,31 @@ export const UserNav = () => {
     return <>{options.get(!!vx)}</>;
   }, [photo_url, vx]);
   return (
-    <div className="flex w-full items-center justify-end gap-14 bg-white px-4 font-inter">
+    <div className="absolute right-0 flex h-16 w-2/3 items-center justify-end font-inter md:space-x-4">
       <div
-        className={cn("z-1 relative flex h-full w-[420px] items-center", {})}
+        className={cn(
+          "z-1 relative flex h-full w-[420px] items-center justify-end",
+          {},
+        )}
       >
         {pathname.split("/")[1] === "account" ? null : <Searchbar />}
       </div>
 
-      <Collection />
-      <div className="flex items-center text-void">
+      <div className="flex w-fit items-center gap-2 px-4 md:gap-8">
+        <Collection />
         <UserOptions />
       </div>
     </div>
   );
 };
+
 const Searchbar = () => {
   const { handleInputHover } = use(CursorCtx)!;
+  const { isDesktop } = useScreen();
   return (
-    <div className={cn("relative flex w-full items-center", {})}>
+    <div className={cn("relative flex w-44 items-center md:w-full", {})}>
       <Input
-        size="lg"
+        size={isDesktop ? "lg" : "md"}
         radius="full"
         variant="flat"
         placeholder="Search events"
@@ -81,8 +88,20 @@ const Searchbar = () => {
   );
 };
 
+const Collection = () => {
+  const { toggle } = use(SidebarCtx)!;
+  return (
+    <ButtonIcon
+      onClick={toggle}
+      icon="Bookmark2"
+      bg="text-white"
+      color="text-macl-gray"
+    />
+  );
+};
 const UserProfile = (props: { photo_url: string | undefined }) => {
   const { toggle } = useToggle();
+  const { isDesktop } = useScreen();
   return (
     <Popover
       isDismissable
@@ -92,7 +111,11 @@ const UserProfile = (props: { photo_url: string | undefined }) => {
       onOpenChange={toggle}
     >
       <PopoverTrigger>
-        <Avatar alt="user-pfp" src={props?.photo_url} />
+        <Avatar
+          alt="user-pfp"
+          src={props?.photo_url}
+          size={isDesktop ? "md" : "sm"}
+        />
       </PopoverTrigger>
       <PopoverContent
         onClick={toggle}
