@@ -143,14 +143,14 @@ export const CreateNewEvent = ({
     <div className="flex h-10 w-full items-center justify-end xl:space-x-1">
       <Button
         href={`${pathname}/edit?page=${account_id}`}
-        size={isDesktop ? "md" : "sm"}
-        className="lg:flex"
+        size={isDesktop ? "sm" : "sm"}
+        className="px-2 lg:flex"
         variant="solid"
-        color="primary"
+        color="secondary"
         onPress={toggle}
       >
         <Icon name="Sparkles2" className="size-3 stroke-0 md:size-4" />
-        <span className="font-inter text-xs tracking-tighter md:text-sm md:font-medium">
+        <span className="font-inter text-xs font-normal tracking-tighter md:text-sm md:font-medium">
           Create an event
         </span>
       </Button>
@@ -168,7 +168,7 @@ export const CreateNewEvent = ({
           variant="adam"
           className={"border-macd-gray bg-chalk"}
         >
-          <div className="h-[calc(85vh)] w-[calc(80vw)] bg-white md:w-[calc(39vw)]">
+          <div className="_bg-white h-[65vh] w-[calc(94vw)] md:h-[calc(85vh)] md:w-[calc(39vw)]">
             <div className="flex h-2/5 w-full items-center">
               <TicketStack
                 title={eventName}
@@ -179,7 +179,7 @@ export const CreateNewEvent = ({
                 tickets={ticketCount}
               />
             </div>
-            <div className="flex h-3/5 w-full overflow-scroll pb-4">
+            <div className="flex h-3/5 w-full overflow-scroll md:pb-4">
               <Form
                 action={action}
                 className="w-full space-y-1 rounded-lg border-[0.0px] border-macd-gray bg-white p-4 md:space-y-3"
@@ -197,7 +197,7 @@ export const CreateNewEvent = ({
                       classNames={{
                         popoverContent: "pointer-events-auto",
                         trigger:
-                          "font-medium border-[0.33px] border-macd-gray rounded-xl",
+                          "font-medium shadow-none border-[0.33px] border-macd-gray rounded-xl",
                         label: "text-xs md:text-sm font-semibold capitalize",
                       }}
                       items={data.items}
@@ -220,12 +220,14 @@ export const CreateNewEvent = ({
                     name="event_date"
                     onChange={handleDateChange}
                     size={isDesktop ? "md" : "sm"}
+                    className="shadow-none"
                     classNames={{
+                      inputWrapper: "shadow-none",
                       base: [
-                        "font-medium w-full border-[0.33px] h-12 md:h-14 rounded-xl border-macd-gray",
-                        "tracking-tight",
+                        "font-medium w-full border-[0.33px] rounded-xl border-macd-gray",
+                        "tracking-tight shadow-none",
                       ],
-                      popoverContent: "pointer-events-auto md:w-full w-44",
+                      popoverContent: "pointer-events-auto",
                       segment:
                         "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
                     }}
@@ -237,9 +239,9 @@ export const CreateNewEvent = ({
                     size={isDesktop ? "md" : "sm"}
                     onChange={handleTimeChange}
                     classNames={{
+                      inputWrapper: "shadow-none",
                       base: [
                         "font-medium border-[0.33px] rounded-xl border-macd-gray",
-                        "h-12 md:h-14",
                       ],
                       segment:
                         "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
@@ -279,13 +281,13 @@ export const CreateNewEvent = ({
                     }}
                   />
                 </div>
-                <div className="flex h-1/5 w-full items-center justify-between px-2">
+                <div className="flex h-1/5 w-full items-center justify-between tracking-tight">
                   <div className="flex space-x-4">
                     <p>&middot;</p>
                     <p>&middot;</p>
                   </div>
                   <Button isLoading={pending} type="submit" color="primary">
-                    Next
+                    Next <span className="ps-2">&rarr;</span>
                   </Button>
                 </div>
               </Form>

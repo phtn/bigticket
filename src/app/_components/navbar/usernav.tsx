@@ -66,7 +66,7 @@ export const UserNav = () => {
 
 const UserLoader = () => (
   <div className="absolute right-0 flex h-16 w-fit items-center px-4">
-    <TextLoader color="text-primary-500" />,
+    <TextLoader color="text-primary-500" />
   </div>
 );
 
@@ -136,7 +136,7 @@ const UserAvatar = (props: { photo_url: string | undefined }) => {
   return (
     <div className="flex w-fit items-center px-4 md:gap-8">
       <Popover placement="bottom-end" onOpenChange={toggle}>
-        <PopoverTrigger className="cursor-pointer">
+        <PopoverTrigger className="cursor-pointer border border-primary-400">
           <Avatar
             alt="user-pfp"
             src={props?.photo_url}
@@ -145,7 +145,7 @@ const UserAvatar = (props: { photo_url: string | undefined }) => {
         </PopoverTrigger>
         <PopoverContent
           onClick={toggle}
-          className="border-[0.33px] border-primary-500 bg-coal"
+          className="border border-primary-600 bg-coal"
         >
           <UserContextMenu />
         </PopoverContent>

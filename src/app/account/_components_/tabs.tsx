@@ -7,15 +7,17 @@ export const TabComponent = () => (
     size="sm"
     color="primary"
     variant="light"
-    className="top-50 z-[100] flex h-full md:top-40 md:w-fit md:justify-center"
+    className="top-50 z-50 flex h-full md:top-40 md:w-fit md:justify-center"
     classNames={{
       tabList:
-        "w-fit justfify-start z-[200] space-x-10 lg:space-x-2 xl:space-x-4",
+        "w-fit justfify-start space-x-8 sm:space-x-6 md:space-x-5 transition-all duration-300 lg:space-x-8 xl:space-x-12",
       tabContent:
         "text-coal/80 data-[selected=true]:text-white font-inter hover:text-macl-mint font-semibold tracking-tight",
       tab: "px-2 data-[hover-unselected]:opacity-100",
-      panel: "md:pt-0 pt-12 md:px-6 h-full",
-      base: "absolute overflow-x-scroll flex top-2 justify-center w-[calc(100vw)] sm:w-[calc(40vw)] md:left-[calc(48vw)] sm:left-[calc(38vw)] md:w-fit md:left-[calc(37vw)] z-[200] lg:left-[calc(31.25vw)] -top-4 xl:left-[calc(35.25vw)]",
+      panel: "md:pt-0 px-0 pt-12 md:px-6 h-full",
+      base: "absolute overflow-x-scroll h-fit transition-all duration-300 flex top-2 justify-center w-[calc(100vw)] sm:w-full md:left-80 sm:left-0 z-[200] -top-4 xl:left-[calc(30vw)] lg:w-[calc(36vw)] lg:left-80 lg:w-[calc(50vw)]",
+      wrapper:
+        "bg-macl-indigo border border-macl-indigo w-10 flex items-center ",
     }}
   >
     {tabs.map((tab) => (

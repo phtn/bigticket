@@ -26,7 +26,7 @@ const Component = ({
     >
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0" />
-        <Drawer.Content className="fixed bottom-24 right-3 top-6 z-[100] flex h-fit w-fit flex-col rounded-3xl bg-transparent px-3 outline-none">
+        <Drawer.Content className="fixed bottom-24 right-0 top-6 z-[100] flex h-fit w-fit flex-col rounded-3xl bg-transparent px-3 outline-none md:right-3">
           <Drawer.Title className="hidden">{title}</Drawer.Title>
           <Drawer.Description className="hidden">
             {description}

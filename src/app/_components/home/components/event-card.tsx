@@ -65,7 +65,7 @@ export const EventCard = (event: SelectEvent) => {
           <p className="max-w-[45ch] bg-gradient-to-b from-white/60 via-white/80 to-white/60 bg-clip-text text-tiny font-bold uppercase text-transparent">
             {event.event_geo ?? event.event_url}
           </p>
-          <h4 className="bg-gradient-to-b from-white/70 via-white/90 to-white/60 bg-clip-text font-inter text-xl font-bold capitalize tracking-tight text-transparent shadow-coal drop-shadow-md">
+          <h4 className="p-[1px bg-gradient-to-b from-white via-white/80 to-amber-200/70 bg-clip-text font-inter text-xl font-bold capitalize tracking-tight text-transparent shadow-coal drop-shadow-sm">
             {event.event_name}
           </h4>
         </section>

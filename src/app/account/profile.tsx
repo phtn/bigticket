@@ -20,7 +20,8 @@ export const Profile = () => {
       <Image
         alt="user-pfp"
         src={photo_url ?? undefined}
-        className="aspect-auto w-24 md:w-32"
+        radius="none"
+        className="aspect-auto w-24 md:w-28 lg:w-32"
         isLoading={!vx}
       />,
     );
@@ -33,7 +34,7 @@ export const Profile = () => {
         id="cover-photo"
         className={cn("h-16 w-full md:h-20", "overflow-hidden")}
       ></div>
-      <div className="flex h-12 w-full items-center justify-between bg-background pe-4 ps-24 md:h-16 md:ps-44">
+      <div className="flex h-12 w-full items-center justify-between bg-background pe-2 ps-32 md:h-16 md:pe-4 md:ps-36 lg:ps-40">
         <div className="whitespace-nowrap font-inter leading-none">
           <Link
             className="flex items-center"
@@ -46,11 +47,13 @@ export const Profile = () => {
           </h3>
         </div>
 
-        <CreateNewEvent pathname={pathname} account_id={vx?.account_id} />
+        <div className="md:px-1.5 md:pt-2.5">
+          <CreateNewEvent pathname={pathname} account_id={vx?.account_id} />
+        </div>
       </div>
       <div
         id="user-pfp"
-        className="absolute bottom-0 mx-2 size-20 rounded-full bg-background p-1 md:mx-10 md:size-32"
+        className="absolute bottom-0 mx-4 size-24 rounded-full bg-background p-1.5 md:mx-6 md:size-28 lg:size-32"
       >
         <div className="flex size-full items-center justify-center overflow-clip rounded-full bg-primary-200">
           <AvatarOptions />

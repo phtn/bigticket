@@ -6,13 +6,17 @@ import { HyperList } from "@/ui/list";
 import { Button } from "@nextui-org/react";
 import { memo, use, type FC, type ReactNode } from "react";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  className?: ClassName;
+}
+export const Sidebar = ({ className }: SidebarProps) => {
   const { toggle, open } = use(SidebarCtx)!;
   return (
     <aside className={cn("absolute z-50")}>
       <div
         className={cn(
           "fixed flex w-[360px] -translate-x-[360px] items-start px-8 py-4 transition-transform duration-300 portrait:px-4",
+          className,
           { "translate-x-0": open },
         )}
       >

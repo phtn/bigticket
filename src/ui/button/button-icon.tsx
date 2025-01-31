@@ -15,11 +15,14 @@ export const ButtonIcon = (props: ButtonIconProps) => (
   >
     <Icon
       name="Squircle"
-      className={cn("absolute z-0 size-9 text-background", props.bg)}
+      className={cn(
+        "absolute z-0 size-9 text-background transition-all duration-200 group-hover/icon:scale-0",
+        props.bg,
+      )}
     />
     <Icon
       name="Squircle"
-      className="z-1 absolute size-10 scale-0 opacity-0 transition-all duration-300 group-hover/icon:scale-100 group-hover/icon:opacity-80"
+      className="z-1 absolute size-9 scale-0 opacity-0 transition-all duration-300 group-hover/icon:scale-100 group-hover/icon:opacity-100"
     />
     <Icon
       name={props.icon}
