@@ -9,28 +9,27 @@ import { memo, use, type FC, type ReactNode } from "react";
 export const Sidebar = () => {
   const { toggle, open } = use(SidebarCtx)!;
   return (
-    <aside className={cn("absolute z-50 h-full")}>
+    <aside className={cn("absolute z-50")}>
       <div
         className={cn(
-          "relative flex h-[calc(87vh)] w-[360px] -translate-x-[360px] items-center px-8 transition-transform duration-300 portrait:px-4",
+          "fixed flex w-[360px] -translate-x-[360px] items-start px-8 py-4 transition-transform duration-300 portrait:px-4",
           { "translate-x-0": open },
         )}
       >
-        <section className="relative h-[calc(80vh)] w-full space-y-2 rounded-xl border-[0.33px] border-primary-100 bg-chalk/80 p-2 shadow-lg backdrop-blur-2xl">
-          <Button
-            size="sm"
-            isIconOnly
-            variant="ghost"
-            color="default"
-            onPress={toggle}
-            className="group absolute right-2 z-[60] border-0 data-[hover=true]:opacity-100"
-          >
-            <Icon name="LeftChev" className="size-5 stroke-0 text-slate-500" />
-          </Button>
-          <ListTitle title="Events" />
+        <Button
+          size="sm"
+          isIconOnly
+          variant="ghost"
+          color="default"
+          onPress={toggle}
+          className="group absolute right-6 top-6 z-[60] border-0 data-[hover=true]:opacity-100"
+        >
+          <Icon name="LeftChev" className="size-5 stroke-0 text-slate-500" />
+        </Button>
+        <section className="relative w-full space-y-6 rounded-xl border-[0.33px] border-primary-100 bg-chalk/80 p-2 shadow-lg backdrop-blur-2xl md:h-[calc(80vh)]">
           <EventsList />
-          <ListTitle title="Get-Aways" />
           <GetAwaysList />
+          <ListTitle title="big ticket" />
         </section>
       </div>
     </aside>
@@ -38,7 +37,7 @@ export const Sidebar = () => {
 };
 
 const ListTitle: FC<{ title: string }> = ({ title }) => (
-  <div className="flex h-6 w-full items-center justify-between space-x-3 px-2">
+  <div className="flex h-10 w-full items-center justify-between space-x-3 px-2">
     <p className="whitespace-nowrap text-[11px] font-semibold uppercase text-slate-600 drop-shadow-sm">
       {title}
     </p>
@@ -94,8 +93,11 @@ const ItemCounter = (props: { count: number; color?: ClassName }) => (
 
 const EventsList = () => {
   return (
-    <div className="w-full rounded-xl bg-white/80">
-      <HyperList keyId="id" data={events} component={EventItem} />
+    <div>
+      <ListTitle title="Events" />
+      <div className="w-full rounded-xl bg-white/80">
+        <HyperList keyId="id" data={events} component={EventItem} />
+      </div>
     </div>
   );
 };
@@ -116,8 +118,11 @@ const GetAwayItem = memo(GetAwayListItem);
 
 const GetAwaysList = () => {
   return (
-    <div className="w-full rounded-xl bg-white/80">
-      <HyperList keyId="id" data={getaways} component={GetAwayItem} />
+    <div>
+      <ListTitle title="Get-Aways" />
+      <div className="w-full rounded-xl bg-white/80">
+        <HyperList keyId="id" data={getaways} component={GetAwayItem} />
+      </div>
     </div>
   );
 };

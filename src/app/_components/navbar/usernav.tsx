@@ -30,8 +30,8 @@ export const UserNav = () => {
     const options = opts(
       <UserProfile photo_url={photo_url ?? undefined} />,
       <Button
-        variant="solid"
         radius="full"
+        variant="solid"
         className="w-fit bg-white font-inter text-[16px] font-medium tracking-tighter"
       >
         <TextLoader color="text-primary-500" />
@@ -39,26 +39,36 @@ export const UserNav = () => {
     );
     return <>{options.get(!!vx)}</>;
   }, [photo_url, vx]);
+
+  const Search = useCallback(() => {
+    return (
+      <ButtonIcon
+        icon="Search"
+        color="text-macl-gray stroke-0"
+        bg="text-white"
+      />
+    );
+  }, []);
   return (
-    <div className="absolute right-0 flex h-16 w-2/3 items-center justify-end font-inter md:space-x-4">
+    <div className="absolute right-0 flex h-16 w-2/3 items-center justify-end space-x-4 font-inter">
       <div
         className={cn(
           "z-1 relative flex h-full w-[420px] items-center justify-end",
           {},
         )}
       >
-        {pathname.split("/")[1] === "account" ? null : <Searchbar />}
+        {pathname.split("/")[1] === "account" ? null : <Search />}
       </div>
 
-      <div className="flex w-fit items-center gap-2 px-4 md:gap-8">
-        <Collection />
+      <Collection />
+      <div className="flex w-fit items-center px-4 md:gap-8">
         <UserOptions />
       </div>
     </div>
   );
 };
 
-const Searchbar = () => {
+export const Searchbar = () => {
   const { handleInputHover } = use(CursorCtx)!;
   const { isDesktop } = useScreen();
   return (
@@ -103,14 +113,8 @@ const UserProfile = (props: { photo_url: string | undefined }) => {
   const { toggle } = useToggle();
   const { isDesktop } = useScreen();
   return (
-    <Popover
-      isDismissable
-      shouldCloseOnBlur
-      shouldCloseOnScroll
-      placement="bottom-end"
-      onOpenChange={toggle}
-    >
-      <PopoverTrigger>
+    <Popover placement="bottom-end" onOpenChange={toggle}>
+      <PopoverTrigger className="cursor-pointer">
         <Avatar
           alt="user-pfp"
           src={props?.photo_url}

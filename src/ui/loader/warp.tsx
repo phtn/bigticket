@@ -82,7 +82,7 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
   const leftBeams = useMemo(() => generateBeams(), [generateBeams]);
 
   return (
-    <div className={cn("relative bg-coal", className)} {...props}>
+    <div className={cn("relative bg-coal p-6", className)} {...props}>
       <div
         style={
           {

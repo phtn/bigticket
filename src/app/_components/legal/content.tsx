@@ -46,12 +46,12 @@ export const Content = ({
 };
 
 const Header = ({ company, title, toggle }: HeaderProps) => (
-  <div className="mx-auto flex max-w-4xl items-center justify-between border-b-[0.33px] border-primary-200 p-4 py-4 sm:px-6 md:p-2 lg:px-8">
-    <h1 className="w-fit space-x-2 font-inter text-2xl font-medium capitalize tracking-tighter text-gray-900 md:text-3xl">
+  <div className="mx-auto flex max-w-4xl items-center justify-between border-b-[0.33px] border-primary-200 py-4 ps-4 sm:px-6 md:p-2 lg:px-8">
+    <h1 className="w-fit space-x-2 whitespace-nowrap font-inter text-2xl font-medium capitalize tracking-tighter text-gray-900 md:text-3xl">
       <span className="font-extrabold">{company}</span>{" "}
       <span className="font-light">{title}</span>
     </h1>
-    <section className="flex w-fit space-x-14 pe-6 md:space-x-16">
+    <section className="flex w-fit space-x-6 pe-6 md:space-x-16">
       <div>
         <ButtonIcon id="content-list" onClick={toggle} icon="NumberList" />
       </div>

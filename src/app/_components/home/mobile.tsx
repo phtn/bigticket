@@ -9,14 +9,14 @@ import { Sidebar } from "./components/sidebar";
 export const MobileView = () => {
   const { vxEvents } = use(VxCtx)!;
   return (
-    <div className="min-h-screen bg-coal text-white">
+    <div className="bg-coal">
       <Sidebar />
       <HyperList
         keyId="event_id"
         data={vxEvents}
         component={EventCard}
-        container="space-y-4"
-        itemStyle="px-4"
+        container="space-y-4 h-[calc(80vh)] overflow-y-scroll"
+        itemStyle=""
       >
         <div
           key={"hero"}

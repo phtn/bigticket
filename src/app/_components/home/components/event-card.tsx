@@ -55,7 +55,6 @@ export const EventCard = (event: SelectEvent) => {
 
   const { event_date, event_day } = useMoment({ date: event?.event_date });
 
-  const str = "fuck that butt boiz, aint no better doing than this";
   return (
     <Card
       isFooterBlurred
@@ -64,8 +63,7 @@ export const EventCard = (event: SelectEvent) => {
       <CardHeader className="absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4">
         <section className="w-full overflow-clip text-ellipsis">
           <p className="max-w-[45ch] bg-gradient-to-b from-white/60 via-white/80 to-white/60 bg-clip-text text-tiny font-bold uppercase text-transparent">
-            {/* {event.event_geo ?? event.event_url} */}
-            {str} {str.length}
+            {event.event_geo ?? event.event_url}
           </p>
           <h4 className="bg-gradient-to-b from-white/70 via-white/90 to-white/60 bg-clip-text font-inter text-xl font-bold capitalize tracking-tight text-transparent shadow-coal drop-shadow-md">
             {event.event_name}
