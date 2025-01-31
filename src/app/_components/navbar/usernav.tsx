@@ -13,7 +13,6 @@ import { TextLoader } from "@/ui/loader/text";
 import { opts } from "@/utils/helpers";
 import {
   Avatar,
-  Button,
   Input,
   Popover,
   PopoverContent,
@@ -21,58 +20,80 @@ import {
 } from "@nextui-org/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { use, useCallback } from "react";
+import { type JSX, use, useCallback, useMemo } from "react";
 
 export const UserNav = () => {
   const pathname = usePathname();
   const { photo_url, vx } = use(VxCtx)!;
-  const UserOptions = useCallback(() => {
-    const options = opts(
-      <UserProfile photo_url={photo_url ?? undefined} />,
-      <Button
-        radius="full"
-        variant="solid"
-        className="w-fit bg-white font-inter text-[16px] font-medium tracking-tighter"
-      >
-        <TextLoader color="text-primary-500" />
-      </Button>,
-    );
-    return <>{options.get(!!vx)}</>;
-  }, [photo_url, vx]);
 
-  const Search = useCallback(() => {
-    return (
-      <ButtonIcon
-        icon="Search"
-        color="text-macl-gray stroke-0"
-        bg="text-white"
-      />
-    );
-  }, []);
+  const Search = () => (
+    <ButtonIcon icon="Search" color="text-macl-gray stroke-0" bg="text-white" />
+  );
+
+  const SearchOptions = useCallback(() => {
+    const options = opts(<Search />, null);
+    return <>{options.get(pathname.split("/")[1] !== "account")}</>;
+  }, [pathname]);
+
+  const navs: INav[] = useMemo(
+    () => [
+      {
+        id: "search",
+        label: "search",
+        content: <SearchOptions />,
+      },
+      {
+        id: "collection",
+        label: "collection",
+        content: <Collection />,
+      },
+      {
+        id: "user",
+        label: "user",
+        content: <UserAvatar photo_url={photo_url ?? undefined} />,
+      },
+    ],
+    [photo_url, SearchOptions],
+  );
+
+  const NavOptions = useCallback(() => {
+    const options = opts(<Navs navs={navs} />, <UserLoader />);
+    return <nav>{options.get(!!vx)}</nav>;
+  }, [vx, navs]);
+
+  return <NavOptions />;
+};
+
+const UserLoader = () => (
+  <div className="absolute right-0 flex h-16 w-fit items-center px-4">
+    <TextLoader color="text-primary-500" />,
+  </div>
+);
+
+const Navs = (props: { navs: INav[] }) => {
   return (
-    <div className="absolute right-0 flex h-16 w-2/3 items-center justify-end space-x-4 font-inter">
-      <div
-        className={cn(
-          "z-1 relative flex h-full w-[420px] items-center justify-end",
-          {},
-        )}
-      >
-        {pathname.split("/")[1] === "account" ? null : <Search />}
-      </div>
-
-      <Collection />
-      <div className="flex w-fit items-center px-4 md:gap-8">
-        <UserOptions />
-      </div>
-    </div>
+    <HyperList
+      data={props.navs}
+      component={NavItem}
+      container="absolute right-0 flex h-16 w-2/3 items-center justify-end space-x-4 font-inter"
+      itemStyle="pointer-events-auto"
+      keyId="id"
+    />
   );
 };
+
+interface INav {
+  id: string;
+  label: string;
+  content: JSX.Element | null;
+}
+const NavItem = (nav: INav) => <div>{nav.content}</div>;
 
 export const Searchbar = () => {
   const { handleInputHover } = use(CursorCtx)!;
   const { isDesktop } = useScreen();
   return (
-    <div className={cn("relative flex w-44 items-center md:w-full", {})}>
+    <div className={cn("relative flex w-44 items-center md:w-full")}>
       <Input
         size={isDesktop ? "lg" : "md"}
         radius="full"
@@ -109,25 +130,27 @@ const Collection = () => {
     />
   );
 };
-const UserProfile = (props: { photo_url: string | undefined }) => {
+const UserAvatar = (props: { photo_url: string | undefined }) => {
   const { toggle } = useToggle();
   const { isDesktop } = useScreen();
   return (
-    <Popover placement="bottom-end" onOpenChange={toggle}>
-      <PopoverTrigger className="cursor-pointer">
-        <Avatar
-          alt="user-pfp"
-          src={props?.photo_url}
-          size={isDesktop ? "md" : "sm"}
-        />
-      </PopoverTrigger>
-      <PopoverContent
-        onClick={toggle}
-        className="border-[0.33px] border-primary-500 bg-coal"
-      >
-        <UserContextMenu />
-      </PopoverContent>
-    </Popover>
+    <div className="flex w-fit items-center px-4 md:gap-8">
+      <Popover placement="bottom-end" onOpenChange={toggle}>
+        <PopoverTrigger className="cursor-pointer">
+          <Avatar
+            alt="user-pfp"
+            src={props?.photo_url}
+            size={isDesktop ? "md" : "sm"}
+          />
+        </PopoverTrigger>
+        <PopoverContent
+          onClick={toggle}
+          className="border-[0.33px] border-primary-500 bg-coal"
+        >
+          <UserContextMenu />
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 };
 

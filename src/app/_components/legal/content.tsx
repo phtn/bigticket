@@ -37,7 +37,7 @@ export const Content = ({
         toggleFn={toggle}
       />
       <Header company={company} title={title} toggle={toggle} />
-      <main className="container mx-auto h-[84vh] max-w-4xl overflow-y-scroll p-2 sm:px-6 lg:px-8">
+      <main className="container mx-auto h-[80vh] max-w-4xl overflow-y-scroll p-2 sm:px-6 lg:px-8">
         <Body sections={sections} message={important_message} />
         <Footer company={company} {...footer} />
       </main>
@@ -51,7 +51,7 @@ const Header = ({ company, title, toggle }: HeaderProps) => (
       <span className="font-extrabold">{company}</span>{" "}
       <span className="font-light">{title}</span>
     </h1>
-    <section className="flex w-fit space-x-6 pe-6 md:space-x-16">
+    <section className="flex w-fit space-x-2 pe-2 sm:space-x-6 md:space-x-16 md:pe-6">
       <div>
         <ButtonIcon id="content-list" onClick={toggle} icon="NumberList" />
       </div>
@@ -140,27 +140,28 @@ const Article = ({ id, title, content, keyId }: Section) => {
 };
 
 const Footer = ({ company, label, href }: FooterProps) => (
-  <footer className="flex items-center justify-between p-4 text-center text-xs tracking-tighter text-primary">
-    <section className="flex items-center space-x-2">
-      <p className="font-medium">
+  <footer className="flex items-center justify-between px-2 py-4 text-center text-xs capitalize leading-none tracking-tighter text-primary">
+    <div className="flex w-full items-start justify-between">
+      <p className="font-semibold">
         {company} &copy;{new Date().getFullYear()}
       </p>
-      <p>&middot;</p>
-      <p>
-        Last updated:{" "}
-        {new Date().toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })}
-      </p>
-    </section>
+      <div className="justify-start">
+        <p className="">
+          {new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </p>
+        <p className="text-left font-light tracking-tight">Last updated</p>
+      </div>
 
-    <Link
-      href={href}
-      className="flex items-center gap-1 text-indigo-600 hover:underline"
-    >
-      {label} <Icon name="ArrowRightUp" className="size-4" />
-    </Link>
+      <Link
+        href={href}
+        className="flex items-center gap-1 text-indigo-600 hover:underline"
+      >
+        {label} <Icon name="ArrowRightUp" className="size-4" />
+      </Link>
+    </div>
   </footer>
 );

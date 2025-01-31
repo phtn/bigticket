@@ -10,7 +10,7 @@ export const Toc = ({ sections, isOpen, toggleFn, footer }: TocProps) => {
   return (
     <div
       className={cn(
-        "fixed z-50 h-fit min-w-[350px] -translate-x-96 overflow-hidden rounded-e-xl bg-coal",
+        "fixed z-50 h-fit min-w-[340px] -translate-x-96 overflow-hidden rounded-e-xl bg-coal",
         "transition-all duration-300",
         {
           "translate-x-0": isOpen,
@@ -18,7 +18,7 @@ export const Toc = ({ sections, isOpen, toggleFn, footer }: TocProps) => {
       )}
     >
       <Brand
-        className={"flex w-full border-b-[0.33px] border-gray-600 bg-coal"}
+        className={"flex w-full border-b-[0.33px] border-gray-600 bg-coal pe-3"}
       >
         <div className="pt-2">
           <BrandName>
