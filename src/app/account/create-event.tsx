@@ -1,31 +1,33 @@
+import { useScreen } from "@/hooks/useScreen";
 import { useToggle } from "@/hooks/useToggle";
 import { Icon, type IconName } from "@/icons";
+import { cn } from "@/lib/utils";
 import { TicketStack } from "@/ui/card/ticket";
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
-import moment from "moment";
+import { opts } from "@/utils/helpers";
+import { parseAbsolute, parseAbsoluteToLocal } from "@internationalized/date";
 import {
   Button,
-  DatePicker,
+  DateRangePicker,
   type DateValue,
   Form,
   Input,
+  type RangeValue,
   Select,
   SelectItem,
   Textarea,
-  TimeInput,
-  type TimeInputValue,
 } from "@nextui-org/react";
+import moment from "moment";
 import {
   type ChangeEvent,
+  type ReactNode,
   useActionState,
   useCallback,
   useRef,
   useState,
 } from "react";
-import { opts } from "@/utils/helpers";
 import { type PrimaryCreateEvent, useEvent } from "./useEvent";
-import { useScreen } from "@/hooks/useScreen";
 
 interface CreateNewEventProps {
   pathname: string;
@@ -40,7 +42,7 @@ export const CreateNewEvent = ({
   const [eventName, setEventName] = useState("");
   const [ticketCount, setTicketCount] = useState("");
   const [eventType, setEventType] = useState("");
-  const [eventTime, setEventTime] = useState("");
+  const [eventTime] = useState("");
   const [eventSite, setEventSite] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventDay, setEventDay] = useState("");
@@ -66,19 +68,19 @@ export const CreateNewEvent = ({
     }
   };
 
-  const handleDateChange = (value: DateValue | null) => {
+  const handleDateChange = (value: RangeValue<DateValue> | null) => {
     // const short = value?.toDate("GMT").toLocaleDateString(); // mm/dd/yyyy
-    const dateString = value?.toDate("GMT");
+    const dateString = value?.start.toDate("GMT");
     const compact = moment(dateString).format("LL");
     const day = moment(dateString).format("dddd");
     setEventDate(compact);
     setEventDay(day);
   };
 
-  const handleTimeChange = (value: TimeInputValue | null) => {
-    const time = moment(value).format("LT");
-    setEventTime(time);
-  };
+  // const handleTimeChange = (value: TimeInputValue | null) => {
+  //   const time = moment(value).format("LT");
+  //   setEventTime(time);
+  // };
 
   const { createEvent } = useEvent();
 
@@ -140,17 +142,19 @@ export const CreateNewEvent = ({
   }, [eventType, handleChangeSite]);
 
   return (
-    <div className="flex h-10 w-full items-center justify-end xl:space-x-1">
+    <div className="flex h-10 w-full items-center justify-end font-inter xl:space-x-1">
       <Button
         href={`${pathname}/edit?page=${account_id}`}
         size={isDesktop ? "sm" : "sm"}
-        className="px-2 lg:flex"
+        className="group/create bg-teal-500 px-2 text-chalk lg:flex"
         variant="solid"
-        color="secondary"
         onPress={toggle}
       >
-        <Icon name="Sparkles2" className="size-3 stroke-0 md:size-4" />
-        <span className="font-inter text-xs font-normal tracking-tighter md:text-sm md:font-medium">
+        <Icon
+          name="Sparkles2"
+          className="size-3 stroke-0 group-hover/create:text-white md:size-4"
+        />
+        <span className="text-xs font-normal tracking-tighter drop-shadow-sm group-hover/create:text-white md:text-sm md:font-medium">
           Create an event
         </span>
       </Button>
@@ -158,17 +162,17 @@ export const CreateNewEvent = ({
         open={open}
         onOpenChange={toggle}
         direction="right"
-        title={"Title"}
+        title={"Create"}
         description={"Description"}
       >
         <FlatWindow
-          icon={"Sparkles2"}
           closeFn={toggle}
-          title={"Create New Event"}
+          icon="Sparkles2"
+          title="Create New Event"
+          className="border-macd-gray bg-chalk"
           variant="adam"
-          className={"border-macd-gray bg-chalk"}
         >
-          <div className="_bg-white h-[65vh] w-[calc(94vw)] md:h-[calc(85vh)] md:w-[calc(39vw)]">
+          <FormContainer>
             <div className="flex h-2/5 w-full items-center">
               <TicketStack
                 title={eventName}
@@ -179,12 +183,12 @@ export const CreateNewEvent = ({
                 tickets={ticketCount}
               />
             </div>
-            <div className="flex h-3/5 w-full overflow-scroll md:pb-4">
+            <div className="flex h-3/5 w-full overflow-scroll md:pb-0">
               <Form
                 action={action}
-                className="w-full space-y-1 rounded-lg border-[0.0px] border-macd-gray bg-white p-4 md:space-y-3"
+                className="w-full space-y-2 rounded-lg border-[0.0px] border-macd-gray bg-white p-4 md:space-y-3"
               >
-                <div className="grid w-full grid-cols-2 gap-2 md:grid-cols-4 md:px-2">
+                <div className="grid w-full grid-cols-2 gap-4 md:px-2">
                   {select_data.map((data) => (
                     <Select
                       id={data.id}
@@ -192,13 +196,13 @@ export const CreateNewEvent = ({
                       key={data.id}
                       label={data.label}
                       onChange={handleSelectChange}
-                      size={isDesktop ? "md" : "sm"}
+                      size={isDesktop ? "md" : "md"}
                       className="w-full"
                       classNames={{
                         popoverContent: "pointer-events-auto",
                         trigger:
                           "font-medium shadow-none border-[0.33px] border-macd-gray rounded-xl",
-                        label: "text-xs md:text-sm font-semibold capitalize",
+                        label: "text-xs md:text-sm font-medium capitalize",
                       }}
                       items={data.items}
                       variant="flat"
@@ -214,7 +218,31 @@ export const CreateNewEvent = ({
                       )}
                     </Select>
                   ))}
-                  <DatePicker
+                  <DateRangePicker
+                    hideTimeZone
+                    visibleMonths={1}
+                    className="col-span-2"
+                    label="Event Duration"
+                    onChange={handleDateChange}
+                    popoverProps={{
+                      placement: "top",
+                    }}
+                    defaultValue={{
+                      start: parseAbsoluteToLocal(new Date().toISOString()),
+                      end: parseAbsolute(new Date().toISOString(), "GMT"),
+                    }}
+                    classNames={{
+                      inputWrapper: "shadow-none",
+                      base: [
+                        "font-medium w-full border-[0.33px] rounded-xl border-macd-gray",
+                        "tracking-tight shadow-none",
+                      ],
+                      popoverContent: "pointer-events-auto dark",
+                      segment:
+                        "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
+                    }}
+                  />
+                  {/* <DatePicker
                     label={"Event Date"}
                     id="event_date"
                     name="event_date"
@@ -231,8 +259,8 @@ export const CreateNewEvent = ({
                       segment:
                         "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
                     }}
-                  />
-                  <TimeInput
+                  /> */}
+                  {/* <TimeInput
                     label="Event Time"
                     id="event_time"
                     name="event_time"
@@ -246,11 +274,10 @@ export const CreateNewEvent = ({
                       segment:
                         "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
                     }}
-                  />
+                  /> */}
                 </div>
                 <div className="w-full md:px-2">
                   <Input
-                    autoFocus
                     id="event_name"
                     name="event_name"
                     label="Event Name"
@@ -281,23 +308,34 @@ export const CreateNewEvent = ({
                     }}
                   />
                 </div>
-                <div className="flex h-1/5 w-full items-center justify-between tracking-tight">
-                  <div className="flex space-x-4">
-                    <p>&middot;</p>
-                    <p>&middot;</p>
-                  </div>
+                <div className="flex h-1/5 w-full items-center justify-between border tracking-tight">
+                  <div className="flex space-x-4"></div>
                   <Button isLoading={pending} type="submit" color="primary">
                     Next <span className="ps-2">&rarr;</span>
                   </Button>
                 </div>
               </Form>
             </div>
-          </div>
+          </FormContainer>
         </FlatWindow>
       </SideVaul>
     </div>
   );
 };
+
+const FormContainer = ({ children }: { children: ReactNode }) => (
+  <div
+    className={cn(
+      "h-[76vh] w-[calc(94vw)]",
+      "sm:h-[80vh] sm:w-[calc(64vw)] sm:bg-army",
+      "md:h-[calc(80vh)] md:w-[calc(54vw)] md:bg-tan",
+      "lg:w-[calc(44vw)] lg:bg-peach",
+      "xl:w-[calc(48vw)]",
+    )}
+  >
+    {children}
+  </div>
+);
 
 interface EventSelectData {
   id: string;

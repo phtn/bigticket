@@ -27,7 +27,7 @@ export const EventsContent = () => {
           keyId="event_id"
           data={vxEvents}
           component={EventCard}
-          container="columns-1 gap-4 space-y-2 md:columns-2 md:px-4"
+          container="columns-1 gap-4 space-y-2 md:columns-2 xl:colums-3 md:px-4"
         >
           <Header>
             <Counter />
