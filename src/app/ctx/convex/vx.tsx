@@ -23,6 +23,7 @@ interface VxCtxValues {
   pending: boolean;
   vxEvents: SelectEvent[] | undefined;
   photo_url: string | null;
+  allEvents: SelectEvent[] | undefined;
 }
 export const VxCtx = createContext<VxCtxValues | null>(null);
 
@@ -30,6 +31,7 @@ export const VxProvider = ({ children }: { children: ReactNode }) => {
   const [vx, setVx] = useState<SelectUser | null>(null);
   const [photo_url, setPhotoURL] = useState<string | null>(null);
   const [vxEvents, setEvents] = useState<SelectEvent[]>();
+  const [allEvents, setAllEvents] = useState<SelectEvent[]>();
   const { usr, createvx, events, files } = use(ConvexCtx)!;
 
   const [pending, fn] = useTransition();
@@ -71,20 +73,28 @@ export const VxProvider = ({ children }: { children: ReactNode }) => {
     setFn(fn, getPhoto, setPhotoURL);
   }, [getPhoto]);
 
-  const getEvents = useCallback(async () => {
+  const getEventsByHost = useCallback(async () => {
     if (!vx?.account_id) return;
     return await events.get.byHostId(vx.account_id);
   }, [events.get, vx?.account_id]);
 
-  const getAllEvents = useCallback(() => {
-    setFn(fn, getEvents, setEvents);
-  }, [getEvents]);
+  const getVxEvents = useCallback(() => {
+    setFn(fn, getEventsByHost, setEvents);
+  }, [getEventsByHost]);
+
+  const getAllEvents = useCallback(async () => {
+    return events.get.all();
+  }, [events.get]);
+  const getEvents = useCallback(() => {
+    setFn(fn, getAllEvents, setAllEvents);
+  }, [getAllEvents]);
 
   useEffect(() => {
     getVxuser();
     getPhotoURL();
-    getAllEvents();
-  }, [getVxuser, getAllEvents, getPhotoURL]);
+    getVxEvents();
+    getEvents();
+  }, [getVxuser, getPhotoURL, getVxEvents, getEvents]);
 
   const value = useMemo(
     () => ({
@@ -92,8 +102,9 @@ export const VxProvider = ({ children }: { children: ReactNode }) => {
       pending,
       vxEvents,
       photo_url,
+      allEvents,
     }),
-    [vx, pending, vxEvents, photo_url],
+    [vx, pending, vxEvents, photo_url, allEvents],
   );
   return <VxCtx value={value}>{children}</VxCtx>;
 };

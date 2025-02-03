@@ -15,7 +15,7 @@ export const Home = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setReady(true);
-    }, 4000);
+    }, 2500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -35,7 +35,7 @@ const Loader = () => (
       <motion.div
         initial={{ scale: 3 }}
         animate={{ scale: 0 }}
-        transition={{ duration: 10 }}
+        transition={{ duration: 0.4 }}
         className="h-16 w-24 bg-white/5 backdrop-blur-sm"
       ></motion.div>
     </div>

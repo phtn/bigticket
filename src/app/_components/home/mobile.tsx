@@ -4,13 +4,13 @@ import { HeroSection } from "./components/hero";
 import { use } from "react";
 import { VxCtx } from "@/app/ctx/convex/vx";
 import { Proxima } from "../proxima";
-import { Sidebar } from "./components/sidebar";
+import { Collections } from "../sidebar";
 
 export const MobileView = () => {
   const { vxEvents } = use(VxCtx)!;
   return (
     <div className="bg-coal">
-      <Sidebar />
+      <Collections />
       <HyperList
         keyId="event_id"
         data={vxEvents}

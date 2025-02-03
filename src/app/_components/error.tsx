@@ -9,8 +9,7 @@ interface ErrorProps {
   name: string;
 }
 export function ErrorComp({ error, reset, name }: ErrorProps) {
-  // Memoized Button component to prevent unnecessary re-renders
-  const MemoizedButton = useCallback(
+  const ResetButton = useCallback(
     () => (
       <Button
         onPress={reset}
@@ -36,7 +35,7 @@ export function ErrorComp({ error, reset, name }: ErrorProps) {
             <span className="px-2 text-gray-800">{name}</span>
           </span>
         </h1>
-        <MemoizedButton />
+        <ResetButton />
       </section>
       <div className="w-full border border-b" />
       <div className="flex space-x-2 font-mono text-xs text-gray-600">

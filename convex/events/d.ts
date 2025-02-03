@@ -25,6 +25,9 @@ export const EventSchema = v.object({
   event_phone: v.optional(v.string()),
   event_email: v.optional(v.string()),
   event_type: v.optional(v.string()),
+  start_date: v.optional(v.float64()),
+  end_date: v.optional(v.float64()),
+  duration: v.optional(v.float64()),
 
   //DETAILS
   category: v.optional(v.string()),

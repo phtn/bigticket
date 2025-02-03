@@ -6,8 +6,8 @@
   display: none;
 }
 .big-ticket {
-  --r: 16px; /* cut size */
-  width: 12.5rem;
+  --r: 12px; /* cut size */
+  width: 12.25rem;
   aspect-ratio: 3;
   border-radius: 2px;
   background: #fff;

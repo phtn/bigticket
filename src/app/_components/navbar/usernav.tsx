@@ -19,29 +19,13 @@ import {
   PopoverTrigger,
 } from "@nextui-org/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { type JSX, use, useCallback, useMemo } from "react";
 
 export const UserNav = () => {
-  const pathname = usePathname();
   const { photo_url, vx } = use(VxCtx)!;
-
-  const Search = () => (
-    <ButtonIcon icon="Search" color="text-macl-gray stroke-0" bg="text-white" />
-  );
-
-  const SearchOptions = useCallback(() => {
-    const options = opts(<Search />, null);
-    return <>{options.get(pathname.split("/")[1] !== "account")}</>;
-  }, [pathname]);
 
   const navs: INav[] = useMemo(
     () => [
-      {
-        id: "search",
-        label: "search",
-        content: <SearchOptions />,
-      },
       {
         id: "collection",
         label: "collection",
@@ -53,7 +37,7 @@ export const UserNav = () => {
         content: <UserAvatar photo_url={photo_url ?? undefined} />,
       },
     ],
-    [photo_url, SearchOptions],
+    [photo_url],
   );
 
   const NavOptions = useCallback(() => {

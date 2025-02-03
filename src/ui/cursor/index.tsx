@@ -5,7 +5,7 @@ import "./index.css";
 interface HyperspaceProps {
   isInputHovered: boolean;
 }
-const HyperSpace = ({ isInputHovered }: HyperspaceProps) => {
+export const HyperSpace = ({ isInputHovered }: HyperspaceProps) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -47,5 +47,3 @@ const HyperSpace = ({ isInputHovered }: HyperspaceProps) => {
     />
   );
 };
-
-export default HyperSpace;

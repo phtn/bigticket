@@ -47,6 +47,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <Navbar />
+          <div className="relative h-16" />
           {children}
         </Providers>
       </body>

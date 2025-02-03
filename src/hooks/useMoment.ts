@@ -1,11 +1,75 @@
 import moment from "moment";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
-interface UseDate {
-  date: number | undefined;
+interface UseMoment {
+  date?: number | undefined;
+  start?: number | undefined;
+  end?: number | undefined;
 }
-export const useMoment = ({ date }: UseDate) => {
+export const useMoment = ({ date, start, end }: UseMoment) => {
+  const compact = useMemo(() => moment(date).format("lll"), [date]);
+
   const event_date = useMemo(() => moment(date).format("lll"), [date]);
   const event_day = useMemo(() => moment(date).format("dddd"), [date]);
-  return { event_day, event_date };
+
+  const atMinutes = useCallback((time: string) => {
+    return time.indexOf(":");
+  }, []);
+  const minutes = useCallback(
+    (time: string) => {
+      return time.substring(atMinutes(time) + 1, atMinutes(time) + 3);
+    },
+    [atMinutes],
+  );
+
+  const startTime = moment(start).format("LT");
+  const start_compact =
+    startTime.substring(0, atMinutes(startTime)) +
+    startTime.substring(atMinutes(startTime) + 4);
+  const start_time = useMemo(() => {
+    return { full: startTime, compact: start_compact };
+  }, [startTime, start_compact]);
+
+  const endTime = moment(end).format("LT");
+  const end_compact =
+    endTime.substring(0, atMinutes(endTime)) +
+    endTime.substring(atMinutes(endTime) + 4);
+  const end_time = useMemo(() => {
+    return { full: endTime, compact: end_compact };
+  }, [endTime, end_compact]);
+
+  const event_time = useMemo(() => {
+    return {
+      full: `${startTime}-${endTime}`,
+      compact: `${
+        minutes(startTime) !== "00" ? startTime : start_compact
+      }-${minutes(endTime) !== "00" ? endTime : end_compact}`,
+    };
+  }, [endTime, end_compact, startTime, start_compact, minutes]);
+
+  const duration = useMemo(() => {
+    if (!end || !start) return;
+    return end - start;
+  }, [end, start]);
+  const durationDays = useMemo(() => {
+    if (!end || !start) return;
+    return (end - start) / 150000;
+  }, [end, start]);
+  const durationHrs = useMemo(() => {
+    if (!end || !start) return;
+    return (end - start) / 3600000;
+  }, [end, start]);
+
+  return {
+    compact,
+    event_day,
+    event_date,
+    event_time,
+    start_time,
+    end_time,
+    duration,
+    durationDays,
+    durationHrs,
+    minutes,
+  };
 };

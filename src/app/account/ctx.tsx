@@ -1,3 +1,5 @@
+"use client";
+
 import { ConvexCtx } from "@/app/ctx/convex";
 import { VxCtx } from "@/app/ctx/convex/vx";
 import { onSuccess } from "@/app/ctx/toast";

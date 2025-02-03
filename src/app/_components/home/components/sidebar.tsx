@@ -20,17 +20,8 @@ export const Sidebar = ({ className }: SidebarProps) => {
           { "translate-x-0": open },
         )}
       >
-        <Button
-          size="sm"
-          isIconOnly
-          variant="ghost"
-          color="default"
-          onPress={toggle}
-          className="group absolute right-6 top-6 z-[60] border-0 data-[hover=true]:opacity-100"
-        >
-          <Icon name="LeftChev" className="size-5 stroke-0 text-slate-500" />
-        </Button>
-        <section className="relative w-full space-y-6 rounded-xl border-[0.33px] border-primary-100 bg-chalk/80 p-2 shadow-lg backdrop-blur-2xl md:h-[calc(80vh)]">
+        <HideButton fn={toggle} />
+        <section className="relative w-full space-y-6 rounded-xl border-[0.33px] border-primary-100 bg-chalk/80 p-2 shadow-lg backdrop-blur-2xl md:h-[calc(60vh)]">
           <EventsList />
           <GetAwaysList />
           <ListTitle title="big ticket" />
@@ -42,10 +33,26 @@ export const Sidebar = ({ className }: SidebarProps) => {
 
 const ListTitle: FC<{ title: string }> = ({ title }) => (
   <div className="flex h-10 w-full items-center justify-between space-x-3 px-2">
-    <p className="whitespace-nowrap text-[11px] font-semibold uppercase text-slate-600 drop-shadow-sm">
+    <p className="whitespace-nowrap text-xs font-semibold uppercase text-slate-700 drop-shadow-sm">
       {title}
     </p>
   </div>
+);
+
+const HideButton = (props: { fn: VoidFunction }) => (
+  <Button
+    size="sm"
+    isIconOnly
+    variant="ghost"
+    onPress={props.fn}
+    className={cn(
+      "group absolute border-0 data-[hover=true]:opacity-100",
+      "right-6 top-6 z-[60]",
+      "md:right-10",
+    )}
+  >
+    <Icon name="LeftChev" className="size-5 stroke-0 text-slate-500" />
+  </Button>
 );
 
 interface IconWrapperProps {
@@ -137,7 +144,9 @@ const EventListItem = (l: Category) => (
       <IconWrapper className={cn("mx-2", l.color)}>
         <Icon name={l.icon} className="size-6 shrink-0 drop-shadow-sm" />
       </IconWrapper>
-      <h2 className="text-sm tracking-tight text-primary/80">{l.label}</h2>
+      <h2 className="text-sm capitalize tracking-tight text-primary/80">
+        {l.label}
+      </h2>
     </div>
     <ItemCounter count={l.count} color={l.color} />
   </div>
@@ -158,6 +167,15 @@ interface Category {
 const events: Category[] = [
   {
     id: 0,
+    keyId: "upcoming",
+    label: "upcoming",
+    href: "",
+    icon: "Upcoming",
+    count: 1,
+    color: "bg- text-slate-800",
+  },
+  {
+    id: 1,
     keyId: "nightlife",
     label: "Nightlife",
     href: "",
@@ -166,7 +184,7 @@ const events: Category[] = [
     color: "bg-macl-indigo text-slate-800",
   },
   {
-    id: 1,
+    id: 2,
     keyId: "concerts",
     label: "Concerts",
     href: "",

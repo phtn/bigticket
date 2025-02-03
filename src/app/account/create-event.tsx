@@ -1,3 +1,6 @@
+"use client";
+
+import { useMoment } from "@/hooks/useMoment";
 import { useScreen } from "@/hooks/useScreen";
 import { useToggle } from "@/hooks/useToggle";
 import { Icon, type IconName } from "@/icons";
@@ -6,7 +9,7 @@ import { TicketStack } from "@/ui/card/ticket";
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
 import { opts } from "@/utils/helpers";
-import { parseAbsolute, parseAbsoluteToLocal } from "@internationalized/date";
+import { parseAbsoluteToLocal } from "@internationalized/date";
 import {
   Button,
   DateRangePicker,
@@ -33,6 +36,10 @@ interface CreateNewEventProps {
   pathname: string;
   account_id: string | undefined;
 }
+interface DateRange {
+  start: DateValue;
+  end: DateValue;
+}
 export const CreateNewEvent = ({
   pathname,
   account_id,
@@ -42,10 +49,21 @@ export const CreateNewEvent = ({
   const [eventName, setEventName] = useState("");
   const [ticketCount, setTicketCount] = useState("");
   const [eventType, setEventType] = useState("");
-  const [eventTime] = useState("");
+  const [eventStartDate, setEventStartDate] = useState(0);
+  const [eventEndDate, setEventEndDate] = useState(0);
   const [eventSite, setEventSite] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventDay, setEventDay] = useState("");
+  const [eventDuration, setEventDuration] = useState(0);
+  const [dateRange, setDateRange] = useState<DateRange>({
+    start: parseAbsoluteToLocal(new Date().toISOString()),
+    end: parseAbsoluteToLocal(new Date().toISOString()),
+  });
+
+  const { event_time } = useMoment({
+    start: eventStartDate,
+    end: eventEndDate,
+  });
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setEventName(e.target.value);
@@ -69,18 +87,22 @@ export const CreateNewEvent = ({
   };
 
   const handleDateChange = (value: RangeValue<DateValue> | null) => {
-    // const short = value?.toDate("GMT").toLocaleDateString(); // mm/dd/yyyy
-    const dateString = value?.start.toDate("GMT");
-    const compact = moment(dateString).format("LL");
-    const day = moment(dateString).format("dddd");
+    const dateStr = {
+      start: value?.start ?? parseAbsoluteToLocal(new Date().toISOString()),
+      end: value?.end ?? parseAbsoluteToLocal(new Date().toISOString()),
+    };
+    setDateRange(dateStr);
+    const startDate = dateStr.start.toDate("GMT");
+    setEventStartDate(startDate.getTime());
+    const endDate = dateStr.end.toDate("GMT");
+    setEventEndDate(endDate.getTime());
+    setEventDuration(endDate.getTime() - startDate.getTime());
+
+    const compact = moment(dateStr.start).format("LL");
+    const day = moment(dateStr.start).format("dddd");
     setEventDate(compact);
     setEventDay(day);
   };
-
-  // const handleTimeChange = (value: TimeInputValue | null) => {
-  //   const time = moment(value).format("LT");
-  //   setEventTime(time);
-  // };
 
   const { createEvent } = useEvent();
 
@@ -105,7 +127,12 @@ export const CreateNewEvent = ({
       event_url: (fd.get("event_url") as string) ?? undefined,
       ticket_count: fd.get("ticket_count") as string,
     };
-    await createEvent(data);
+    await createEvent({
+      ...data,
+      start_date: eventStartDate,
+      end_date: eventEndDate,
+      duration: eventDuration,
+    });
     return data;
   };
 
@@ -177,7 +204,7 @@ export const CreateNewEvent = ({
               <TicketStack
                 title={eventName}
                 date={eventDate}
-                time={eventTime}
+                time={event_time.compact}
                 site={eventSite}
                 day={eventDay}
                 tickets={ticketCount}
@@ -221,26 +248,35 @@ export const CreateNewEvent = ({
                   <DateRangePicker
                     hideTimeZone
                     visibleMonths={1}
-                    className="col-span-2"
+                    className="col-span-2 overflow-hidden"
                     label="Event Duration"
+                    defaultValue={{
+                      ...dateRange,
+                    }}
                     onChange={handleDateChange}
                     popoverProps={{
                       placement: "top",
                     }}
-                    defaultValue={{
-                      start: parseAbsoluteToLocal(new Date().toISOString()),
-                      end: parseAbsolute(new Date().toISOString(), "GMT"),
-                    }}
+                    color="primary"
                     classNames={{
-                      inputWrapper: "shadow-none",
+                      bottomContent: "hidden",
+                      innerWrapper: "tracking-tighter sm:tracking-normal",
+                      inputWrapper: "shadow-none bg-white",
                       base: [
-                        "font-medium w-full border-[0.33px] rounded-xl border-macd-gray",
+                        "font-medium w-full border-[0.33px] rounded-2xl border-macd-gray",
                         "tracking-tight shadow-none",
                       ],
-                      popoverContent: "pointer-events-auto dark",
-                      segment:
-                        "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
+                      popoverContent:
+                        "min-w-[300px] py-5 pointer-events-auto rounded-3xl dark",
+                      calendarContent: "bg-gray-700/40 rounded-t-lg",
                     }}
+                    granularity="minute"
+                    // timeInputProps={{
+                    //   start: dateRange.start?.toDate("GMT"),
+                    //   end: dateRange.start?.toDate("GMT"),
+
+                    // }}
+                    // timeInputProps={{eventStartTime, eventEndTime}}
                   />
                   {/* <DatePicker
                     label={"Event Date"}
@@ -389,37 +425,4 @@ const select_data: EventSelectData[] = [
     placeholder: "",
     icon: "Bell",
   },
-  // {
-  //   id: "audience",
-  //   label: "Age Restriction",
-  //   items: [
-  //     {
-  //       key: "kids",
-  //       label: "Kids - 6 and up",
-  //     },
-  //     {
-  //       key: "teen",
-  //       label: "Teens - 13 and above",
-  //     },
-  //     {
-  //       key: "adult",
-  //       label: "Adult - 18 and above",
-  //     },
-  //   ],
-  //   placeholder: "",
-  //   icon: "Bell",
-  // },
 ];
-
-{
-  /* <section className="flex items-center gap-2">
-                  {["tag"]?.map((tag) => (
-                    <div
-                      key={tag}
-                      className="rounded-full bg-shade/60 px-3 py-1 text-xs hover:bg-gray-100"
-                    >
-                      {tag}
-                    </div>
-                  ))}
-                </section> */
-}

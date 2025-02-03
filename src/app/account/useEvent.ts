@@ -5,6 +5,11 @@ import { Err, guid, Ok } from "@/utils/helpers";
 import { useRouter } from "next/navigation";
 import { VxCtx } from "../ctx/convex/vx";
 
+interface ComputedDate {
+  start_date: number;
+  end_date: number;
+  duration: number;
+}
 export interface PrimaryCreateEvent {
   event_name: string;
   event_desc: string;
@@ -24,7 +29,7 @@ export const useEvent = () => {
   const { vx } = use(VxCtx)!;
 
   const createEvent = useCallback(
-    async (data: PrimaryCreateEvent) => {
+    async (data: PrimaryCreateEvent & ComputedDate) => {
       const event_id = guid();
       const args: InsertEvent = {
         ...data,
