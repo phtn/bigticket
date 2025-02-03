@@ -26,7 +26,7 @@ const Component = ({
     >
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0" />
-        <Drawer.Content className="fixed bottom-24 right-0 top-6 z-[100] flex h-fit w-fit flex-col rounded-3xl bg-transparent px-3 outline-none md:right-3">
+        <Drawer.Content className="fixed bottom-10 right-0 top-16 z-[100] flex h-fit w-fit flex-col bg-transparent outline-none">
           <Drawer.Title className="hidden">{title}</Drawer.Title>
           <Drawer.Description className="hidden">
             {description}
@@ -47,13 +47,13 @@ const Handle = ({ close }: { close: VoidFunction }) => (
 );
 
 const Body = ({ children }: PropsWithChildren) => (
-  <div className="border-steel/80 dark:bg-steel flex w-full items-start justify-between overflow-hidden border-[0.33px] bg-chalk text-foreground">
+  <div className="dark:bg-steel flex w-full items-start justify-between overflow-hidden border-[0.33px] bg-chalk text-foreground">
     {children}
   </div>
 );
 
 const Footer = ({ children }: PropsWithChildren) => (
-  <div className="border-steel w-full rounded-b-lg border-t-[0.5px] bg-primary/30 p-2 backdrop-blur-lg">
+  <div className="border-steel w-full rounded-b-md border-t-[0.5px] bg-primary/30 p-2 backdrop-blur-lg">
     <div className="mx-auto flex items-center justify-between">{children}</div>
   </div>
 );

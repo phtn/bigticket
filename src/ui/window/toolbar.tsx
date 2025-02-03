@@ -17,7 +17,7 @@ const ToolbarComponent = <T,>({
   return (
     <div
       className={cn(
-        "flex w-full justify-between rounded-t-2xl p-2",
+        "flex w-full justify-between rounded-tl-2xl p-2",
         { "h-[49px] items-center": size === "sm" },
         { "h-[80px] items-start": size === "md" },
         { "h-[120px] items-start": size === "lg" },
@@ -120,9 +120,9 @@ export const StaticToolbar = ({
   return (
     <div
       className={cn(
-        "flex h-[49px] items-center justify-between rounded-t-2xl p-2",
+        "flex h-[49px] items-center justify-between overflow-hidden p-2",
         // LIGHT
-        "border-steel border border-b-[0.33px]",
+        "border border-b-[0.33px] border-chalk",
         "fill-goddess",
         { "bg-demigod": variant === "demigod" },
         { "bg-god": variant === "god" },
@@ -164,7 +164,7 @@ export const SpToolbar = <T,>({
   return (
     <div
       className={cn(
-        "flex w-full justify-between rounded-t-2xl p-2",
+        "flex w-full justify-between rounded-t-2xl rounded-tr-none p-2",
         { "h-[49px] items-center": size === "sm" },
         { "h-[80px] items-start": size === "md" },
         { "h-[120px] items-start": size === "lg" },

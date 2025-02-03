@@ -48,19 +48,19 @@ const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(
   ) => {
     return (
       <div
-        className={cn("relative h-full w-full", className)}
+        className={cn("relative h-64 w-full md:h-full", className)}
         ref={ref}
         {...props}
       >
-        <div className="absolute top-0 z-[0] h-screen w-screen bg-void/10" />
+        <div className="absolute top-0 z-[0] h-full w-screen bg-void/10" />
         <WarpDrive
-          gridColor="#222"
+          gridColor="#111222"
           className="absolute -top-4 z-10 flex h-full w-full items-center justify-center bg-coal p-0 shadow-none"
         >
           <div />
         </WarpDrive>
         <section className="z-1 relative mx-auto max-w-full">
-          <div className="relative z-10 mx-auto max-w-screen-xl gap-12 px-4 py-28 md:px-8">
+          <div className="relative z-10 mx-auto max-w-screen-xl gap-12 px-4 py-16 md:px-8 md:py-28">
             <div className="leading-0 mx-auto max-w-3xl space-y-5 text-center lg:leading-5">
               <h2 className="font-geist group mx-auto flex w-fit items-center gap-2 rounded-3xl border-[2px] border-black/5 bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent px-5 py-2 text-sm text-gray-600 dark:border-white/5 dark:from-zinc-300/5 dark:via-gray-400/5 dark:text-gray-400">
                 <Icon
@@ -103,7 +103,7 @@ HeroSection.displayName = "HeroSection";
 const Hero = ({ children }: { children: ReactNode }) => {
   return (
     <div className="relative w-full">
-      <div className="absolute bottom-14 left-0 z-50 flex w-screen items-center justify-center text-white">
+      <div className="absolute bottom-8 left-0 z-50 flex w-screen items-center justify-center text-white md:bottom-14">
         {children}
       </div>
       <HeroSection />

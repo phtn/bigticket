@@ -54,7 +54,7 @@ export const Content = () => {
           </div>
 
           <div className="md:px-1.5 md:pt-2.5">
-            <CreateNewEvent pathname={pathname} account_id={vx?.account_id} />
+            <CreateNewEvent />
           </div>
         </div>
         <div

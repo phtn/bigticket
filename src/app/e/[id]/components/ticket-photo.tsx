@@ -41,7 +41,7 @@ export const TicketPhoto = ({ event }: TicketPhotoProps) => {
           time={""}
           site={event?.event_geo ?? event?.event_url}
           day={day}
-          tickets={String(event?.ticket_count)}
+          tickets={event?.ticket_count}
           color={ticket_color}
         />
       </div>

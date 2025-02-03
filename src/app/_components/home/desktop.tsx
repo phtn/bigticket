@@ -7,6 +7,7 @@ import { EventCard } from "./components/event-card";
 import { Hero } from "./components/hero";
 import { Collections } from "../sidebar";
 import { PreloadedEventsCtx } from "@/app/ctx/event/preload";
+import { categories, type Category } from "./components/category";
 
 export const DesktopView = () => {
   const { isInputHovered } = use(CursorCtx)!;
@@ -91,31 +92,3 @@ const MainContent = () => {
     </div>
   );
 };
-
-interface Category {
-  id: string;
-  value: string;
-}
-
-const categories: Category[] = [
-  {
-    id: "all",
-    value: "all",
-  },
-  {
-    id: "upcoming",
-    value: "upcoming",
-  },
-  {
-    id: "events",
-    value: "events",
-  },
-  {
-    id: "online",
-    value: "online",
-  },
-  {
-    id: "training",
-    value: "training",
-  },
-];

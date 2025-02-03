@@ -11,7 +11,6 @@ import {
   type ReactNode,
 } from "react";
 import { ConvexCtx } from "../convex";
-import { log } from "@/utils/logger";
 import { Err } from "@/utils/helpers";
 
 interface ImageURL {
@@ -54,7 +53,6 @@ export const PreloadedEventsCtxProvider = ({
     const promises = preloaded ? preloaded.map(collectEvent) : [];
     const resolve = await Promise.all(promises);
     if (resolve.length <= 0) setPending(false);
-    log("create signed", resolve);
     setSignedEvents(resolve);
   }, [preloaded, collectEvent]);
 

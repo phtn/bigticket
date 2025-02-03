@@ -74,11 +74,6 @@ export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
     }
   }, [direction]);
 
-  const transition = useCallback(
-    (i: number) => () => ({ delay: i * 0.05 + delay }),
-    [delay],
-  );
-
   const slicedData = useMemo(
     () => (reversed ? data?.slice(0, max).reverse() : data?.slice(0, max)),
     [data, max, reversed],
@@ -93,14 +88,14 @@ export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
           initial={direction}
           variants={variants}
           animate={{ opacity: 1, ...animate }}
-          transition={transition(j)}
+          transition={{ delay: j * 0.04 + delay }}
           className={baseItemStyle}
         >
           <Item {...i} />
         </motion.li>
       );
     },
-    [Item, baseItemStyle, keyId, animate, direction, variants, transition],
+    [Item, baseItemStyle, keyId, animate, direction, variants, delay],
   );
 
   const sortFn = useCallback(

@@ -8,7 +8,7 @@ interface TicketStackProps {
   day?: string;
   site?: string;
   time?: string;
-  tickets?: string;
+  tickets?: number;
   color?: string;
 }
 export const TicketStack = ({
@@ -64,11 +64,10 @@ export const TicketStack = ({
                 {date}
               </span>
             </div>
-            <div className="flex h-1/4 items-center justify-end space-x-0.5 whitespace-nowrap px-1">
+            <div className="flex h-1/4 flex-shrink-0 items-center justify-end space-x-0.5 whitespace-nowrap px-1">
               <span className="text-xl font-extrabold -tracking-wider">
                 {day}
               </span>
-              <span>&middot;</span>
               <span className="text-lg font-extrabold -tracking-wider">
                 {time}
               </span>
@@ -82,7 +81,7 @@ export const TicketStack = ({
 
 interface TicketProps {
   children: ReactNode;
-  tickets?: string;
+  tickets?: number;
   color?: string;
 }
 const Ticket = ({ children, tickets, color }: TicketProps) => {

@@ -22,18 +22,18 @@ export const useMoment = ({ date, start, end }: UseMoment) => {
     [atMinutes],
   );
 
-  const startTime = moment(start).format("LT");
+  const startTime = moment(start).format("LT").replaceAll(" ", "");
   const start_compact =
     startTime.substring(0, atMinutes(startTime)) +
-    startTime.substring(atMinutes(startTime) + 4);
+    startTime.substring(atMinutes(startTime) + 3);
   const start_time = useMemo(() => {
     return { full: startTime, compact: start_compact };
   }, [startTime, start_compact]);
 
-  const endTime = moment(end).format("LT");
+  const endTime = moment(end).format("LT").replaceAll(" ", "");
   const end_compact =
     endTime.substring(0, atMinutes(endTime)) +
-    endTime.substring(atMinutes(endTime) + 4);
+    endTime.substring(atMinutes(endTime) + 3);
   const end_time = useMemo(() => {
     return { full: endTime, compact: end_compact };
   }, [endTime, end_compact]);

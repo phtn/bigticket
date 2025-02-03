@@ -8,7 +8,7 @@ import { EventsList, GetAwaysList } from "./lists";
 export const Sidebar = ({ children, className }: SidebarProps) => {
   const { toggle, open } = use(SidebarCtx)!;
   return (
-    <aside className={cn("absolute z-50")}>
+    <aside className={cn("absolute z-[200] w-full")}>
       <div
         className={cn(
           "fixed flex w-[360px] -translate-x-[360px] items-start p-4 transition-transform duration-300 portrait:px-4",

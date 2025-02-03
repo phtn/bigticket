@@ -32,7 +32,7 @@ const poet = Poetsen_One({
 });
 export const metadata: Metadata = {
   title: "BigTicket",
-  description: "Concerts & Arts",
+  description: "Excitement guaranteed!",
   icons: [{ rel: "icon", url: "/icon/icon.svg" }],
 };
 

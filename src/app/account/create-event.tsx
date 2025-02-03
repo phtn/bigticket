@@ -1,9 +1,8 @@
 "use client";
 
 import { useMoment } from "@/hooks/useMoment";
-import { useScreen } from "@/hooks/useScreen";
 import { useToggle } from "@/hooks/useToggle";
-import { Icon, type IconName } from "@/icons";
+import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { TicketStack } from "@/ui/card/ticket";
 import { SideVaul } from "@/ui/vaul";
@@ -21,6 +20,7 @@ import {
   SelectItem,
   Textarea,
 } from "@nextui-org/react";
+import type { InsertEvent } from "convex/events/d";
 import moment from "moment";
 import {
   type ChangeEvent,
@@ -30,24 +30,16 @@ import {
   useRef,
   useState,
 } from "react";
-import { type PrimaryCreateEvent, useEvent } from "./useEvent";
+import { useEvent } from "./useEvent";
 
-interface CreateNewEventProps {
-  pathname: string;
-  account_id: string | undefined;
-}
 interface DateRange {
   start: DateValue;
   end: DateValue;
 }
-export const CreateNewEvent = ({
-  pathname,
-  account_id,
-}: CreateNewEventProps) => {
-  const { isDesktop } = useScreen();
+export const CreateNewEvent = () => {
   const { open, toggle } = useToggle();
   const [eventName, setEventName] = useState("");
-  const [ticketCount, setTicketCount] = useState("");
+  const [ticketCount, setTicketCount] = useState(0);
   const [eventType, setEventType] = useState("");
   const [eventStartDate, setEventStartDate] = useState(0);
   const [eventEndDate, setEventEndDate] = useState(0);
@@ -55,6 +47,7 @@ export const CreateNewEvent = ({
   const [eventDate, setEventDate] = useState("");
   const [eventDay, setEventDay] = useState("");
   const [eventDuration, setEventDuration] = useState(0);
+
   const [dateRange, setDateRange] = useState<DateRange>({
     start: parseAbsoluteToLocal(new Date().toISOString()),
     end: parseAbsoluteToLocal(new Date().toISOString()),
@@ -78,7 +71,7 @@ export const CreateNewEvent = ({
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
     switch (e.target.name) {
       case "ticket_count":
-        return setTicketCount(e.target.value);
+        return setTicketCount(+e.target.value);
       case "event_type":
         return setEventType(e.target.value);
       default:
@@ -106,32 +99,34 @@ export const CreateNewEvent = ({
 
   const { createEvent } = useEvent();
 
-  const initialState: PrimaryCreateEvent = {
+  const initialState: InsertEvent = {
+    event_id: "",
     event_desc: "",
     event_name: "",
-    event_date: "",
+    start_date: 0,
+    end_date: 0,
     event_type: "",
-    event_time: "",
     event_geo: "",
     event_url: "",
-    ticket_count: "",
+    ticket_count: 0,
+    category: "",
   };
-  const fn = async (initialState: PrimaryCreateEvent, fd: FormData) => {
-    const data: PrimaryCreateEvent = {
+  const fn = async (initialState: InsertEvent, fd: FormData) => {
+    const data: InsertEvent = {
+      event_id: "",
       event_name: fd.get("event_name") as string,
       event_desc: fd.get("event_desc") as string,
-      event_date: fd.get("event_date") as string,
       event_type: fd.get("event_type") as string,
-      event_time: fd.get("event_time") as string,
       event_geo: (fd.get("event_geo") as string) ?? undefined,
       event_url: (fd.get("event_url") as string) ?? undefined,
-      ticket_count: fd.get("ticket_count") as string,
     };
+
     await createEvent({
       ...data,
       start_date: eventStartDate,
       end_date: eventEndDate,
       duration: eventDuration,
+      ticket_count: ticketCount,
     });
     return data;
   };
@@ -145,7 +140,6 @@ export const CreateNewEvent = ({
         name="event_geo"
         label="Venue"
         onChange={handleChangeSite}
-        // defaultValue={eventSite}
         required
         classNames={{
           inputWrapper: "border-[0.33px] border-macd-gray shadow-none",
@@ -157,7 +151,6 @@ export const CreateNewEvent = ({
         name="event_url"
         label="URL"
         onChange={handleChangeSite}
-        // defaultValue={eventSite}
         required
         classNames={{
           inputWrapper: "border-[0.33px] border-macd-gray shadow-none",
@@ -171,16 +164,11 @@ export const CreateNewEvent = ({
   return (
     <div className="flex h-10 w-full items-center justify-end font-inter xl:space-x-1">
       <Button
-        href={`${pathname}/edit?page=${account_id}`}
-        size={isDesktop ? "sm" : "sm"}
+        size="sm"
         className="group/create bg-teal-500 px-2 text-chalk lg:flex"
         variant="solid"
         onPress={toggle}
       >
-        <Icon
-          name="Sparkles2"
-          className="size-3 stroke-0 group-hover/create:text-white md:size-4"
-        />
         <span className="text-xs font-normal tracking-tighter drop-shadow-sm group-hover/create:text-white md:text-sm md:font-medium">
           Create an event
         </span>
@@ -215,7 +203,7 @@ export const CreateNewEvent = ({
                 action={action}
                 className="w-full space-y-2 rounded-lg border-[0.0px] border-macd-gray bg-white p-4 md:space-y-3"
               >
-                <div className="grid w-full grid-cols-2 gap-4 md:px-2">
+                <div className="grid w-full grid-cols-8 gap-3 md:px-2">
                   {select_data.map((data) => (
                     <Select
                       id={data.id}
@@ -223,22 +211,47 @@ export const CreateNewEvent = ({
                       key={data.id}
                       label={data.label}
                       onChange={handleSelectChange}
-                      size={isDesktop ? "md" : "md"}
-                      className="w-full"
+                      size="md"
+                      className={cn(
+                        "w-full",
+                        data.id === "event_type" ? "col-span-2" : "col-span-3",
+                      )}
                       classNames={{
-                        popoverContent: "pointer-events-auto",
+                        popoverContent:
+                          "py-0.5 px-0 scroll h-fit pointer-events-auto overflow-y-scroll",
                         trigger:
                           "font-medium shadow-none border-[0.33px] border-macd-gray rounded-xl",
                         label: "text-xs md:text-sm font-medium capitalize",
                       }}
+                      selectorIcon={
+                        <Icon name="ArrowVertical" className="-pr-2" />
+                      }
                       items={data.items}
                       variant="flat"
+                      renderValue={(items) =>
+                        items.map((item) => (
+                          <div
+                            key={item.data?.key}
+                            className="text-xs font-medium"
+                          >
+                            {item.data?.label}
+                          </div>
+                        ))
+                      }
                     >
                       {(item) => (
                         <SelectItem
-                          className="w-full"
+                          className="w-full whitespace-nowrap ps-1"
                           key={item.key}
                           textValue={item.label}
+                          selectedIcon={(item) => (
+                            <Icon
+                              name="Check"
+                              className={cn("hidden size-3 text-teal-600", {
+                                flex: item.isSelected,
+                              })}
+                            />
+                          )}
                         >
                           {item.label}
                         </SelectItem>
@@ -248,7 +261,7 @@ export const CreateNewEvent = ({
                   <DateRangePicker
                     hideTimeZone
                     visibleMonths={1}
-                    className="col-span-2 overflow-hidden"
+                    className="col-span-8 overflow-hidden"
                     label="Event Duration"
                     defaultValue={{
                       ...dateRange,
@@ -271,46 +284,7 @@ export const CreateNewEvent = ({
                       calendarContent: "bg-gray-700/40 rounded-t-lg",
                     }}
                     granularity="minute"
-                    // timeInputProps={{
-                    //   start: dateRange.start?.toDate("GMT"),
-                    //   end: dateRange.start?.toDate("GMT"),
-
-                    // }}
-                    // timeInputProps={{eventStartTime, eventEndTime}}
                   />
-                  {/* <DatePicker
-                    label={"Event Date"}
-                    id="event_date"
-                    name="event_date"
-                    onChange={handleDateChange}
-                    size={isDesktop ? "md" : "sm"}
-                    className="shadow-none"
-                    classNames={{
-                      inputWrapper: "shadow-none",
-                      base: [
-                        "font-medium w-full border-[0.33px] rounded-xl border-macd-gray",
-                        "tracking-tight shadow-none",
-                      ],
-                      popoverContent: "pointer-events-auto",
-                      segment:
-                        "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
-                    }}
-                  /> */}
-                  {/* <TimeInput
-                    label="Event Time"
-                    id="event_time"
-                    name="event_time"
-                    size={isDesktop ? "md" : "sm"}
-                    onChange={handleTimeChange}
-                    classNames={{
-                      inputWrapper: "shadow-none",
-                      base: [
-                        "font-medium border-[0.33px] rounded-xl border-macd-gray",
-                      ],
-                      segment:
-                        "cursor-pointer focus:bg-macl-mint/20 hover:bg-gray-200",
-                    }}
-                  /> */}
                 </div>
                 <div className="w-full md:px-2">
                   <Input
@@ -362,10 +336,10 @@ export const CreateNewEvent = ({
 const FormContainer = ({ children }: { children: ReactNode }) => (
   <div
     className={cn(
-      "h-[76vh] w-[calc(94vw)]",
-      "sm:h-[80vh] sm:w-[calc(64vw)] sm:bg-army",
-      "md:h-[calc(80vh)] md:w-[calc(54vw)] md:bg-tan",
-      "lg:w-[calc(44vw)] lg:bg-peach",
+      "h-[80vh] w-[calc(94vw)]",
+      "sm:h-[80vh] sm:w-[calc(64vw)]",
+      "md:h-[calc(80vh)] md:w-[calc(54vw)]",
+      "lg:w-[calc(44vw)]",
       "xl:w-[calc(48vw)]",
     )}
   >
@@ -376,9 +350,8 @@ const FormContainer = ({ children }: { children: ReactNode }) => (
 interface EventSelectData {
   id: string;
   label: string;
-  items: Array<{ key: string; label: string }>;
-  placeholder: string;
-  icon: IconName;
+  items: Array<{ key: string; label: string; subtext?: string }>;
+  placeholder?: string;
 }
 const select_data: EventSelectData[] = [
   {
@@ -406,8 +379,6 @@ const select_data: EventSelectData[] = [
         label: "1000-2000",
       },
     ],
-    placeholder: "",
-    icon: "TicketFill",
   },
   {
     id: "event_type",
@@ -422,7 +393,65 @@ const select_data: EventSelectData[] = [
         label: "On-site",
       },
     ],
-    placeholder: "",
-    icon: "Bell",
+  },
+  {
+    id: "category",
+    label: "category",
+    items: [
+      {
+        key: "live",
+        label: "Concerts & Music Festivals",
+        subtext: "live music performance",
+      },
+      {
+        key: "sports",
+        label: "Sports Events",
+      },
+      {
+        key: "theater",
+        label: "Theater & Performing Arts",
+        subtext: "theater arts",
+      },
+      {
+        key: "seminar",
+        label: "Conferences & Seminars",
+        subtext: "training seminar",
+      },
+      {
+        key: "exhibition",
+        label: "Exhibitions & Trade Shows",
+        subtext: "trade shows",
+      },
+      {
+        key: "cultural",
+        label: "Festivals & Cultural Events",
+        subtext: "cultural events",
+      },
+      {
+        key: "party",
+        label: "Nightlife & Parties",
+        subtext: "parties",
+      },
+      {
+        key: "egames",
+        label: "Gaming & eSports",
+        subtext: "egames",
+      },
+      {
+        key: "online",
+        label: "Online & Virtual Events",
+        subtext: "online",
+      },
+      {
+        key: "hackaton",
+        label: "Hackaton",
+        subtext: "hackaton",
+      },
+      {
+        key: "rocket",
+        label: "Rocket Launch",
+        subtext: "rocket launch",
+      },
+    ],
   },
 ];

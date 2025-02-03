@@ -28,10 +28,7 @@ export const Home = () => {
 };
 
 const Loader = () => (
-  <WarpDrive
-    gridColor="#111"
-    className="relative -top-4 flex h-full w-full items-center justify-center py-56"
-  >
+  <WarpDrive className="relative -top-4 flex h-[96vh] w-full items-center justify-center md:py-48 lg:py-64">
     <div className="flex h-[24rem] w-full items-center justify-center px-10">
       <motion.div
         initial={{ scale: 2 }}

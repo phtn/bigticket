@@ -118,7 +118,7 @@ export function Window(props: WindowProps) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className={cn(
-          "flex w-full items-center justify-center rounded-2xl bg-void",
+          "flex w-full items-center justify-center rounded-2xl rounded-tr-none bg-void",
         )}
       >
         <motion.div
@@ -129,7 +129,7 @@ export function Window(props: WindowProps) {
           exit={{ scale: 0.85, opacity: 0, y: 20 }}
           className={cn(
             "w-full overflow-hidden shadow-xl",
-            "rounded-2xl",
+            "rouned-tr-none rounded-2xl",
             { "shadow-xl": shadow === "xl" },
             { "shadow-lg": shadow === "lg" },
             { "shadow-md": shadow === "md" },
@@ -165,20 +165,19 @@ export function FlatWindow(props: WindowProps & { className?: ClassName }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className={cn("flex w-full items-center justify-center rounded-2xl")}
+        className={cn("flex w-full items-center justify-center")}
       >
         <motion.div
-          initial={{ opacity: 0, borderRadius: 16 }}
-          animate={{ opacity: 1, borderRadius: 16 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           className={cn(
-            "w-full overflow-hidden shadow-xl",
-            "rounded-2xl",
+            "w-full overflow-hidden rounded-md shadow-xl",
             { "shadow-xl": shadow === "xl" },
             { "shadow-lg": shadow === "lg" },
             { "shadow-md": shadow === "md" },
             { "shadow-sm": shadow === "sm" },
-            "border-[0.33px]_ border-primary-300/50",
-            "bg-white",
+            "border-[0.33px]_",
+            "rounded-tr-none bg-white",
           )}
         >
           {props.toolbar ? (
@@ -204,7 +203,7 @@ export const WindowContent = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
       "relative overflow-hidden",
-      "rounded-b-2xl border-x border-b border-t-0 border-macl-gray",
+      "rounded-bl-md border-x border-b border-t-0 border-macl-gray",
       "",
     )}
   >
