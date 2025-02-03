@@ -1,23 +1,40 @@
+import { SidebarCtx } from "@/app/ctx/sidebar";
 import { Icon } from "@/icons";
 import { Button } from "@nextui-org/react";
+import { use } from "react";
 
 interface TopbarProps {
   event_name: string | undefined;
 }
-export const Topbar = ({ event_name }: TopbarProps) => (
-  <div className="flex h-16 w-full items-center justify-between px-4">
-    <div className="space-x-6 whitespace-nowrap">
-      <h1 className="text-2xl font-extrabold tracking-tighter">{event_name}</h1>
+export const Topbar = ({ event_name }: TopbarProps) => {
+  const { toggle } = use(SidebarCtx)!;
+  return (
+    <div className="flex h-16 w-full items-center justify-between px-2 md:px-4">
+      <div className="whitespace-nowrap">
+        <h1 className="max-w-[30ch] font-bold tracking-tighter sm:text-xl md:text-2xl md:font-extrabold">
+          {event_name}
+        </h1>
+      </div>
+      <section className="flex gap-2 md:gap-4">
+        <Button
+          onPress={toggle}
+          size="sm"
+          isIconOnly
+          className="bg-transparent"
+        >
+          <Icon
+            name="Settings2"
+            className="size-6 stroke-[0.5px] text-macl-gray"
+          />
+        </Button>
+        <Button size="sm" isIconOnly className="bg-transparent">
+          <Icon name="Tv" className="size-6 stroke-[0.5px] text-macl-gray" />
+        </Button>
+        <Button size="sm" variant="solid" color="primary">
+          Publish <span className="hidden md:flex">Event</span>
+          <Icon name="Launch" className="hidden size-4 md:flex" />
+        </Button>
+      </section>
     </div>
-    <section className="flex gap-4">
-      <Button size="sm" variant="flat" color="secondary">
-        Preview
-        <Icon name="EyeOpen" className="size-4" />
-      </Button>
-      <Button size="sm" variant="solid" color="primary">
-        Publish Event
-        <Icon name="Launch" className="size-4" />
-      </Button>
-    </section>
-  </div>
-);
+  );
+};

@@ -14,6 +14,7 @@ interface HyperListProps<T> {
   max?: number;
   children?: ReactNode;
   direction?: "up" | "down" | "left" | "right";
+  delay?: number;
 }
 
 export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
@@ -22,6 +23,7 @@ export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
     container,
     children,
     data,
+    delay = 0,
     direction = "down",
     itemStyle,
     keyId,
@@ -72,7 +74,10 @@ export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
     }
   }, [direction]);
 
-  const transition = (i: number) => ({ delay: i * 0.05 });
+  const transition = useCallback(
+    (i: number) => () => ({ delay: i * 0.05 + delay }),
+    [delay],
+  );
 
   const slicedData = useMemo(
     () => (reversed ? data?.slice(0, max).reverse() : data?.slice(0, max)),
@@ -95,7 +100,7 @@ export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
         </motion.li>
       );
     },
-    [Item, baseItemStyle, keyId, animate, direction, variants],
+    [Item, baseItemStyle, keyId, animate, direction, variants, transition],
   );
 
   const sortFn = useCallback(

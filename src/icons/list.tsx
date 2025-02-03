@@ -123,6 +123,28 @@ function ArrowRightUp(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+function ArrowVertical(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1"
+        d="M9 5c.59-.607 2.16-3 3-3s2.41 2.393 3 3M9 19c.59.607 2.16 3 3 3s2.41-2.393 3-3M12 2.231V21.77"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
 function Bell(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -340,6 +362,7 @@ function Check(props: SVGProps<SVGSVGElement>) {
     >
       <g fill="none" fillRule="evenodd">
         <path
+          strokeWidth={0}
           fill="currentColor"
           d="M21.546 5.111a1.5 1.5 0 0 1 0 2.121L10.303 18.475a1.6 1.6 0 0 1-2.263 0L2.454 12.89a1.5 1.5 0 1 1 2.121-2.121l4.596 4.596L19.424 5.111a1.5 1.5 0 0 1 2.122 0"
         ></path>
@@ -1248,6 +1271,7 @@ export const icons = {
   Airplane2,
   ArrowRight,
   ArrowRightUp,
+  ArrowVertical,
   Bell,
   Bookmark,
   Bookmark2,

@@ -7,7 +7,8 @@ import { use, useCallback, useMemo } from "react";
 import { EventEditorCtx } from "../ctx";
 
 export const CoverPhoto = ({ id }: { id: string | undefined }) => {
-  const { images, loading } = usePexels();
+  const { query, locale } = use(EventEditorCtx)!;
+  const { images, loading } = usePexels({ query, locale });
   const { currentIndex } = useCarousel();
 
   const { createUpload, uploading } = use(EventEditorCtx)!;
@@ -26,12 +27,12 @@ export const CoverPhoto = ({ id }: { id: string | undefined }) => {
         <Icon name="ImageIcon" className="size-24 opacity-20" />
       </div>
 
-      <div className="absolute top-0 z-10 flex h-10 w-full items-center justify-between text-xs">
+      <div className="absolute top-0 z-10 flex h-10 w-full items-center justify-between pe-2 text-xs">
         <div className="flex h-7 items-center gap-2 rounded-e-full bg-white/20 pe-2 ps-1 font-semibold text-white backdrop-blur-md">
           Cover Photo
           {loading ? <Spinner size="sm" color="default" /> : null}
         </div>
-        <div className="flex h-7 items-center rounded-full p-1.5 font-medium text-white backdrop-blur-md">
+        <div className="flex h-7 items-center rounded-full font-medium text-white backdrop-blur-md">
           <button
             onClick={handleImageSelect}
             className="group/check relative flex size-6 items-center justify-center rounded-full border border-white/60 bg-primary transition-all duration-300 hover:border-white"

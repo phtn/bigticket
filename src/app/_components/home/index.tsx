@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import { DesktopView } from "./desktop";
 import { MobileView } from "./mobile";
+import { Image } from "@nextui-org/react";
 
 export const Home = () => {
   const [ready, setReady] = useState<boolean>(false);
@@ -15,7 +16,7 @@ export const Home = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setReady(true);
-    }, 2500);
+    }, 4000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -29,15 +30,22 @@ export const Home = () => {
 const Loader = () => (
   <WarpDrive
     gridColor="#111"
-    className="relative -top-4 flex h-full w-full items-center justify-center p-44"
+    className="relative -top-4 flex h-full w-full items-center justify-center py-56"
   >
     <div className="flex h-[24rem] w-full items-center justify-center px-10">
       <motion.div
-        initial={{ scale: 3 }}
-        animate={{ scale: 0 }}
-        transition={{ duration: 0.4 }}
-        className="h-16 w-24 bg-white/5 backdrop-blur-sm"
-      ></motion.div>
+        initial={{ scale: 2 }}
+        animate={{ scale: 0, rotate: 720 }}
+        transition={{ duration: 6 }}
+        className="size-10 bg-transparent"
+      >
+        <Image
+          alt="star"
+          radius="none"
+          className="size-10"
+          src="/svg/star_v1.svg"
+        />
+      </motion.div>
     </div>
   </WarpDrive>
 );

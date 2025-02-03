@@ -2,6 +2,7 @@
 
 import { ConvexCtx } from "@/app/ctx/convex";
 import { Err, guid, Ok } from "@/utils/helpers";
+import { log } from "@/utils/logger";
 import { type Id } from "@vx/dataModel";
 import {
   createContext,
@@ -19,6 +20,12 @@ interface EventEditorCtxValues {
     field: "cover_url" | "photo_url",
   ) => Promise<Id<"events"> | null>;
   uploading: boolean;
+  query: string | undefined;
+  locale: string | undefined;
+  updateQueryParams: (
+    query: string | undefined,
+    locale: string | undefined,
+  ) => void;
 }
 export const EventEditorCtx = createContext<EventEditorCtxValues | null>(null);
 
@@ -28,6 +35,18 @@ export const EventEditorCtxProvider = ({
   children: ReactNode;
 }) => {
   const [uploading, setLoading] = useState(false);
+  const [query, setQuery] = useState<string | undefined>("cityscapes");
+  const [locale, setLocale] = useState<string | undefined>("en-US");
+
+  const updateQueryParams = useCallback(
+    (q: string | undefined, l: string | undefined) => {
+      setQuery(q);
+      setLocale(l);
+      log("query-data", [q, l]);
+    },
+    [],
+  );
+
   const { files, events } = use(ConvexCtx)!;
 
   const createUpload = useCallback(
@@ -68,8 +87,11 @@ export const EventEditorCtxProvider = ({
     () => ({
       createUpload,
       uploading,
+      query,
+      locale,
+      updateQueryParams,
     }),
-    [createUpload, uploading],
+    [createUpload, uploading, query, locale, updateQueryParams],
   );
   return <EventEditorCtx value={value}>{children}</EventEditorCtx>;
 };

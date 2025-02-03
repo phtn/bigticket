@@ -13,28 +13,24 @@ interface WarpBackgroundProps extends HTMLAttributes<HTMLDivElement> {
   gridColor?: string;
 }
 
-const Beam = ({
-  width,
-  x,
-  delay,
-  duration,
-}: {
+interface IBeam {
   width: string | number;
   x: string | number;
   delay: number;
   duration: number;
-}) => {
-  const hue = Math.floor(Math.random() * 360);
-  const ar = Math.floor(Math.random() * 10) + 1;
+  hue: number;
+  aspectRatio: number;
+}
 
+const Beam = ({ width, x, delay, duration, hue, aspectRatio }: IBeam) => {
   return (
     <motion.div
       style={
         {
           "--x": `${x}`,
           "--width": `${width}`,
-          "--aspect-ratio": `${ar}`,
-          "--background": `linear-gradient(hsl(${hue / 2} 60% 60%), transparent)`,
+          "--aspect-ratio": `${aspectRatio}`,
+          "--background": `linear-gradient(hsl(${hue / 2} 60% 80%), transparent)`,
         } as React.CSSProperties
       }
       className={`absolute left-[var(--x)] top-0 animate-pulse [aspect-ratio:1/var(--aspect-ratio)] [background:var(--background)] [width:var(--width)]`}
@@ -58,7 +54,7 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
   beamSize = 1,
   beamDelayMax = 6,
   beamDelayMin = 0,
-  beamDuration = 2,
+  beamDuration = 2.5,
   gridColor = "hsl(var(--border))",
   ...props
 }) => {
@@ -80,6 +76,9 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
   const rightBeams = useMemo(() => generateBeams(), [generateBeams]);
   const bottomBeams = useMemo(() => generateBeams(), [generateBeams]);
   const leftBeams = useMemo(() => generateBeams(), [generateBeams]);
+
+  const hue = useCallback(() => Math.floor(Math.random() * 360), []);
+  const aspectRatio = useCallback(() => Math.floor(Math.random() * 20) + 1, []);
 
   return (
     <div className={cn("relative bg-coal p-6", className)} {...props}>
@@ -104,6 +103,8 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
               x={`${beam.x * beamSize}%`}
               delay={beam.delay}
               duration={beamDuration}
+              hue={hue()}
+              aspectRatio={aspectRatio()}
             />
           ))}
         </div>
@@ -116,6 +117,8 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
               x={`${beam.x * beamSize}%`}
               delay={beam.delay}
               duration={beamDuration}
+              hue={hue()}
+              aspectRatio={aspectRatio()}
             />
           ))}
         </div>
@@ -128,6 +131,8 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
               x={`${beam.x * beamSize}%`}
               delay={beam.delay}
               duration={beamDuration}
+              hue={hue()}
+              aspectRatio={aspectRatio()}
             />
           ))}
         </div>
@@ -140,6 +145,8 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
               x={`${beam.x * beamSize}%`}
               delay={beam.delay}
               duration={beamDuration}
+              hue={hue()}
+              aspectRatio={aspectRatio()}
             />
           ))}
         </div>

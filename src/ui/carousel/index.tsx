@@ -237,6 +237,7 @@ const CarouselPrevious = forwardRef<
     <Button
       ref={ref}
       radius="none"
+      disableRipple
       className={cn(
         "absolute w-1/2 bg-transparent",
         orientation === "horizontal"
@@ -263,6 +264,7 @@ const CarouselNext = forwardRef<
     <Button
       ref={ref}
       radius="none"
+      disableRipple
       className={cn(
         "absolute h-full w-1/2 bg-transparent",
         orientation === "horizontal"

@@ -1,27 +1,33 @@
 import { getPexels } from "@/app/e/[id]/actions";
+import { type QueryData } from "@/app/e/[id]/components/pexels/types";
 import { Err } from "@/utils/helpers";
 import { type Photo } from "pexels";
 import { useCallback, useEffect, useState } from "react";
 
-export const usePexels = () => {
+export const usePexels = ({ query, locale }: QueryData) => {
   const [images, setImages] = useState<Photo[]>();
   const [page, setPage] = useState(1);
-  const [query, setQuery] = useState("cyberpunk");
   const [loading, setLoading] = useState(false);
 
   const loadImages = useCallback(
     async (page: number) => {
       setLoading(true);
-      const response = await getPexels(query, page, "ja-JP");
+      const response = await getPexels(
+        query ?? "cityscapes",
+        page,
+        locale ?? "en-US",
+      );
       if ("error" in response) {
         Err(setLoading, response.error);
         return;
       }
 
+      console.log(response.total_results);
+
       setImages(response.photos);
       setLoading(false);
     },
-    [query],
+    [query, locale],
   );
 
   useEffect(() => {
@@ -29,7 +35,7 @@ export const usePexels = () => {
       Err(setLoading);
       console.error(res);
     });
-  }, [loadImages, page, query]);
+  }, [loadImages, page]);
 
   const nextPage = useCallback(() => {
     setPage((prev) => prev + 1);
@@ -40,9 +46,5 @@ export const usePexels = () => {
     }
   }, [page]);
 
-  const updateQuery = useCallback((newQuery: string) => {
-    setQuery(newQuery);
-  }, []);
-
-  return { images, nextPage, prevPage, loading, updateQuery };
+  return { images, nextPage, prevPage, loading };
 };

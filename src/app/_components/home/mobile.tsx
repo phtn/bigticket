@@ -1,6 +1,6 @@
 import { HyperList } from "@/ui/list";
 import { EventCard } from "./components/event-card";
-import { HeroSection } from "./components/hero";
+import { Hero } from "./components/hero";
 import { use } from "react";
 import { VxCtx } from "@/app/ctx/convex/vx";
 import { Proxima } from "../proxima";
@@ -22,7 +22,9 @@ export const MobileView = () => {
           key={"hero"}
           className="flex h-80 w-full items-center justify-center"
         >
-          <HeroSection />
+          <Hero>
+            <div />
+          </Hero>
         </div>
       </HyperList>
       <Proxima />

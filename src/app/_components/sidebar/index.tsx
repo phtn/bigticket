@@ -34,13 +34,3 @@ export const Collections = () => {
     </Sidebar>
   );
 };
-
-export const ImageQuery = () => {
-  return (
-    <Sidebar className="-mt-4">
-      <section className="relative w-full space-y-6 rounded-xl border-[0.33px] border-primary-100 bg-chalk/80 p-2 shadow-lg backdrop-blur-2xl md:h-[calc(60vh)]">
-        <ListTitle title="big tickets" />
-      </section>
-    </Sidebar>
-  );
-};

@@ -1,7 +1,7 @@
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { WarpDrive } from "@/ui/loader/warp";
-import { type HTMLAttributes, forwardRef } from "react";
+import { type HTMLAttributes, type ReactNode, forwardRef } from "react";
 
 export interface HeroProps {
   headline: string;
@@ -9,8 +9,8 @@ export interface HeroProps {
 }
 
 interface HeroSectionProps extends HTMLAttributes<HTMLDivElement> {
-  title?: string;
-  subtitle?: {
+  badge?: string;
+  headline?: {
     regular: string;
     gradient: string;
   };
@@ -34,8 +34,8 @@ const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(
   (
     {
       className,
-      title = "The best are already here.",
-      subtitle = {
+      badge = "The best are already here.",
+      headline = {
         regular: "Excitement ",
         gradient: "guaranteed.",
       },
@@ -62,19 +62,19 @@ const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(
         <section className="z-1 relative mx-auto max-w-full">
           <div className="relative z-10 mx-auto max-w-screen-xl gap-12 px-4 py-28 md:px-8">
             <div className="leading-0 mx-auto max-w-3xl space-y-5 text-center lg:leading-5">
-              <h1 className="font-geist group mx-auto flex w-fit items-center gap-2 rounded-3xl border-[2px] border-black/5 bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent px-5 py-2 text-sm text-gray-600 dark:border-white/5 dark:from-zinc-300/5 dark:via-gray-400/5 dark:text-gray-400">
+              <h2 className="font-geist group mx-auto flex w-fit items-center gap-2 rounded-3xl border-[2px] border-black/5 bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent px-5 py-2 text-sm text-gray-600 dark:border-white/5 dark:from-zinc-300/5 dark:via-gray-400/5 dark:text-gray-400">
                 <Icon
                   name="Sparkles2"
                   className="inline size-4 stroke-0 duration-300 group-hover:scale-[1.15]"
                 />
-                <span>{title}</span>
-              </h1>
-              <h2 className="font-geist mx-auto bg-chalk bg-clip-text text-4xl tracking-tighter text-transparent md:text-6xl dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)]">
-                {subtitle.regular}
-                <span className="bg-gradient-to-r from-teal-600 to-pink-500 bg-clip-text text-transparent dark:from-teal-300 dark:to-orange-200">
-                  {subtitle.gradient}
-                </span>
+                <span>{badge}</span>
               </h2>
+              <h1 className="font-geist mx-auto bg-chalk bg-clip-text text-4xl tracking-tighter text-transparent md:text-6xl dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)]">
+                {headline.regular}
+                <span className="bg-gradient-to-r from-teal-600 to-pink-500 bg-clip-text text-transparent dark:from-teal-300 dark:to-orange-200">
+                  {headline.gradient}
+                </span>
+              </h1>
               <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300">
                 {description}
               </p>
@@ -100,4 +100,15 @@ const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(
 );
 HeroSection.displayName = "HeroSection";
 
-export { HeroSection };
+const Hero = ({ children }: { children: ReactNode }) => {
+  return (
+    <div className="relative w-full">
+      <div className="absolute bottom-14 left-0 z-50 flex w-screen items-center justify-center text-white">
+        {children}
+      </div>
+      <HeroSection />
+    </div>
+  );
+};
+
+export { Hero };

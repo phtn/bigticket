@@ -15,6 +15,7 @@ export const getPexels = async (
     locale,
     page,
     per_page: 15,
+    height: 400,
     orientation: "landscape",
   });
 

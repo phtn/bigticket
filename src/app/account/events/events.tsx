@@ -30,7 +30,7 @@ const EventsContent = () => {
 
   return (
     <div className="min-h-[80vh] w-full justify-center rounded-none bg-white md:rounded-lg md:px-6">
-      <div className="overflow-auto bg-white">
+      <div className="bg-white">
         <HyperList
           keyId="event_id"
           data={eventList}

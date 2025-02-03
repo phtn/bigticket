@@ -7,22 +7,26 @@ import { CoverPhoto } from "./components/cover-photo";
 import { TicketPhoto } from "./components/ticket-photo";
 import { Topbar } from "./components/topbar";
 import { EventEditorCtxProvider } from "./ctx";
+import { ImageQuery } from "./components/pexels";
 
 interface EventContentProps {
   id: string;
 }
 export const Content = ({ id }: EventContentProps) => {
   const { vxEvents } = use(VxCtx)!;
-  const event = vxEvents?.find((e) => e.event_id === id);
+  const [event_id] = id.split("---");
+  const event = vxEvents?.find((e) => e.event_id === event_id);
 
   return (
     <EventEditorCtxProvider>
-      <main className="h-[calc(92vh)] overflow-y-scroll">
+      <main className="h-screen">
         <Topbar event_name={event?.event_name} />
-        <div className="h-full px-4">
+        <ImageQuery />
+
+        <div className="h-full px-2 md:px-4">
           <Carousel>
-            <div className="grid h-fit min-h-[342px] w-full grid-cols-2 overflow-hidden rounded-md border border-primary bg-white">
-              <CoverPhoto id={id} />
+            <div className="grid h-fit w-full overflow-hidden rounded-xl border border-primary/60 bg-white md:min-h-[420px] md:grid-cols-2">
+              <CoverPhoto id={event_id} />
               <TicketPhoto event={event} />
             </div>
           </Carousel>

@@ -1,5 +1,6 @@
 "use client";
 
+import { getUserID } from "@/app/actions";
 import { ConvexCtx } from "@/app/ctx/convex";
 import { useMoment } from "@/hooks/useMoment";
 import { Icon } from "@/icons";
@@ -57,8 +58,10 @@ export const EventCardAccount = (event: SelectEvent) => {
   const { event_date, event_day } = useMoment({ date: event?.event_date });
 
   const router = useRouter();
-  const handleEditRoute = useCallback(() => {
-    router.push(`/account/e/${event.event_id}`);
+  const handleEditRoute = useCallback(async () => {
+    const userId = await getUserID();
+    if (!userId) return;
+    router.push(`/e/${event.event_id}---${userId}`);
   }, [router, event.event_id]);
 
   return (

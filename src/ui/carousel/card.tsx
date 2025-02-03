@@ -13,18 +13,15 @@ interface CardCarouselProps {
 
 export function CardCarousel({ data }: CardCarouselProps) {
   return (
-    <div className="flex size-full items-center justify-center object-cover">
-      <CarouselContent className="flex-shrink-0 object-cover">
+    <div className="flex h-full w-full items-center justify-center object-cover">
+      <CarouselContent className="object-cover">
         {data?.map((photo, idx) => (
-          <CarouselItem
-            key={idx}
-            className="size-full flex-shrink-0 bg-void p-0"
-          >
+          <CarouselItem key={idx} className="h-fit bg-pink-400 p-0">
             <Image
+              radius="none"
               alt={photo.alt ?? ""}
               src={photo.src.large}
-              radius="none"
-              className="flex-shrink-0 object-fill"
+              className="aspect-video h-[440px] w-auto flex-shrink-0 object-cover"
             />
           </CarouselItem>
         ))}
