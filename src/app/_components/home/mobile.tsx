@@ -2,18 +2,18 @@ import { HyperList } from "@/ui/list";
 import { EventCard } from "./components/event-card";
 import { Hero } from "./components/hero";
 import { use } from "react";
-import { VxCtx } from "@/app/ctx/convex/vx";
 import { Proxima } from "../proxima";
 import { Collections } from "../sidebar";
+import { PreloadedEventsCtx } from "@/app/ctx/event/preload";
 
 export const MobileView = () => {
-  const { vxEvents } = use(VxCtx)!;
+  const { signedEvents } = use(PreloadedEventsCtx)!;
   return (
     <div className="bg-coal">
       <Collections />
       <HyperList
         keyId="event_id"
-        data={vxEvents}
+        data={signedEvents}
         component={EventCard}
         container="space-y-4 h-[calc(80vh)] overflow-y-scroll"
         itemStyle=""

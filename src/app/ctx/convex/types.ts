@@ -47,7 +47,7 @@ export interface ConvexCtxValues {
 
   files: {
     create: (file?: File) => Promise<string | null>;
-    get: (storageId: string) => Promise<string | null>;
+    get: (storageId: string | undefined) => Promise<string | null>;
   };
   createvx: () => Promise<string | null>;
 

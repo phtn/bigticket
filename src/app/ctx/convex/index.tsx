@@ -97,7 +97,8 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const files = useMemo(
     () => ({
       create: async (file?: File) => await createUrl(file),
-      get: async (storageId: string) => await getFileUrl({ storageId }),
+      get: async (storageId: string | undefined) =>
+        storageId ? await getFileUrl({ storageId }) : null,
     }),
     [createUrl, getFileUrl],
   );

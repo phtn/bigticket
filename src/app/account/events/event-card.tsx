@@ -1,7 +1,7 @@
 "use client";
 
 import { getUserID } from "@/app/actions";
-import { ConvexCtx } from "@/app/ctx/convex";
+import { type SignedEvent } from "@/app/ctx/event/preload";
 import { useMoment } from "@/hooks/useMoment";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
@@ -13,48 +13,10 @@ import {
   Image,
   Spinner,
 } from "@nextui-org/react";
-import type { SelectEvent } from "convex/events/d";
 import { useRouter } from "next/navigation";
-import {
-  type Dispatch,
-  type SetStateAction,
-  type TransitionStartFunction,
-  use,
-  useCallback,
-  useEffect,
-  useState,
-  useTransition,
-} from "react";
+import { useCallback } from "react";
 
-export const EventCardAccount = (event: SelectEvent) => {
-  const [cover_url, setCoverURL] = useState<string | null>(null);
-  const { files } = use(ConvexCtx)!;
-
-  const createUrl = useCallback(async () => {
-    if (!event.cover_url) return null;
-    return await files.get(event.cover_url);
-  }, [files, event.cover_url]);
-
-  const [pending, fn] = useTransition();
-
-  const setFn = <T,>(
-    tx: TransitionStartFunction,
-    action: () => Promise<T>,
-    set: Dispatch<SetStateAction<T>>,
-  ) => {
-    tx(async () => {
-      set(await action());
-    });
-  };
-
-  const generateURL = useCallback(() => {
-    setFn(fn, createUrl, setCoverURL);
-  }, [createUrl]);
-
-  useEffect(() => {
-    generateURL();
-  }, [generateURL]);
-
+export const EventCardAccount = (event: SignedEvent) => {
   const { event_date, event_day } = useMoment({ date: event?.event_date });
 
   const router = useRouter();
@@ -82,13 +44,13 @@ export const EventCardAccount = (event: SelectEvent) => {
           <ButtonIcon icon="ChartIcon" bg="text-chalk" />
         </section>
       </CardHeader>
-      {cover_url ? (
+      {event.cover_src ? (
         <Image
           removeWrapper
           radius="none"
           alt="nightlife"
           className="z-0 h-full w-full border-0 object-cover"
-          src={cover_url}
+          src={event.cover_src}
         />
       ) : null}
       <CardFooter className="absolute bottom-0 z-10 border-t-1 border-primary/60 bg-black/40">
@@ -120,10 +82,10 @@ export const EventCardAccount = (event: SelectEvent) => {
             "active:scale-95 active:opacity-90",
             "group/btn transition-all duration-300",
           )}
-          disabled={pending}
+          disabled={!event}
           onClick={handleEditRoute}
         >
-          {pending ? (
+          {!event ? (
             <Spinner size="sm" color="default" />
           ) : (
             <Icon

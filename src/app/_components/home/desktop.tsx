@@ -6,7 +6,7 @@ import { use, useCallback, useState } from "react";
 import { EventCard } from "./components/event-card";
 import { Hero } from "./components/hero";
 import { Collections } from "../sidebar";
-import { PreloadedEventCtx } from "@/app/content";
+import { PreloadedEventsCtx } from "@/app/ctx/event/preload";
 
 export const DesktopView = () => {
   const { isInputHovered } = use(CursorCtx)!;
@@ -24,12 +24,11 @@ export const DesktopView = () => {
 };
 
 const MainContent = () => {
-  const prefetch = use(PreloadedEventCtx);
+  const { signedEvents } = use(PreloadedEventsCtx)!;
   const [selected, setSelected] = useState<string>("all");
 
   const handleSelectCategory = useCallback(
     (id: string) => () => {
-      console.log(id);
       setSelected(id);
     },
     [setSelected],
@@ -67,7 +66,7 @@ const MainContent = () => {
         <section id="photos" className="">
           <HyperList
             keyId="event_id"
-            data={prefetch?.events}
+            data={signedEvents}
             component={EventCard}
             container="overflow-scroll md:h-[calc(100vh)] columns-3 gap-4 sm:columns-3 px-4"
             delay={0.1}

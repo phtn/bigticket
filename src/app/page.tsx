@@ -11,6 +11,6 @@ export interface PageProps {
 const Page = async ({ params }: PageProps) => {
   const events = await fetchQuery(api.events.get.all);
   const { slug } = await params;
-  return <Content slug={slug} events={events} />;
+  return <Content slug={slug} preloaded={events} />;
 };
 export default Page;
