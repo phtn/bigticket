@@ -80,6 +80,6 @@ const sections: Section[] = [
     keyId: 9,
     id: "contact-us",
     title: "Contact Us",
-    content: `If you have any questions about this Privacy Policy or our data practices, please contact our Data Protection Officer at privacy@example.com or by mail at: Office of the Data Protection Officer, 123 Privacy Avenue, Washington, D.C. 20001, United States.`,
+    content: `If you have any questions about this Privacy Policy or our data practices, please contact our Data Protection Officer at phtn458@gmail.com or by mail at: Office of the Data Protection Officer, B6 L20 Sunflower St, Caloocan City 1425, Philippines.`,
   },
 ];

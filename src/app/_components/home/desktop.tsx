@@ -8,6 +8,7 @@ import { Hero } from "./components/hero";
 import { Collections } from "../sidebar";
 import { PreloadedEventsCtx } from "@/app/ctx/event/preload";
 import { categories, type Category } from "./components/category";
+import { Proxima } from "../proxima";
 
 export const DesktopView = () => {
   const { isInputHovered } = use(CursorCtx)!;
@@ -89,6 +90,8 @@ const MainContent = () => {
           </HyperList>
         </section>
       </main>
+
+      <Proxima />
     </div>
   );
 };

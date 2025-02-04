@@ -13,13 +13,11 @@ export const TermsOfUse = () => {
   );
 };
 
-const important_message = `Big Ticket Philippines ("we," "our," "us") is committed to protecting your
-                            privacy and safeguarding your personal information. This Privacy
-                            Policy explains how we collect, use, disclose, and safeguard your
-                            information when you visit our web application ("App") or use our
-                            services. By accessing or using our App, you agree to this Privacy
-                            Policy. If you do not agree with the terms, please do not use our
-                            services.`;
+const important_message = `Welcome to Big Ticket Philippines ("we," "our," "us"). By accessing or using our web application ("App") or any of our services, you agree to comply with and be bound by these Terms of Use.
+
+These terms govern your use of our App and services, including any content, features, and functionality offered. If you do not agree with these terms, please do not use our services.
+
+We are committed to providing a safe and enjoyable experience for all users. Please read these Terms of Use carefully to understand your rights and responsibilities when using our App.`;
 
 const sections: Section[] = [
   {
@@ -80,6 +78,6 @@ const sections: Section[] = [
     keyId: 9,
     id: "mobile-app",
     title: "Mobile App",
-    content: `If you install or use our mobile application, software, and services, including any accompanying documentation (collectively, the "App"), we grant you a limited right to install and use the App on a single authorized device located in the United States and its territories, or in another country where we may offer the App. You may use the App for your personal, non-commercial, and entertainment purposes only. We do not grant you any rights to any related documentation, support, upgrades, maintenance, or other enhancements to the App. We will not provide you with any device, internet access, or wireless connection to use the App. We are not responsible for any interaction between you and another App user, or information you transmit through the App (including your location).`,
+    content: `If you install or use our mobile application, software, and services, including any accompanying documentation (collectively, the "App"), we grant you a limited right to install and use the App on multiple authorized device located anywhere in the Philippines and its territories, or in another country where we may offer the App. You may use the App for your personal, non-commercial, and entertainment purposes only. We do not grant you any rights to any related documentation, support, upgrades, maintenance, or other enhancements to the App. We will not provide you with any device, internet access, or wireless connection to use the App. We are not responsible for any interaction between you and another App user, or information you transmit through the App (including your location).`,
   },
 ];
