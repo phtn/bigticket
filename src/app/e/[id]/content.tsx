@@ -8,14 +8,15 @@ import { TicketPhoto } from "./components/ticket-photo";
 import { Topbar } from "./components/topbar";
 import { EventEditorCtxProvider } from "./ctx";
 import { ImageQuery } from "./components/pexels";
+import { PreloadedEventsCtx } from "@/app/ctx/event";
 
 interface EventContentProps {
   id: string;
 }
 export const Content = ({ id }: EventContentProps) => {
-  const { vxEvents } = use(VxCtx)!;
+  const { signedEvents } = use(PreloadedEventsCtx)!;
   const [event_id] = id.split("---");
-  const event = vxEvents?.find((e) => e.event_id === event_id);
+  const event = signedEvents?.find((e) => e.event_id === event_id);
 
   return (
     <EventEditorCtxProvider>

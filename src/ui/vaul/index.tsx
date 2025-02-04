@@ -1,11 +1,8 @@
 import type { PropsWithChildren, ReactNode } from "react";
-import { Drawer } from "vaul";
+import { type DialogProps, Drawer } from "vaul";
 
 interface ComponentProps {
-  open: boolean;
-  onOpenChange: VoidFunction;
   children: ReactNode;
-  direction?: "bottom" | "top" | "left" | "right";
   title?: string;
   description?: string;
 }
@@ -16,13 +13,14 @@ const Component = ({
   onOpenChange,
   title,
   description,
-}: ComponentProps) => {
+  dismissible = false,
+}: ComponentProps & DialogProps) => {
   return (
     <Drawer.Root
       open={open}
       onOpenChange={onOpenChange}
       direction={direction}
-      dismissible={false}
+      dismissible={dismissible}
     >
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0" />

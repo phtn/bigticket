@@ -171,13 +171,13 @@ export function FlatWindow(props: WindowProps & { className?: ClassName }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className={cn(
-            "w-full overflow-hidden rounded-md shadow-xl",
+            "w-full overflow-hidden shadow-xl",
             { "shadow-xl": shadow === "xl" },
             { "shadow-lg": shadow === "lg" },
             { "shadow-md": shadow === "md" },
             { "shadow-sm": shadow === "sm" },
             "border-[0.33px]_",
-            "rounded-tr-none bg-white",
+            "bg-white",
           )}
         >
           {props.toolbar ? (
@@ -203,7 +203,7 @@ export const WindowContent = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
       "relative overflow-hidden",
-      "rounded-bl-md border-x border-b border-t-0 border-macl-gray",
+      "border-x-[0.33px] border-b border-t-0 border-gray-700",
       "",
     )}
   >

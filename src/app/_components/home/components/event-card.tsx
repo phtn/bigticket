@@ -1,7 +1,7 @@
 "use client";
 
 import { EventViewerCtx } from "@/app/ctx/event";
-import { type SignedEvent } from "@/app/ctx/event/preload";
+import { PreloadedEventsCtx, type SignedEvent } from "@/app/ctx/event/preload";
 import { useMoment } from "@/hooks/useMoment";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
@@ -13,11 +13,16 @@ import {
   Image,
   Spinner,
 } from "@nextui-org/react";
-import { use } from "react";
+import { use, useCallback } from "react";
 export const EventCard = (event: SignedEvent) => {
   const { event_date, event_day } = useMoment({ date: event?.event_date });
+  const { getEvent } = use(PreloadedEventsCtx)!;
   const { toggle } = use(EventViewerCtx)!;
 
+  const handleSelectEvent = useCallback(() => {
+    getEvent(event.event_id);
+    toggle();
+  }, [getEvent, event?.event_id, toggle]);
   return (
     <Card
       isFooterBlurred
@@ -68,7 +73,7 @@ export const EventCard = (event: SignedEvent) => {
           </div>
         </div>
         <button
-          onClick={toggle}
+          onClick={handleSelectEvent}
           className={cn(
             "flex size-8 items-center justify-center rounded-full",
             "bg-teal-500 hover:bg-teal-400",

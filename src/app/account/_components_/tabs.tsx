@@ -65,8 +65,7 @@ export const TabComponent = ({ children }: { children: ReactNode }) => {
           tab: "px-2 data-[hover-unselected]:opacity-100",
           panel: "md:pt-0 px-0 pt-12 md:px-6",
           base: "absolute overflow-x-scroll transition-all duration-300 flex -top-20 justify-center w-[calc(100vw)] sm:w-full md:left-80 sm:left-0 z-[200] -top-4 xl:left-[calc(30vw)] lg:w-[calc(36vw)] lg:left-80 lg:w-[calc(50vw)]",
-          wrapper:
-            "bg-macl-indigo border border-macl-indigo w-10 flex items-center ",
+          wrapper: "w-10 flex items-center ",
         }}
         items={tabs}
         onSelectionChange={handleSelect}

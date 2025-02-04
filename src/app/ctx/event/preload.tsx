@@ -1,5 +1,6 @@
 "use client";
 
+import { Err } from "@/utils/helpers";
 import type { SelectEvent } from "convex/events/d";
 import {
   createContext,
@@ -11,7 +12,6 @@ import {
   type ReactNode,
 } from "react";
 import { ConvexCtx } from "../convex";
-import { Err } from "@/utils/helpers";
 
 interface ImageURL {
   cover_src: string | null;
@@ -21,6 +21,8 @@ export type SignedEvent = SelectEvent & ImageURL;
 interface PreloadedEventsCtxValues {
   signedEvents: SignedEvent[] | undefined;
   pending: boolean;
+  selectedEvent: SignedEvent | null;
+  getEvent: (event_id: string) => void;
 }
 interface PreloadedEventsCtxProps {
   children: ReactNode;
@@ -34,10 +36,19 @@ export const PreloadedEventsCtxProvider = ({
   children,
   preloaded,
 }: PreloadedEventsCtxProps) => {
+  const [selectedEvent, setSelectedEvent] = useState<SignedEvent | null>(null);
   const [pending, setPending] = useState<boolean>(false);
-
   const [signedEvents, setSignedEvents] = useState<SignedEvent[]>();
   const { files } = use(ConvexCtx)!;
+
+  const getEvent = useCallback(
+    (event_id: string) => {
+      const event =
+        signedEvents?.find((event) => event.event_id === event_id) ?? null;
+      setSelectedEvent(event);
+    },
+    [signedEvents],
+  );
 
   const collectEvent = useCallback(
     async (event: SelectEvent) => ({
@@ -66,8 +77,10 @@ export const PreloadedEventsCtxProvider = ({
     () => ({
       signedEvents,
       pending,
+      selectedEvent,
+      getEvent,
     }),
-    [signedEvents, pending],
+    [signedEvents, pending, getEvent, selectedEvent],
   );
   return <PreloadedEventsCtx value={value}>{children}</PreloadedEventsCtx>;
 };

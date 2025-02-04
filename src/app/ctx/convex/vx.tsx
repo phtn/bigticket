@@ -16,23 +16,18 @@ import type {
   TransitionStartFunction,
 } from "react";
 import { ConvexCtx } from ".";
-import type { SelectEvent } from "convex/events/d";
 
 interface VxCtxValues {
   vx: SelectUser | null;
   pending: boolean;
-  vxEvents: SelectEvent[] | undefined;
   photo_url: string | null;
-  allEvents: SelectEvent[] | undefined;
 }
 export const VxCtx = createContext<VxCtxValues | null>(null);
 
 export const VxProvider = ({ children }: { children: ReactNode }) => {
   const [vx, setVx] = useState<SelectUser | null>(null);
   const [photo_url, setPhotoURL] = useState<string | null>(null);
-  const [vxEvents, setEvents] = useState<SelectEvent[]>();
-  const [allEvents, setAllEvents] = useState<SelectEvent[]>();
-  const { usr, createvx, events, files } = use(ConvexCtx)!;
+  const { usr, createvx, files } = use(ConvexCtx)!;
 
   const [pending, fn] = useTransition();
 
@@ -73,38 +68,18 @@ export const VxProvider = ({ children }: { children: ReactNode }) => {
     setFn(fn, getPhoto, setPhotoURL);
   }, [getPhoto]);
 
-  const getEventsByHost = useCallback(async () => {
-    if (!vx?.account_id) return;
-    return await events.get.byHostId(vx.account_id);
-  }, [events.get, vx?.account_id]);
-
-  const getVxEvents = useCallback(() => {
-    setFn(fn, getEventsByHost, setEvents);
-  }, [getEventsByHost]);
-
-  const getAllEvents = useCallback(async () => {
-    return events.get.all();
-  }, [events.get]);
-  const getEvents = useCallback(() => {
-    setFn(fn, getAllEvents, setAllEvents);
-  }, [getAllEvents]);
-
   useEffect(() => {
     getVxuser();
     getPhotoURL();
-    getVxEvents();
-    getEvents();
-  }, [getVxuser, getPhotoURL, getVxEvents, getEvents]);
+  }, [getVxuser, getPhotoURL]);
 
   const value = useMemo(
     () => ({
       vx,
       pending,
-      vxEvents,
       photo_url,
-      allEvents,
     }),
-    [vx, pending, vxEvents, photo_url, allEvents],
+    [vx, pending, photo_url],
   );
   return <VxCtx value={value}>{children}</VxCtx>;
 };

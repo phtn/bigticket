@@ -22,7 +22,7 @@ import Link from "next/link";
 import { type JSX, use, useCallback, useMemo } from "react";
 
 export const UserNav = () => {
-  const { photo_url, vx } = use(VxCtx)!;
+  const { photo_url } = use(VxCtx)!;
 
   const navs: INav[] = useMemo(
     () => [
@@ -42,8 +42,8 @@ export const UserNav = () => {
 
   const NavOptions = useCallback(() => {
     const options = opts(<Navs navs={navs} />, <UserLoader />);
-    return <nav>{options.get(!!vx)}</nav>;
-  }, [vx, navs]);
+    return <nav>{options.get(!!photo_url)}</nav>;
+  }, [photo_url, navs]);
 
   return <NavOptions />;
 };

@@ -50,10 +50,10 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
   children,
   perspective = 60,
   className,
-  beamsPerSide = 12,
-  beamSize = 1,
+  beamsPerSide = 2,
+  beamSize = 0.5,
   beamDelayMax = 6,
-  beamDelayMin = 0,
+  beamDelayMin = 0.1,
   beamDuration = 2.5,
   gridColor = "hsl(var(--border))",
   ...props
