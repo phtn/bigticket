@@ -14,8 +14,11 @@ export const Header = ({ title, children }: HeaderProps) => (
 
 export const Count = (props: { count: number | undefined }) => (
   <div className="relative flex size-8 items-center justify-center">
-    <Icon name="Squircle" className="absolute z-0 size-6 text-void md:size-8" />
-    <p className="z-1 relative text-sm font-semibold text-chalk md:text-[16px]">
+    <Icon
+      name="Squircle"
+      className="absolute z-0 size-6 text-macl-gray md:size-8"
+    />
+    <p className="z-1 relative text-sm font-medium text-chalk drop-shadow-sm md:text-[16px]">
       {props.count}
     </p>
   </div>

@@ -1,5 +1,5 @@
-import { Content } from "../_components/legal/content";
-import type { Section } from "../_components/legal/types";
+import { Content } from "@/app/_components_/legal/content";
+import type { Section } from "@/app/_components_/legal/types";
 
 export const PrivacyPolicy = () => {
   return (

@@ -9,7 +9,7 @@ import {
   Poetsen_One,
 } from "next/font/google";
 import Providers from "./ctx";
-import { Navbar } from "./_components/navbar";
+import { Navbar } from "./_components_/navbar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -33,7 +33,7 @@ const poet = Poetsen_One({
 export const metadata: Metadata = {
   title: "BigTicket",
   description: "Excitement guaranteed!",
-  icons: [{ rel: "icon", url: "/icon/icon.svg" }],
+  icons: [{ rel: "icon", url: "/icon/logomark.svg" }],
 };
 
 export default function RootLayout({

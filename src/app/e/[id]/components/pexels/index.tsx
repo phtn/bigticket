@@ -1,5 +1,5 @@
-import { Sidebar } from "@/app/_components/sidebar";
-import { ListTitle } from "@/app/_components/sidebar/components";
+import { Sidebar } from "@/app/_components_/sidebar";
+import { ListTitle } from "@/app/_components_/sidebar/components";
 import { PexelParamList } from "@/app/e/[id]/components/pexels/pexels";
 
 export const ImageQuery = () => {

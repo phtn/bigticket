@@ -51,3 +51,21 @@ export const deleteUserID = async () => {
   const cookieStore = await cookies();
   cookieStore.delete("big-ticket--id");
 };
+
+////////////////////
+/// ACCOUNT
+export const setAccountID = async (id: string) => {
+  const cookieStore = await cookies();
+  cookieStore.set("big-ticket--account-id", id, { ...defaultOpts, path: "/" });
+};
+
+export const getAccountID = async () => {
+  const cookieStore = await cookies();
+  const id = cookieStore.get("big-ticket--account-id")?.value;
+  return id;
+};
+
+export const deleteAccountID = async () => {
+  const cookieStore = await cookies();
+  cookieStore.delete("big-ticket--account-id");
+};

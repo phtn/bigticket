@@ -7,6 +7,7 @@ interface ButtonIconProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   bg?: ClassName;
   icon: IconName;
   color?: ClassName;
+  shadow?: ClassName;
 }
 export const ButtonIcon = (props: ButtonIconProps) => (
   <button
@@ -16,18 +17,22 @@ export const ButtonIcon = (props: ButtonIconProps) => (
     <Icon
       name="Squircle"
       className={cn(
-        "absolute z-0 size-10 text-background transition-all duration-200 group-hover/icon:scale-0",
+        "absolute z-0 size-10 text-background transition-all duration-100",
         props.bg,
       )}
     />
     <Icon
       name="Squircle"
-      className="z-1 absolute size-10 scale-0 text-teal-600 opacity-0 transition-all duration-300 group-hover/icon:scale-100 md:group-hover/icon:opacity-15"
+      className={cn(
+        "z-1 absolute size-10 scale-0 text-teal-600 opacity-0",
+        "transition-all duration-200 group-hover/icon:scale-100",
+        props.shadow,
+      )}
     />
     <Icon
       name={props.icon}
       className={cn(
-        "z-1 transitio-all absolute size-5 duration-300 group-hover/icon:text-gray-600",
+        "z-1 transitio-all absolute size-4 duration-300 group-hover/icon:size-5 group-hover/icon:text-gray-600",
         props.color,
       )}
     />

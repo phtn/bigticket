@@ -1,7 +1,7 @@
 import { fetchMutation } from "convex/nextjs";
 import { Content } from "./content";
 import { api } from "@vx/api";
-import { getUserID } from "@/app/actions";
+import { getAccountID } from "@/app/actions";
 
 export interface PageProps {
   params: Promise<{
@@ -10,11 +10,12 @@ export interface PageProps {
 }
 
 const Page = async ({ params }: PageProps) => {
-  const host_id = await getUserID();
-  const events = await fetchMutation(api.events.get.byHostId, {
-    host_id: host_id!,
-  });
-  console.log(events);
+  const host_id = await getAccountID();
+  const events = host_id
+    ? await fetchMutation(api.events.get.byHostId, {
+        host_id: host_id,
+      })
+    : [];
   const { slug } = await params;
   return <Content slug={slug} preloaded={events} />;
 };

@@ -38,7 +38,7 @@ export const EventCard = (event: SignedEvent) => {
           </h4>
         </section>
         <section className="flex size-8 items-center justify-center">
-          <ButtonIcon icon="BookmarkPlus" bg="text-chalk" />
+          <ButtonIcon icon="BookmarkPlus" bg="text-chalk" shadow="text-coal" />
         </section>
       </CardHeader>
       {event.cover_src ? (

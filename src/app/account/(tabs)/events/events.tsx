@@ -6,7 +6,7 @@ import { Spinner } from "@nextui-org/react";
 import { use, useCallback } from "react";
 import { EventCardAccount } from "./event-card";
 import { cn } from "@/lib/utils";
-import { Count, EmptyList, Header } from "../_components_/common";
+import { Count, EmptyList, Header } from "../../_components_/common";
 import { SidebarCtx } from "@/app/ctx/sidebar";
 import { PreloadedEventsCtx } from "@/app/ctx/event/";
 import { log } from "@/utils/logger";

@@ -1,6 +1,5 @@
 "use client";
 
-import { VxCtx } from "@/app/ctx/convex/vx";
 import { Carousel } from "@/ui/carousel";
 import { use } from "react";
 import { CoverPhoto } from "./components/cover-photo";
@@ -14,9 +13,9 @@ interface EventContentProps {
   id: string;
 }
 export const Content = ({ id }: EventContentProps) => {
-  const { signedEvents } = use(PreloadedEventsCtx)!;
+  const preloaded = use(PreloadedEventsCtx);
   const [event_id] = id.split("---");
-  const event = signedEvents?.find((e) => e.event_id === event_id);
+  const event = preloaded?.signedEvents?.find((e) => e.event_id === event_id);
 
   return (
     <EventEditorCtxProvider>

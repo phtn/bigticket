@@ -1,5 +1,7 @@
 "use client";
-import { ErrorComp } from "@/app/_components/error";
+
+import { ErrorComp } from "../_components_/error";
+
 export default function Error({
   error,
   reset,

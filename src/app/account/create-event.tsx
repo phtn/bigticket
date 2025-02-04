@@ -184,8 +184,8 @@ export const CreateNewEvent = () => {
           closeFn={toggle}
           icon="Sparkles2"
           title="Create New Event"
-          className="border-macd-gray bg-chalk"
-          variant="adam"
+          className="border-0 border-macd-gray bg-gray-200"
+          wrapperStyle="border-macd-gray border-[0.33px]"
         >
           <FormContainer>
             <div className="flex h-2/5 w-full items-center">
@@ -318,7 +318,7 @@ export const CreateNewEvent = () => {
                     }}
                   />
                 </div>
-                <div className="flex h-1/5 w-full items-center justify-between border tracking-tight">
+                <div className="flex h-1/5 w-full items-center justify-between tracking-tight">
                   <div className="flex space-x-4"></div>
                   <Button isLoading={pending} type="submit" color="primary">
                     Next <span className="ps-2">&rarr;</span>
@@ -340,7 +340,7 @@ const FormContainer = ({ children }: { children: ReactNode }) => (
       "sm:h-[80vh] sm:w-[calc(64vw)]",
       "md:h-[calc(80vh)] md:w-[calc(54vw)]",
       "lg:w-[calc(44vw)]",
-      "xl:w-[calc(48vw)]",
+      "xl:w-[calc(40vw)]",
     )}
   >
     {children}

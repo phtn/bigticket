@@ -1,4 +1,4 @@
-import { getUserID } from "@/app/actions";
+import { getUserID, setAccountID } from "@/app/actions";
 import type { SelectUser } from "convex/users/d";
 import {
   createContext,
@@ -16,6 +16,7 @@ import type {
   TransitionStartFunction,
 } from "react";
 import { ConvexCtx } from ".";
+import { Err } from "@/utils/helpers";
 
 interface VxCtxValues {
   vx: SelectUser | null;
@@ -72,6 +73,17 @@ export const VxProvider = ({ children }: { children: ReactNode }) => {
     getVxuser();
     getPhotoURL();
   }, [getVxuser, getPhotoURL]);
+
+  const setAccountId = useCallback(async (account_id: string | undefined) => {
+    if (!account_id) return;
+    await setAccountID(account_id);
+  }, []);
+
+  useEffect(() => {
+    if (vx?.account_id) {
+      setAccountId(vx.account_id).catch(Err);
+    }
+  }, [setAccountId, vx?.account_id]);
 
   const value = useMemo(
     () => ({

@@ -101,15 +101,24 @@ export const DialogWindow = <T,>(props: DialogWindowProps<T>) => {
 
 interface WindowProps {
   children?: ReactNode;
+  className?: ClassName;
   variant?: WindowVariant;
   shadow?: "sm" | "md" | "lg" | "xl";
   toolbar?: FC<StaticToolbarProps>;
   title?: string;
   icon?: IconName;
   closeFn?: VoidFunction;
+  wrapperStyle?: ClassName;
 }
 export function Window(props: WindowProps) {
-  const { children, shadow = "xl", title, variant, closeFn } = props;
+  const {
+    children,
+    shadow = "xl",
+    title,
+    variant,
+    closeFn,
+    wrapperStyle,
+  } = props;
 
   return (
     <AnimatePresence>
@@ -136,6 +145,7 @@ export function Window(props: WindowProps) {
             { "shadow-sm": shadow === "sm" },
             "dark:border-fade-dark/90 dark:bg-void",
             "border-fade-dark/20 border-[0.33px] bg-chalk",
+            wrapperStyle,
           )}
         >
           {props.toolbar ? (
@@ -156,8 +166,16 @@ export function Window(props: WindowProps) {
   );
 }
 
-export function FlatWindow(props: WindowProps & { className?: ClassName }) {
-  const { children, shadow = "xl", title, variant, closeFn, className } = props;
+export function FlatWindow(props: WindowProps) {
+  const {
+    children,
+    shadow = "xl",
+    title,
+    variant,
+    closeFn,
+    className,
+    wrapperStyle,
+  } = props;
 
   return (
     <AnimatePresence>
@@ -172,12 +190,12 @@ export function FlatWindow(props: WindowProps & { className?: ClassName }) {
           animate={{ opacity: 1 }}
           className={cn(
             "w-full overflow-hidden shadow-xl",
+            "bg-white",
+            wrapperStyle,
             { "shadow-xl": shadow === "xl" },
             { "shadow-lg": shadow === "lg" },
             { "shadow-md": shadow === "md" },
             { "shadow-sm": shadow === "sm" },
-            "border-[0.33px]_",
-            "bg-white",
           )}
         >
           {props.toolbar ? (
@@ -200,13 +218,7 @@ export function FlatWindow(props: WindowProps & { className?: ClassName }) {
 }
 
 export const WindowContent = ({ children }: PropsWithChildren) => (
-  <div
-    className={cn(
-      "relative overflow-hidden",
-      "border-x-[0.33px] border-b border-t-0 border-gray-700",
-      "",
-    )}
-  >
+  <div className={cn("relative overflow-hidden")}>
     <div className="bg-shadow/90 absolute top-0 h-[0.5px] w-full dark:bg-primary-200/80" />
 
     {children}

@@ -11,6 +11,19 @@ const SocialMediaSchema = v.object({
   icon: v.string(),
 });
 
+const ReviewSchema = v.object({
+  title: v.string(),
+  content: v.optional(v.string()),
+  score: v.float64(),
+  author_id: v.string(),
+  author_name: v.string(),
+  created_at: v.optional(v.string()),
+  updated_at: v.optional(v.string()),
+  likes: v.number(),
+  is_verified: v.boolean(),
+});
+export type Review = Infer<typeof ReviewSchema>;
+
 export const EventSchema = v.object({
   event_id: v.string(),
 
@@ -28,6 +41,7 @@ export const EventSchema = v.object({
   start_date: v.optional(v.float64()),
   end_date: v.optional(v.float64()),
   duration: v.optional(v.float64()),
+  reviews: v.optional(v.array(ReviewSchema)),
 
   //DETAILS
   category: v.optional(v.string()),

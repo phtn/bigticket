@@ -11,7 +11,10 @@ interface TicketPhotoProps {
 }
 export const TicketPhoto = ({ event }: TicketPhotoProps) => {
   const [ticket_color, setTicketColor] = useState("bg-macl-mint");
-  const {} = useMoment({ start: event?.start_date, end: event?.end_date });
+  const { event_time } = useMoment({
+    start: event?.start_date,
+    end: event?.end_date,
+  });
   const date = useMemo(
     () => moment(event?.event_date).format("LT"),
     [event?.event_date],
@@ -38,7 +41,7 @@ export const TicketPhoto = ({ event }: TicketPhotoProps) => {
         <TicketStack
           title={event?.event_name}
           date={date}
-          time={""}
+          time={event_time.compact}
           site={event?.event_geo ?? event?.event_url}
           day={day}
           tickets={event?.ticket_count}

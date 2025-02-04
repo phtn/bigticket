@@ -75,11 +75,10 @@ const NavItem = (nav: INav) => <div>{nav.content}</div>;
 
 export const Searchbar = () => {
   const { handleInputHover } = use(CursorCtx)!;
-  const { isDesktop } = useScreen();
   return (
     <div className={cn("relative flex w-44 items-center md:w-full")}>
       <Input
-        size={isDesktop ? "lg" : "md"}
+        size="md"
         radius="full"
         variant="flat"
         placeholder="Search events"
@@ -120,7 +119,7 @@ const UserAvatar = (props: { photo_url: string | undefined }) => {
   return (
     <div className="flex w-fit items-center px-4 md:gap-8">
       <Popover placement="bottom-end" onOpenChange={toggle}>
-        <PopoverTrigger className="cursor-pointer border border-primary-400">
+        <PopoverTrigger className="cursor-pointer border border-secondary">
           <Avatar
             alt="user-pfp"
             src={props?.photo_url}

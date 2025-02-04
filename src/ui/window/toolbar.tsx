@@ -1,8 +1,10 @@
-import { cn } from "@/lib/utils";
-import { type ChangeEvent, memo } from "react";
-import type { ToolbarProps, StaticToolbarProps } from "./types";
-import { Button, type ButtonProps } from "@nextui-org/react";
 import { Icon, type IconName } from "@/icons";
+import { cn } from "@/lib/utils";
+import { Button, type ButtonProps } from "@nextui-org/react";
+import { type ChangeEvent, memo } from "react";
+import { type WindowVariant } from ".";
+import { ButtonIcon } from "../button";
+import type { StaticToolbarProps, ToolbarProps } from "./types";
 
 const ToolbarComponent = <T,>({
   children,
@@ -36,7 +38,7 @@ const ToolbarComponent = <T,>({
     >
       <section className="flex h-12 w-full items-center gap-4">
         <Indicator onPress={action} isLoading={loading} name={icon} />
-        {title ? <Title title={title} /> : null}
+        {title ? <Title variant={variant} title={title} /> : null}
         {children}
       </section>
 
@@ -45,9 +47,16 @@ const ToolbarComponent = <T,>({
   );
 };
 
-const Title = (props: { title?: string }) => {
+const Title = (props: { title?: string; variant?: WindowVariant }) => {
   return (
-    <h2 className="text-sm font-medium tracking-tight text-void/80">
+    <h2
+      className={cn(
+        "font-inter text-sm font-semibold tracking-tight text-void/80",
+        {
+          "text-chalk/90": props.variant === "god",
+        },
+      )}
+    >
       {props.title}
     </h2>
   );
@@ -71,7 +80,10 @@ const Indicator = (props: ButtonProps & { name: IconName }) => {
 const CloseButton = (props: ButtonProps) => {
   return (
     <Button size="sm" variant="light" {...props} isIconOnly>
-      <Icon name="Close" className="size-4 stroke-0 text-primary/80" />
+      <Icon
+        name="Close"
+        className={cn("size-4 stroke-0 text-primary/80", {})}
+      />
     </Button>
   );
 };
@@ -112,9 +124,7 @@ export const StaticToolbar = ({
   children,
   title,
   variant = "demigod",
-  loading = false,
   icon = "TicketFill",
-  action = () => null,
   className,
 }: StaticToolbarProps) => {
   return (
@@ -125,25 +135,30 @@ export const StaticToolbar = ({
         "border border-b-[0.33px] border-chalk",
         "fill-goddess",
         { "bg-demigod": variant === "demigod" },
-        { "bg-god": variant === "god" },
+        { "bg-primary": variant === "god" },
         { "bg-goddess": variant === "goddess" },
         "",
         // DARK
-        "bg-primary/30 backdrop-blur-lg",
+        "backdrop-blur-lg",
         className,
       )}
     >
-      <section className="flex h-12 w-full items-center space-x-0">
-        <Indicator onPress={action} isLoading={loading} name={icon} />
-        {title ? <Title title={title} /> : null}
+      <section className="flex h-12 w-full items-center space-x-2">
+        <Icon
+          name={icon}
+          className={cn("size-5", { "text-gray-200/80": variant === "god" })}
+        />
+
+        {title ? <Title title={title} variant={variant} /> : null}
         {children}
       </section>
 
-      {closeFn ? (
-        <CloseButton onPress={closeFn}>
-          <Icon name="Close" className="size-4" />
-        </CloseButton>
-      ) : null}
+      <ButtonIcon
+        onClick={closeFn}
+        icon="Close"
+        bg="opacity-0"
+        color="text-gray-400 group-hover/icon:text-army/80 size-6 stroke-0"
+      />
     </div>
   );
 };
