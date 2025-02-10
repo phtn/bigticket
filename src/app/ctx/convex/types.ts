@@ -16,6 +16,10 @@ export interface ConvexCtxValues {
       status: (id: string, is_active: boolean) => Promise<Id<"users"> | null>;
       role: (id: string, role: string) => Promise<Id<"users"> | null>;
       photo_url: (id: string, photo_url: string) => Promise<Id<"users"> | null>;
+      likes: (id: string, target_id: string) => Promise<Id<"users"> | null>;
+      bookmarks: (id: string, target_id: string) => Promise<Id<"users"> | null>;
+      followers: (id: string, target_id: string) => Promise<Id<"users"> | null>;
+      following: (id: string, target_id: string) => Promise<Id<"users"> | null>;
     };
     add: {
       metadata: (

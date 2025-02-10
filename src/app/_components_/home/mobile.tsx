@@ -51,7 +51,7 @@ export const MobileView = () => {
         keyId="event_id"
         data={signedEvents}
         component={EventCard}
-        container="space-y-4 h-[calc(80vh)] overflow-y-scroll"
+        container="space-y-4 h-full"
         itemStyle=""
       >
         <div
@@ -60,7 +60,7 @@ export const MobileView = () => {
         >
           <Hero>
             <HyperList
-              container="flex w-fit gap-4"
+              container="flex w-fit gap-2.5 md:gap-4"
               data={categories}
               component={CategoryItem}
               direction="up"

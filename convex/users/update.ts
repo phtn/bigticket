@@ -81,3 +81,72 @@ export const photo_url = mutation({
     return user._id;
   },
 });
+
+export const likes = mutation({
+  args: { id: v.string(), target_id: v.string() },
+  handler: async ({ db }, { id, target_id }) => {
+    const user = await checkUser(db, id);
+
+    if (user === null || target_id === "") {
+      return null;
+    }
+
+    const userLikes = user?.likes && [...user.likes, target_id];
+    await db.patch(user._id, { likes: userLikes, updated_at: Date.now() });
+    return user._id;
+  },
+});
+
+export const bookmarks = mutation({
+  args: { id: v.string(), target_id: v.string() },
+  handler: async ({ db }, { id, target_id }) => {
+    const user = await checkUser(db, id);
+
+    if (user === null || target_id === "") {
+      return null;
+    }
+
+    const userBookmarks = user?.bookmarks && [...user.bookmarks, target_id];
+    await db.patch(user._id, {
+      bookmarks: userBookmarks,
+      updated_at: Date.now(),
+    });
+    return user._id;
+  },
+});
+
+export const following = mutation({
+  args: { id: v.string(), target_id: v.string() },
+  handler: async ({ db }, { id, target_id }) => {
+    const user = await checkUser(db, id);
+
+    if (user === null || target_id === "") {
+      return null;
+    }
+
+    const userFollowing = user?.following && [...user.following, target_id];
+    await db.patch(user._id, {
+      following: userFollowing,
+      updated_at: Date.now(),
+    });
+    return user._id;
+  },
+});
+
+export const followers = mutation({
+  args: { id: v.string(), target_id: v.string() },
+  handler: async ({ db }, { id, target_id }) => {
+    const user = await checkUser(db, id);
+
+    if (user === null || target_id === "") {
+      return null;
+    }
+
+    const userFollowers = user?.followers && [...user.followers, target_id];
+    await db.patch(user._id, {
+      followers: userFollowers,
+      updated_at: Date.now(),
+    });
+    return user._id;
+  },
+});

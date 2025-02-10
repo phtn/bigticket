@@ -45,6 +45,8 @@ export const UserSchema = v.object({
   following: v.optional(v.array(v.string())),
   follower_count: v.optional(v.number()),
   following_count: v.optional(v.number()),
+  likes: v.optional(v.array(v.string())),
+  bookmarks: v.optional(v.array(v.string())),
   role: v.optional(v.array(v.string())),
   activation_code: v.optional(v.string()),
   updated_at: v.optional(v.float64()),

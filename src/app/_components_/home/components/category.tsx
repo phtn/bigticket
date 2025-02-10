@@ -48,7 +48,8 @@ export const CategoryButton = ({
           "bg-gradient-to-tr from-zinc-400/20 via-gray-500/20 to-slate-500/20",
           "cursor-pointer tracking-tight backdrop-blur-md",
           {
-            "border-coal/80 bg-chalk/80 text-coal": selected === category.id,
+            "border-coal/80 bg-white text-black opacity-100":
+              selected === category.id,
           },
           "hover:bg-",
         )}

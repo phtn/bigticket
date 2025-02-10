@@ -31,6 +31,10 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const updateRole = useMutation(api.users.update.role);
   const updateUserPhotoUrl = useMutation(api.users.update.photo_url);
   const addMetadata = useMutation(api.users.add.metadata);
+  const updateUserLikes = useMutation(api.users.update.likes);
+  const updateUserBookmarks = useMutation(api.users.update.bookmarks);
+  const updateUserFollowers = useMutation(api.users.update.followers);
+  const updateUserFollowing = useMutation(api.users.update.following);
 
   const usr = useMemo(
     () => ({
@@ -50,6 +54,14 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
           await updateRole({ id, role }),
         photo_url: async (id: string, photo_url: string) =>
           await updateUserPhotoUrl({ id, photo_url }),
+        likes: async (id: string, target_id: string) =>
+          await updateUserLikes({ id, target_id }),
+        bookmarks: async (id: string, target_id: string) =>
+          await updateUserBookmarks({ id, target_id }),
+        followers: async (id: string, target_id: string) =>
+          await updateUserFollowers({ id, target_id }),
+        following: async (id: string, target_id: string) =>
+          await updateUserFollowing({ id, target_id }),
       },
       add: {
         metadata: async (
@@ -70,6 +82,10 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
       updateStatus,
       updateRole,
       updateUserPhotoUrl,
+      updateUserLikes,
+      updateUserBookmarks,
+      updateUserFollowers,
+      updateUserFollowing,
     ],
   );
 

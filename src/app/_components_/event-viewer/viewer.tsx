@@ -1,14 +1,16 @@
+import { type ActionItem } from "@/app/ctx/event/viewer";
+import { useMoment } from "@/hooks/useMoment";
+import { Icon } from "@/icons";
+import { cn } from "@/lib/utils";
+import { HyperList } from "@/ui/list";
 import { SideVaul } from "@/ui/vaul";
+import { FlatWindow } from "@/ui/window";
+import { normalizeTitle } from "@/utils/helpers";
+import { Button, Card, Image, Tab, Tabs } from "@nextui-org/react";
+import NumberFlow from "@number-flow/react";
 import { type ReactNode, use, useMemo } from "react";
 import { EventViewerCtx, PreloadedEventsCtx } from "../../ctx/event";
-import { FlatWindow } from "@/ui/window";
-import { cn } from "@/lib/utils";
-import { Button, Card, Image, Tab, Tabs } from "@nextui-org/react";
 import { type SignedEvent } from "../../ctx/event/preload";
-import { Icon, type IconName } from "@/icons";
-import { HyperList } from "@/ui/list";
-import { normalizeTitle } from "@/utils/helpers";
-import { useMoment } from "@/hooks/useMoment";
 
 export const EventViewer = () => {
   const { open, toggle } = use(EventViewerCtx)!;
@@ -29,7 +31,7 @@ export const EventViewer = () => {
         title="Starts in 32 days"
         variant="god"
         className="rounded-none border-0 bg-void"
-        wrapperStyle="border-gray-700 md:border-l-2"
+        wrapperStyle="border-gray-500 md:border-l-2"
       >
         <Container>
           <MediaContainer event={preloaded?.selectedEvent} />
@@ -39,14 +41,14 @@ export const EventViewer = () => {
   );
 };
 const Container = ({ children }: { children: ReactNode }) => (
-  <div className={cn("h-screen md:h-[86.5vh]", "w-full")}>{children}</div>
+  <div className={cn("h-screen md:h-full", "w-full")}>{children}</div>
 );
 
 interface MediaContainerProps {
   event: SignedEvent | null | undefined;
 }
 const MediaContainer = ({ event }: MediaContainerProps) => {
-  const { start_time } = useMoment({
+  const { start_time, narrow, event_time, durationHrs, compact } = useMoment({
     date: event?.event_date,
     start: event?.start_date,
     end: event?.end_date,
@@ -54,16 +56,16 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
   const info_grid_data: InfoItem[] = useMemo(
     () => [
       { label: "Ticket Sales", value: "OPEN" },
-      { label: "Tickets Sold", value: "780" },
+      { label: "Tickets Sold", value: event?.tickets_sold ?? 0 },
       { label: "Tickets Remaining", value: "50" },
-      { label: "Date", value: "" },
-      { label: "Time", value: "12:59PM-12:59AM" },
-      { label: "Duration", value: "3 hours" },
-      { label: "Likes", value: "380" },
-      { label: "Views", value: "1,210" },
-      { label: "Favorites", value: "2,680" },
+      { label: "Date", value: compact },
+      { label: "Time", value: event_time.compact },
+      { label: "Duration", value: `${durationHrs} hours` },
+      { label: "Likes", value: event?.likes ?? 0 },
+      { label: "Views", value: event?.views ?? 0 },
+      { label: "Favorites", value: event?.audience },
     ],
-    [],
+    [event, compact, event_time.compact, durationHrs],
   );
 
   const event_name = normalizeTitle(event?.event_name);
@@ -99,8 +101,9 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
                 className="relative z-0 size-full"
               />
               <div className="absolute bottom-2 left-2 z-10 w-fit space-y-0.5 rounded-sm bg-void/40 py-3 backdrop-blur-sm">
-                <p className="w-fit rounded-e-xl bg-void/60 px-1.5 py-0.5 text-xs tracking-wide text-peach">
-                  THU 10/08 {start_time.compact}
+                <p className="w-fit space-x-1.5 rounded-e-xl bg-void/60 px-1.5 py-0.5 text-xs uppercase tracking-wide text-peach">
+                  <span>{narrow.day}</span> <span>{narrow.date}</span>{" "}
+                  <span>{start_time.compact}</span>
                 </p>
                 <div className="px-3">
                   {event_name?.map((word, i) => (
@@ -123,17 +126,30 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
 
       <div className="z-1 relative bg-primary">
         <Button
-          disableRipple
           size="lg"
+          disableRipple
           color="primary"
           className="h-16"
-          fullWidth
           radius="none"
+          fullWidth
         >
           <div className="flex items-center gap-6">
-            <span className="text-xl font-bold">Get Tickets</span>
-            <span className="text-xl font-bold">&rarr;</span>
-            <div className="rounded-sm px-4 py-1 text-2xl">$0.00</div>
+            <span className="text-xl font-bold">
+              <span className="font-semibold italic text-slate-300">Buy</span>{" "}
+              Tickets
+            </span>
+            <span className="text-xl font-extrabold"></span>
+            <div className="rounded-sm px-4 py-1 text-2xl">
+              <NumberFlow
+                value={event?.ticket_value ?? 0}
+                format={{
+                  notation: "standard",
+                  currency: "PHP",
+                  currencyDisplay: "narrowSymbol",
+                  style: "currency",
+                }}
+              />
+            </div>
           </div>
         </Button>
       </div>
@@ -165,7 +181,7 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
 
 interface InfoItem {
   label: string;
-  value: string | number;
+  value: string | number | undefined;
 }
 
 const InfoGridItem = (info: InfoItem) => (
@@ -180,64 +196,36 @@ const InfoGridItem = (info: InfoItem) => (
   </Card>
 );
 
-interface ActionItem {
-  id: number;
-  label: string;
-  icon: IconName;
-}
 const ActionPanel = () => {
-  const actions: ActionItem[] = useMemo(
-    () => [
-      {
-        id: 0,
-        label: "support",
-        icon: "Support",
-      },
-      {
-        id: 1,
-        label: "geolocation",
-        icon: "MapPin",
-      },
-      {
-        id: 2,
-        label: "website",
-        icon: "Globe",
-      },
-      {
-        id: 3,
-        label: "bookmark",
-        icon: "BookmarkPlus",
-      },
-      {
-        id: 4,
-        label: "share",
-        icon: "Share",
-      },
-    ],
-    [],
-  );
+  const { actions } = use(EventViewerCtx)!;
+
   return (
     <HyperList
       data={actions}
       component={ActionButton}
-      container="grid h-14 grid-cols-5 w-full border-b-[0.33px] border-zinc-400 bg-white font-medium"
+      container="grid h-14 grid-cols-6 w-full border-b-[0.33px] border-zinc-400 bg-white font-medium"
       delay={0.3}
       direction="up"
     />
   );
 };
 
-const ActionButton = (action: ActionItem) => (
-  <Button
-    id={action.label}
-    name={action.label}
-    disableRipple
-    radius="none"
-    className={cn(
-      "flex h-full w-full items-center justify-center bg-white p-0",
-      "hover:bg-gray-200",
-    )}
-  >
-    <Icon name={action.icon} className="size-5" />
-  </Button>
-);
+const ActionButton = (action: ActionItem) => {
+  const { selectedEvent } = use(PreloadedEventsCtx)!;
+
+  return (
+    <Button
+      id={action.label}
+      name={action.label}
+      onPress={action.fn(selectedEvent?.event_id)}
+      disableRipple
+      radius="none"
+      className={cn(
+        "flex h-full w-full items-center justify-center bg-white p-0",
+        "hover:bg-gray-200",
+      )}
+    >
+      <Icon name={action.icon} className="size-5" />
+    </Button>
+  );
+};

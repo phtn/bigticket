@@ -40,3 +40,18 @@ export const cover_url = mutation({
     return event._id;
   },
 });
+
+export const views = mutation({
+  args: { id: v.string(), value: v.number() },
+  handler: async ({ db }, { id, value }) => {
+    const event = await checkEvent(db, id);
+
+    if (event === null || !value) {
+      return null;
+    }
+
+    const computed = event?.views && event.views + value;
+    await db.patch(event._id, { views: computed, updated_at: Date.now() });
+    return event._id;
+  },
+});

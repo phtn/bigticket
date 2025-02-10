@@ -13,16 +13,24 @@ import {
   Image,
   Spinner,
 } from "@nextui-org/react";
-import { use, useCallback } from "react";
+import { use, useCallback, useState } from "react";
+
 export const EventCard = (event: SignedEvent) => {
   const { event_date, event_day } = useMoment({ date: event?.event_date });
   const { getEvent } = use(PreloadedEventsCtx)!;
   const { toggle } = use(EventViewerCtx)!;
 
+  const [bookmarked, setBookmarked] = useState(false);
+
+  const handleBookmarkEvent = useCallback(() => {
+    setBookmarked((prev) => !prev);
+  }, []);
+
   const handleSelectEvent = useCallback(() => {
     getEvent(event.event_id);
     toggle();
   }, [getEvent, event?.event_id, toggle]);
+
   return (
     <Card
       isFooterBlurred
@@ -38,7 +46,13 @@ export const EventCard = (event: SignedEvent) => {
           </h4>
         </section>
         <section className="flex size-8 items-center justify-center">
-          <ButtonIcon icon="BookmarkPlus" bg="text-chalk" shadow="text-coal" />
+          <ButtonIcon
+            icon="BookmarkPlus"
+            bg="text-chalk"
+            shadow="text-coal"
+            className={`${bookmarked}`}
+            onClick={handleBookmarkEvent}
+          />
         </section>
       </CardHeader>
       {event.cover_src ? (
@@ -92,5 +106,24 @@ export const EventCard = (event: SignedEvent) => {
         </button>
       </CardFooter>
     </Card>
+  );
+};
+
+export interface HeartProp {
+  isActive: boolean;
+  onClick: VoidFunction;
+}
+
+export const Heart = ({ isActive, onClick }: HeartProp) => {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        backgroundPosition: isActive ? "-2799px 4px" : "",
+        transition: isActive ? "background 0.75s steps(28)" : "",
+        display: "inline-block",
+      }}
+      className="absolute left-1/2 size-[100px] overflow-hidden border bg-[url('/png/heart.png')] bg-no-repeat"
+    ></button>
   );
 };

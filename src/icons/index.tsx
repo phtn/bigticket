@@ -6,7 +6,7 @@ export type IconProps = SVGProps<SVGSVGElement> & { name: IconName };
 
 export function Icon({
   name,
-  fill = "currentColor",
+  fill = "none",
   stroke = "currentColor",
   ...props
 }: IconProps) {

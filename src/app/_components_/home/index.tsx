@@ -28,8 +28,8 @@ export const Home = () => {
 };
 
 const Loader = () => (
-  <WarpDrive className="relative -top-4 flex h-[96vh] w-full items-center justify-center md:py-48 lg:py-64">
-    <div className="flex h-[24rem] w-full items-center justify-center px-10">
+  <WarpDrive className="relative -top-4 flex h-[96vh] w-full items-center justify-center py-32 md:py-48 lg:py-64">
+    <div className="flex h-[18rem] w-full items-center justify-center bg-transparent px-10 md:h-[24rem]">
       <motion.div
         initial={{ scale: 2 }}
         animate={{ scale: 0, rotate: 720 }}

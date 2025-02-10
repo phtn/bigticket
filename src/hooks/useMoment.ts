@@ -7,7 +7,11 @@ interface UseMoment {
   end?: number | undefined;
 }
 export const useMoment = ({ date, start, end }: UseMoment) => {
-  const compact = useMemo(() => moment(date).format("lll"), [date]);
+  const compact = useMemo(() => moment(date).format("ll"), [date]);
+  const narrow = useMemo(() => {
+    const d = moment(date).format("dddl");
+    return { day: d.substring(0, 4), date: d.substring(3, 7) };
+  }, [date]);
 
   const event_date = useMemo(() => moment(date).format("lll"), [date]);
   const event_day = useMemo(() => moment(date).format("dddd"), [date]);
@@ -71,5 +75,6 @@ export const useMoment = ({ date, start, end }: UseMoment) => {
     durationDays,
     durationHrs,
     minutes,
+    narrow,
   };
 };

@@ -54,22 +54,16 @@ const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(
       >
         <div className="absolute top-0 z-[0] h-full w-screen bg-void/10" />
         <WarpDrive
-          gridColor="#212121"
+          gridColor="#132123aa"
           className="absolute -top-4 z-10 flex h-full w-full items-center justify-center bg-coal p-0 shadow-none"
         >
           <div />
         </WarpDrive>
         <section className="z-1 relative mx-auto max-w-full">
-          <div className="relative z-10 mx-auto max-w-screen-xl gap-12 px-4 py-16 md:px-8 md:py-28">
-            <div className="leading-0 mx-auto max-w-3xl space-y-5 text-center lg:leading-5">
-              <h2 className="font-geist group mx-auto flex w-fit items-center gap-2 rounded-3xl border-[2px] border-black/5 bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent px-5 py-2 text-sm text-gray-600 dark:border-white/5 dark:from-zinc-300/5 dark:via-gray-400/5 dark:text-gray-400">
-                <Icon
-                  name="Sparkles2"
-                  className="inline size-4 stroke-0 duration-300 group-hover:scale-[1.15]"
-                />
-                <span>{badge}</span>
-              </h2>
-              <h1 className="font-geist mx-auto bg-chalk bg-clip-text text-4xl tracking-tighter text-transparent md:text-6xl dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)]">
+          <div className="relative z-10 mx-auto max-w-screen-xl gap-12 px-4 py-14 md:px-8 md:py-28">
+            <div className="leading-0 mx-auto max-w-3xl space-y-6 text-center md:space-y-5 lg:leading-5">
+              <Badge badge={badge} />
+              <h1 className="font-geist mx-auto whitespace-nowrap bg-chalk bg-clip-text text-3xl tracking-tighter text-transparent md:text-6xl dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)]">
                 {headline.regular}
                 <span className="bg-gradient-to-r from-teal-600 to-pink-500 bg-clip-text text-transparent dark:from-teal-300 dark:to-orange-200">
                   {headline.gradient}
@@ -99,6 +93,16 @@ const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(
   },
 );
 HeroSection.displayName = "HeroSection";
+
+const Badge = ({ badge }: { badge: string }) => (
+  <h2 className="font-geist group mx-auto flex w-fit items-center gap-2 rounded-3xl border-[2px] border-black/5 bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent px-5 py-2 text-sm text-gray-600 dark:border-white/5 dark:from-zinc-300/5 dark:via-gray-400/5 dark:text-gray-400">
+    <Icon
+      name="Sparkles2"
+      className="inline size-4 stroke-0 duration-300 group-hover:scale-[1.15]"
+    />
+    <span>{badge}</span>
+  </h2>
+);
 
 const Hero = ({ children }: { children: ReactNode }) => {
   return (
