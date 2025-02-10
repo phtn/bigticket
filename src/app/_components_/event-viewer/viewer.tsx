@@ -1,16 +1,20 @@
-import { type ActionItem } from "@/app/ctx/event/viewer";
 import { useMoment } from "@/hooks/useMoment";
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
-import { HyperList } from "@/ui/list";
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
 import { normalizeTitle } from "@/utils/helpers";
-import { Button, Card, Image, Tab, Tabs } from "@nextui-org/react";
-import NumberFlow from "@number-flow/react";
+import { Image, Tab, Tabs } from "@nextui-org/react";
 import { type ReactNode, use, useMemo } from "react";
 import { EventViewerCtx, PreloadedEventsCtx } from "../../ctx/event";
 import { type SignedEvent } from "../../ctx/event/preload";
+import {
+  ActionPanel,
+  BuyTicketButton,
+  EventGroupDetail,
+  EventViewerFooter,
+  InfoGrid,
+  InfoItem,
+} from "./components";
 
 export const EventViewer = () => {
   const { open, toggle } = use(EventViewerCtx)!;
@@ -30,7 +34,7 @@ export const EventViewer = () => {
         icon="Upcoming"
         title="Starts in 32 days"
         variant="god"
-        className="rounded-none border-0 bg-void"
+        className="absolute z-50 w-full rounded-none border-0 bg-transparent"
         wrapperStyle="border-gray-500 md:border-l-2"
       >
         <Container>
@@ -93,29 +97,18 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
           }}
         >
           <Tab key={"overview"} title="Overview">
-            <div className="relative h-72">
+            <div className="relative h-fit">
               <Image
                 radius="none"
                 alt={`${event?.event_name}-cover`}
                 src={event?.cover_src ?? "/svg/star_v2.svg"}
                 className="relative z-0 size-full"
               />
-              <div className="absolute bottom-2 left-2 z-10 w-fit space-y-0.5 rounded-sm bg-void/40 py-3 backdrop-blur-sm">
-                <p className="w-fit space-x-1.5 rounded-e-xl bg-void/60 px-1.5 py-0.5 text-xs uppercase tracking-wide text-peach">
-                  <span>{narrow.day}</span> <span>{narrow.date}</span>{" "}
-                  <span>{start_time.compact}</span>
-                </p>
-                <div className="px-3">
-                  {event_name?.map((word, i) => (
-                    <h2
-                      key={i}
-                      className="block w-fit text-3xl font-bold leading-8 tracking-tight text-white drop-shadow-sm first-line:max-w-[16ch]"
-                    >
-                      {word}
-                    </h2>
-                  ))}
-                </div>
-              </div>
+              <TitleDisplay
+                event_name={event_name}
+                narrow={narrow}
+                time={start_time.compact}
+              />
             </div>
           </Tab>
           <Tab key={"details"} title="Details">
@@ -124,108 +117,40 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
         </Tabs>
       </div>
 
-      <div className="z-1 relative bg-primary">
-        <Button
-          size="lg"
-          disableRipple
-          color="primary"
-          className="h-16"
-          radius="none"
-          fullWidth
-        >
-          <div className="flex items-center gap-6">
-            <span className="text-xl font-bold">
-              <span className="font-semibold italic text-slate-300">Buy</span>{" "}
-              Tickets
-            </span>
-            <span className="text-xl font-extrabold"></span>
-            <div className="rounded-sm px-4 py-1 text-2xl">
-              <NumberFlow
-                value={event?.ticket_value ?? 0}
-                format={{
-                  notation: "standard",
-                  currency: "PHP",
-                  currencyDisplay: "narrowSymbol",
-                  style: "currency",
-                }}
-              />
-            </div>
-          </div>
-        </Button>
-      </div>
-
+      <BuyTicketButton ticket_value={event?.ticket_value} />
       <ActionPanel />
-      <div className="h-32 md:h-28">
-        <div className="flex items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-semibold md:h-14">
-          <span>Organizers</span>
-          <span>{event?.host_name}</span>
-        </div>
-        <div className="flex items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-medium md:h-14">
-          <span>Location</span>
-          <span>{event?.event_geo ?? event?.event_url}</span>
-        </div>
-      </div>
-      <HyperList
-        delay={0.7}
-        data={info_grid_data}
-        component={InfoGridItem}
-        container="grid h-48 md:h-48 w-full grid-cols-3"
-        keyId={"label"}
+      <EventGroupDetail
+        host_name={event?.host_name}
+        event_geo={event?.event_geo}
+        event_url={event?.event_url}
+        host_id={event?.host_id}
       />
-      <div className="flex h-36 w-full items-center justify-end bg-peach px-2 text-xs font-light md:h-[30px]">
-        Big Ticket &copy;{new Date().getFullYear()}
-      </div>
+      <InfoGrid data={info_grid_data} />
+
+      <EventViewerFooter />
     </div>
   );
 };
 
-interface InfoItem {
-  label: string;
-  value: string | number | undefined;
+interface TitleDisplayProps {
+  event_name: (string | undefined)[];
+  narrow: { day: string; date: string };
+  time: string;
 }
-
-const InfoGridItem = (info: InfoItem) => (
-  <Card
-    radius="none"
-    className="h-full space-y-0.5 border-b-[0.33px] border-r-[0.33px] border-zinc-400 bg-white px-2 py-2 shadow-none group-hover/list:bg-gray-200 md:px-3"
-  >
-    <div className="text-xs tracking-tight">{info.label}</div>
-    <div className="text-sm font-semibold tracking-tighter md:text-[16px]">
-      {info.value}
+const TitleDisplay = ({ event_name, narrow, time }: TitleDisplayProps) => (
+  <div className="absolute bottom-2 left-2 z-10 w-fit space-y-0.5 rounded-sm bg-void/40 py-3 backdrop-blur-sm">
+    <p className="w-fit space-x-1.5 rounded-e-xl bg-void/60 px-1.5 py-0.5 text-xs uppercase tracking-wide text-peach">
+      <span>{narrow.day}</span> <span>{narrow.date}</span> <span>{time}</span>
+    </p>
+    <div className="px-3">
+      {event_name?.map((word, i) => (
+        <h2
+          key={i}
+          className="block w-fit text-3xl font-bold leading-8 tracking-tight text-white drop-shadow-sm first-line:max-w-[16ch]"
+        >
+          {word}
+        </h2>
+      ))}
     </div>
-  </Card>
+  </div>
 );
-
-const ActionPanel = () => {
-  const { actions } = use(EventViewerCtx)!;
-
-  return (
-    <HyperList
-      data={actions}
-      component={ActionButton}
-      container="grid h-14 grid-cols-6 w-full border-b-[0.33px] border-zinc-400 bg-white font-medium"
-      delay={0.3}
-      direction="up"
-    />
-  );
-};
-
-const ActionButton = (action: ActionItem) => {
-  const { selectedEvent } = use(PreloadedEventsCtx)!;
-
-  return (
-    <Button
-      id={action.label}
-      name={action.label}
-      onPress={action.fn(selectedEvent?.event_id)}
-      disableRipple
-      radius="none"
-      className={cn(
-        "flex h-full w-full items-center justify-center bg-white p-0",
-        "hover:bg-gray-200",
-      )}
-    >
-      <Icon name={action.icon} className="size-5" />
-    </Button>
-  );
-};

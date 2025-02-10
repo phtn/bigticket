@@ -119,7 +119,7 @@ const UserAvatar = (props: { photo_url: string | undefined }) => {
   return (
     <div className="flex w-fit items-center px-4 md:gap-8">
       <Popover placement="bottom-end" onOpenChange={toggle}>
-        <PopoverTrigger className="cursor-pointer border border-secondary">
+        <PopoverTrigger className="cursor-pointer border border-primary-800">
           <Avatar
             alt="user-pfp"
             src={props?.photo_url}
