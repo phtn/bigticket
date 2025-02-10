@@ -7,6 +7,8 @@ import { Button, Card, Image, Tab, Tabs } from "@nextui-org/react";
 import { type SignedEvent } from "../../ctx/event/preload";
 import { Icon, type IconName } from "@/icons";
 import { HyperList } from "@/ui/list";
+import { normalizeTitle } from "@/utils/helpers";
+import { useMoment } from "@/hooks/useMoment";
 
 export const EventViewer = () => {
   const { open, toggle } = use(EventViewerCtx)!;
@@ -27,7 +29,7 @@ export const EventViewer = () => {
         title="Starts in 32 days"
         variant="god"
         className="rounded-none border-0 bg-void"
-        wrapperStyle="border-gray-700 border-l-2"
+        wrapperStyle="border-gray-700 md:border-l-2"
       >
         <Container>
           <MediaContainer event={preloaded?.selectedEvent} />
@@ -37,13 +39,18 @@ export const EventViewer = () => {
   );
 };
 const Container = ({ children }: { children: ReactNode }) => (
-  <div className={cn("h-[86.5vh]", "w-full")}>{children}</div>
+  <div className={cn("h-screen md:h-[86.5vh]", "w-full")}>{children}</div>
 );
 
 interface MediaContainerProps {
   event: SignedEvent | null | undefined;
 }
 const MediaContainer = ({ event }: MediaContainerProps) => {
+  const { start_time } = useMoment({
+    date: event?.event_date,
+    start: event?.start_date,
+    end: event?.end_date,
+  });
   const info_grid_data: InfoItem[] = useMemo(
     () => [
       { label: "Ticket Sales", value: "OPEN" },
@@ -58,8 +65,10 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
     ],
     [],
   );
+
+  const event_name = normalizeTitle(event?.event_name);
   return (
-    <div className="mx-auto h-full w-[30rem] max-w-6xl overflow-y-scroll font-inter tracking-tight">
+    <div className="mx-auto h-screen w-full max-w-6xl overflow-y-scroll font-inter tracking-tight md:h-full md:w-[30rem]">
       <div className="group/media overflow-hidden">
         <Tabs
           size="sm"
@@ -67,7 +76,7 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
           className={cn(
             "absolute right-3 top-2 z-50 rounded-bl-md",
             "-translate-y-12 group-hover/media:translate-y-0",
-            "transition-all duration-300",
+            "transition-all duration-300 ease-in-out",
           )}
           color="primary"
           radius="none"
@@ -89,14 +98,19 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
                 src={event?.cover_src ?? "/svg/star_v2.svg"}
                 className="relative z-0 size-full"
               />
-              <div className="absolute bottom-4 left-4 z-10 max-w-[14ch] space-y-0.5 rounded-sm bg-void/40 py-3 backdrop-blur-sm">
+              <div className="absolute bottom-2 left-2 z-10 w-fit space-y-0.5 rounded-sm bg-void/40 py-3 backdrop-blur-sm">
                 <p className="w-fit rounded-e-xl bg-void/60 px-1.5 py-0.5 text-xs tracking-wide text-peach">
-                  THU 10/08 9PM
+                  THU 10/08 {start_time.compact}
                 </p>
                 <div className="px-3">
-                  <h2 className="text-3xl font-bold leading-8 tracking-tight text-white drop-shadow-sm">
-                    {event?.event_name}
-                  </h2>
+                  {event_name?.map((word, i) => (
+                    <h2
+                      key={i}
+                      className="block w-fit text-3xl font-bold leading-8 tracking-tight text-white drop-shadow-sm first-line:max-w-[16ch]"
+                    >
+                      {word}
+                    </h2>
+                  ))}
                 </div>
               </div>
             </div>
@@ -123,26 +137,26 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
           </div>
         </Button>
       </div>
-      <div className="h-28">
-        <div className="flex h-14 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-semibold">
+
+      <ActionPanel />
+      <div className="h-32 md:h-28">
+        <div className="flex items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-semibold md:h-14">
           <span>Organizers</span>
           <span>{event?.host_name}</span>
         </div>
-        <div className="flex h-14 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-medium">
+        <div className="flex items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-medium md:h-14">
           <span>Location</span>
           <span>{event?.event_geo ?? event?.event_url}</span>
         </div>
       </div>
-      <ActionPanel />
       <HyperList
-        data={info_grid_data}
         delay={0.7}
+        data={info_grid_data}
         component={InfoGridItem}
-        container="grid h-48 w-full grid-cols-3"
-        itemStyle=""
+        container="grid h-48 md:h-48 w-full grid-cols-3"
         keyId={"label"}
       />
-      <div className="flex h-[30px] w-full items-center justify-end bg-peach px-2 text-xs font-light">
+      <div className="flex h-36 w-full items-center justify-end bg-peach px-2 text-xs font-light md:h-[30px]">
         Big Ticket &copy;{new Date().getFullYear()}
       </div>
     </div>
@@ -157,10 +171,12 @@ interface InfoItem {
 const InfoGridItem = (info: InfoItem) => (
   <Card
     radius="none"
-    className="h-full space-y-0.5 border-b-[0.33px] border-r-[0.33px] border-zinc-400 bg-white px-3 py-2 shadow-none group-hover/list:bg-gray-200"
+    className="h-full space-y-0.5 border-b-[0.33px] border-r-[0.33px] border-zinc-400 bg-white px-2 py-2 shadow-none group-hover/list:bg-gray-200 md:px-3"
   >
     <div className="text-xs tracking-tight">{info.label}</div>
-    <div className="font-semibold tracking-tighter">{info.value}</div>
+    <div className="text-sm font-semibold tracking-tighter md:text-[16px]">
+      {info.value}
+    </div>
   </Card>
 );
 

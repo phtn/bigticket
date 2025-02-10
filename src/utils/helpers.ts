@@ -504,3 +504,20 @@ export const pasteFn = async (id: string) => {
   }
   return v;
 };
+
+export const normalizeTitle = (title: string | undefined) => {
+  if (!title) return [];
+  const words = title.split(" ");
+
+  if (words.length < 2) return [title];
+
+  const firstLine = words[0];
+  let secondLine = words[1];
+  const thirdLine = words[2];
+
+  if (thirdLine) {
+    secondLine = secondLine + " " + thirdLine;
+  }
+
+  return [firstLine, secondLine];
+};
