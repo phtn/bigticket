@@ -53,6 +53,7 @@ const Container = ({ children }: { children: ReactNode }) => (
 
 const MediaContainer = () => {
   const { height } = useDime().screen;
+  console.log(height);
 
   const { activeEvent, activeEventInfo, moments, cover_src } =
     use(EventViewerCtx)!;
@@ -117,11 +118,11 @@ const MediaContainer = () => {
       <div
         className={cn(
           "grid grid-rows-7",
-          "landscape:h-screen",
-          "md:h-[calc(100vh-420px)]",
+          { "landscape:h-screen": height < 700 },
           { "h-[calc(100vh-300px)]": height < 741 },
           { "h-[calc(100vh-384px)]": height > 742 },
           { "h-[calc(100vh-374px)]": height > 800 },
+          "md:h-[calc(100vh-420px)]",
         )}
       >
         <EventTicketButton />

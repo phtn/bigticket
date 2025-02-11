@@ -23,6 +23,7 @@ export const useDime = <T extends Element>(r?: RefObject<T | null>) => {
   }, []);
 
   useEffect(() => {
+    getScreenSize();
     window.addEventListener("resize", getScreenSize);
     return () => {
       window.removeEventListener("resize", getScreenSize);
