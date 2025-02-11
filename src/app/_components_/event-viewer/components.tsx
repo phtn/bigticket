@@ -1,47 +1,79 @@
-import { EventViewerCtx, PreloadedEventsCtx } from "@/app/ctx/event";
+import { EventViewerCtx } from "@/app/ctx/event";
 import { type ActionItem } from "@/app/ctx/event/viewer";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
+import { Shimmer } from "@/ui/text/sparkles";
+import { opts } from "@/utils/helpers";
 import { Button, Card } from "@nextui-org/react";
 import NumberFlow from "@number-flow/react";
-import { use } from "react";
-
+import { use, useCallback } from "react";
+interface GetTicketButtonProps {
+  ticket_value: number | undefined;
+  is_private?: boolean;
+}
 export const BuyTicketButton = ({
   ticket_value,
-}: {
-  ticket_value: number | undefined;
-}) => (
-  <div className="z-1 relative bg-primary">
-    <Button
-      size="lg"
-      disableRipple
-      color="primary"
-      className="h-16"
-      radius="none"
-      fullWidth
-    >
-      <div className="flex items-center gap-6">
-        <span className="text-xl font-bold">
-          <span className="font-semibold italic text-slate-300">Buy</span>{" "}
-          Tickets
+  is_private = false,
+}: GetTicketButtonProps) => {
+  const TicketLabel = useCallback(() => {
+    const options = opts(
+      <h2 className="text-xl font-black">
+        <span className="font-bold italic tracking-tighter text-teal-400">
+          Claim
         </span>
-        <span className="text-xl font-extrabold"></span>
-        <div className="rounded-sm px-4 py-1 text-2xl">
-          <NumberFlow
-            value={ticket_value ?? 0}
-            format={{
-              notation: "standard",
-              currency: "PHP",
-              currencyDisplay: "narrowSymbol",
-              style: "currency",
-            }}
-          />
+        Ticket
+      </h2>,
+      <h2 className="text-xl font-bold">
+        <span className="font-semibold italic text-slate-300">Buy</span> Tickets
+      </h2>,
+    );
+    return <>{options.get(is_private)}</>;
+  }, [is_private]);
+  const TicketValue = useCallback(() => {
+    const options = opts(
+      <h3 className="flex items-center justify-center gap-2 text-orange-100">
+        <Icon name="Lock" />
+        <Shimmer
+          sparklesCount={6}
+          className="font-inter text-[16px] font-bold"
+          text="Private Access"
+        />
+      </h3>,
+      <NumberFlow
+        value={ticket_value ?? 0}
+        format={{
+          notation: "standard",
+          currency: "PHP",
+          currencyDisplay: "narrowSymbol",
+          style: "currency",
+        }}
+      />,
+    );
+    return <>{options.get(is_private)}</>;
+  }, [ticket_value, is_private]);
+  return (
+    <div className="z-1 relative bg-primary">
+      <Button
+        size="lg"
+        disableRipple
+        color="primary"
+        className="h-16"
+        radius="none"
+        fullWidth
+      >
+        <div
+          className={cn("flex items-center gap-6", { "gap-10": is_private })}
+        >
+          <TicketLabel />
+          <div className="rounded-sm px-4 py-1 text-2xl">
+            <TicketValue />
+          </div>
         </div>
-      </div>
-    </Button>
-  </div>
-);
+      </Button>
+    </div>
+  );
+};
 
 export const ActionPanel = () => {
   const { actions } = use(EventViewerCtx)!;
@@ -59,17 +91,11 @@ export const ActionPanel = () => {
 };
 
 const ActionButton = (action: ActionItem) => {
-  const { selectedEvent } = use(PreloadedEventsCtx)!;
-
   return (
     <button
       id={action.label}
       name={action.label}
-      onClick={action.fn({
-        title: selectedEvent?.event_name,
-        text: selectedEvent?.event_id,
-        url: "https://bigticket-pro.vercel.app",
-      })}
+      onClick={action.fn}
       className={cn(
         "flex h-full w-full items-center justify-center bg-white",
         "hover:bg-gray-200",

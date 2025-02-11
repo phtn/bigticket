@@ -2,21 +2,41 @@
 
 import { useToggle } from "@/hooks/useToggle";
 import { type IconName } from "@/icons";
-import { createContext, useCallback, useMemo, type ReactNode } from "react";
+import {
+  createContext,
+  type Dispatch,
+  type SetStateAction,
+  type TransitionStartFunction,
+  use,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+  type ReactNode,
+} from "react";
+import { ConvexCtx } from "../convex";
+import { getUserID } from "@/app/actions";
+import { PreloadedEventsCtx, type UserCounter } from "./preload";
 
-type ActionParams = string | number | object;
+export interface ActionParams {
+  event_id?: string;
+  event_name?: string;
+}
 
 export interface ActionItem {
   id: number;
   label: string;
   icon: IconName;
   active: boolean;
-  fn: (value: ActionParams) => () => Promise<void>;
+  fn: () => Promise<void>;
 }
 interface EventViewerCtxValues {
   toggle: VoidFunction;
   open: boolean;
   actions: ActionItem[];
+  bookmarkFn: () => Promise<void>;
+  counter: UserCounter | null;
 }
 export const EventViewerCtx = createContext<EventViewerCtxValues | null>(null);
 
@@ -27,53 +47,137 @@ export const EventViewerCtxProvider = ({
 }) => {
   const { open, toggle } = useToggle();
 
-  const handleClickSupport = useCallback(
-    (value: ActionParams) => async () => {
-      console.log(value);
-    },
-    [],
+  const { usr } = use(ConvexCtx)!;
+  const { counter, selectedEvent } = use(PreloadedEventsCtx)!;
+
+  const actionParams: ActionParams = useMemo(
+    () => ({
+      event_name: selectedEvent?.event_name,
+      event_id: selectedEvent?.event_id,
+    }),
+    [selectedEvent],
+  );
+  const shareData: ShareData = useMemo(
+    () => ({
+      title: selectedEvent?.event_name,
+      text: selectedEvent?.event_id,
+      url: selectedEvent?.event_url,
+    }),
+    [selectedEvent],
   );
 
-  const handleClickGeo = useCallback(
-    (value: ActionParams) => async () => {
-      console.log(value);
-    },
-    [],
-  );
+  const [liked, setLiked] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
 
-  const handleClickWebsite = useCallback(
-    (value: ActionParams) => async () => {
-      console.log(value);
-    },
-    [],
-  );
-  const handleClickBookmark = useCallback(
-    (value: ActionParams) => async () => {
-      console.log(value);
-    },
-    [],
-  );
-  const handleClickLike = useCallback(
-    (value: ActionParams) => async () => {
-      console.log(value);
-    },
-    [],
-  );
-  const handleClickShare = useCallback(
-    (value: ActionParams) => async () => {
-      try {
-        await navigator.share(value as ShareData);
-      } catch (e) {
-        if (e instanceof Error) {
-          console.log(
-            e.name === "AbortError"
-              ? "Share action canceled by user."
-              : e.message,
-          );
-        }
+  const [pending, fn] = useTransition();
+  const setFn = <T,>(
+    tx: TransitionStartFunction,
+    action: () => T,
+    set: Dispatch<SetStateAction<T>>,
+  ) => {
+    tx(() => {
+      set(action());
+    });
+  };
+
+  const isLiked = useCallback(() => {
+    if (counter?.likes && selectedEvent?.event_id) {
+      return counter.likes.includes(selectedEvent.event_id);
+    }
+    return false;
+  }, [counter?.likes, selectedEvent]);
+
+  const isLikeActive = useCallback(() => {
+    setFn(fn, isLiked, setLiked);
+  }, [isLiked]);
+
+  useEffect(() => {
+    isLikeActive();
+  }, [isLikeActive]);
+
+  const isBookmarked = useCallback(() => {
+    if (counter?.bookmarks && selectedEvent?.event_id) {
+      return counter.bookmarks.includes(selectedEvent.event_id);
+    }
+    return false;
+  }, [counter?.bookmarks, selectedEvent]);
+
+  const isBookmarkActive = useCallback(() => {
+    setFn(fn, isBookmarked, setBookmarked);
+  }, [isBookmarked]);
+
+  useEffect(() => {
+    isBookmarkActive();
+  }, [isBookmarkActive]);
+
+  const handleClickSupport = useCallback(async () => {
+    console.log("support");
+  }, []);
+
+  const handleClickGeo = useCallback(async () => {
+    console.log("geo");
+  }, []);
+
+  const handleClickWebsite = useCallback(async () => {
+    console.log("website");
+  }, []);
+
+  const bookmarkFn = useCallback(async () => {
+    const id = await getUserID();
+    if (!id || !actionParams.event_id) return;
+    setBookmarked((prev) => !prev);
+    await usr.update.bookmarks(id, actionParams.event_id);
+  }, [usr.update, actionParams]);
+
+  const likeFn = useCallback(async () => {
+    const id = await getUserID();
+    if (!id || !actionParams.event_id) return;
+    setLiked((prev) => !prev);
+    await usr.update.likes(id, actionParams.event_id);
+  }, [usr.update, actionParams]);
+
+  const handleClickShare = useCallback(async () => {
+    try {
+      await navigator.share(shareData);
+    } catch (e) {
+      if (e instanceof Error) {
+        console.log(
+          e.name === "AbortError"
+            ? "Share action canceled by user."
+            : e.message,
+        );
       }
-    },
-    [],
+    }
+  }, [shareData]);
+
+  const bookmarkItem = useMemo(
+    () => ({
+      id: 3,
+      label: "bookmark",
+      icon: pending
+        ? "SpinnerBall"
+        : bookmarked
+          ? "BookmarkCheck"
+          : ("BookmarkPlus" as IconName),
+      active: bookmarked ?? false,
+      fn: bookmarkFn,
+    }),
+    [bookmarked, bookmarkFn, pending],
+  );
+
+  const likeItem = useMemo(
+    () => ({
+      id: 4,
+      label: "like",
+      icon: pending
+        ? "SpinnerBall"
+        : liked
+          ? "HeartCheck"
+          : ("Heart" as IconName),
+      active: liked,
+      fn: likeFn,
+    }),
+    [liked, likeFn, pending],
   );
 
   const actions: ActionItem[] = useMemo(
@@ -99,20 +203,8 @@ export const EventViewerCtxProvider = ({
         active: false,
         fn: handleClickWebsite,
       },
-      {
-        id: 3,
-        label: "bookmark",
-        icon: "BookmarkPlus",
-        active: false,
-        fn: handleClickBookmark,
-      },
-      {
-        id: 4,
-        label: "like",
-        icon: "Heart",
-        active: false,
-        fn: handleClickLike,
-      },
+      bookmarkItem,
+      likeItem,
       {
         id: 5,
         label: "share",
@@ -125,9 +217,9 @@ export const EventViewerCtxProvider = ({
       handleClickSupport,
       handleClickGeo,
       handleClickWebsite,
-      handleClickBookmark,
-      handleClickLike,
       handleClickShare,
+      bookmarkItem,
+      likeItem,
     ],
   );
 
@@ -136,8 +228,10 @@ export const EventViewerCtxProvider = ({
       open,
       toggle,
       actions,
+      bookmarkFn,
+      counter,
     }),
-    [open, toggle, actions],
+    [open, toggle, actions, bookmarkFn, counter],
   );
   return <EventViewerCtx value={value}>{children}</EventViewerCtx>;
 };

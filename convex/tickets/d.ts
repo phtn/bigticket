@@ -4,6 +4,7 @@ export const TicketSchema = v.object({
   ticket_id: v.string(),
   ticket_code: v.string(),
   event_id: v.string(),
+  ticket_index: v.optional(v.number()),
   ticket_date: v.optional(v.float64()),
   ticket_time: v.optional(v.string()),
   ticket_url: v.optional(v.string()),

@@ -247,15 +247,18 @@ function BookmarkCheck(props: SVGProps<SVGSVGElement>) {
       {...props}
     >
       <g
-        fill="none"
-        stroke="currentColor"
+        fill="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="1.5"
         color="currentColor"
       >
         <path d="M4 17.98V9.709c0-3.634 0-5.45 1.172-6.58S8.229 2 12 2s5.657 0 6.828 1.129C20 4.257 20 6.074 20 9.708v8.273c0 2.306 0 3.459-.773 3.871c-1.497.8-4.304-1.867-5.637-2.67c-.773-.465-1.16-.698-1.59-.698s-.817.233-1.59.698c-1.333.803-4.14 3.47-5.637 2.67C4 21.44 4 20.287 4 17.981"></path>
-        <path d="M9 11.333s.875 0 1.75 1.667c0 0 2.78-4.167 5.25-5"></path>
+        <path
+          stroke={"#02C7BE"}
+          strokeWidth="2"
+          d="M9 11.333s.875 0 1.75 1.667c0 0 2.78-4.167 5.25-5"
+        ></path>
       </g>
     </svg>
   );
@@ -716,7 +719,7 @@ function Heart(props: SVGProps<SVGSVGElement>) {
       {...props}
     >
       <path
-        fill={props.fill}
+        fill={"none"}
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -724,6 +727,56 @@ function Heart(props: SVGProps<SVGSVGElement>) {
         d="M19.463 3.994c-2.682-1.645-5.023-.982-6.429.074c-.576.433-.864.65-1.034.65s-.458-.217-1.034-.65C9.56 3.012 7.219 2.349 4.537 3.994C1.018 6.153.222 13.274 8.34 19.284C9.886 20.427 10.659 21 12 21s2.114-.572 3.66-1.717c8.118-6.008 7.322-13.13 3.803-15.289"
         color="currentColor"
       ></path>
+    </svg>
+  );
+}
+function HeartFill(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M19.463 3.994c-2.682-1.645-5.023-.982-6.429.074c-.576.433-.864.65-1.034.65s-.458-.217-1.034-.65C9.56 3.012 7.219 2.349 4.537 3.994C1.018 6.153.222 13.274 8.34 19.284C9.886 20.427 10.659 21 12 21s2.114-.572 3.66-1.717c8.118-6.008 7.322-13.13 3.803-15.289"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
+
+function HeartCheck(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="currentColor"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        color="currentColor"
+      >
+        <path d="M12 21c-1.341 0-2.114-.572-3.66-1.717C.222 13.275 1.018 6.153 4.537 3.994c2.682-1.645 5.023-.982 6.429.074c.576.433.864.65 1.034.65s.458-.217 1.034-.65c1.406-1.056 3.747-1.719 6.429-.074C21.18 5.048 22.25 7.286 21.949 10"></path>
+        <path
+          fill="currentColor"
+          strokeWidth="3"
+          color="#02C7BE"
+          d="M14 18s1 0 2 2c0 0 3.177-5 6-6"
+        ></path>
+      </g>
     </svg>
   );
 }
@@ -799,6 +852,29 @@ function MoreVertical(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function Lock(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        color="currentColor"
+      >
+        <path d="M12 16.5v-2m-7.732 4.345c.225 1.67 1.608 2.979 3.292 3.056c1.416.065 2.855.099 4.44.099s3.024-.034 4.44-.1c1.684-.076 3.067-1.385 3.292-3.055c.147-1.09.268-2.207.268-3.345s-.121-2.255-.268-3.345c-.225-1.67-1.608-2.979-3.292-3.056A95 95 0 0 0 12 9c-1.585 0-3.024.034-4.44.1c-1.684.076-3.067 1.385-3.292 3.055C4.12 13.245 4 14.362 4 15.5s.121 2.255.268 3.345"></path>
+        <path d="M7.5 9V6.5a4.5 4.5 0 0 1 9 0V9"></path>
+      </g>
+    </svg>
+  );
+}
 function MapPin(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1178,6 +1254,64 @@ function Sparkles2(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+function SpinnerBall(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <ellipse cx="12" cy="5" fill="currentColor" rx="4" ry="4">
+        <animate
+          id="svgSpinnersBouncingBall0"
+          fill="freeze"
+          attributeName="cy"
+          begin="0;svgSpinnersBouncingBall2.end"
+          calcMode="spline"
+          dur="0.375s"
+          keySplines=".33,0,.66,.33"
+          values="5;20"
+        ></animate>
+        <animate
+          attributeName="rx"
+          begin="svgSpinnersBouncingBall0.end"
+          calcMode="spline"
+          dur="0.05s"
+          keySplines=".33,0,.66,.33;.33,.66,.66,1"
+          values="4;4.8;4"
+        ></animate>
+        <animate
+          attributeName="ry"
+          begin="svgSpinnersBouncingBall0.end"
+          calcMode="spline"
+          dur="0.05s"
+          keySplines=".33,0,.66,.33;.33,.66,.66,1"
+          values="4;3;4"
+        ></animate>
+        <animate
+          id="svgSpinnersBouncingBall1"
+          attributeName="cy"
+          begin="svgSpinnersBouncingBall0.end"
+          calcMode="spline"
+          dur="0.025s"
+          keySplines=".33,0,.66,.33"
+          values="20;20.5"
+        ></animate>
+        <animate
+          id="svgSpinnersBouncingBall2"
+          attributeName="cy"
+          begin="svgSpinnersBouncingBall1.end"
+          calcMode="spline"
+          dur="0.4s"
+          keySplines=".33,.66,.66,1"
+          values="20.5;5"
+        ></animate>
+      </ellipse>
+    </svg>
+  );
+}
 function Stats(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1414,9 +1548,12 @@ export const icons = {
   Fullscreen,
   Globe,
   Heart,
+  HeartFill,
+  HeartCheck,
   HotelRoom,
   Launch,
   LeftChev,
+  Lock,
   MapPin,
   MoreHorizontal,
   MoreVertical,
@@ -1437,6 +1574,7 @@ export const icons = {
   SidebarLeft,
   Sparkles,
   Sparkles2,
+  SpinnerBall,
   Stats,
   Squircle,
   Support,

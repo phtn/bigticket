@@ -15,6 +15,26 @@ export const MetadataSchema = v.optional(
 );
 export type Metadata = Infer<typeof MetadataSchema>;
 
+const UserTicketSchema = v.object({
+  event_id: v.string(),
+  event_name: v.string(),
+  event_url: v.string(),
+  event_start: v.float64(),
+  event_end: v.float64(),
+  event_date: v.float64(),
+  ticket_id: v.string(),
+  ticket_index: v.number(),
+  ticket_type: v.string(),
+  ticket_url: v.string(),
+  ticket_class: v.string(),
+  is_active: v.boolean(),
+  is_claimed: v.boolean(),
+  is_expired: v.boolean(),
+  ticket_value: v.number(),
+});
+
+export type UserTicket = Infer<typeof UserTicketSchema>;
+
 export const UserSchema = v.object({
   id: v.string(),
   account_id: v.optional(v.string()),
@@ -38,6 +58,7 @@ export const UserSchema = v.object({
   is_active: v.optional(v.boolean()),
   is_verified: v.optional(v.boolean()),
   is_merchant: v.optional(v.boolean()),
+  tickets: v.optional(v.array(UserTicketSchema)),
   middlename: v.optional(v.string()),
   phone_number: v.optional(v.string()),
   photo_url: v.optional(v.string()),

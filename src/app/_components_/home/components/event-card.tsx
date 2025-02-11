@@ -13,28 +13,46 @@ import {
   Image,
   Spinner,
 } from "@nextui-org/react";
-import { use, useCallback, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 
 export const EventCard = (event: SignedEvent) => {
   const { event_date, event_day } = useMoment({ date: event?.event_date });
   const { getEvent } = use(PreloadedEventsCtx)!;
-  const { toggle } = use(EventViewerCtx)!;
+  const { toggle, counter, bookmarkFn } = use(EventViewerCtx)!;
 
-  const [bookmarked, setBookmarked] = useState(false);
+  const [bookmarked, setBookmarked] = useState<boolean>(false);
 
-  const handleBookmarkEvent = useCallback(() => {
+  const handleBookmarkEvent = useCallback(async () => {
     setBookmarked((prev) => !prev);
-  }, []);
+    await bookmarkFn();
+  }, [bookmarkFn]);
 
   const handleSelectEvent = useCallback(() => {
     getEvent(event.event_id);
     toggle();
   }, [getEvent, event?.event_id, toggle]);
 
+  useEffect(() => {
+    setBookmarked(counter?.bookmarks?.includes(event?.event_id) ?? false);
+  }, [counter?.bookmarks, event]);
+
+  const BookmarkButton = useCallback(
+    () => (
+      <ButtonIcon
+        icon={bookmarked ? "BookmarkCheck" : "BookmarkPlus"}
+        bg={bookmarked ? "text-teal-500 opacity-100" : "text-chalk"}
+        shadow="text-coal"
+        color={bookmarked ? "text-white fill-white" : ""}
+        onClick={handleBookmarkEvent}
+      />
+    ),
+    [handleBookmarkEvent, bookmarked],
+  );
+
   return (
     <Card
       isFooterBlurred
-      className="h-[280px] w-full rounded-2xl border border-primary-700"
+      className="h-[280px] w-full overflow-hidden rounded-3xl border border-primary-700"
     >
       <CardHeader className="absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4">
         <section className="w-full overflow-clip text-ellipsis">
@@ -45,14 +63,11 @@ export const EventCard = (event: SignedEvent) => {
             {event.event_name}
           </h4>
         </section>
-        <section className="flex size-8 items-center justify-center">
-          <ButtonIcon
-            icon="BookmarkPlus"
-            bg="text-chalk"
-            shadow="text-coal"
-            className={`${bookmarked}`}
-            onClick={handleBookmarkEvent}
-          />
+        <section className="relative flex size-8 items-center justify-center">
+          <div className="absolute -right-8 -top-10">
+            <Heart isActive={bookmarked} />
+          </div>
+          <BookmarkButton />
         </section>
       </CardHeader>
       {event.cover_src ? (
@@ -64,7 +79,7 @@ export const EventCard = (event: SignedEvent) => {
           src={event.cover_src}
         />
       ) : null}
-      <CardFooter className="absolute bottom-0 z-10 border-t-1 border-primary/60 bg-black/40">
+      <CardFooter className="absolute bottom-0 z-10 border-t-[0.33px] border-primary/40 bg-black/10">
         <div className="flex flex-grow items-center gap-2">
           {/* <Image
             alt="Breathing app icon"
@@ -111,19 +126,20 @@ export const EventCard = (event: SignedEvent) => {
 
 export interface HeartProp {
   isActive: boolean;
-  onClick: VoidFunction;
 }
 
-export const Heart = ({ isActive, onClick }: HeartProp) => {
+export const Heart = ({ isActive }: HeartProp) => {
   return (
     <button
-      onClick={onClick}
       style={{
-        backgroundPosition: isActive ? "-2799px 4px" : "",
+        backgroundPosition: isActive ? "-2799px 7px" : "0px 7px",
         transition: isActive ? "background 0.75s steps(28)" : "",
         display: "inline-block",
       }}
-      className="absolute left-1/2 size-[100px] overflow-hidden border bg-[url('/png/heart.png')] bg-no-repeat"
+      className={cn(
+        "size-[99px] scale-75 bg-[url('/png/heart.png')] bg-no-repeat opacity-0",
+        { "opacity-100": isActive },
+      )}
     ></button>
   );
 };

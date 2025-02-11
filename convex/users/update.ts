@@ -91,9 +91,9 @@ export const likes = mutation({
       return null;
     }
 
-    const userLikes = user?.likes && [...user.likes, target_id];
-    await db.patch(user._id, { likes: userLikes, updated_at: Date.now() });
-    return user._id;
+    const likes = updateArray(user?.likes, target_id);
+    await db.patch(user._id, { likes, updated_at: Date.now() });
+    return "success";
   },
 });
 
@@ -106,12 +106,12 @@ export const bookmarks = mutation({
       return null;
     }
 
-    const userBookmarks = user?.bookmarks && [...user.bookmarks, target_id];
+    const bookmarks = updateArray(user?.bookmarks, target_id);
     await db.patch(user._id, {
-      bookmarks: userBookmarks,
+      bookmarks,
       updated_at: Date.now(),
     });
-    return user._id;
+    return "success";
   },
 });
 
@@ -124,9 +124,9 @@ export const following = mutation({
       return null;
     }
 
-    const userFollowing = user?.following && [...user.following, target_id];
+    const following = updateArray(user?.bookmarks, target_id);
     await db.patch(user._id, {
-      following: userFollowing,
+      following,
       updated_at: Date.now(),
     });
     return user._id;
@@ -142,11 +142,24 @@ export const followers = mutation({
       return null;
     }
 
-    const userFollowers = user?.followers && [...user.followers, target_id];
+    const followers = updateArray(user?.bookmarks, target_id);
     await db.patch(user._id, {
-      followers: userFollowers,
+      followers,
       updated_at: Date.now(),
     });
     return user._id;
   },
 });
+
+function updateArray(array: string[] | undefined, element: string): string[] {
+  if (!array) {
+    return [element];
+  }
+  const index = array.indexOf(element);
+  if (index !== -1) {
+    array.splice(index, 1);
+  } else {
+    array.push(element);
+  }
+  return array;
+}

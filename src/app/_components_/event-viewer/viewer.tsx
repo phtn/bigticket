@@ -13,7 +13,7 @@ import {
   EventGroupDetail,
   EventViewerFooter,
   InfoGrid,
-  InfoItem,
+  type InfoItem,
 } from "./components";
 
 export const EventViewer = () => {
@@ -59,8 +59,14 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
   });
   const info_grid_data: InfoItem[] = useMemo(
     () => [
-      { label: "Ticket Sales", value: "OPEN" },
-      { label: "Tickets Sold", value: event?.tickets_sold ?? 0 },
+      {
+        label: "Ticket Sales",
+        value: event?.is_private ? "EXCLUSIVE" : "OPEN",
+      },
+      {
+        label: event?.is_private ? "Tickets Claimed" : "Tickets Sold",
+        value: event?.tickets_sold ?? 0,
+      },
       { label: "Tickets Remaining", value: "50" },
       { label: "Date", value: compact },
       { label: "Time", value: event_time.compact },
@@ -117,7 +123,10 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
         </Tabs>
       </div>
 
-      <BuyTicketButton ticket_value={event?.ticket_value} />
+      <BuyTicketButton
+        is_private={event?.is_private}
+        ticket_value={event?.ticket_value}
+      />
       <ActionPanel />
       <EventGroupDetail
         host_name={event?.host_name}
@@ -138,7 +147,7 @@ interface TitleDisplayProps {
   time: string;
 }
 const TitleDisplay = ({ event_name, narrow, time }: TitleDisplayProps) => (
-  <div className="absolute bottom-2 left-2 z-10 w-fit space-y-0.5 rounded-sm bg-void/40 py-3 backdrop-blur-sm">
+  <div className="absolute bottom-0 left-0 z-10 w-fit space-y-0.5 rounded-sm bg-void/40 py-3 backdrop-blur-sm md:bottom-2 md:left-2">
     <p className="w-fit space-x-1.5 rounded-e-xl bg-void/60 px-1.5 py-0.5 text-xs uppercase tracking-wide text-peach">
       <span>{narrow.day}</span> <span>{narrow.date}</span> <span>{time}</span>
     </p>

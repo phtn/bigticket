@@ -75,6 +75,7 @@ export const EventSchema = v.object({
   audience: v.optional(v.string()),
   is_active: v.optional(v.boolean()),
   is_free: v.optional(v.boolean()),
+  is_private: v.optional(v.boolean()),
   is_online: v.optional(v.boolean()),
   is_expired: v.optional(v.boolean()),
   is_soldout: v.optional(v.boolean()),

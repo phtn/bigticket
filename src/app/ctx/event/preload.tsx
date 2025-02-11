@@ -4,14 +4,19 @@ import { Err } from "@/utils/helpers";
 import type { SelectEvent } from "convex/events/d";
 import {
   createContext,
+  type Dispatch,
+  type SetStateAction,
+  type TransitionStartFunction,
   use,
   useCallback,
   useEffect,
   useMemo,
   useState,
+  useTransition,
   type ReactNode,
 } from "react";
 import { ConvexCtx } from "../convex";
+import { getUserID } from "@/app/actions";
 
 interface ImageURL {
   cover_src: string | null;
@@ -23,11 +28,21 @@ interface PreloadedEventsCtxValues {
   pending: boolean;
   selectedEvent: SignedEvent | null;
   getEvent: (event_id: string) => void;
+  counter: UserCounter | null;
+  is_pending: boolean;
 }
 interface PreloadedEventsCtxProps {
   children: ReactNode;
   preloaded: SelectEvent[];
   slug: string[] | undefined;
+}
+export interface UserCounter {
+  bookmarks: string[] | undefined;
+  likes: string[] | undefined;
+  followers: string[] | undefined;
+  following: string[] | undefined;
+  following_count: number | undefined;
+  follower_count: number | undefined;
 }
 export const PreloadedEventsCtx =
   createContext<PreloadedEventsCtxValues | null>(null);
@@ -39,7 +54,50 @@ export const PreloadedEventsCtxProvider = ({
   const [selectedEvent, setSelectedEvent] = useState<SignedEvent | null>(null);
   const [pending, setPending] = useState<boolean>(false);
   const [signedEvents, setSignedEvents] = useState<SignedEvent[]>();
-  const { files } = use(ConvexCtx)!;
+  const [counter, setCounter] = useState<UserCounter | null>(null);
+  const { files, usr } = use(ConvexCtx)!;
+
+  const [is_pending, fn] = useTransition();
+  const setFn = <T,>(
+    tx: TransitionStartFunction,
+    action: () => Promise<T>,
+    set: Dispatch<SetStateAction<T>>,
+  ) => {
+    tx(async () => {
+      set(await action());
+    });
+  };
+
+  const userCounter = useCallback(async () => {
+    const id = await getUserID();
+    if (!id) return null;
+    const user = await usr.get.byId(id);
+    if (!user) return null;
+    const {
+      bookmarks,
+      likes,
+      followers,
+      following,
+      follower_count,
+      following_count,
+    } = user;
+    return {
+      bookmarks,
+      likes,
+      followers,
+      following,
+      follower_count,
+      following_count,
+    };
+  }, [usr.get]);
+
+  const getUserCounter = useCallback(() => {
+    setFn(fn, userCounter, setCounter);
+  }, [userCounter]);
+
+  useEffect(() => {
+    getUserCounter();
+  }, [getUserCounter]);
 
   const getEvent = useCallback(
     (event_id: string) => {
@@ -79,8 +137,10 @@ export const PreloadedEventsCtxProvider = ({
       pending,
       selectedEvent,
       getEvent,
+      counter,
+      is_pending,
     }),
-    [signedEvents, pending, getEvent, selectedEvent],
+    [signedEvents, pending, getEvent, selectedEvent, counter, is_pending],
   );
   return <PreloadedEventsCtx value={value}>{children}</PreloadedEventsCtx>;
 };
