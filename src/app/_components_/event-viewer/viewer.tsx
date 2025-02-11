@@ -32,8 +32,8 @@ export const EventViewer = () => {
     >
       <FlatWindow
         closeFn={toggle}
-        icon="Upcoming"
-        title="Starts in 32 days"
+        icon="Fire"
+        title=""
         variant="god"
         className="absolute z-50 w-full rounded-none border-0 bg-transparent backdrop-blur-0"
         wrapperStyle="border-gray-500 md:border-l-2"

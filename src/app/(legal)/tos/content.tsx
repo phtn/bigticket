@@ -15,7 +15,7 @@ export const TermsOfUse = () => {
 
 const important_message = `Welcome to Big Ticket Philippines ("we," "our," "us"). By accessing or using our web application ("App") or any of our services, you agree to comply with and be bound by these Terms of Use.
 
-These terms govern your use of our App and services, including any content, features, and functionality offered. If you do not agree with these terms, please do not use our services.
+These terms govern your use of our App and services, including any content, features, and functionality offered. If you do not agree with these terms, do not use our app and website, nor purchase any products or services offered on our site.
 
 We are committed to providing a safe and enjoyable experience for all users. Please read these Terms of Use carefully to understand your rights and responsibilities when using our App.`;
 
@@ -30,7 +30,7 @@ const sections: Section[] = [
     keyId: 1,
     id: "code-of-conduct",
     title: "Code of Conduct",
-    content: `By accessing and using our platform, ¹ you agree to use the platform (Website, App) lawfully and ethically. ² Respect the rights and privacy of other users and refrain from engaging in harmful, abusive, or deceptive behavior. ³ You must respect copyrights, trademarks, and intellectual property rights. ⁴ Do not share, distribute, or modify copyrighted material without proper authorization. ⁵ Any content you submit must comply with community guidelines and legal standards. ⁶ Do NOT Engage in illegal, fraudulent, or malicious activities. ⁷ Post or share content that is defamatory, offensive, or harmful. ⁸ Attempt to hack, disrupt, or gain unauthorized access to the system. ⁹ Harass, threaten, or impersonate others.`,
+    content: `By accessing and using our platform, ¹ YOU agree to use the platform (Website, App) lawfully and ethically. ² You MUST respect the rights and privacy of other users and refrain from engaging in harmful, abusive, or deceptive behavior. ³ You MUST respect copyrights, trademarks, and intellectual property rights. ⁴ Do NOT share, distribute, or modify copyrighted material without proper authorization. ⁵ Any content you submit must comply with community guidelines and legal standards. ⁶ Do NOT engage in illegal, fraudulent, or malicious activities. ⁷ Do NOT post or share content that is defamatory, offensive, or harmful. ⁸ Do NOT attempt to hack, disrupt, or gain unauthorized access to the system. ⁹ Do NOT harass, threaten, or impersonate others.`,
   },
   {
     keyId: 2,
@@ -78,6 +78,6 @@ const sections: Section[] = [
     keyId: 9,
     id: "mobile-app",
     title: "Mobile App",
-    content: `If you install or use our mobile application, software, and services, including any accompanying documentation (collectively, the "App"), we grant you a limited right to install and use the App on multiple authorized device located anywhere in the Philippines and its territories, or in another country where we may offer the App. You may use the App for your personal, non-commercial, and entertainment purposes only. We do not grant you any rights to any related documentation, support, upgrades, maintenance, or other enhancements to the App. We will not provide you with any device, internet access, or wireless connection to use the App. We are not responsible for any interaction between you and another App user, or information you transmit through the App (including your location).`,
+    content: `If you install or use our mobile application, software, and services, including any accompanying documentation (collectively, the "App"), we grant you a limited right to install and use the App on multiple authorized device located anywhere in the Philippines and its territories, or in another country where we may offer the App. You may use the App for your personal, non-commercial, and entertainment purposes only. We do not grant you any rights to any related documentation, support, upgrades, maintenance, or other enhancements to the App. We will not provide you with any device, internet access, or wireless connection to use the App. We are not responsible for any interaction between you and another App user, or information you transmit through the App.`,
   },
 ];

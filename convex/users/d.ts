@@ -15,7 +15,7 @@ export const MetadataSchema = v.optional(
 );
 export type Metadata = Infer<typeof MetadataSchema>;
 
-const UserTicketSchema = v.object({
+export const UserTicketSchema = v.object({
   event_id: v.string(),
   event_name: v.string(),
   event_url: v.string(),
@@ -31,6 +31,7 @@ const UserTicketSchema = v.object({
   is_claimed: v.boolean(),
   is_expired: v.boolean(),
   ticket_value: v.number(),
+  updated_at: v.float64(),
 });
 
 export type UserTicket = Infer<typeof UserTicketSchema>;

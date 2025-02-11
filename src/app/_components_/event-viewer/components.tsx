@@ -36,12 +36,12 @@ export const GetTicketButton = ({
   }, [is_private]);
   const TicketValue = useCallback(() => {
     const options = opts(
-      <h3 className="flex items-center justify-center gap-2 text-orange-100">
-        <Icon name="Lock" />
+      <h3 className="flex items-center justify-center gap-1 text-orange-100">
+        <Icon name="Lock" className="size-3.5" />
         <Shimmer
           sparklesCount={6}
-          className="font-inter text-[16px] font-bold"
-          text="Private Access"
+          className="font-inter text-[16px]"
+          text="Private Event"
         />
       </h3>,
       <NumberFlow
@@ -67,7 +67,7 @@ export const GetTicketButton = ({
         fullWidth
       >
         <div
-          className={cn("flex items-center gap-6", { "gap-10": is_private })}
+          className={cn("flex items-center gap-6", { "gap-14": is_private })}
         >
           <TicketLabel />
           <TicketValue />
