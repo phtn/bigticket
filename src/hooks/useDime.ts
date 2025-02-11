@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 
-export const useDime = <T extends Element>(r: RefObject<T | null>) => {
+export const useDime = <T extends Element>(r?: RefObject<T | null>) => {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [screen, setScreen] = useState({ width: 0, height: 0 });
   const [centerpoint, setCenterpoint] = useState({ x: 0, y: 0 });
@@ -23,12 +23,15 @@ export const useDime = <T extends Element>(r: RefObject<T | null>) => {
   }, []);
 
   useEffect(() => {
-    getScreenSize();
+    window.addEventListener("resize", getScreenSize);
+    return () => {
+      window.removeEventListener("resize", getScreenSize);
+    };
   }, [getScreenSize]);
 
   useEffect(() => {
     const updateDimensions = () => {
-      if (r.current) {
+      if (r?.current) {
         const { width, height } = r.current.getBoundingClientRect();
         setDimensions({ width, height });
       }

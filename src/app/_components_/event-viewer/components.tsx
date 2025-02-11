@@ -57,12 +57,12 @@ export const GetTicketButton = ({
     return <>{options.get(is_private)}</>;
   }, [ticket_value, is_private]);
   return (
-    <div className="z-1 relative bg-primary">
+    <div className="z-1 relative h-full bg-primary">
       <Button
         size="lg"
         disableRipple
         color="primary"
-        className="h-16"
+        className="h-full"
         radius="none"
         fullWidth
       >
@@ -84,7 +84,7 @@ export const ClaimedTicketButton = ({ is_private }: GetTicketButtonProps) => {
         size="lg"
         disableRipple
         color="primary"
-        className="h-16"
+        className="h-full"
         radius="none"
         fullWidth
       >
@@ -119,8 +119,8 @@ export const ActionPanel = () => {
     <HyperList
       data={actions}
       component={ActionButton}
-      container="grid h-16 grid-cols-6 w-full border-b-[0.33px] border-zinc-400 bg-white font-medium"
-      itemStyle="h-16 bg-gray-100"
+      container="grid grid-cols-6 w-full border-b-[0.33px] border-zinc-400 bg-white font-medium"
+      itemStyle="bg-gray-100"
       delay={0.3}
       direction="up"
     />
@@ -155,12 +155,12 @@ export const EventGroupDetail = ({
   event_url,
 }: EventGroupDetailProps) => {
   return (
-    <div className="h-32 md:h-28">
-      <div className="flex h-16 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-semibold md:h-14">
+    <div className="row-span-2 h-full">
+      <div className="flex h-1/2 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white px-4 font-semibold">
         <span>Organizers</span>
         <span>{host_name}</span>
       </div>
-      <div className="flex h-16 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-medium md:h-14">
+      <div className="flex h-1/2 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-medium">
         <span>Location</span>
         <span>{event_geo ?? event_url}</span>
       </div>
@@ -173,7 +173,7 @@ export const InfoGrid = ({ data }: { data: InfoItem[] }) => (
     delay={0.7}
     data={data}
     component={InfoGridItem}
-    container="grid h-48 w-full grid-cols-3"
+    container="grid row-span-3 w-full grid-cols-3"
     keyId={"label"}
   />
 );
@@ -200,7 +200,7 @@ const InfoGridItem = (info: InfoItem) => (
 );
 
 export const EventViewerFooter = () => (
-  <div className="flex h-32 w-full items-center justify-end bg-peach px-2 text-xs font-light md:h-[30px]">
+  <div className="flex h-[36px] w-full items-center justify-end bg-peach px-2 text-xs font-light md:h-[36px]">
     Big Ticket &copy;{new Date().getFullYear()}
   </div>
 );

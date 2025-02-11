@@ -43,6 +43,7 @@ interface EventViewerCtxValues {
   incrementViews: () => Promise<void>;
   activeEvent: SelectEvent | null;
   activeEventInfo: InfoItem[];
+  cover_src: string | null;
   moments: {
     start_time: { full: string; compact: string };
     narrow: { day: string; date: string };
@@ -290,6 +291,7 @@ export const EventViewerCtxProvider = ({
       likeItem,
     ],
   );
+  const cover_src = selectedEvent?.cover_src ?? null;
 
   const value = useMemo(
     () => ({
@@ -302,6 +304,7 @@ export const EventViewerCtxProvider = ({
       activeEvent,
       activeEventInfo,
       moments,
+      cover_src,
     }),
     [
       open,
@@ -313,6 +316,7 @@ export const EventViewerCtxProvider = ({
       activeEvent,
       activeEventInfo,
       moments,
+      cover_src,
     ],
   );
   return <EventViewerCtx value={value}>{children}</EventViewerCtx>;

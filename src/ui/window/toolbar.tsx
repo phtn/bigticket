@@ -139,7 +139,7 @@ export const StaticToolbar = ({
         { "bg-goddess": variant === "goddess" },
         "",
         // DARK
-        "backdrop-blur-sm",
+        "backdrop-blur-[1px]",
         className,
       )}
     >

@@ -3,9 +3,8 @@ import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
 import { normalizeTitle, opts } from "@/utils/helpers";
 import { Image, Tab, Tabs } from "@nextui-org/react";
-import { type ReactNode, use, useCallback, useEffect } from "react";
-import { EventViewerCtx, PreloadedEventsCtx } from "../../ctx/event";
-import { type SignedEvent } from "../../ctx/event/preload";
+import { type ReactNode, use, useCallback } from "react";
+import { EventViewerCtx } from "../../ctx/event";
 import {
   ActionPanel,
   GetTicketButton,
@@ -14,16 +13,13 @@ import {
   InfoGrid,
   ClaimedTicketButton,
 } from "./components";
+import { usePops } from "@/hooks/usePops";
+import { useDime } from "@/hooks/useDime";
 
 export const EventViewer = () => {
   const { open, toggle } = use(EventViewerCtx)!;
-  const { selectedEvent } = use(PreloadedEventsCtx)!;
 
-  useEffect(() => {
-    if (selectedEvent) {
-      console.log("on-render", selectedEvent.views);
-    }
-  }, [selectedEvent]);
+  usePops(open, toggle);
 
   return (
     <SideVaul
@@ -43,37 +39,39 @@ export const EventViewer = () => {
         wrapperStyle="border-gray-500 md:border-l-2"
       >
         <Container>
-          <MediaContainer event={selectedEvent} />
+          <MediaContainer />
         </Container>
       </FlatWindow>
     </SideVaul>
   );
 };
 const Container = ({ children }: { children: ReactNode }) => (
-  <div className={cn("h-screen md:h-full", "w-full")}>{children}</div>
+  <div className={cn("h-[calc(100vh-64px)] md:h-[calc(100vh-64px)]", "w-full")}>
+    {children}
+  </div>
 );
 
-interface MediaContainerProps {
-  event: SignedEvent | null | undefined;
-}
-const MediaContainer = ({ event }: MediaContainerProps) => {
-  const { activeEventInfo, moments } = use(EventViewerCtx)!;
+const MediaContainer = () => {
+  const { height } = useDime().screen;
 
-  const event_name = normalizeTitle(event?.event_name);
+  const { activeEvent, activeEventInfo, moments, cover_src } =
+    use(EventViewerCtx)!;
+
+  const event_name = normalizeTitle(activeEvent?.event_name);
 
   const EventTicketButton = useCallback(() => {
     const options = opts(
-      <ClaimedTicketButton is_private={event?.is_private} />,
+      <ClaimedTicketButton is_private={activeEvent?.is_private} />,
       <GetTicketButton
-        is_private={event?.is_private}
-        ticket_value={event?.ticket_value}
+        is_private={activeEvent?.is_private}
+        ticket_value={activeEvent?.ticket_value}
       />,
     );
     return <>{options.get(false)}</>;
-  }, [event?.is_private, event?.ticket_value]);
+  }, [activeEvent?.is_private, activeEvent?.ticket_value]);
 
   return (
-    <div className="mx-auto h-screen w-full max-w-6xl overflow-y-scroll font-inter tracking-tight md:h-full md:w-[30rem]">
+    <div className="mx-auto h-[calc(100vh-64px)] w-full max-w-6xl overflow-y-scroll font-inter tracking-tight md:h-full md:w-[30rem]">
       <div className="group/media overflow-hidden">
         <Tabs
           size="sm"
@@ -99,8 +97,8 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
             <div className="relative h-fit">
               <Image
                 radius="none"
-                alt={`${event?.event_name}-cover`}
-                src={event?.cover_src ?? "/svg/star_v2.svg"}
+                alt={`${activeEvent?.event_name}-cover`}
+                src={cover_src ?? "/svg/star_v2.svg"}
                 className="relative z-0 size-full"
               />
               <TitleDisplay
@@ -111,20 +109,31 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
             </div>
           </Tab>
           <Tab key={"details"} title="Details">
-            <div className="relative h-80"></div>
+            <div className="relative h-[278.77px] w-screen md:h-[320px]"></div>
           </Tab>
         </Tabs>
       </div>
 
-      <EventTicketButton />
-      <ActionPanel />
-      <EventGroupDetail
-        host_name={event?.host_name}
-        event_geo={event?.event_geo}
-        event_url={event?.event_url}
-        host_id={event?.host_id}
-      />
-      <InfoGrid data={activeEventInfo} />
+      <div
+        className={cn(
+          "grid grid-rows-7",
+          "landscape:h-screen",
+          "md:h-[calc(100vh-420px)]",
+          { "h-[calc(100vh-300px)]": height < 741 },
+          { "h-[calc(100vh-384px)]": height > 742 },
+          { "h-[calc(100vh-374px)]": height > 800 },
+        )}
+      >
+        <EventTicketButton />
+        <ActionPanel />
+        <EventGroupDetail
+          host_name={activeEvent?.host_name}
+          event_geo={activeEvent?.event_geo}
+          event_url={activeEvent?.event_url}
+          host_id={activeEvent?.host_id}
+        />
+        <InfoGrid data={activeEventInfo} />
+      </div>
       <EventViewerFooter />
     </div>
   );
@@ -144,7 +153,7 @@ const TitleDisplay = ({ event_name, narrow, time }: TitleDisplayProps) => (
       {event_name?.map((word, i) => (
         <h2
           key={i}
-          className="block w-fit text-3xl font-bold leading-8 tracking-tight text-white drop-shadow-sm first-line:max-w-[16ch]"
+          className="block w-fit text-2xl font-bold leading-8 tracking-tighter text-white drop-shadow-sm first-line:max-w-[16ch] md:text-3xl"
         >
           {word}
         </h2>
