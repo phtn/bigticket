@@ -18,8 +18,8 @@ export interface ConvexCtxValues {
       photo_url: (id: string, photo_url: string) => Promise<Id<"users"> | null>;
       likes: (id: string, target_id: string) => Promise<string | null>;
       bookmarks: (id: string, target_id: string) => Promise<string | null>;
-      followers: (id: string, target_id: string) => Promise<Id<"users"> | null>;
-      following: (id: string, target_id: string) => Promise<Id<"users"> | null>;
+      followers: (id: string, target_id: string) => Promise<string | null>;
+      following: (id: string, target_id: string) => Promise<string | null>;
     };
     add: {
       metadata: (
@@ -46,6 +46,7 @@ export interface ConvexCtxValues {
         id: string,
         photo_url: string,
       ) => Promise<Id<"events"> | null>;
+      views: (id: string) => Promise<string | null>;
     };
   };
 

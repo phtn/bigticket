@@ -8,11 +8,12 @@ import { opts } from "@/utils/helpers";
 import { Button, Card } from "@nextui-org/react";
 import NumberFlow from "@number-flow/react";
 import { use, useCallback } from "react";
+
 interface GetTicketButtonProps {
-  ticket_value: number | undefined;
+  ticket_value?: number;
   is_private?: boolean;
 }
-export const BuyTicketButton = ({
+export const GetTicketButton = ({
   ticket_value,
   is_private = false,
 }: GetTicketButtonProps) => {
@@ -24,8 +25,11 @@ export const BuyTicketButton = ({
         </span>
         Ticket
       </h2>,
-      <h2 className="text-xl font-bold">
-        <span className="font-semibold italic text-slate-300">Buy</span> Tickets
+      <h2 className="text-xl font-black">
+        <span className="font-bold italic tracking-tighter text-slate-400">
+          Buy
+        </span>
+        Tickets
       </h2>,
     );
     return <>{options.get(is_private)}</>;
@@ -66,8 +70,41 @@ export const BuyTicketButton = ({
           className={cn("flex items-center gap-6", { "gap-10": is_private })}
         >
           <TicketLabel />
-          <div className="rounded-sm px-4 py-1 text-2xl">
-            <TicketValue />
+          <TicketValue />
+        </div>
+      </Button>
+    </div>
+  );
+};
+
+export const ClaimedTicketButton = ({ is_private }: GetTicketButtonProps) => {
+  return (
+    <div className="z-1 relative bg-primary">
+      <Button
+        size="lg"
+        disableRipple
+        color="primary"
+        className="h-16"
+        radius="none"
+        fullWidth
+      >
+        <div
+          className={cn("flex items-center justify-evenly", {
+            "gap-12": is_private,
+          })}
+        >
+          <h2 className="flex items-center gap-0.5 text-xl font-black">
+            <span className="font-bold italic tracking-tighter text-teal-400">
+              Ticket
+            </span>
+            Claimed
+            <Icon name="Check" className="text-teal-400" />
+          </h2>
+          <div className="flex items-center gap-2">
+            <p className="font-inter text-sm font-semibold capitalize">
+              view my ticket
+            </p>
+            <Icon name="QrCode" className="opacity-80" />
           </div>
         </div>
       </Button>
@@ -143,7 +180,7 @@ export const InfoGrid = ({ data }: { data: InfoItem[] }) => (
 
 export interface InfoItem {
   label: string;
-  value: string | number | undefined;
+  value?: string | number;
 }
 
 const InfoGridItem = (info: InfoItem) => (
@@ -153,7 +190,11 @@ const InfoGridItem = (info: InfoItem) => (
   >
     <div className="text-xs tracking-tight">{info.label}</div>
     <div className="text-sm font-semibold tracking-tighter md:text-[16px]">
-      {info.value}
+      {info.label === "likes" ? (
+        <NumberFlow value={info.value as number} />
+      ) : (
+        <span>{info.value}</span>
+      )}
     </div>
   </Card>
 );

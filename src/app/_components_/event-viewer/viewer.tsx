@@ -1,24 +1,29 @@
-import { useMoment } from "@/hooks/useMoment";
 import { cn } from "@/lib/utils";
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
-import { normalizeTitle } from "@/utils/helpers";
+import { normalizeTitle, opts } from "@/utils/helpers";
 import { Image, Tab, Tabs } from "@nextui-org/react";
-import { type ReactNode, use, useMemo } from "react";
+import { type ReactNode, use, useCallback, useEffect } from "react";
 import { EventViewerCtx, PreloadedEventsCtx } from "../../ctx/event";
 import { type SignedEvent } from "../../ctx/event/preload";
 import {
   ActionPanel,
-  BuyTicketButton,
+  GetTicketButton,
   EventGroupDetail,
   EventViewerFooter,
   InfoGrid,
-  type InfoItem,
+  ClaimedTicketButton,
 } from "./components";
 
 export const EventViewer = () => {
   const { open, toggle } = use(EventViewerCtx)!;
-  const preloaded = use(PreloadedEventsCtx);
+  const { selectedEvent } = use(PreloadedEventsCtx)!;
+
+  useEffect(() => {
+    if (selectedEvent) {
+      console.log("on-render", selectedEvent.views);
+    }
+  }, [selectedEvent]);
 
   return (
     <SideVaul
@@ -34,11 +39,11 @@ export const EventViewer = () => {
         icon="Upcoming"
         title="Starts in 32 days"
         variant="god"
-        className="absolute z-50 w-full rounded-none border-0 bg-transparent"
+        className="absolute z-50 w-full rounded-none border-0 bg-transparent backdrop-blur-0"
         wrapperStyle="border-gray-500 md:border-l-2"
       >
         <Container>
-          <MediaContainer event={preloaded?.selectedEvent} />
+          <MediaContainer event={selectedEvent} />
         </Container>
       </FlatWindow>
     </SideVaul>
@@ -52,33 +57,21 @@ interface MediaContainerProps {
   event: SignedEvent | null | undefined;
 }
 const MediaContainer = ({ event }: MediaContainerProps) => {
-  const { start_time, narrow, event_time, durationHrs, compact } = useMoment({
-    date: event?.event_date,
-    start: event?.start_date,
-    end: event?.end_date,
-  });
-  const info_grid_data: InfoItem[] = useMemo(
-    () => [
-      {
-        label: "Ticket Sales",
-        value: event?.is_private ? "EXCLUSIVE" : "OPEN",
-      },
-      {
-        label: event?.is_private ? "Tickets Claimed" : "Tickets Sold",
-        value: event?.tickets_sold ?? 0,
-      },
-      { label: "Tickets Remaining", value: "50" },
-      { label: "Date", value: compact },
-      { label: "Time", value: event_time.compact },
-      { label: "Duration", value: `${durationHrs} hours` },
-      { label: "Likes", value: event?.likes ?? 0 },
-      { label: "Views", value: event?.views ?? 0 },
-      { label: "Favorites", value: event?.audience },
-    ],
-    [event, compact, event_time.compact, durationHrs],
-  );
+  const { activeEventInfo, moments } = use(EventViewerCtx)!;
 
   const event_name = normalizeTitle(event?.event_name);
+
+  const EventTicketButton = useCallback(() => {
+    const options = opts(
+      <ClaimedTicketButton is_private={event?.is_private} />,
+      <GetTicketButton
+        is_private={event?.is_private}
+        ticket_value={event?.ticket_value}
+      />,
+    );
+    return <>{options.get(false)}</>;
+  }, [event?.is_private, event?.ticket_value]);
+
   return (
     <div className="mx-auto h-screen w-full max-w-6xl overflow-y-scroll font-inter tracking-tight md:h-full md:w-[30rem]">
       <div className="group/media overflow-hidden">
@@ -112,21 +105,18 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
               />
               <TitleDisplay
                 event_name={event_name}
-                narrow={narrow}
-                time={start_time.compact}
+                narrow={moments.narrow}
+                time={moments.start_time.compact}
               />
             </div>
           </Tab>
           <Tab key={"details"} title="Details">
-            <div className="relative h-72"></div>
+            <div className="relative h-80"></div>
           </Tab>
         </Tabs>
       </div>
 
-      <BuyTicketButton
-        is_private={event?.is_private}
-        ticket_value={event?.ticket_value}
-      />
+      <EventTicketButton />
       <ActionPanel />
       <EventGroupDetail
         host_name={event?.host_name}
@@ -134,8 +124,7 @@ const MediaContainer = ({ event }: MediaContainerProps) => {
         event_url={event?.event_url}
         host_id={event?.host_id}
       />
-      <InfoGrid data={info_grid_data} />
-
+      <InfoGrid data={activeEventInfo} />
       <EventViewerFooter />
     </div>
   );

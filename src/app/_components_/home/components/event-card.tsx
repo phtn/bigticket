@@ -18,19 +18,21 @@ import { use, useCallback, useEffect, useState } from "react";
 export const EventCard = (event: SignedEvent) => {
   const { event_date, event_day } = useMoment({ date: event?.event_date });
   const { getEvent } = use(PreloadedEventsCtx)!;
-  const { toggle, counter, bookmarkFn } = use(EventViewerCtx)!;
+  const { toggle, counter, bookmarkFn, incrementViews } = use(EventViewerCtx)!;
 
   const [bookmarked, setBookmarked] = useState<boolean>(false);
 
   const handleBookmarkEvent = useCallback(async () => {
     setBookmarked((prev) => !prev);
+
     await bookmarkFn();
   }, [bookmarkFn]);
 
-  const handleSelectEvent = useCallback(() => {
+  const handleSelectEvent = useCallback(async () => {
     getEvent(event.event_id);
     toggle();
-  }, [getEvent, event?.event_id, toggle]);
+    await incrementViews();
+  }, [getEvent, event?.event_id, toggle, incrementViews]);
 
   useEffect(() => {
     setBookmarked(counter?.bookmarks?.includes(event?.event_id) ?? false);

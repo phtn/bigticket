@@ -2,6 +2,9 @@ import { mutation } from "@vx/server";
 import { UpdateUserSchema } from "./d";
 import { checkUser } from "./create";
 import { v } from "convex/values";
+import { GenericDatabaseWriter } from "convex/server";
+import { DataModel } from "@vx/dataModel";
+import { checkEvent } from "convex/events/create";
 
 export const info = mutation({
   args: UpdateUserSchema,
@@ -91,8 +94,16 @@ export const likes = mutation({
       return null;
     }
 
-    const likes = updateArray(user?.likes, target_id);
+    const [likes, increment] = updateArray(user?.likes, target_id);
     await db.patch(user._id, { likes, updated_at: Date.now() });
+
+    const event = await checkEvent(db, target_id);
+    if (event === null || !increment) {
+      return null;
+    }
+    await db.patch(event._id, {
+      likes: event?.likes ? event?.likes + increment : increment,
+    });
     return "success";
   },
 });
@@ -106,10 +117,18 @@ export const bookmarks = mutation({
       return null;
     }
 
-    const bookmarks = updateArray(user?.bookmarks, target_id);
+    const [bookmarks, increment] = updateArray(user?.bookmarks, target_id);
     await db.patch(user._id, {
       bookmarks,
       updated_at: Date.now(),
+    });
+
+    const event = await checkEvent(db, target_id);
+    if (event === null || !increment) {
+      return null;
+    }
+    await db.patch(event._id, {
+      bookmarks: event?.bookmarks ? event?.bookmarks + increment : increment,
     });
     return "success";
   },
@@ -119,17 +138,26 @@ export const following = mutation({
   args: { id: v.string(), target_id: v.string() },
   handler: async ({ db }, { id, target_id }) => {
     const user = await checkUser(db, id);
-
     if (user === null || target_id === "") {
       return null;
     }
 
-    const following = updateArray(user?.bookmarks, target_id);
+    const [following, increment] = updateArray(user?.bookmarks, target_id);
     await db.patch(user._id, {
       following,
       updated_at: Date.now(),
     });
-    return user._id;
+
+    const target_user = await checkUser(db, target_id);
+    if (target_user === null || !increment) {
+      return null;
+    }
+    await db.patch(target_user._id, {
+      following_count: target_user?.following_count
+        ? target_user?.following_count + increment
+        : increment,
+    });
+    return "success";
   },
 });
 
@@ -142,24 +170,38 @@ export const followers = mutation({
       return null;
     }
 
-    const followers = updateArray(user?.bookmarks, target_id);
+    const [followers, increment] = updateArray(user?.bookmarks, target_id);
     await db.patch(user._id, {
       followers,
       updated_at: Date.now(),
     });
-    return user._id;
+    const target_user = await checkUser(db, target_id);
+    if (target_user === null || !increment) {
+      return null;
+    }
+    await db.patch(target_user._id, {
+      follower_count: target_user?.follower_count
+        ? target_user?.follower_count + increment
+        : increment,
+    });
+    return "success";
   },
 });
 
-function updateArray(array: string[] | undefined, element: string): string[] {
+function updateArray(
+  array: string[] | undefined,
+  element: string,
+): [string[], number] {
+  let increment = 1;
   if (!array) {
-    return [element];
+    return [[element], increment];
   }
   const index = array.indexOf(element);
   if (index !== -1) {
     array.splice(index, 1);
+    increment = -1;
   } else {
     array.push(element);
   }
-  return array;
+  return [array, increment];
 }

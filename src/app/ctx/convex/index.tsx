@@ -141,6 +141,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const updateEventStatus = useMutation(api.events.update.status);
   const updateCoverUrl = useMutation(api.events.update.cover_url);
   const updatePhotoUrl = useMutation(api.events.update.photo_url);
+  const updateEventViews = useMutation(api.events.update.views);
 
   const events = useMemo(
     () => ({
@@ -158,6 +159,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
           await updateCoverUrl({ id, cover_url }),
         photo_url: async (id: string, photo_url: string) =>
           await updatePhotoUrl({ id, photo_url }),
+        views: async (id: string) => await updateEventViews({ id }),
       },
     }),
     [
@@ -168,6 +170,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
       updateEventStatus,
       updateCoverUrl,
       updatePhotoUrl,
+      updateEventViews,
     ],
   );
 

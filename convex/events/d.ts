@@ -66,6 +66,7 @@ export const EventSchema = v.object({
   tags: v.optional(v.array(v.string())),
   views: v.optional(v.number()),
   likes: v.optional(v.number()),
+  bookmarks: v.optional(v.number()),
   host_id: v.optional(v.string()),
   host_name: v.optional(v.string()),
   host_email: v.optional(v.string()),

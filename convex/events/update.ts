@@ -42,16 +42,29 @@ export const cover_url = mutation({
 });
 
 export const views = mutation({
-  args: { id: v.string(), value: v.number() },
-  handler: async ({ db }, { id, value }) => {
+  args: { id: v.string() },
+  handler: async ({ db }, { id }) => {
     const event = await checkEvent(db, id);
-
-    if (event === null || !value) {
+    if (event === null) {
       return null;
     }
 
-    const computed = event?.views && event.views + value;
+    const computed = event?.views ? event.views + 1 : 1;
     await db.patch(event._id, { views: computed, updated_at: Date.now() });
-    return event._id;
+    return "success";
+  },
+});
+
+export const likes = mutation({
+  args: { id: v.string(), increment: v.number() },
+  handler: async ({ db }, { id, increment }) => {
+    const event = await checkEvent(db, id);
+    if (event === null || !increment) {
+      return null;
+    }
+
+    const likes = event?.likes ? event.likes + increment : increment;
+    await db.patch(event._id, { likes, updated_at: Date.now() });
+    return "success";
   },
 });

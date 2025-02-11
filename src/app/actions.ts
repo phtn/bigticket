@@ -1,6 +1,8 @@
 "use server";
 
 import { env } from "@/env";
+import { api } from "@vx/api";
+import { fetchMutation } from "convex/nextjs";
 import { cookies } from "next/headers";
 
 export type Modes = "light" | "dark" | "system";
@@ -68,4 +70,10 @@ export const getAccountID = async () => {
 export const deleteAccountID = async () => {
   const cookieStore = await cookies();
   cookieStore.delete("big-ticket--account-id");
+};
+
+export const fetchEventById = async (id: string) => {
+  return await fetchMutation(api.events.get.byId, {
+    id: id,
+  });
 };

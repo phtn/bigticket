@@ -1,22 +1,25 @@
 "use client";
 
+import { type InfoItem } from "@/app/_components_/event-viewer/components";
+import { fetchEventById, getUserID } from "@/app/actions";
+import { useMoment } from "@/hooks/useMoment";
 import { useToggle } from "@/hooks/useToggle";
 import { type IconName } from "@/icons";
+import { type SelectEvent } from "convex/events/d";
 import {
   createContext,
-  type Dispatch,
-  type SetStateAction,
-  type TransitionStartFunction,
   use,
   useCallback,
   useEffect,
   useMemo,
   useState,
   useTransition,
+  type Dispatch,
   type ReactNode,
+  type SetStateAction,
+  type TransitionStartFunction,
 } from "react";
 import { ConvexCtx } from "../convex";
-import { getUserID } from "@/app/actions";
 import { PreloadedEventsCtx, type UserCounter } from "./preload";
 
 export interface ActionParams {
@@ -37,6 +40,13 @@ interface EventViewerCtxValues {
   actions: ActionItem[];
   bookmarkFn: () => Promise<void>;
   counter: UserCounter | null;
+  incrementViews: () => Promise<void>;
+  activeEvent: SelectEvent | null;
+  activeEventInfo: InfoItem[];
+  moments: {
+    start_time: { full: string; compact: string };
+    narrow: { day: string; date: string };
+  };
 }
 export const EventViewerCtx = createContext<EventViewerCtxValues | null>(null);
 
@@ -46,9 +56,28 @@ export const EventViewerCtxProvider = ({
   children: ReactNode;
 }) => {
   const { open, toggle } = useToggle();
-
-  const { usr } = use(ConvexCtx)!;
   const { counter, selectedEvent } = use(PreloadedEventsCtx)!;
+  const { usr, events } = use(ConvexCtx)!;
+
+  const [activeEvent, setActiveEvent] = useState<SelectEvent | null>(null);
+
+  const { start_time, narrow, event_time, durationHrs, compact } = useMoment({
+    date: activeEvent?.event_date ?? selectedEvent?.event_date,
+    start: activeEvent?.start_date ?? selectedEvent?.start_date,
+    end: activeEvent?.end_date ?? selectedEvent?.end_date,
+  });
+
+  const moments = useMemo(() => ({ start_time, narrow }), [start_time, narrow]);
+
+  const getEventUpdate = useCallback(async () => {
+    if (!selectedEvent) return null;
+    return (await fetchEventById(selectedEvent.event_id)) as SelectEvent;
+  }, [selectedEvent]);
+
+  const incrementViews = useCallback(async () => {
+    if (!selectedEvent) return;
+    await events.update.views(selectedEvent.event_id);
+  }, [selectedEvent, events.update]);
 
   const actionParams: ActionParams = useMemo(
     () => ({
@@ -72,15 +101,24 @@ export const EventViewerCtxProvider = ({
   const [pending, fn] = useTransition();
   const setFn = <T,>(
     tx: TransitionStartFunction,
-    action: () => T,
+    action: () => Promise<T>,
     set: Dispatch<SetStateAction<T>>,
   ) => {
-    tx(() => {
-      set(action());
+    tx(async () => {
+      set(await action());
     });
   };
 
-  const isLiked = useCallback(() => {
+  const getActiveEvent = useCallback(() => {
+    setFn(fn, getEventUpdate, setActiveEvent);
+  }, [getEventUpdate]);
+
+  useEffect(() => {
+    getActiveEvent();
+    console.log(bookmarked ? "" : ".", liked ? "" : ".");
+  }, [getActiveEvent, bookmarked, liked]);
+
+  const isLiked = useCallback(async () => {
     if (counter?.likes && selectedEvent?.event_id) {
       return counter.likes.includes(selectedEvent.event_id);
     }
@@ -95,7 +133,7 @@ export const EventViewerCtxProvider = ({
     isLikeActive();
   }, [isLikeActive]);
 
-  const isBookmarked = useCallback(() => {
+  const isBookmarked = useCallback(async () => {
     if (counter?.bookmarks && selectedEvent?.event_id) {
       return counter.bookmarks.includes(selectedEvent.event_id);
     }
@@ -155,7 +193,7 @@ export const EventViewerCtxProvider = ({
       id: 3,
       label: "bookmark",
       icon: pending
-        ? "SpinnerBall"
+        ? "SpinnerClock"
         : bookmarked
           ? "BookmarkCheck"
           : ("BookmarkPlus" as IconName),
@@ -170,7 +208,7 @@ export const EventViewerCtxProvider = ({
       id: 4,
       label: "like",
       icon: pending
-        ? "SpinnerBall"
+        ? "SpinnerClock"
         : liked
           ? "HeartCheck"
           : ("Heart" as IconName),
@@ -178,6 +216,36 @@ export const EventViewerCtxProvider = ({
       fn: likeFn,
     }),
     [liked, likeFn, pending],
+  );
+
+  const activeEventInfo: InfoItem[] = useMemo(
+    () => [
+      {
+        label: "Ticket Sales",
+        value: activeEvent?.is_private ? "EXCLUSIVE" : "OPEN",
+      },
+      {
+        label: activeEvent?.is_private ? "Tickets Claimed" : "Tickets Sold",
+        value: activeEvent?.tickets_sold ?? 0,
+      },
+      { label: "Tickets Remaining", value: "50" },
+      { label: "Date", value: compact },
+      { label: "Time", value: event_time.compact },
+      { label: "Duration", value: `${durationHrs} hours` },
+      { label: "Likes", value: activeEvent?.likes ?? 0 },
+      { label: "Views", value: activeEvent?.views ?? 0 },
+      { label: "Bookmarks", value: activeEvent?.bookmarks ?? 0 },
+    ],
+    [
+      activeEvent?.views,
+      activeEvent?.likes,
+      activeEvent?.bookmarks,
+      activeEvent?.is_private,
+      activeEvent?.tickets_sold,
+      event_time,
+      durationHrs,
+      compact,
+    ],
   );
 
   const actions: ActionItem[] = useMemo(
@@ -230,8 +298,22 @@ export const EventViewerCtxProvider = ({
       actions,
       bookmarkFn,
       counter,
+      incrementViews,
+      activeEvent,
+      activeEventInfo,
+      moments,
     }),
-    [open, toggle, actions, bookmarkFn, counter],
+    [
+      open,
+      toggle,
+      actions,
+      bookmarkFn,
+      counter,
+      incrementViews,
+      activeEvent,
+      activeEventInfo,
+      moments,
+    ],
   );
   return <EventViewerCtx value={value}>{children}</EventViewerCtx>;
 };

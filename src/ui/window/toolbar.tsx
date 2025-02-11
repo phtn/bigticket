@@ -139,7 +139,7 @@ export const StaticToolbar = ({
         { "bg-goddess": variant === "goddess" },
         "",
         // DARK
-        "backdrop-blur-lg",
+        "backdrop-blur-sm",
         className,
       )}
     >
@@ -156,8 +156,8 @@ export const StaticToolbar = ({
       <ButtonIcon
         onClick={closeFn}
         icon="Close"
-        bg="opacity-0"
-        color="text-gray-400 group-hover/icon:text-army/80 size-6 stroke-0"
+        bg="opacity-0 group-hover/icon:opacity-0"
+        color="text-gray-200 group-hover/icon:text-white size-6 stroke-0"
       />
     </div>
   );
