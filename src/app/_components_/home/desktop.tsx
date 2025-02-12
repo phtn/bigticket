@@ -70,7 +70,7 @@ const MainContent = () => {
             keyId="event_id"
             data={signedEvents}
             component={EventCard}
-            container="overflow-scroll md:h-[calc(100vh)] columns-3 gap-4 sm:columns-3 px-4"
+            container="overflow-scroll md:h-fit grid grid-cols-1 gap-4 sm:grid-cols-3 px-4"
             delay={0.1}
           >
             <div

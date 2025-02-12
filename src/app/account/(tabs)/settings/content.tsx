@@ -11,7 +11,16 @@ export interface AccountContentProps {
 export const Content = (props: AccountContentProps) => {
   return (
     <PreloadedEventsCtxProvider {...props}>
-      <Header title="Account Settings"></Header>
+      <div className="min-h-[36rem] bg-chalk p-6">
+        <Header title="Account Settings"></Header>
+
+        <div className="p-4 text-xs">
+          <div className="w-fit space-y-2 rounded-md bg-gray-200 p-2">
+            <p>&rarr; In-progress</p>
+            <pre className="">id: 010c</pre>
+          </div>
+        </div>
+      </div>
     </PreloadedEventsCtxProvider>
   );
 };

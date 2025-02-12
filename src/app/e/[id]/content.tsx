@@ -30,6 +30,15 @@ export const Content = ({ id }: EventContentProps) => {
               <TicketPhoto event={event} />
             </div>
           </Carousel>
+          <div className="py-4 text-xs">
+            <div className="w-fit space-y-2 rounded-md bg-gray-200 p-2">
+              <p>
+                <span className="font-bold">Event Configurator</span> &rarr;
+                In-progress
+              </p>
+              <pre className="">id: 010f</pre>
+            </div>
+          </div>
         </div>
       </main>
     </EventEditorCtxProvider>

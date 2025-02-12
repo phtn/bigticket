@@ -16,7 +16,11 @@ import {
 import { use, useCallback, useEffect, useState } from "react";
 
 export const EventCard = (event: SignedEvent) => {
-  const { event_date, event_day } = useMoment({ date: event?.event_date });
+  const { event_day, event_time, narrow } = useMoment({
+    date: event?.event_date,
+    start: event?.start_date,
+    end: event?.end_date,
+  });
   const { getEvent } = use(PreloadedEventsCtx)!;
   const { toggle, counter, bookmarkFn, incrementViews } = use(EventViewerCtx)!;
 
@@ -96,10 +100,11 @@ export const EventCard = (event: SignedEvent) => {
               <span className="drop-shadow-md">{event_day}</span>
               <span>&middot;</span>
               <span className="drop-shadow-md">
-                {event_date.substring(0, event_date.indexOf(","))}
+                {/* {event_date.substring(0, event_date.indexOf(","))} */}
+                {narrow.date}
               </span>
               <span>&middot;</span>
-              <span className="drop-shadow-md">9pm-3am</span>
+              <span className="drop-shadow-md">{event_time.compact}</span>
             </div>
           </div>
         </div>
