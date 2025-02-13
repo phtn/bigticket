@@ -36,6 +36,36 @@ const Component = ({
   );
 };
 
+const BottomComponent = ({
+  children,
+  open,
+  onOpenChange,
+  title,
+  description,
+  dismissible = false,
+}: ComponentProps & DialogProps) => {
+  return (
+    <Drawer.Root
+      open={open}
+      onOpenChange={onOpenChange}
+      direction={"bottom"}
+      dismissible={dismissible}
+    >
+      <Drawer.Portal>
+        <Drawer.Overlay className="fixed inset-0 bg-gray-100" />
+        <Drawer.Content className="fixed bottom-0 right-0 z-[100] flex h-fit w-fit flex-col rounded-t-[2.5rem] border-t-2 border-macl-gray bg-gradient-to-t from-gray-100 to-white pt-4 outline-none">
+          <Drawer.Handle />
+          <Drawer.Title className="hidden">{title}</Drawer.Title>
+          <Drawer.Description className="hidden">
+            {description}
+          </Drawer.Description>
+          {children}
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
+  );
+};
+
 const Handle = ({ close }: { close: VoidFunction }) => (
   <div
     onClick={close}
@@ -67,5 +97,9 @@ const SideVaul: TSideVaul = Object.assign(Component, {
   Body,
   Footer,
 });
-
-export { SideVaul };
+const BottomVaul: TSideVaul = Object.assign(BottomComponent, {
+  Handle,
+  Body,
+  Footer,
+});
+export { BottomVaul, SideVaul };

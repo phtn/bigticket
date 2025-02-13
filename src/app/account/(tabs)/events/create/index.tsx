@@ -11,17 +11,12 @@ import { opts } from "@/utils/helpers";
 import { parseAbsoluteToLocal } from "@internationalized/date";
 import {
   Button,
-  DateRangePicker,
   type DateValue,
   Form,
   Input,
-  type RangeValue,
-  Select,
-  SelectItem,
   Textarea,
 } from "@nextui-org/react";
 import type { InsertEvent } from "convex/events/d";
-import moment from "moment";
 import {
   type ChangeEvent,
   type ReactNode,
@@ -33,7 +28,8 @@ import {
 } from "react";
 import { useEvent } from "../../../useEvent";
 import { useDime } from "@/hooks/useDime";
-import { OptionButton } from "./components";
+import { OptionActionSheet, OptionButton } from "./components";
+import { OptionCtxProvider } from "./ctx";
 
 interface DateRange {
   start: DateValue;
@@ -42,16 +38,16 @@ interface DateRange {
 export const CreateEvent = () => {
   const { open, toggle } = useToggle();
   const [eventName, setEventName] = useState("");
-  const [ticketCount, setTicketCount] = useState(0);
-  const [eventType, setEventType] = useState("");
-  const [eventStartDate, setEventStartDate] = useState(0);
-  const [eventEndDate, setEventEndDate] = useState(0);
+  const [ticketCount] = useState(0);
+  const [eventType] = useState("");
+  const [eventStartDate] = useState(0);
+  const [eventEndDate] = useState(0);
   const [eventSite, setEventSite] = useState("");
-  const [eventDate, setEventDate] = useState("");
-  const [eventDay, setEventDay] = useState("");
-  const [eventDuration, setEventDuration] = useState(0);
+  const [eventDate] = useState("");
+  const [eventDay] = useState("");
+  const [eventDuration] = useState(0);
 
-  const [dateRange, setDateRange] = useState<DateRange>({
+  const [dateRange] = useState<DateRange>({
     start: parseAbsoluteToLocal(new Date().toISOString()),
     end: parseAbsoluteToLocal(new Date().toISOString()),
   });
@@ -71,34 +67,34 @@ export const CreateEvent = () => {
 
   const descRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    switch (e.target.name) {
-      case "ticket_count":
-        return setTicketCount(+e.target.value);
-      case "event_type":
-        return setEventType(e.target.value);
-      default:
-        return;
-    }
-  };
+  // const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  //   switch (e.target.name) {
+  //     case "ticket_count":
+  //       return setTicketCount(+e.target.value);
+  //     case "event_type":
+  //       return setEventType(e.target.value);
+  //     default:
+  //       return;
+  //   }
+  // };
 
-  const handleDateChange = (value: RangeValue<DateValue> | null) => {
-    const dateStr = {
-      start: value?.start ?? parseAbsoluteToLocal(new Date().toISOString()),
-      end: value?.end ?? parseAbsoluteToLocal(new Date().toISOString()),
-    };
-    setDateRange(dateStr);
-    const startDate = dateStr.start.toDate("GMT");
-    setEventStartDate(startDate.getTime());
-    const endDate = dateStr.end.toDate("GMT");
-    setEventEndDate(endDate.getTime());
-    setEventDuration(endDate.getTime() - startDate.getTime());
+  // const handleDateChange = (value: RangeValue<DateValue> | null) => {
+  //   const dateStr = {
+  //     start: value?.start ?? parseAbsoluteToLocal(new Date().toISOString()),
+  //     end: value?.end ?? parseAbsoluteToLocal(new Date().toISOString()),
+  //   };
+  //   setDateRange(dateStr);
+  //   const startDate = dateStr.start.toDate("GMT");
+  //   setEventStartDate(startDate.getTime());
+  //   const endDate = dateStr.end.toDate("GMT");
+  //   setEventEndDate(endDate.getTime());
+  //   setEventDuration(endDate.getTime() - startDate.getTime());
 
-    const compact = moment(dateStr.start).format("LL");
-    const day = moment(dateStr.start).format("dddd");
-    setEventDate(compact);
-    setEventDay(day);
-  };
+  //   const compact = moment(dateStr.start).format("LL");
+  //   const day = moment(dateStr.start).format("dddd");
+  //   setEventDate(compact);
+  //   setEventDay(day);
+  // };
 
   const { createEvent } = useEvent();
 
@@ -139,26 +135,22 @@ export const CreateEvent = () => {
   const EventSite = useCallback(() => {
     const options = opts(
       <Input
+        required
+        size="lg"
         id="event_geo"
         name="event_geo"
-        label="Venue"
+        label="Name of venue"
         onChange={handleChangeSite}
-        required
-        classNames={{
-          inputWrapper: "border-[0.33px] border-macd-gray shadow-none",
-          label: "font-semibold",
-        }}
+        classNames={inputClassNames}
       />,
       <Input
+        size="lg"
         id="event_url"
         name="event_url"
-        label="URL"
+        label="Website"
+        placeholder="Link to your website"
         onChange={handleChangeSite}
-        required
-        classNames={{
-          inputWrapper: "border-[0.33px] border-macd-gray shadow-none",
-          label: "font-semibold",
-        }}
+        classNames={inputClassNames}
       />,
     );
     return <>{options.get(eventType === "onsite")}</>;
@@ -166,6 +158,7 @@ export const CreateEvent = () => {
 
   const ref = useRef<HTMLDivElement | null>(null);
   const { screen, dimensions } = useDime();
+
   const contentHeight = useMemo(
     () => `${((screen.height - (64 + dimensions.height)) / 8).toFixed(2)}px`,
     [screen.height, dimensions.height],
@@ -195,11 +188,11 @@ export const CreateEvent = () => {
         description={"Description"}
       >
         <FlatWindow
+          variant="god"
           closeFn={toggle}
           icon="Sparkles2"
           title="Create New Event"
           className="w-full border-0 border-macd-gray bg-void text-chalk"
-          variant="god"
           wrapperStyle="border-macd-gray border-[0.33px]"
         >
           <FormContainer>
@@ -220,124 +213,52 @@ export const CreateEvent = () => {
               >
                 <div className="w-full md:px-2">
                   <Input
+                    required
+                    size="lg"
                     id="event_name"
                     name="event_name"
                     label="Event name"
-                    size="lg"
                     onChange={handleChange}
-                    defaultValue={state.event_name}
+                    classNames={inputClassNames}
+                    defaultValue={initialState.event_name}
                     placeholder="What should we call your event?"
-                    required
-                    classNames={{
-                      inputWrapper:
-                        "border-[0.33px] border-macd-gray shadow-none",
-                      label: "pb-1 opacity-60 text-sm tracking-tight",
-                      input:
-                        "font-bold tracking-tight placeholder:font-semibold focus:placeholder:opacity-50 placeholder:text-primary font-inter placeholder:text-sm",
-                    }}
                   />
                 </div>
 
-                <div className="grid w-full grid-cols-3 gap-3 md:px-2">
-                  <OptionButton
-                    label="tickets"
-                    value={100}
-                    name="ticket_count"
-                  />
-                  <OptionButton
-                    label="type of event"
-                    value={"online"}
-                    name="event_type"
-                  />
-                  <OptionButton
-                    label="category"
-                    value={"nightlife"}
-                    name="category"
-                  />
-                </div>
-                <div className="grid w-full grid-cols-8 gap-3 md:px-2">
-                  {select_data.map((data) => (
-                    <Select
-                      id={data.id}
-                      name={data.id}
-                      key={data.id}
-                      label={data.label}
-                      onChange={handleSelectChange}
-                      size="md"
-                      className={cn(
-                        "w-full",
-                        data.id === "event_type" ? "col-span-2" : "col-span-3",
-                      )}
-                      classNames={{
-                        popoverContent:
-                          "py-0.5 px-0 scroll h-fit pointer-events-auto overflow-y-scroll",
-                        trigger:
-                          "font-medium shadow-none border-[0.33px] border-macd-gray rounded-xl",
-                        label: "text-xs md:text-sm font-medium capitalize",
-                      }}
-                      selectorIcon={
-                        <Icon name="ArrowVertical" className="-pr-2" />
-                      }
-                      items={data.items}
-                      variant="flat"
-                      renderValue={(items) =>
-                        items.map((item) => (
-                          <div
-                            key={item.data?.key}
-                            className="text-xs font-medium"
-                          >
-                            {item.data?.label}
-                          </div>
-                        ))
-                      }
-                    >
-                      {(item) => (
-                        <SelectItem
-                          className="w-full whitespace-nowrap ps-1"
-                          key={item.key}
-                          textValue={item.label}
-                          selectedIcon={(item) => (
-                            <Icon
-                              name="Check"
-                              className={cn("hidden size-3 text-teal-600", {
-                                flex: item.isSelected,
-                              })}
-                            />
-                          )}
-                        >
-                          {item.label}
-                        </SelectItem>
-                      )}
-                    </Select>
-                  ))}
-                  <DateRangePicker
-                    hideTimeZone
-                    visibleMonths={1}
-                    className="col-span-8 overflow-hidden"
-                    label="Event Duration"
-                    defaultValue={{
-                      ...dateRange,
-                    }}
-                    onChange={handleDateChange}
-                    popoverProps={{
-                      placement: "top",
-                    }}
-                    color="primary"
-                    classNames={{
-                      bottomContent: "hidden",
-                      innerWrapper: "tracking-tighter sm:tracking-normal",
-                      inputWrapper: "shadow-none bg-white",
-                      base: [
-                        "font-medium w-full border-[0.33px] rounded-2xl border-macd-gray",
-                        "tracking-tight shadow-none",
-                      ],
-                      popoverContent:
-                        "w-full py-5 pointer-events-auto rounded-3xl dark",
-                      calendarContent: "bg-gray-700/40 rounded-t-lg",
-                    }}
-                    granularity="minute"
-                  />
-                </div>
+                <OptionCtxProvider>
+                  <div className="grid w-full grid-cols-3 gap-3 md:px-2">
+                    <OptionButton
+                      label="tickets"
+                      value={100}
+                      name="ticket_count"
+                    />
+                    <OptionButton
+                      label="type of event"
+                      value={"online"}
+                      name="event_type"
+                    />
+                    <OptionButton
+                      label="category"
+                      value={"nightlife"}
+                      name="category"
+                    />
+                  </div>
+                  <div className="grid w-full grid-cols-2 gap-3 md:px-2">
+                    <OptionButton
+                      label="Start time"
+                      value={dateRange.start.toDate("GMT").toLocaleTimeString()}
+                      name="start_date"
+                    />
+                    <OptionButton
+                      label="End time"
+                      value={dateRange.end.toDate("GMT").toDateString()}
+                      name="end_date"
+                    />
+                  </div>
+                  <OptionActionSheet>
+                    <div className="h-10 w-full">YOOO</div>
+                  </OptionActionSheet>
+                </OptionCtxProvider>
 
                 <div className="w-full md:px-2">
                   <EventSite />
@@ -357,8 +278,10 @@ export const CreateEvent = () => {
                 </div>
                 <div className="flex h-1/5 w-full items-center justify-between tracking-tight">
                   <div className="flex space-x-4"></div>
-                  <Button isLoading={pending} type="submit" color="primary">
-                    Next <span className="ps-2">&rarr;</span>
+                  <Button disabled isLoading={pending} type="submit">
+                    {/* Next <span className="ps-2">&rarr;</span> */}
+                    <Icon name="SpinnerBall" />
+                    Dev Mode
                   </Button>
                 </div>
               </Form>
@@ -382,7 +305,7 @@ interface EventSelectData {
   items: Array<{ key: string; label: string; subtext?: string }>;
   placeholder?: string;
 }
-const select_data: EventSelectData[] = [
+export const select_data: EventSelectData[] = [
   {
     id: "ticket_count",
     label: "Tickets",
@@ -484,3 +407,96 @@ const select_data: EventSelectData[] = [
     ],
   },
 ];
+
+const inputClassNames = {
+  inputWrapper: "border-[0.33px] border-macd-gray shadow-none",
+  label: "pb-1 opacity-60 text-sm tracking-tight",
+  input:
+    "font-bold tracking-tight placeholder:font-semibold focus:placeholder:opacity-50 placeholder:text-primary font-inter placeholder:text-sm",
+};
+
+/*
+<div className="grid w-full grid-cols-8 gap-3 md:px-2">
+                  {select_data.map((data) => (
+                    <Select
+                      id={data.id}
+                      name={data.id}
+                      key={data.id}
+                      label={data.label}
+                      onChange={handleSelectChange}
+                      size="md"
+                      className={cn(
+                        "w-full",
+                        data.id === "event_type" ? "col-span-2" : "col-span-3",
+                      )}
+                      classNames={{
+                        popoverContent:
+                          "py-0.5 px-0 scroll h-fit pointer-events-auto overflow-y-scroll",
+                        trigger:
+                          "font-medium shadow-none border-[0.33px] border-macd-gray rounded-xl",
+                        label: "text-xs md:text-sm font-medium capitalize",
+                      }}
+                      selectorIcon={
+                        <Icon name="ArrowVertical" className="-pr-2" />
+                      }
+                      items={data.items}
+                      variant="flat"
+                      renderValue={(items) =>
+                        items.map((item) => (
+                          <div
+                            key={item.data?.key}
+                            className="text-xs font-medium"
+                          >
+                            {item.data?.label}
+                          </div>
+                        ))
+                      }
+                    >
+                      {(item) => (
+                        <SelectItem
+                          className="w-full whitespace-nowrap ps-1"
+                          key={item.key}
+                          textValue={item.label}
+                          selectedIcon={(item) => (
+                            <Icon
+                              name="Check"
+                              className={cn("hidden size-3 text-teal-600", {
+                                flex: item.isSelected,
+                              })}
+                            />
+                          )}
+                        >
+                          {item.label}
+                        </SelectItem>
+                      )}
+                    </Select>
+                  ))}
+                  <DateRangePicker
+                    hideTimeZone
+                    visibleMonths={1}
+                    className="col-span-8 overflow-hidden"
+                    label="Event Duration"
+                    defaultValue={{
+                      ...dateRange,
+                    }}
+                    onChange={handleDateChange}
+                    popoverProps={{
+                      placement: "top",
+                    }}
+                    color="primary"
+                    classNames={{
+                      bottomContent: "hidden",
+                      innerWrapper: "tracking-tighter sm:tracking-normal",
+                      inputWrapper: "shadow-none bg-white",
+                      base: [
+                        "font-medium w-full border-[0.33px] rounded-2xl border-macd-gray",
+                        "tracking-tight shadow-none",
+                      ],
+                      popoverContent:
+                        "w-full py-5 pointer-events-auto rounded-3xl dark",
+                      calendarContent: "bg-gray-700/40 rounded-t-lg",
+                    }}
+                    granularity="minute"
+                  />
+                </div>
+*/
