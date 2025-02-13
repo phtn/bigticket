@@ -56,13 +56,13 @@ export const TabComponent = ({ children }: { children: ReactNode }) => {
         size="sm"
         color="primary"
         variant="light"
-        className="relative z-50 flex h-10 md:absolute md:top-[10rem] md:w-fit md:justify-center"
+        className="relative top-0.5 z-50 flex h-10 md:absolute md:top-[10rem] md:w-fit md:justify-center"
         classNames={{
           tabList:
             "w-fit gap-1 lg:gap-1.5 justfify-start space-x-8 bg-peach sm:space-x-6 md:space-x-5 transition-all duration-300 lg:space-x-8 xl:space-x-12",
           tabContent:
-            "text-coal/80 data-[selected=true]:text-white font-inter hover:text-macl-mint text-xs font-semibold tracking-tighter md:text-sm tracking-tight",
-          tab: "px-2 data-[hover-unselected]:opacity-100",
+            "text-coal/80 data-[selected=true]:text-white font-inter text-xs font-semibold tracking-tighter md:text-sm tracking-tight",
+          tab: "px-2 data-[hover-unselected]:opacity-100 hover:bg-gray-300/60",
           panel: "md:pt-0 px-0 pt-12 md:px-6",
           base: "absolute overflow-x-scroll transition-all duration-300 flex -top-20 justify-center w-[calc(100vw)] sm:w-full md:left-80 sm:left-0 z-[200] -top-4 xl:left-[calc(30vw)] lg:w-[calc(36vw)] lg:left-80 lg:w-[calc(50vw)]",
           wrapper: "w-10 flex items-center ",
@@ -81,7 +81,7 @@ export const TabComponent = ({ children }: { children: ReactNode }) => {
         ))}
       </Tabs>
 
-      {children}
+      <div className="min-h-[calc(100vh-249px)]">{children}</div>
     </div>
   );
 };

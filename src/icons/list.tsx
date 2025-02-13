@@ -1,5 +1,29 @@
 import type { SVGProps } from "react";
 
+function Activity(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1"
+        color="currentColor"
+      >
+        <path d="M4.318 19.682C3 18.364 3 16.242 3 12s0-6.364 1.318-7.682S7.758 3 12 3s6.364 0 7.682 1.318S21 7.758 21 12s0 6.364-1.318 7.682S16.242 21 12 21s-6.364 0-7.682-1.318"></path>
+        <path d="M6 12h2.5l2-4l3 8l2-4H18"></path>
+      </g>
+    </svg>
+  );
+}
+
 function Airplane(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -937,7 +961,8 @@ function NumberList(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-function Pen(props: SVGProps<SVGSVGElement>) {
+
+export function Pen(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -946,12 +971,15 @@ function Pen(props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       {...props}
     >
-      <g fill="none">
-        <path
-          fill="currentColor"
-          d="M16.035 3.015a3 3 0 0 1 4.099-.135l.144.135l.707.707a3 3 0 0 1 .135 4.098l-.135.144L9.773 19.177a1.5 1.5 0 0 1-.562.354l-.162.047l-4.454 1.028a1 1 0 0 1-1.22-1.088l.02-.113l1.027-4.455a1.5 1.5 0 0 1 .29-.598l.111-.125zm-.707 3.535l-8.99 8.99l-.636 2.758l2.758-.637l8.99-8.99l-2.122-2.12Zm3.536-2.121a1 1 0 0 0-1.32-.083l-.094.083l-.708.707l2.122 2.121l.707-.707a1 1 0 0 0 .083-1.32l-.083-.094z"
-        ></path>
-      </g>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="m15.214 5.982l1.402-1.401a1.982 1.982 0 0 1 2.803 2.803l-1.401 1.402m-2.804-2.804L6.98 14.216c-1.045 1.046-1.568 1.568-1.924 2.205S4.342 18.561 4 20c1.438-.342 2.942-.7 3.579-1.056s1.16-.879 2.205-1.924l8.234-8.234m-2.804-2.804l2.804 2.804M11 20h6"
+        color="currentColor"
+      ></path>
     </svg>
   );
 }
@@ -1269,6 +1297,7 @@ function Sparkles2(props: SVGProps<SVGSVGElement>) {
     >
       <g fill="none">
         <path
+          strokeWidth={0}
           fill="currentColor"
           d="m6.173 13.004l.17.371a8.7 8.7 0 0 0 3.3 3.638l.265.155a.181.181 0 0 1 0 .316a8.7 8.7 0 0 0-3.565 3.793l-.17.372a.19.19 0 0 1-.346 0l-.17-.372a8.7 8.7 0 0 0-3.565-3.793a.181.181 0 0 1 0-.316l.265-.155a8.7 8.7 0 0 0 3.3-3.638l.17-.371a.19.19 0 0 1 .346 0M15.078 2.73a15.2 15.2 0 0 0 6.536 7.288a.317.317 0 0 1 0 .553a15.2 15.2 0 0 0-6.536 7.289a.331.331 0 0 1-.605 0a15.2 15.2 0 0 0-6.536-7.289a.317.317 0 0 1 0-.553a15.2 15.2 0 0 0 6.536-7.288a.331.331 0 0 1 .605 0"
         ></path>
@@ -1579,9 +1608,10 @@ function User(props: SVGProps<SVGSVGElement>) {
   );
 }
 export const icons = {
-  AlertTriLine,
+  Activity,
   Airplane,
   Airplane2,
+  AlertTriLine,
   ArrowRight,
   ArrowRightUp,
   ArrowVertical,

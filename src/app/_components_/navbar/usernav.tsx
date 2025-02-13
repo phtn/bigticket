@@ -18,13 +18,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type JSX, use, useCallback, useMemo } from "react";
 
 export const UserNav = () => {
   const { photo_url } = use(VxCtx)!;
 
-  const navs: INav[] = useMemo(
+  const menus: IMenu[] = useMemo(
     () => [
       {
         id: "collection",
@@ -41,9 +41,9 @@ export const UserNav = () => {
   );
 
   const NavOptions = useCallback(() => {
-    const options = opts(<Navs navs={navs} />, <UserLoader />);
-    return <nav>{options.get(!!photo_url)}</nav>;
-  }, [photo_url, navs]);
+    const options = opts(<Menus data={menus} />, <UserLoader />);
+    return <>{options.get(!!photo_url)}</>;
+  }, [photo_url, menus]);
 
   return <NavOptions />;
 };
@@ -54,11 +54,11 @@ const UserLoader = () => (
   </div>
 );
 
-const Navs = (props: { navs: INav[] }) => {
+const Menus = ({ data }: { data: IMenu[] }) => {
   return (
     <HyperList
-      data={props.navs}
-      component={NavItem}
+      data={data}
+      component={MenuItem}
       container="absolute right-0 flex h-16 w-2/3 items-center justify-end space-x-4 font-inter"
       itemStyle="pointer-events-auto"
       keyId="id"
@@ -66,12 +66,12 @@ const Navs = (props: { navs: INav[] }) => {
   );
 };
 
-interface INav {
+interface IMenu {
   id: string;
   label: string;
   content: JSX.Element | null;
 }
-const NavItem = (nav: INav) => <div>{nav.content}</div>;
+const MenuItem = (menu: IMenu) => <div>{menu.content}</div>;
 
 export const Searchbar = () => {
   const { handleInputHover } = use(CursorCtx)!;
@@ -113,12 +113,58 @@ const Collection = () => {
     />
   );
 };
+
 const UserAvatar = (props: { photo_url: string | undefined }) => {
-  const { toggle } = useToggle();
+  const { open, toggle } = useToggle();
   const { isDesktop } = useScreen();
+  const router = useRouter();
+  const handleRoute = useCallback(
+    (href: string, toggle: VoidFunction) => () => {
+      toggle();
+      router.push(href);
+    },
+    [router],
+  );
+
+  const UserMenu = useCallback(() => {
+    const menu_items: MenuItem[] = [
+      {
+        id: 1,
+        label: "Account",
+        href: "/account",
+      },
+      {
+        id: 2,
+        label: "Sign out",
+        href: "/signout",
+      },
+    ];
+
+    const MenuListItem = ({ href, label }: MenuItem) => {
+      return (
+        <button
+          onClick={handleRoute(href, toggle)}
+          className="flex w-full items-center justify-between space-x-5 rounded-lg px-4 py-2 hover:bg-primary-500/30"
+        >
+          <div className="flex items-center">
+            <h2 className="text-xs font-medium tracking-tighter text-primary-200">
+              {label}
+            </h2>
+          </div>
+        </button>
+      );
+    };
+
+    return (
+      <div className="w-full bg-coal py-2 font-inter">
+        <HyperList data={menu_items} component={MenuListItem} keyId="id" />
+      </div>
+    );
+  }, [handleRoute, toggle]);
+
   return (
     <div className="flex w-fit items-center px-4 md:gap-8">
-      <Popover placement="bottom-end" onOpenChange={toggle}>
+      <Popover isOpen={open} placement="bottom-end" onOpenChange={toggle}>
         <PopoverTrigger className="cursor-pointer border border-primary-800">
           <Avatar
             alt="user-pfp"
@@ -126,51 +172,16 @@ const UserAvatar = (props: { photo_url: string | undefined }) => {
             size={isDesktop ? "md" : "sm"}
           />
         </PopoverTrigger>
-        <PopoverContent
-          onClick={toggle}
-          className="border border-primary-600 bg-coal"
-        >
-          <UserContextMenu />
+        <PopoverContent className="border border-primary-600 bg-coal">
+          <UserMenu />
         </PopoverContent>
       </Popover>
     </div>
   );
 };
 
-const UserContextMenu = () => (
-  <div className="w-full bg-coal py-2 font-inter">
-    <HyperList data={menu_items} component={MenuListItem} keyId="id" />
-  </div>
-);
-
-const MenuListItem = (menu: MenuItem) => (
-  <Link
-    href={menu.href}
-    className="flex w-full items-center justify-between space-x-5 rounded-lg px-4 py-2 hover:bg-primary-500/30"
-  >
-    <div className="flex items-center">
-      <h2 className="text-xs font-medium tracking-tighter text-primary-200">
-        {menu.label}
-      </h2>
-    </div>
-    {/* <Icon name="RightLine" className="size-5 stroke-0 text-macl-gray" /> */}
-  </Link>
-);
-
 interface MenuItem {
   id: number;
   label: string;
   href: string;
 }
-const menu_items: MenuItem[] = [
-  {
-    id: 1,
-    label: "Account",
-    href: "/account",
-  },
-  {
-    id: 2,
-    label: "Sign out",
-    href: "/signout",
-  },
-];

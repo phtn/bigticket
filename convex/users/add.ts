@@ -1,7 +1,8 @@
 import { mutation } from "@vx/server";
 import { v } from "convex/values";
 import { checkUser } from "./create";
-import { UserTicket, UserTicketSchema, type Metadata } from "./d";
+import { type Metadata } from "./d";
+import { type UserTicket, UserTicketSchema } from "../events/d";
 
 export const metadata = mutation({
   args: { id: v.string(), record: v.record(v.string(), v.any()) },

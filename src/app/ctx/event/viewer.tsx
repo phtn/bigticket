@@ -232,7 +232,7 @@ export const EventViewerCtxProvider = ({
       { label: "Tickets Remaining", value: "50" },
       { label: "Date", value: compact },
       { label: "Time", value: event_time.compact },
-      { label: "Duration", value: `${durationHrs} hours` },
+      { label: "Duration", value: `${durationHrs?.toFixed(1)} hours` },
       { label: "Likes", value: activeEvent?.likes ?? 0 },
       { label: "Views", value: activeEvent?.views ?? 0 },
       { label: "Bookmarks", value: activeEvent?.bookmarks ?? 0 },

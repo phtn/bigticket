@@ -1,3 +1,4 @@
+import { UserTicketSchema } from "convex/events/d";
 import { type Infer, v } from "convex/values";
 
 export const UserRoleSchema = v.union(
@@ -14,27 +15,6 @@ export const MetadataSchema = v.optional(
   v.array(v.record(v.string(), v.any())),
 );
 export type Metadata = Infer<typeof MetadataSchema>;
-
-export const UserTicketSchema = v.object({
-  event_id: v.string(),
-  event_name: v.string(),
-  event_url: v.string(),
-  event_start: v.float64(),
-  event_end: v.float64(),
-  event_date: v.float64(),
-  ticket_id: v.string(),
-  ticket_index: v.number(),
-  ticket_type: v.string(),
-  ticket_url: v.string(),
-  ticket_class: v.string(),
-  is_active: v.boolean(),
-  is_claimed: v.boolean(),
-  is_expired: v.boolean(),
-  ticket_value: v.number(),
-  updated_at: v.float64(),
-});
-
-export type UserTicket = Infer<typeof UserTicketSchema>;
 
 export const UserSchema = v.object({
   id: v.string(),
@@ -60,6 +40,9 @@ export const UserSchema = v.object({
   is_verified: v.optional(v.boolean()),
   is_merchant: v.optional(v.boolean()),
   tickets: v.optional(v.array(UserTicketSchema)),
+  impressions: v.optional(v.number()),
+  active_tickets: v.optional(v.number()),
+  used_tickets: v.optional(v.number()),
   middlename: v.optional(v.string()),
   phone_number: v.optional(v.string()),
   photo_url: v.optional(v.string()),

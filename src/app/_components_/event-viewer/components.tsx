@@ -12,10 +12,12 @@ import { use, useCallback } from "react";
 interface GetTicketButtonProps {
   ticket_value?: number;
   is_private?: boolean;
+  h: string;
 }
 export const GetTicketButton = ({
   ticket_value,
   is_private = false,
+  h,
 }: GetTicketButtonProps) => {
   const TicketLabel = useCallback(() => {
     const options = opts(
@@ -56,8 +58,9 @@ export const GetTicketButton = ({
     );
     return <>{options.get(is_private)}</>;
   }, [ticket_value, is_private]);
+  console.log(h);
   return (
-    <div className="z-1 relative h-full bg-primary">
+    <div className={cn("z-1 relative bg-primary")} style={{ height: h }}>
       <Button
         size="lg"
         disableRipple
@@ -77,9 +80,12 @@ export const GetTicketButton = ({
   );
 };
 
-export const ClaimedTicketButton = ({ is_private }: GetTicketButtonProps) => {
+export const ClaimedTicketButton = ({
+  is_private,
+  h,
+}: GetTicketButtonProps) => {
   return (
-    <div className="z-1 relative bg-primary">
+    <div className="z-1 relative bg-primary" style={{ height: h }}>
       <Button
         size="lg"
         disableRipple
@@ -112,8 +118,28 @@ export const ClaimedTicketButton = ({ is_private }: GetTicketButtonProps) => {
   );
 };
 
-export const ActionPanel = () => {
+export const ActionPanel = ({ h }: { h: string }) => {
   const { actions } = use(EventViewerCtx)!;
+
+  const ActionButton = useCallback(
+    (action: ActionItem) => {
+      return (
+        <button
+          id={action.label}
+          name={action.label}
+          onClick={action.fn}
+          className={cn(
+            "flex h-full w-full items-center justify-center bg-white",
+            "hover:bg-gray-200",
+          )}
+          style={{ height: h }}
+        >
+          <Icon name={action.icon} className="size-5" />
+        </button>
+      );
+    },
+    [h],
+  );
 
   return (
     <HyperList
@@ -127,40 +153,32 @@ export const ActionPanel = () => {
   );
 };
 
-const ActionButton = (action: ActionItem) => {
-  return (
-    <button
-      id={action.label}
-      name={action.label}
-      onClick={action.fn}
-      className={cn(
-        "flex h-full w-full items-center justify-center bg-white",
-        "hover:bg-gray-200",
-      )}
-    >
-      <Icon name={action.icon} className="size-5" />
-    </button>
-  );
-};
-
 interface EventGroupDetailProps {
   host_id: string | undefined;
   host_name: string | undefined;
   event_geo: string | undefined;
   event_url: string | undefined;
+  h: string;
 }
 export const EventGroupDetail = ({
   host_name,
   event_geo,
   event_url,
+  h,
 }: EventGroupDetailProps) => {
   return (
     <div className="row-span-2 h-full">
-      <div className="flex h-1/2 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white px-4 font-semibold">
+      <div
+        className="flex h-1/2 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white px-4 font-semibold"
+        style={{ height: h }}
+      >
         <span>Organizers</span>
         <span>{host_name}</span>
       </div>
-      <div className="flex h-1/2 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-medium">
+      <div
+        className="flex h-1/2 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-medium"
+        style={{ height: h }}
+      >
         <span>Location</span>
         <span>{event_geo ?? event_url}</span>
       </div>
@@ -168,39 +186,51 @@ export const EventGroupDetail = ({
   );
 };
 
-export const InfoGrid = ({ data }: { data: InfoItem[] }) => (
-  <HyperList
-    delay={0.7}
-    data={data}
-    component={InfoGridItem}
-    container="grid row-span-3 w-full grid-cols-3"
-    keyId={"label"}
-  />
-);
+interface InfoGridProps {
+  data: InfoItem[];
+  h: string;
+}
+export const InfoGrid = ({ data, h }: InfoGridProps) => {
+  const InfoGridItem = useCallback(
+    (info: InfoItem) => (
+      <Card
+        radius="none"
+        className="h-full space-y-0.5 border-b-[0.33px] border-r-[0.33px] border-zinc-400 bg-white px-2 py-2 shadow-none group-hover/list:bg-gray-200 md:px-3"
+        style={{ height: h }}
+      >
+        <div className="text-xs tracking-tight">{info.label}</div>
+        <div className="text-sm font-semibold tracking-tighter md:text-[16px]">
+          {info.label === "likes" ? (
+            <NumberFlow value={info.value as number} />
+          ) : (
+            <span>{info.value}</span>
+          )}
+        </div>
+      </Card>
+    ),
+    [h],
+  );
+  return (
+    <HyperList
+      delay={0.7}
+      data={data}
+      component={InfoGridItem}
+      container="grid row-span-3 w-full grid-cols-3"
+      keyId={"label"}
+    />
+  );
+};
 
 export interface InfoItem {
   label: string;
   value?: string | number;
 }
 
-const InfoGridItem = (info: InfoItem) => (
-  <Card
-    radius="none"
-    className="h-full space-y-0.5 border-b-[0.33px] border-r-[0.33px] border-zinc-400 bg-white px-2 py-2 shadow-none group-hover/list:bg-gray-200 md:px-3"
+export const EventViewerFooter = ({ h }: { h: string }) => (
+  <div
+    className="flex h-[36px] w-full items-center justify-end bg-peach px-2 text-xs font-light md:h-[36px]"
+    style={{ height: h }}
   >
-    <div className="text-xs tracking-tight">{info.label}</div>
-    <div className="text-sm font-semibold tracking-tighter md:text-[16px]">
-      {info.label === "likes" ? (
-        <NumberFlow value={info.value as number} />
-      ) : (
-        <span>{info.value}</span>
-      )}
-    </div>
-  </Card>
-);
-
-export const EventViewerFooter = () => (
-  <div className="flex h-[36px] w-full items-center justify-end bg-peach px-2 text-xs font-light md:h-[36px]">
     Big Ticket &copy;{new Date().getFullYear()}
   </div>
 );

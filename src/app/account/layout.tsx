@@ -6,7 +6,7 @@ import { TabComponent } from "./_components_/tabs";
 
 const AccountLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <main className="flex flex-col space-y-8 overflow-y-scroll bg-background">
+    <main className="flex flex-col space-y-8 overflow-y-scroll border-t border-primary/10 bg-gray-200">
       <Profile />
       <TabComponent>{children}</TabComponent>
     </main>

@@ -27,16 +27,19 @@ import {
   type ReactNode,
   useActionState,
   useCallback,
+  useMemo,
   useRef,
   useState,
 } from "react";
-import { useEvent } from "./useEvent";
+import { useEvent } from "../../../useEvent";
+import { useDime } from "@/hooks/useDime";
+import { OptionButton } from "./components";
 
 interface DateRange {
   start: DateValue;
   end: DateValue;
 }
-export const CreateNewEvent = () => {
+export const CreateEvent = () => {
   const { open, toggle } = useToggle();
   const [eventName, setEventName] = useState("");
   const [ticketCount, setTicketCount] = useState(0);
@@ -161,18 +164,29 @@ export const CreateNewEvent = () => {
     return <>{options.get(eventType === "onsite")}</>;
   }, [eventType, handleChangeSite]);
 
+  const ref = useRef<HTMLDivElement | null>(null);
+  const { screen, dimensions } = useDime();
+  const contentHeight = useMemo(
+    () => `${((screen.height - (64 + dimensions.height)) / 8).toFixed(2)}px`,
+    [screen.height, dimensions.height],
+  );
+
   return (
     <div className="flex h-10 w-full items-center justify-end font-inter xl:space-x-1">
-      <Button
-        size="sm"
-        className="group/create bg-teal-500 px-2 text-chalk lg:flex"
-        variant="solid"
-        onPress={toggle}
+      <button
+        className="group/create flex size-6 items-center justify-center rounded-lg bg-secondary px-0 text-white md:h-8 md:w-fit md:gap-1.5 md:space-x-0.5 md:pe-2.5 md:ps-2"
+        onClick={toggle}
       >
-        <span className="text-xs font-normal tracking-tighter drop-shadow-sm group-hover/create:text-white md:text-sm md:font-medium">
-          Create an event
+        <Icon name="Plus" className="size-3.5" />
+        <span
+          className={cn(
+            "hidden font-inter text-sm font-medium capitalize tracking-tighter md:flex",
+            contentHeight, // temp
+          )}
+        >
+          create event
         </span>
-      </Button>
+      </button>
       <SideVaul
         open={open}
         onOpenChange={toggle}
@@ -184,25 +198,63 @@ export const CreateNewEvent = () => {
           closeFn={toggle}
           icon="Sparkles2"
           title="Create New Event"
-          className="border-0 border-macd-gray bg-gray-200"
+          className="w-full border-0 border-macd-gray bg-void text-chalk"
+          variant="god"
           wrapperStyle="border-macd-gray border-[0.33px]"
         >
           <FormContainer>
-            <div className="flex h-2/5 w-full items-center">
+            <div ref={ref} className="flex h-2/5 w-full items-center">
               <TicketStack
-                title={eventName}
-                date={eventDate}
-                time={event_time.compact}
-                site={eventSite}
                 day={eventDay}
+                date={eventDate}
+                site={eventSite}
+                title={eventName}
                 tickets={ticketCount}
+                time={event_time.compact}
               />
             </div>
             <div className="flex h-3/5 w-full overflow-scroll md:pb-0">
               <Form
                 action={action}
-                className="w-full space-y-2 rounded-lg border-[0.0px] border-macd-gray bg-white p-4 md:space-y-3"
+                className="w-full space-y-2 bg-white p-4 md:space-y-3"
               >
+                <div className="w-full md:px-2">
+                  <Input
+                    id="event_name"
+                    name="event_name"
+                    label="Event name"
+                    size="lg"
+                    onChange={handleChange}
+                    defaultValue={state.event_name}
+                    placeholder="What should we call your event?"
+                    required
+                    classNames={{
+                      inputWrapper:
+                        "border-[0.33px] border-macd-gray shadow-none",
+                      label: "pb-1 opacity-60 text-sm tracking-tight",
+                      input:
+                        "font-bold tracking-tight placeholder:font-semibold focus:placeholder:opacity-50 placeholder:text-primary font-inter placeholder:text-sm",
+                    }}
+                  />
+                </div>
+
+                <div className="grid w-full grid-cols-3 gap-3 md:px-2">
+                  <OptionButton
+                    label="tickets"
+                    value={100}
+                    name="ticket_count"
+                  />
+                  <OptionButton
+                    label="type of event"
+                    value={"online"}
+                    name="event_type"
+                  />
+                  <OptionButton
+                    label="category"
+                    value={"nightlife"}
+                    name="category"
+                  />
+                </div>
                 <div className="grid w-full grid-cols-8 gap-3 md:px-2">
                   {select_data.map((data) => (
                     <Select
@@ -280,28 +332,13 @@ export const CreateNewEvent = () => {
                         "tracking-tight shadow-none",
                       ],
                       popoverContent:
-                        "min-w-[300px] py-5 pointer-events-auto rounded-3xl dark",
+                        "w-full py-5 pointer-events-auto rounded-3xl dark",
                       calendarContent: "bg-gray-700/40 rounded-t-lg",
                     }}
                     granularity="minute"
                   />
                 </div>
-                <div className="w-full md:px-2">
-                  <Input
-                    id="event_name"
-                    name="event_name"
-                    label="Event Name"
-                    onChange={handleChange}
-                    defaultValue={state.event_name}
-                    placeholder=""
-                    required
-                    classNames={{
-                      inputWrapper:
-                        "border-[0.33px] border-macd-gray shadow-none",
-                      label: "font-semibold",
-                    }}
-                  />
-                </div>
+
                 <div className="w-full md:px-2">
                   <EventSite />
                 </div>
@@ -334,15 +371,7 @@ export const CreateNewEvent = () => {
 };
 
 const FormContainer = ({ children }: { children: ReactNode }) => (
-  <div
-    className={cn(
-      "h-[80vh] w-[calc(94vw)]",
-      "sm:h-[80vh] sm:w-[calc(64vw)]",
-      "md:h-[calc(80vh)] md:w-[calc(54vw)]",
-      "lg:w-[calc(44vw)]",
-      "xl:w-[calc(40vw)]",
-    )}
-  >
+  <div className={cn("mx-auto h-[calc(100vh-64px)] w-screen md:w-[30rem]")}>
     {children}
   </div>
 );
@@ -360,7 +389,7 @@ const select_data: EventSelectData[] = [
     items: [
       {
         key: "50",
-        label: "0-50",
+        label: "50",
       },
       {
         key: "100",

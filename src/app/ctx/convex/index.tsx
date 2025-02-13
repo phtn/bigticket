@@ -15,7 +15,7 @@ import { createContext, useCallback, useMemo } from "react";
 import type { User } from "@supabase/supabase-js";
 import type { SupabaseUserMetadata } from "@/app/ctx/auth/types";
 import { VxProvider } from "./vx";
-import type { InsertEvent } from "convex/events/d";
+import type { InsertEvent, UserTicket } from "convex/events/d";
 
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 export const ConvexCtx = createContext<ConvexCtxValues | null>(null);
@@ -35,6 +35,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const updateUserBookmarks = useMutation(api.users.update.bookmarks);
   const updateUserFollowers = useMutation(api.users.update.followers);
   const updateUserFollowing = useMutation(api.users.update.following);
+  const updateUserTickets = useMutation(api.users.update.tickets);
 
   const usr = useMemo(
     () => ({
@@ -62,6 +63,8 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
           await updateUserFollowers({ id, target_id }),
         following: async (id: string, target_id: string) =>
           await updateUserFollowing({ id, target_id }),
+        tickets: async (id: string, tickets: UserTicket[]) =>
+          await updateUserTickets({ id, tickets }),
       },
       add: {
         metadata: async (
@@ -86,6 +89,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
       updateUserBookmarks,
       updateUserFollowers,
       updateUserFollowing,
+      updateUserTickets,
     ],
   );
 
@@ -125,9 +129,9 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
       user.user_metadata as SupabaseUserMetadata;
     const userdata: CreateUser = {
       id: user.id,
+      name: name,
       email: user.email,
       phone: user.phone,
-      name: name,
       fullname: fullname,
       avatar_url: avatar_url,
     };

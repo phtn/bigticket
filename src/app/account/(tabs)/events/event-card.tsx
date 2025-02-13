@@ -29,9 +29,9 @@ export const EventCardAccount = (event: SignedEvent) => {
   return (
     <Card
       isFooterBlurred
-      className="h-[280px] w-full rounded-2xl border border-primary-700"
+      className="h-[280px] w-full rounded-md border border-primary"
     >
-      <CardHeader className="absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4">
+      <CardHeader className="absolute z-10 flex w-full items-start justify-between gap-3 rounded-none bg-black/40 ps-4 backdrop-blur-sm">
         <section className="w-full overflow-clip text-ellipsis">
           <p className="max-w-[45ch] bg-gradient-to-b from-white/60 via-white/80 to-white/60 bg-clip-text text-tiny font-bold uppercase text-transparent">
             {event.event_geo ?? event.event_url}
@@ -53,19 +53,28 @@ export const EventCardAccount = (event: SignedEvent) => {
           src={event.cover_src}
         />
       ) : null}
-      <CardFooter className="absolute bottom-0 z-10 border-t-1 border-primary/60 bg-black/40">
-        <div className="flex flex-grow items-center gap-2">
+      <CardFooter className="absolute bottom-0 z-10 w-full rounded-none border-t-1 border-primary bg-primary">
+        <div className="flex flex-grow items-center gap-2 bg-primary">
           {/* <Image
             alt="Breathing app icon"
             className="h-24 w-full rounded-full"
             src={cover_url}
           /> */}
-          <div className="space-y-0.5">
-            <p className="text-tiny font-semibold text-teal-300 drop-shadow-md">
-              {event.host_name}
+          <div className="space-y-1">
+            <p className="flex items-center gap-2 text-tiny capitalize text-secondary drop-shadow-sm">
+              <span
+                className={cn(
+                  "rounded-full bg-gray-700/60 px-1 lowercase text-chalk",
+                  { "text-peach": !event?.is_active },
+                )}
+              >
+                {event.is_active ? "live" : "not-published"}
+              </span>
             </p>
-            <div className="space-x-2 text-tiny font-bold uppercase text-chalk">
-              <span className="drop-shadow-md">{event_day}</span>
+            <div className="space-x-1 text-tiny uppercase text-gray-200">
+              <span className="drop-shadow-md">
+                {event_day.substring(0, 3)}
+              </span>
               <span>&middot;</span>
               <span className="drop-shadow-md">
                 {event_date.substring(0, event_date.indexOf(","))}
@@ -77,8 +86,8 @@ export const EventCardAccount = (event: SignedEvent) => {
         </div>
         <button
           className={cn(
-            "flex size-8 items-center justify-center rounded-full",
-            "bg-teal-500 hover:bg-teal-400",
+            "flex size-8 items-center justify-center rounded-lg",
+            "bg-gray-500/60 hover:bg-teal-400",
             "active:scale-95 active:opacity-90",
             "group/btn transition-all duration-300",
           )}

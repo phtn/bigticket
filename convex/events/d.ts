@@ -24,6 +24,29 @@ const ReviewSchema = v.object({
 });
 export type Review = Infer<typeof ReviewSchema>;
 
+export const UserTicketSchema = v.object({
+  event_id: v.string(),
+  event_name: v.string(),
+  event_url: v.string(),
+  event_start: v.float64(),
+  event_end: v.float64(),
+  event_date: v.float64(),
+  ticket_id: v.string(),
+  ticket_type: v.string(),
+  ticket_value: v.number(),
+  ticket_url: v.optional(v.string()),
+  ticket_index: v.optional(v.string()),
+  ticket_class: v.optional(v.string()),
+  ticket_status: v.optional(v.string()),
+  is_active: v.optional(v.boolean()),
+  is_claimed: v.optional(v.boolean()),
+  is_expired: v.optional(v.boolean()),
+  is_used: v.optional(v.boolean()),
+  updated_at: v.optional(v.float64()),
+});
+
+export type UserTicket = Infer<typeof UserTicketSchema>;
+
 export const EventSchema = v.object({
   event_id: v.string(),
 
@@ -42,6 +65,7 @@ export const EventSchema = v.object({
   end_date: v.optional(v.float64()),
   duration: v.optional(v.float64()),
   reviews: v.optional(v.array(ReviewSchema)),
+  tickets: v.optional(v.array(UserTicketSchema)),
 
   //DETAILS
   category: v.optional(v.string()),
@@ -59,7 +83,7 @@ export const EventSchema = v.object({
   tickets_voided: v.optional(v.number()),
   total_attendees: v.optional(v.number()),
   estimated_attendees: v.optional(v.number()),
-  guest_list: v.optional(v.array(v.number())),
+  vip_list: v.optional(v.array(v.number())),
   comp_count: v.optional(v.number()),
   //INFO
   address_id: v.optional(v.string()),
@@ -68,6 +92,7 @@ export const EventSchema = v.object({
   likes: v.optional(v.number()),
   bookmarks: v.optional(v.number()),
   host_id: v.optional(v.string()),
+  invite_list: v.optional(v.array(v.string())),
   host_name: v.optional(v.string()),
   host_email: v.optional(v.string()),
   support_email: v.optional(v.string()),

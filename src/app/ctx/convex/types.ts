@@ -1,5 +1,5 @@
 import type { Id } from "@vx/dataModel";
-import type { InsertEvent, SelectEvent } from "convex/events/d";
+import type { InsertEvent, SelectEvent, UserTicket } from "convex/events/d";
 import type { InsertUser, SelectUser, UpdateUser } from "convex/users/d";
 
 export interface ConvexCtxValues {
@@ -20,6 +20,7 @@ export interface ConvexCtxValues {
       bookmarks: (id: string, target_id: string) => Promise<string | null>;
       followers: (id: string, target_id: string) => Promise<string | null>;
       following: (id: string, target_id: string) => Promise<string | null>;
+      tickets: (id: string, tickets: UserTicket[]) => Promise<string | null>;
     };
     add: {
       metadata: (

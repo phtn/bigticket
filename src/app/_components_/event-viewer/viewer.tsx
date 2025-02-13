@@ -3,7 +3,7 @@ import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
 import { normalizeTitle, opts } from "@/utils/helpers";
 import { Image, Tab, Tabs } from "@nextui-org/react";
-import { type ReactNode, use, useCallback } from "react";
+import { type ReactNode, use, useCallback, useMemo, useRef } from "react";
 import { EventViewerCtx } from "../../ctx/event";
 import {
   ActionPanel,
@@ -46,30 +46,43 @@ export const EventViewer = () => {
   );
 };
 const Container = ({ children }: { children: ReactNode }) => (
-  <div className={cn("h-[calc(100vh-64px)] md:h-[calc(100vh-64px)]", "w-full")}>
-    {children}
-  </div>
+  <div className={cn("", "w-full")}>{children}</div>
 );
 
 const MediaContainer = () => {
-  const { height } = useDime().screen;
-  console.log(height);
+  const ref = useRef<HTMLDivElement | null>(null);
+  const { screen, dimensions } = useDime(ref);
+  console.log(screen.height - dimensions.height + 64);
 
   const { activeEvent, activeEventInfo, moments, cover_src } =
     use(EventViewerCtx)!;
 
   const event_name = normalizeTitle(activeEvent?.event_name);
 
-  const EventTicketButton = useCallback(() => {
-    const options = opts(
-      <ClaimedTicketButton is_private={activeEvent?.is_private} />,
-      <GetTicketButton
-        is_private={activeEvent?.is_private}
-        ticket_value={activeEvent?.ticket_value}
-      />,
-    );
-    return <>{options.get(false)}</>;
-  }, [activeEvent?.is_private, activeEvent?.ticket_value]);
+  const EventTicketButton = useCallback(
+    (props: { h: string }) => {
+      const options = opts(
+        <ClaimedTicketButton
+          h={props.h}
+          is_private={activeEvent?.is_private}
+        />,
+        <GetTicketButton
+          is_private={activeEvent?.is_private}
+          ticket_value={activeEvent?.ticket_value}
+          h={props.h}
+        />,
+      );
+      return <>{options.get(false)}</>;
+    },
+    [activeEvent?.is_private, activeEvent?.ticket_value],
+  );
+
+  const contentHeight = useMemo(
+    () =>
+      // `h-[${((screen.height - (64 + dimensions.height)) / 7).toFixed(2)}px]`,
+      `${((screen.height - (64 + dimensions.height)) / 8).toFixed(2)}px`,
+    [screen.height, dimensions.height],
+  );
 
   return (
     <div className="mx-auto h-[calc(100vh-64px)] w-full max-w-6xl overflow-y-scroll font-inter tracking-tight md:h-full md:w-[30rem]">
@@ -95,7 +108,7 @@ const MediaContainer = () => {
           }}
         >
           <Tab key={"overview"} title="Overview">
-            <div className="relative h-fit">
+            <div className="relative h-fit" ref={ref}>
               <Image
                 radius="none"
                 alt={`${activeEvent?.event_name}-cover`}
@@ -116,26 +129,27 @@ const MediaContainer = () => {
       </div>
 
       <div
-        className={cn(
-          "grid grid-rows-7",
-          { "landscape:h-screen": height < 700 },
-          { "h-[calc(100vh-300px)]": height < 741 },
-          { "h-[calc(100vh-384px)]": height > 742 },
-          { "h-[calc(100vh-374px)]": height > 800 },
-          "md:h-[calc(100vh-420px)]",
-        )}
+      // className={cn(
+      //   "grid grid-rows-7",
+      //   { "": height < 700 },
+      //   { "h-[calc(100vh-300px)]": height < 741 },
+      //   { "h-[calc(100vh-384px)]": height > 742 },
+      //   { "h-[calc(100vh-374px)]": height > 800 },
+      //   "md:h-[calc(100vh-420px)]",
+      // )}
       >
-        <EventTicketButton />
-        <ActionPanel />
+        <EventTicketButton h={contentHeight} />
+        <ActionPanel h={contentHeight} />
         <EventGroupDetail
           host_name={activeEvent?.host_name}
           event_geo={activeEvent?.event_geo}
           event_url={activeEvent?.event_url}
           host_id={activeEvent?.host_id}
+          h={contentHeight}
         />
-        <InfoGrid data={activeEventInfo} />
+        <InfoGrid data={activeEventInfo} h={contentHeight} />
+        <EventViewerFooter h={contentHeight} />
       </div>
-      <EventViewerFooter />
     </div>
   );
 };

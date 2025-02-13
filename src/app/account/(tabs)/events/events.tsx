@@ -9,11 +9,10 @@ import { cn } from "@/lib/utils";
 import { Count, EmptyList, Header } from "../../_components_/common";
 import { SidebarCtx } from "@/app/ctx/sidebar";
 import { PreloadedEventsCtx } from "@/app/ctx/event/";
-import { log } from "@/utils/logger";
+import { CreateEvent } from "./create";
 
 export const Events = () => {
   const { signedEvents, pending } = use(PreloadedEventsCtx)!;
-  log("account-events", signedEvents);
   const { open } = use(SidebarCtx)!;
 
   const Counter = useCallback(() => {
@@ -24,33 +23,31 @@ export const Events = () => {
     return <>{options.get(pending)}</>;
   }, [pending, signedEvents?.length]);
 
-  const ListOptions = useCallback(() => {
-    const options = opts(
-      <HyperList
-        data={signedEvents}
-        component={EventCardAccount}
-        container={cn(
-          "relative columns-1 gap-4 space-y-2 md:columns-2 xl:colums-3 md:px-4",
-          { "z-50": !open },
-        )}
-      >
-        <Header title="My Events">
-          <Counter />
-        </Header>
-      </HyperList>,
-      <EmptyList
-        title="My events"
-        count={signedEvents?.length ?? 0}
-        message="You have no events yet."
-      />,
-    );
-    return <>{options.get(!pending && (signedEvents?.length ?? 0) > 0)}</>;
-  }, [pending, open, signedEvents, Counter]);
-
   return (
-    <div className="min-h-[80vh] w-full justify-center rounded-none bg-white md:rounded-lg md:px-6">
+    <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white md:rounded-lg md:px-6">
       <div className="bg-white">
-        <ListOptions />
+        <HyperList
+          data={signedEvents}
+          component={EventCardAccount}
+          container={cn(
+            "relative columns-1 px-2 gap-4 space-y-2 md:columns-2 xl:colums-3 md:px-4",
+            { "z-50": !open },
+          )}
+        >
+          <div key={"x"} className="flex items-center gap-4 pe-4 md:pt-4">
+            <Header title="My Events">
+              <Counter />
+            </Header>
+            <CreateEvent />
+          </div>
+        </HyperList>
+        {signedEvents?.length === 0 ? (
+          <EmptyList
+            title="My events"
+            count={signedEvents?.length ?? 0}
+            message="You have no events yet."
+          />
+        ) : null}
       </div>
     </div>
   );

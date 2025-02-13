@@ -2,9 +2,8 @@ import { mutation } from "@vx/server";
 import { UpdateUserSchema } from "./d";
 import { checkUser } from "./create";
 import { v } from "convex/values";
-import { GenericDatabaseWriter } from "convex/server";
-import { DataModel } from "@vx/dataModel";
 import { checkEvent } from "convex/events/create";
+import { UserTicket, UserTicketSchema } from "convex/events/d";
 
 export const info = mutation({
   args: UpdateUserSchema,
@@ -204,4 +203,102 @@ function updateArray(
     array.push(element);
   }
   return [array, increment];
+}
+
+export const tickets = mutation({
+  args: { id: v.string(), tickets: v.array(UserTicketSchema) },
+  handler: async ({ db }, { id, tickets }) => {
+    // check user
+    const user = await checkUser(db, id);
+    if (user === null || tickets) {
+      return null;
+    }
+
+    // update user
+    const [updated_list, increment] = updateTicketList(user.tickets, tickets);
+    await db.patch(user._id, {
+      ...user,
+      tickets: updated_list,
+      updated_at: Date.now(),
+    });
+
+    // event
+    const target_event = await checkEvent(db, tickets);
+    if (target_event === null || !increment) {
+      return null;
+    }
+    await db.patch(target_event._id, {
+      ...target_event,
+      ticket_count: updated_list?.length,
+      updated_at: Date.now(),
+    });
+    return "success";
+  },
+});
+
+function updateTicketList(
+  list: UserTicket[] | undefined,
+  tickets: UserTicket[] | undefined,
+): [UserTicket[] | undefined, boolean] {
+  if (!list || !tickets) {
+    return [list, false];
+  }
+
+  // default values
+  const defaults: Partial<UserTicket> = {
+    ticket_url: "",
+    ticket_index: "",
+    ticket_class: "",
+    ticket_status: "",
+    is_active: true,
+    is_claimed: false,
+    is_expired: false,
+    is_used: false,
+  };
+
+  let updated_list: UserTicket[] = list.slice();
+
+  // map
+  const mappedIndexList = mapArrayIndexes(list, tickets);
+
+  // merged
+  updated_list = mappedIndexList.every((id) => id === -1)
+    ? updated_list.concat(tickets)
+    : updated_list;
+
+  // get active
+  updated_list = mappedIndexList.some((id) => id === -1)
+    ? updated_list
+        .map((item, i) => ({
+          ...defaults,
+          ...item,
+          is_active: mappedIndexList[i] === -1,
+        }))
+        .filter((d) => d.is_active)
+    : updated_list;
+
+  return [updated_list, true];
+}
+
+export function mapIndexes(items: UserTicket[], ids: string[]): number[] {
+  const indexMap = new Map(items.map((item, index) => [item.ticket_id, index]));
+  return ids.map((id) => indexMap.get(id) ?? -1);
+}
+
+function createIndexMap(array: UserTicket[]) {
+  return array.reduce(
+    (acc, item, index) => {
+      acc[item.ticket_id] = index;
+      return acc;
+    },
+    {} as Record<string, any>,
+  );
+}
+function mapArrayIndexes<T extends UserTicket, U extends UserTicket>(
+  sourceArray: T[],
+  targetArray: U[],
+): number[] {
+  const targetIndexMap = createIndexMap(targetArray);
+
+  return sourceArray.map((item) => targetIndexMap[item.ticket_id] ?? -1);
 }
