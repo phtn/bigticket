@@ -78,7 +78,7 @@ const MediaContainer = () => {
 
   console.log(ref.current?.clientHeight);
   const contentHeight = useMemo(
-    () => `${((screen.height - 364) / 8).toFixed(2)}px`,
+    () => `${((screen.height - 314) / 7).toFixed(2)}px`,
     [screen.height],
   );
 
@@ -106,12 +106,12 @@ const MediaContainer = () => {
           }}
         >
           <Tab key={"overview"} title="Overview">
-            <div className="relative h-fit min-h-[300px]" ref={ref}>
+            <div className="relative h-[250px]" ref={ref}>
               <Image
                 radius="none"
                 alt={`${activeEvent?.event_name}-cover`}
                 src={cover_src ?? "/svg/star_v2.svg"}
-                className="relative z-0 h-[300px] w-full md:w-[30rem]"
+                className="relative z-0 h-[250px] w-screen md:w-[30rem]"
               />
               <TitleDisplay
                 event_name={event_name}
@@ -146,8 +146,8 @@ const MediaContainer = () => {
           h={contentHeight}
         />
         <InfoGrid data={activeEventInfo} h={contentHeight} />
-        <EventViewerFooter h={contentHeight} />
       </div>
+      <EventViewerFooter h={contentHeight} />
     </div>
   );
 };
@@ -163,14 +163,17 @@ const TitleDisplay = ({ event_name, narrow, time }: TitleDisplayProps) => (
       <span>{narrow.day}</span> <span>{narrow.date}</span> <span>{time}</span>
     </p>
     <div className="px-3">
-      {event_name?.map((word, i) => (
+      <h2 className="block w-fit max-w-[18ch] text-2xl font-bold leading-8 tracking-tighter text-white drop-shadow-sm first-line:max-w-[16ch] md:text-3xl">
+        {event_name}
+      </h2>
+      {/* {event_name?.map((word, i) => (
         <h2
           key={i}
           className="block w-fit text-2xl font-bold leading-8 tracking-tighter text-white drop-shadow-sm first-line:max-w-[16ch] md:text-3xl"
         >
           {word}
         </h2>
-      ))}
+      ))} */}
     </div>
   </div>
 );
