@@ -51,8 +51,7 @@ const Container = ({ children }: { children: ReactNode }) => (
 
 const MediaContainer = () => {
   const ref = useRef<HTMLDivElement | null>(null);
-  const { screen, dimensions } = useDime(ref);
-  console.log(screen.height - dimensions.height + 64);
+  const { screen } = useDime(ref);
 
   const { activeEvent, activeEventInfo, moments, cover_src } =
     use(EventViewerCtx)!;
@@ -79,9 +78,8 @@ const MediaContainer = () => {
 
   const contentHeight = useMemo(
     () =>
-      // `h-[${((screen.height - (64 + dimensions.height)) / 7).toFixed(2)}px]`,
-      `${((screen.height - (64 + dimensions.height)) / 8).toFixed(2)}px`,
-    [screen.height, dimensions.height],
+      `${((screen.height - (64 + (ref.current?.clientHeight ?? 0))) / 8).toFixed(2)}px`,
+    [screen.height],
   );
 
   return (

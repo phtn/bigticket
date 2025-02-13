@@ -58,7 +58,6 @@ export const GetTicketButton = ({
     );
     return <>{options.get(is_private)}</>;
   }, [ticket_value, is_private]);
-  console.log(h);
   return (
     <div className={cn("z-1 relative bg-primary")} style={{ height: h }}>
       <Button

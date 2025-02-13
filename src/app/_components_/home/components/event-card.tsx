@@ -85,7 +85,7 @@ export const EventCard = (event: SignedEvent) => {
           src={event.cover_src}
         />
       ) : null}
-      <CardFooter className="absolute bottom-0 z-10 border-t-[0.33px] border-primary/40 bg-black/10">
+      <CardFooter className="absolute -bottom-[2px] z-10 border-t-[0.33px] border-primary/40 bg-black/10">
         <div className="flex flex-grow items-center gap-2">
           {/* <Image
             alt="Breathing app icon"

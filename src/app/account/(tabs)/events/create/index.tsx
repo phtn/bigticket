@@ -186,6 +186,7 @@ export const CreateEvent = () => {
         direction="right"
         title={"Create"}
         description={"Description"}
+        dismissible
       >
         <FlatWindow
           variant="god"
@@ -239,7 +240,7 @@ export const CreateEvent = () => {
                     />
                     <OptionButton
                       label="category"
-                      value={"nightlife"}
+                      value={"training"}
                       name="category"
                     />
                   </div>
