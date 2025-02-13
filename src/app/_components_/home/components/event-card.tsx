@@ -58,7 +58,7 @@ export const EventCard = (event: SignedEvent) => {
   return (
     <Card
       isFooterBlurred
-      className="h-[280px] w-full overflow-hidden rounded-3xl border border-primary-700"
+      className="h-[280px] w-full overflow-hidden rounded-3xl border border-primary-700 bg-primary-700"
     >
       <CardHeader className="absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4">
         <section className="w-full overflow-clip text-ellipsis">
@@ -81,7 +81,7 @@ export const EventCard = (event: SignedEvent) => {
           removeWrapper
           radius="none"
           alt="nightlife"
-          className="z-0 h-full w-full border-0 object-cover"
+          className="object- z-0 h-full w-full border-0"
           src={event.cover_src}
         />
       ) : null}

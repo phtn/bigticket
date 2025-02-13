@@ -29,7 +29,7 @@ export const EventCardAccount = (event: SignedEvent) => {
   return (
     <Card
       isFooterBlurred
-      className="h-[280px] w-full rounded-md border border-primary"
+      className="h-[280px] w-full rounded-md border border-primary bg-primary"
     >
       <CardHeader className="absolute z-10 flex w-full items-start justify-between gap-3 rounded-none bg-black/40 ps-4 backdrop-blur-sm">
         <section className="w-full overflow-clip text-ellipsis">

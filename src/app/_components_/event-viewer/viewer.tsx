@@ -76,9 +76,9 @@ const MediaContainer = () => {
     [activeEvent?.is_private, activeEvent?.ticket_value],
   );
 
+  console.log(ref.current?.clientHeight);
   const contentHeight = useMemo(
-    () =>
-      `${((screen.height - (64 + (ref.current?.clientHeight ?? 0))) / 8).toFixed(2)}px`,
+    () => `${((screen.height - 364) / 8).toFixed(2)}px`,
     [screen.height],
   );
 
@@ -106,12 +106,12 @@ const MediaContainer = () => {
           }}
         >
           <Tab key={"overview"} title="Overview">
-            <div className="relative h-fit" ref={ref}>
+            <div className="relative h-fit min-h-[300px]" ref={ref}>
               <Image
                 radius="none"
                 alt={`${activeEvent?.event_name}-cover`}
                 src={cover_src ?? "/svg/star_v2.svg"}
-                className="relative z-0 size-full"
+                className="relative z-0 h-[300px] w-full md:w-[30rem]"
               />
               <TitleDisplay
                 event_name={event_name}

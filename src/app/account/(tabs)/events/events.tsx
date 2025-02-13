@@ -30,7 +30,7 @@ export const Events = () => {
           data={signedEvents}
           component={EventCardAccount}
           container={cn(
-            "relative columns-1 px-2 gap-4 space-y-2 md:columns-2 xl:colums-3 md:px-4",
+            "relative grid grid-cols-1 px-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:px-4",
             { "z-50": !open },
           )}
         >
