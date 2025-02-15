@@ -77,6 +77,7 @@ export const EventSchema = v.object({
   photo_url: v.optional(v.string()),
   //TICKETS
   ticket_count: v.optional(v.number()),
+  ticket_count_limit: v.optional(v.number()),
   ticket_value: v.optional(v.number()),
   tickets_sold: v.optional(v.number()),
   tickets_refunded: v.optional(v.number()),

@@ -1,5 +1,6 @@
 "use client";
 
+import { useDime } from "@/hooks/useDime";
 import { useMoment } from "@/hooks/useMoment";
 import { useToggle } from "@/hooks/useToggle";
 import { Icon } from "@/icons";
@@ -8,18 +9,13 @@ import { TicketStack } from "@/ui/card/ticket";
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
 import { opts } from "@/utils/helpers";
-import { parseAbsoluteToLocal } from "@internationalized/date";
-import {
-  Button,
-  type DateValue,
-  Form,
-  Input,
-  Textarea,
-} from "@nextui-org/react";
+import { Button, Form, Input, Switch, Textarea } from "@nextui-org/react";
 import type { InsertEvent } from "convex/events/d";
 import {
   type ChangeEvent,
+  type MouseEvent,
   type ReactNode,
+  use,
   useActionState,
   useCallback,
   useMemo,
@@ -27,18 +23,18 @@ import {
   useState,
 } from "react";
 import { useEvent } from "../../../useEvent";
-import { useDime } from "@/hooks/useDime";
-import { OptionActionSheet, OptionButton } from "./components";
-import { OptionCtxProvider } from "./ctx";
+import {
+  OptionActionSheet,
+  OptionButton,
+  type OptionButtonProps,
+} from "./components";
+import { OptionCtx, OptionCtxProvider, type OptionKey } from "./ctx";
 
-interface DateRange {
-  start: DateValue;
-  end: DateValue;
-}
 export const CreateEvent = () => {
   const { open, toggle } = useToggle();
   const [eventName, setEventName] = useState("");
-  const [ticketCount] = useState(0);
+  const [ticketCount, setTicketCount] = useState(50);
+  const [ticketLimit, setTicketLimit] = useState(50);
   const [eventType] = useState("");
   const [eventStartDate] = useState(0);
   const [eventEndDate] = useState(0);
@@ -47,9 +43,9 @@ export const CreateEvent = () => {
   const [eventDay] = useState("");
   const [eventDuration] = useState(0);
 
-  const [dateRange] = useState<DateRange>({
-    start: parseAbsoluteToLocal(new Date().toISOString()),
-    end: parseAbsoluteToLocal(new Date().toISOString()),
+  const [dateRange] = useState<{ start: number; end: number }>({
+    start: Date.now(),
+    end: Date.now() + 360000,
   });
 
   const { event_time } = useMoment({
@@ -164,6 +160,133 @@ export const CreateEvent = () => {
     [screen.height, dimensions.height],
   );
 
+  const option_value_data = useMemo(
+    () => [ticketCount, "online", "category", Date.now(), Date.now() + 3600000],
+    [ticketCount],
+  );
+
+  const handleChangeTicketCount = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      setTicketLimit(+e.target.value);
+    },
+    [],
+  );
+  const handleChangeTicketLimit = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      setTicketCount(+e.target.value);
+    },
+    [],
+  );
+  const handleSelectTicketCount = useCallback(
+    (value: string) => (e: MouseEvent) => {
+      e.preventDefault();
+      setTicketCount(+value);
+    },
+    [],
+  );
+
+  const isCustomTicketCount = useToggle();
+  const isCustomTicketLimit = useToggle();
+
+  const renderOptions = useCallback(
+    (option: OptionKey | null) => {
+      switch (option) {
+        case "ticket_count":
+          return (
+            <div className="">
+              <p className="font-inter tracking-tight text-macl-gray">
+                What&apos;s your estimated ticket count
+              </p>
+              <div className="grid w-full grid-cols-3 gap-1 py-8">
+                {option_data?.[0]?.items.map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={handleSelectTicketCount(item.key)}
+                    className="relative flex h-14 items-center justify-center rounded-md bg-primary text-white"
+                  >
+                    {item.key}
+                    <Icon
+                      name="Check"
+                      className={cn(
+                        "absolute right-3 top-3 hidden text-secondary",
+                        { flex: ticketCount === +item.key },
+                      )}
+                    />
+                  </button>
+                ))}
+              </div>
+              <div className="space-y-4">
+                <div className="flex w-full items-center justify-between gap-10">
+                  <Input
+                    size="lg"
+                    id="ticket_count"
+                    name="ticket_count"
+                    label="Custom Ticket Count"
+                    placeholder="Custom ticket count"
+                    disabled={!isCustomTicketCount.open}
+                    defaultValue={String(ticketCount)}
+                    // defaultValue={String(ticketCount)}
+                    onChange={handleChangeTicketCount}
+                    endContent={
+                      <Switch
+                        classNames={{
+                          base: "bg-gray-200 rounded-full",
+                        }}
+                        checked={isCustomTicketCount.open}
+                        onChange={isCustomTicketCount.toggle}
+                      />
+                    }
+                    classNames={{
+                      ...inputClassNames,
+                      input:
+                        "disabled:opacity-50 disabled:cursor-not-allowed font-bold",
+                    }}
+                  />
+                </div>
+                <Input
+                  size="lg"
+                  id="ticket_limit"
+                  name="ticket_limit"
+                  label="Ticket Count Limit"
+                  placeholder="Ticket count limit"
+                  defaultValue={String(ticketLimit)}
+                  onChange={handleChangeTicketLimit}
+                  disabled={!isCustomTicketLimit.open}
+                  endContent={
+                    <Switch
+                      classNames={{
+                        base: "bg-gray-200 rounded-full",
+                      }}
+                      checked={isCustomTicketLimit.open}
+                      onChange={isCustomTicketLimit.toggle}
+                    />
+                  }
+                  classNames={{
+                    ...inputClassNames,
+                    input:
+                      "disabled:opacity-50 disabled:cursor-not-allowed font-bold",
+                  }}
+                />
+              </div>
+            </div>
+          );
+        default:
+          return <div className="bg-gray-200 p-2">{option}</div>;
+      }
+    },
+    [
+      ticketCount,
+      ticketLimit,
+      handleSelectTicketCount,
+      handleChangeTicketCount,
+      handleChangeTicketLimit,
+      isCustomTicketCount,
+      isCustomTicketLimit,
+    ],
+  );
+
   return (
     <div className="flex h-10 w-full items-center justify-end font-inter xl:space-x-1">
       <button
@@ -227,38 +350,14 @@ export const CreateEvent = () => {
                 </div>
 
                 <OptionCtxProvider>
-                  <div className="grid w-full grid-cols-3 gap-3 md:px-2">
-                    <OptionButton
-                      label="tickets"
-                      value={100}
-                      name="ticket_count"
-                    />
-                    <OptionButton
-                      label="type of event"
-                      value={"online"}
-                      name="event_type"
-                    />
-                    <OptionButton
-                      label="category"
-                      value={"training"}
-                      name="category"
-                    />
-                  </div>
-                  <div className="grid w-full grid-cols-2 gap-3 md:px-2">
-                    <OptionButton
-                      label="Start time"
-                      value={dateRange.start.toDate("GMT").toLocaleTimeString()}
-                      name="start_date"
-                    />
-                    <OptionButton
-                      label="End time"
-                      value={dateRange.end.toDate("GMT").toDateString()}
-                      name="end_date"
-                    />
-                  </div>
-                  <OptionActionSheet>
-                    <div className="h-10 w-full">YOOO</div>
-                  </OptionActionSheet>
+                  <OptionFields
+                    start={dateRange.start}
+                    end={dateRange.end}
+                    render={renderOptions}
+                    data={option_value_data}
+                  >
+                    <div></div>
+                  </OptionFields>
                 </OptionCtxProvider>
 
                 <div className="w-full md:px-2">
@@ -300,13 +399,93 @@ const FormContainer = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
+interface OptionFieldsProps {
+  children: ReactNode;
+  start: number;
+  end: number;
+  render: (option: OptionKey | null) => ReactNode;
+  data: (string | number | boolean | undefined)[];
+}
+
+const OptionFields = ({
+  children,
+  start,
+  end,
+  render,
+  data,
+}: OptionFieldsProps) => {
+  const { selectedOption } = use(OptionCtx)!;
+
+  const options_data: OptionButtonProps[] = useMemo(
+    () => [
+      {
+        label: "Tickets",
+        value: data[0],
+        name: "ticket_count",
+      },
+      {
+        label: "Event Type",
+        value: data[1],
+        name: "event_type",
+      },
+      {
+        label: "Category",
+        value: data[2],
+        name: "category",
+      },
+      {
+        label: "Start Time",
+        value: data[3],
+        name: "start_date",
+      },
+      {
+        label: "End Time",
+        value: data[4],
+        name: "end_date",
+      },
+    ],
+    [data],
+  );
+
+  return (
+    <div className="space-y-4">
+      <div className="grid w-full grid-cols-3 gap-3 md:px-2">
+        {options_data.slice(0, 3).map((option) => (
+          <OptionButton
+            key={option.name}
+            label={option.label}
+            value={option.value}
+            name={option.name}
+          />
+        ))}
+      </div>
+      <div className="grid w-full grid-cols-2 gap-3 md:px-2">
+        <OptionButton
+          label="Start time"
+          value={new Date(start).toISOString()}
+          name="start_date"
+        />
+        <OptionButton
+          label="End time"
+          value={new Date(end).toISOString()}
+          name="end_date"
+        />
+      </div>
+      <OptionActionSheet>
+        {render(selectedOption)}
+        {children}
+      </OptionActionSheet>
+    </div>
+  );
+};
+
 interface EventSelectData {
   id: string;
   label: string;
   items: Array<{ key: string; label: string; subtext?: string }>;
   placeholder?: string;
 }
-export const select_data: EventSelectData[] = [
+const option_data: EventSelectData[] = [
   {
     id: "ticket_count",
     label: "Tickets",
@@ -343,7 +522,7 @@ export const select_data: EventSelectData[] = [
       },
       {
         key: "onsite",
-        label: "On-site",
+        label: "Onsite",
       },
     ],
   },
