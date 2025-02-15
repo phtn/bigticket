@@ -9,7 +9,7 @@ import { TicketStack } from "@/ui/card/ticket";
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
 import { opts } from "@/utils/helpers";
-import { Button, Form, Input, Switch, Textarea } from "@nextui-org/react";
+import { Button, Form, Input, Textarea } from "@nextui-org/react";
 import type { InsertEvent } from "convex/events/d";
 import {
   type ChangeEvent,
@@ -24,8 +24,12 @@ import {
 } from "react";
 import { useEvent } from "../../../useEvent";
 import {
+  EventCategory,
+  EventType,
+  inputClassNames,
   OptionActionSheet,
   OptionButton,
+  TicketCount,
   type OptionButtonProps,
 } from "./components";
 import { OptionCtx, OptionCtxProvider, type OptionKey } from "./ctx";
@@ -34,8 +38,8 @@ export const CreateEvent = () => {
   const { open, toggle } = useToggle();
   const [eventName, setEventName] = useState("");
   const [ticketCount, setTicketCount] = useState(50);
-  const [ticketLimit, setTicketLimit] = useState(50);
-  const [eventType] = useState("");
+  const [eventType, setEventType] = useState("onsite");
+  const [eventCategory, setEventCategory] = useState("party");
   const [eventStartDate] = useState(0);
   const [eventEndDate] = useState(0);
   const [eventSite, setEventSite] = useState("");
@@ -161,18 +165,17 @@ export const CreateEvent = () => {
   );
 
   const option_value_data = useMemo(
-    () => [ticketCount, "online", "category", Date.now(), Date.now() + 3600000],
-    [ticketCount],
+    () => [
+      ticketCount,
+      eventType,
+      eventCategory,
+      Date.now(),
+      Date.now() + 3600000,
+    ],
+    [ticketCount, eventType, eventCategory],
   );
 
-  const handleChangeTicketCount = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      e.preventDefault();
-      setTicketLimit(+e.target.value);
-    },
-    [],
-  );
-  const handleChangeTicketLimit = useCallback(
+  const handleCustomTicketCount = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       e.preventDefault();
       setTicketCount(+e.target.value);
@@ -180,97 +183,42 @@ export const CreateEvent = () => {
     [],
   );
   const handleSelectTicketCount = useCallback(
-    (value: string) => (e: MouseEvent) => {
+    (value: number) => (e: MouseEvent) => {
       e.preventDefault();
-      setTicketCount(+value);
+      setTicketCount(value);
     },
     [],
   );
 
-  const isCustomTicketCount = useToggle();
-  const isCustomTicketLimit = useToggle();
+  const handleSelectEventType = useCallback((value: string) => {
+    setEventType(value);
+  }, []);
+
+  const handleSelectEventCategory = useCallback((value: string) => {
+    setEventCategory(value);
+  }, []);
 
   const renderOptions = useCallback(
     (option: OptionKey | null) => {
       switch (option) {
         case "ticket_count":
           return (
-            <div className="">
-              <p className="font-inter tracking-tight text-macl-gray">
-                What&apos;s your estimated ticket count
-              </p>
-              <div className="grid w-full grid-cols-3 gap-1 py-8">
-                {option_data?.[0]?.items.map((item) => (
-                  <button
-                    key={item.key}
-                    onClick={handleSelectTicketCount(item.key)}
-                    className="relative flex h-14 items-center justify-center rounded-md bg-primary text-white"
-                  >
-                    {item.key}
-                    <Icon
-                      name="Check"
-                      className={cn(
-                        "absolute right-3 top-3 hidden text-secondary",
-                        { flex: ticketCount === +item.key },
-                      )}
-                    />
-                  </button>
-                ))}
-              </div>
-              <div className="space-y-4">
-                <div className="flex w-full items-center justify-between gap-10">
-                  <Input
-                    size="lg"
-                    id="ticket_count"
-                    name="ticket_count"
-                    label="Custom Ticket Count"
-                    placeholder="Custom ticket count"
-                    disabled={!isCustomTicketCount.open}
-                    defaultValue={String(ticketCount)}
-                    // defaultValue={String(ticketCount)}
-                    onChange={handleChangeTicketCount}
-                    endContent={
-                      <Switch
-                        classNames={{
-                          base: "bg-gray-200 rounded-full",
-                        }}
-                        checked={isCustomTicketCount.open}
-                        onChange={isCustomTicketCount.toggle}
-                      />
-                    }
-                    classNames={{
-                      ...inputClassNames,
-                      input:
-                        "disabled:opacity-50 disabled:cursor-not-allowed font-bold",
-                    }}
-                  />
-                </div>
-                <Input
-                  size="lg"
-                  id="ticket_limit"
-                  name="ticket_limit"
-                  label="Ticket Count Limit"
-                  placeholder="Ticket count limit"
-                  defaultValue={String(ticketLimit)}
-                  onChange={handleChangeTicketLimit}
-                  disabled={!isCustomTicketLimit.open}
-                  endContent={
-                    <Switch
-                      classNames={{
-                        base: "bg-gray-200 rounded-full",
-                      }}
-                      checked={isCustomTicketLimit.open}
-                      onChange={isCustomTicketLimit.toggle}
-                    />
-                  }
-                  classNames={{
-                    ...inputClassNames,
-                    input:
-                      "disabled:opacity-50 disabled:cursor-not-allowed font-bold",
-                  }}
-                />
-              </div>
-            </div>
+            <TicketCount
+              ticketCount={ticketCount}
+              handleSelectTicketCount={handleSelectTicketCount}
+              handleCustomTicketCount={handleCustomTicketCount}
+            />
+          );
+        case "event_type":
+          return (
+            <EventType value={eventType} onChange={handleSelectEventType} />
+          );
+        case "category":
+          return (
+            <EventCategory
+              value={eventCategory}
+              onChange={handleSelectEventCategory}
+            />
           );
         default:
           return <div className="bg-gray-200 p-2">{option}</div>;
@@ -278,17 +226,17 @@ export const CreateEvent = () => {
     },
     [
       ticketCount,
-      ticketLimit,
+      eventType,
+      eventCategory,
       handleSelectTicketCount,
-      handleChangeTicketCount,
-      handleChangeTicketLimit,
-      isCustomTicketCount,
-      isCustomTicketLimit,
+      handleCustomTicketCount,
+      handleSelectEventType,
+      handleSelectEventCategory,
     ],
   );
 
   return (
-    <div className="flex h-10 w-full items-center justify-end font-inter xl:space-x-1">
+    <div className="flex h-full w-full items-center justify-end font-inter xl:space-x-1">
       <button
         className="group/create flex size-6 items-center justify-center rounded-lg bg-secondary px-0 text-white md:h-8 md:w-fit md:gap-1.5 md:space-x-0.5 md:pe-2.5 md:ps-2"
         onClick={toggle}
@@ -317,7 +265,7 @@ export const CreateEvent = () => {
           icon="Sparkles2"
           title="Create New Event"
           className="w-full border-0 border-macd-gray bg-void text-chalk"
-          wrapperStyle="border-macd-gray border-[0.33px]"
+          wrapperStyle="border-macd-gray h-full border-[0.33px]"
         >
           <FormContainer>
             <div ref={ref} className="flex h-2/5 w-full items-center">
@@ -394,7 +342,11 @@ export const CreateEvent = () => {
 };
 
 const FormContainer = ({ children }: { children: ReactNode }) => (
-  <div className={cn("mx-auto h-[calc(100vh-64px)] w-screen md:w-[30rem]")}>
+  <div
+    className={cn(
+      "mx-auto h-[calc(100vh-64px)] w-screen overflow-y-scroll md:w-[30rem]",
+    )}
+  >
     {children}
   </div>
 );
@@ -477,122 +429,6 @@ const OptionFields = ({
       </OptionActionSheet>
     </div>
   );
-};
-
-interface EventSelectData {
-  id: string;
-  label: string;
-  items: Array<{ key: string; label: string; subtext?: string }>;
-  placeholder?: string;
-}
-const option_data: EventSelectData[] = [
-  {
-    id: "ticket_count",
-    label: "Tickets",
-    items: [
-      {
-        key: "50",
-        label: "50",
-      },
-      {
-        key: "100",
-        label: "50-100",
-      },
-      {
-        key: "500",
-        label: "100-500",
-      },
-      {
-        key: "1000",
-        label: "500-1000",
-      },
-      {
-        key: "2000",
-        label: "1000-2000",
-      },
-    ],
-  },
-  {
-    id: "event_type",
-    label: "Type",
-    items: [
-      {
-        key: "online",
-        label: "Online",
-      },
-      {
-        key: "onsite",
-        label: "Onsite",
-      },
-    ],
-  },
-  {
-    id: "category",
-    label: "category",
-    items: [
-      {
-        key: "live",
-        label: "Concerts & Music Festivals",
-        subtext: "live music performance",
-      },
-      {
-        key: "sports",
-        label: "Sports Events",
-      },
-      {
-        key: "theater",
-        label: "Theater & Performing Arts",
-        subtext: "theater arts",
-      },
-      {
-        key: "seminar",
-        label: "Conferences & Seminars",
-        subtext: "training seminar",
-      },
-      {
-        key: "exhibition",
-        label: "Exhibitions & Trade Shows",
-        subtext: "trade shows",
-      },
-      {
-        key: "cultural",
-        label: "Festivals & Cultural Events",
-        subtext: "cultural events",
-      },
-      {
-        key: "party",
-        label: "Nightlife & Parties",
-        subtext: "parties",
-      },
-      {
-        key: "egames",
-        label: "Gaming & eSports",
-        subtext: "egames",
-      },
-      {
-        key: "online",
-        label: "Online & Virtual Events",
-        subtext: "online",
-      },
-      {
-        key: "hackaton",
-        label: "Hackaton",
-        subtext: "hackaton",
-      },
-      {
-        key: "rocket",
-        label: "Rocket Launch",
-        subtext: "rocket launch",
-      },
-    ],
-  },
-];
-
-const inputClassNames = {
-  inputWrapper: "border-[0.33px] border-macd-gray shadow-none",
-  label: "pb-1 opacity-60 text-sm tracking-tight",
-  input:
-    "font-bold tracking-tight placeholder:font-semibold focus:placeholder:opacity-50 placeholder:text-primary font-inter placeholder:text-sm",
 };
 
 /*
