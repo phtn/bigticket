@@ -40,10 +40,6 @@ export const Content = (props: AccountContentProps) => {
           <CardHeader>
             <div className="flex w-full items-center justify-between">
               <h2 className="font-semibold">Profile</h2>
-              <h2 className="font-light">
-                Impressions:{" "}
-                <span className="font-semibold">{vx?.impressions ?? 0}</span>
-              </h2>
             </div>
           </CardHeader>
           <HyperList

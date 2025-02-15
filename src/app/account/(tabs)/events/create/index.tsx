@@ -12,19 +12,20 @@ import { opts } from "@/utils/helpers";
 import { Button, Form, Input, Textarea } from "@nextui-org/react";
 import type { InsertEvent } from "convex/events/d";
 import {
-  type ChangeEvent,
-  type MouseEvent,
-  type ReactNode,
   use,
   useActionState,
   useCallback,
   useMemo,
   useRef,
   useState,
+  type ChangeEvent,
+  type MouseEvent,
+  type ReactNode,
 } from "react";
 import { useEvent } from "../../../useEvent";
 import {
   EventCategory,
+  EventDate,
   EventType,
   inputClassNames,
   OptionActionSheet,
@@ -40,21 +41,14 @@ export const CreateEvent = () => {
   const [ticketCount, setTicketCount] = useState(50);
   const [eventType, setEventType] = useState("onsite");
   const [eventCategory, setEventCategory] = useState("party");
-  const [eventStartDate] = useState(0);
-  const [eventEndDate] = useState(0);
+  const [eventStartDate, setEventStartDate] = useState(Date.now());
+  const [eventEndDate, setEventEndDate] = useState(Date.now() + 3600000);
   const [eventSite, setEventSite] = useState("");
-  const [eventDate] = useState("");
-  const [eventDay] = useState("");
-  const [eventDuration] = useState(0);
 
-  const [dateRange] = useState<{ start: number; end: number }>({
-    start: Date.now(),
-    end: Date.now() + 360000,
-  });
-
-  const { event_time } = useMoment({
+  const { event_time, event_day, narrow } = useMoment({
     start: eventStartDate,
-    end: eventEndDate,
+    end:
+      eventEndDate < eventStartDate ? eventStartDate + 3600000 : eventEndDate,
   });
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -123,8 +117,10 @@ export const CreateEvent = () => {
     await createEvent({
       ...data,
       start_date: eventStartDate,
-      end_date: eventEndDate,
-      duration: eventDuration,
+      end_date:
+        eventEndDate < eventStartDate
+          ? eventStartDate + 36000000
+          : eventEndDate,
       ticket_count: ticketCount,
     });
     return data;
@@ -169,10 +165,10 @@ export const CreateEvent = () => {
       ticketCount,
       eventType,
       eventCategory,
-      Date.now(),
-      Date.now() + 3600000,
+      eventStartDate,
+      eventEndDate < eventStartDate ? eventStartDate + 3600000 : eventEndDate,
     ],
-    [ticketCount, eventType, eventCategory],
+    [ticketCount, eventType, eventCategory, eventStartDate, eventEndDate],
   );
 
   const handleCustomTicketCount = useCallback(
@@ -189,13 +185,17 @@ export const CreateEvent = () => {
     },
     [],
   );
-
   const handleSelectEventType = useCallback((value: string) => {
     setEventType(value);
   }, []);
-
   const handleSelectEventCategory = useCallback((value: string) => {
     setEventCategory(value);
+  }, []);
+  const handleChangeStartDate = useCallback((value: number) => {
+    setEventStartDate(value);
+  }, []);
+  const handleChangeEndDate = useCallback((value: number) => {
+    setEventEndDate(value);
   }, []);
 
   const renderOptions = useCallback(
@@ -220,6 +220,17 @@ export const CreateEvent = () => {
               onChange={handleSelectEventCategory}
             />
           );
+        case "start_date":
+          return (
+            <EventDate
+              value={eventStartDate}
+              onChange={handleChangeStartDate}
+            />
+          );
+        case "end_date":
+          return (
+            <EventDate value={eventEndDate} onChange={handleChangeEndDate} />
+          );
         default:
           return <div className="bg-gray-200 p-2">{option}</div>;
       }
@@ -228,15 +239,19 @@ export const CreateEvent = () => {
       ticketCount,
       eventType,
       eventCategory,
+      eventEndDate,
+      eventStartDate,
       handleSelectTicketCount,
       handleCustomTicketCount,
       handleSelectEventType,
       handleSelectEventCategory,
+      handleChangeEndDate,
+      handleChangeStartDate,
     ],
   );
 
   return (
-    <div className="flex h-full w-full items-center justify-end font-inter xl:space-x-1">
+    <div className="flex w-full items-center justify-end font-inter xl:space-x-1">
       <button
         className="group/create flex size-6 items-center justify-center rounded-lg bg-secondary px-0 text-white md:h-8 md:w-fit md:gap-1.5 md:space-x-0.5 md:pe-2.5 md:ps-2"
         onClick={toggle}
@@ -270,15 +285,15 @@ export const CreateEvent = () => {
           <FormContainer>
             <div ref={ref} className="flex h-2/5 w-full items-center">
               <TicketStack
-                day={eventDay}
-                date={eventDate}
+                day={event_day}
+                date={narrow.date}
                 site={eventSite}
                 title={eventName}
                 tickets={ticketCount}
                 time={event_time.compact}
               />
             </div>
-            <div className="flex h-3/5 w-full overflow-scroll md:pb-0">
+            <div className="flex h-3/5 w-full md:pb-0">
               <Form
                 action={action}
                 className="w-full space-y-2 bg-white p-4 md:space-y-3"
@@ -298,12 +313,7 @@ export const CreateEvent = () => {
                 </div>
 
                 <OptionCtxProvider>
-                  <OptionFields
-                    start={dateRange.start}
-                    end={dateRange.end}
-                    render={renderOptions}
-                    data={option_value_data}
-                  >
+                  <OptionFields render={renderOptions} data={option_value_data}>
                     <div></div>
                   </OptionFields>
                 </OptionCtxProvider>
@@ -311,7 +321,7 @@ export const CreateEvent = () => {
                 <div className="w-full md:px-2">
                   <EventSite />
                 </div>
-                <div className="hidden w-full space-y-2 px-2">
+                <div className="hidden w-full space-y-1.5 px-2">
                   <Textarea
                     name="event_desc"
                     label="Description"
@@ -324,12 +334,12 @@ export const CreateEvent = () => {
                     }}
                   />
                 </div>
-                <div className="flex h-1/5 w-full items-center justify-between tracking-tight">
+                <div className="flex w-full items-center justify-between tracking-tight">
                   <div className="flex space-x-4"></div>
                   <Button disabled isLoading={pending} type="submit">
-                    {/* Next <span className="ps-2">&rarr;</span> */}
-                    <Icon name="SpinnerBall" />
-                    Dev Mode
+                    Next <span className="ps-2">&rarr;</span>
+                    {/* <Icon name="SpinnerBall" /> */}
+                    {/* Dev Mode */}
                   </Button>
                 </div>
               </Form>
@@ -344,29 +354,25 @@ export const CreateEvent = () => {
 const FormContainer = ({ children }: { children: ReactNode }) => (
   <div
     className={cn(
-      "mx-auto h-[calc(100vh-64px)] w-screen overflow-y-scroll md:w-[30rem]",
+      "mx-auto h-[calc(100vh)] w-screen overflow-y-scroll md:w-[30rem]",
     )}
   >
-    {children}
+    <div className="h-[calc(100vh-100px)]">{children}</div>
   </div>
 );
 
 interface OptionFieldsProps {
   children: ReactNode;
-  start: number;
-  end: number;
   render: (option: OptionKey | null) => ReactNode;
   data: (string | number | boolean | undefined)[];
 }
 
-const OptionFields = ({
-  children,
-  start,
-  end,
-  render,
-  data,
-}: OptionFieldsProps) => {
+const OptionFields = ({ children, render, data }: OptionFieldsProps) => {
   const { selectedOption } = use(OptionCtx)!;
+  const { start_time, end_time } = useMoment({
+    start: data[3] as number,
+    end: data[4] as number,
+  });
 
   const options_data: OptionButtonProps[] = useMemo(
     () => [
@@ -387,20 +393,20 @@ const OptionFields = ({
       },
       {
         label: "Start Time",
-        value: data[3],
+        value: `${start_time.date} · ${start_time.full}`,
         name: "start_date",
       },
       {
         label: "End Time",
-        value: data[4],
+        value: `${end_time.date} · ${end_time.full}`,
         name: "end_date",
       },
     ],
-    [data],
+    [data, end_time, start_time],
   );
 
   return (
-    <div className="space-y-4">
+    <div className="w-full space-y-4">
       <div className="grid w-full grid-cols-3 gap-3 md:px-2">
         {options_data.slice(0, 3).map((option) => (
           <OptionButton
@@ -412,16 +418,14 @@ const OptionFields = ({
         ))}
       </div>
       <div className="grid w-full grid-cols-2 gap-3 md:px-2">
-        <OptionButton
-          label="Start time"
-          value={new Date(start).toISOString()}
-          name="start_date"
-        />
-        <OptionButton
-          label="End time"
-          value={new Date(end).toISOString()}
-          name="end_date"
-        />
+        {options_data.slice(3).map((option) => (
+          <OptionButton
+            key={option.name}
+            label={option.label}
+            value={option.value}
+            name={option.name}
+          />
+        ))}
       </div>
       <OptionActionSheet>
         {render(selectedOption)}

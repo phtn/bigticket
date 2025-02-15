@@ -27,20 +27,22 @@ export const useMoment = ({ date, start, end }: UseMoment) => {
   );
 
   const startTime = moment(start).format("LT").replaceAll(" ", "");
+  const startWithDate = moment(start).format("ll").split(",")[0];
   const start_compact =
     startTime.substring(0, atMinutes(startTime)) +
     startTime.substring(atMinutes(startTime) + 3);
   const start_time = useMemo(() => {
-    return { full: startTime, compact: start_compact };
-  }, [startTime, start_compact]);
+    return { full: startTime, compact: start_compact, date: startWithDate };
+  }, [startTime, start_compact, startWithDate]);
 
   const endTime = moment(end).format("LT").replaceAll(" ", "");
+  const endWithDate = moment(end).format("ll").split(",")[0];
   const end_compact =
     endTime.substring(0, atMinutes(endTime)) +
     endTime.substring(atMinutes(endTime) + 3);
   const end_time = useMemo(() => {
-    return { full: endTime, compact: end_compact };
-  }, [endTime, end_compact]);
+    return { full: endTime, compact: end_compact, date: endWithDate };
+  }, [endTime, end_compact, endWithDate]);
 
   const event_time = useMemo(() => {
     return {

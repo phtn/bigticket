@@ -28,7 +28,7 @@ export const TicketStack = ({
     <div className="group relative flex h-fit w-full items-center justify-center">
       <div
         className={cn(
-          "absolute h-[200px] w-[360px] -rotate-3 rounded-2xl bg-indigo-300 shadow-lg transition-all duration-700 ease-out group-hover:rotate-[4deg] group-hover:shadow-md",
+          "absolute h-[200px] w-[360px] -rotate-3 scale-95 rounded-2xl bg-indigo-300 shadow-lg transition-all duration-700 ease-out group-hover:rotate-[4deg] group-hover:shadow-md",
           color,
         )}
       />
@@ -84,14 +84,14 @@ interface TicketProps {
   tickets?: number;
   color?: string;
 }
-const Ticket = ({ children, tickets, color }: TicketProps) => {
+const Ticket = ({ children, tickets }: TicketProps) => {
   return (
-    <div className="absolute mt-[8px] h-[200px] w-[355px] rotate-2 overflow-hidden rounded-2xl bg-[#eee] p-2 transition-all duration-300 group-hover:rotate-0 group-hover:shadow-lg">
+    <div className="the-ticket absolute mt-[8px] h-[200px] w-[355px] rotate-2 scale-95 overflow-hidden rounded-2xl border-[0.33px] border-macl-gray bg-[#eee] p-2 transition-all duration-300 group-hover:rotate-0 group-hover:shadow-lg">
       <p className="absolute left-6 top-1 rounded-sm bg-[#eee] px-1 font-mono text-[8px] leading-none tracking-widest text-primary">
         authentic &middot; valid &middot; {tickets ? `1/${tickets}` : null}
       </p>
 
-      <div
+      {/* <div
         className={cn(
           "absolute -left-3 top-16 size-5 rounded-full bg-indigo-300",
           color,
@@ -102,7 +102,7 @@ const Ticket = ({ children, tickets, color }: TicketProps) => {
           "absolute -right-3 top-16 size-5 rounded-full bg-indigo-300",
           color,
         )}
-      />
+      /> */}
       <div className="absolute left-4 top-[72px] h-px w-[322] rounded-full border-b-2 border-dashed border-macd-gray/40" />
       {children}
     </div>

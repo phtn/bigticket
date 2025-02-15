@@ -14,3 +14,17 @@
   mask: radial-gradient(var(--r) at var(--r), #0000 calc(100% - 1px), #000)
     calc(-1 * var(--r));
 }
+
+.the-ticket {
+  --r: 10px; /* cut size */
+  --h: 200px;
+  --offset: calc(50%-20px);
+  width: 355px;
+  height: var(--h);
+  border-radius: 16px;
+
+  mask: radial-gradient(var(--r) at var(--r) 37%, #0000 calc(110% - 1px), #000)
+    calc(-1 * var(--r));
+  /* mask: radial-gradient(var(--r) at var(--r), #0000 calc(110% - 1px), #000)
+    calc(-1 * var(--r)); */
+}

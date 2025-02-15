@@ -1,10 +1,33 @@
+import { useToggle } from "@/hooks/useToggle";
+import { Icon } from "@/icons";
+import { cn } from "@/lib/utils";
 import { BottomVaul } from "@/ui/vaul";
+import {
+  CalendarDate,
+  CalendarDateTime,
+  fromDate,
+  type ZonedDateTime,
+} from "@internationalized/date";
+import {
+  DatePicker,
+  Input,
+  RadioGroup,
+  type RadioProps,
+  Switch,
+  TimeInput,
+  type TimeInputValue,
+  useRadio,
+  VisuallyHidden,
+} from "@nextui-org/react";
 import {
   type ChangeEvent,
   type MouseEvent,
   type ReactNode,
   use,
   useCallback,
+  useEffect,
+  useMemo,
+  useState,
 } from "react";
 import { OptionCtx, type OptionKey } from "./ctx";
 import {
@@ -12,17 +35,6 @@ import {
   event_type_options,
   ticket_count_options,
 } from "./static";
-import { Icon } from "@/icons";
-import { cn } from "@/lib/utils";
-import {
-  Input,
-  RadioGroup,
-  type RadioProps,
-  Switch,
-  useRadio,
-  VisuallyHidden,
-} from "@nextui-org/react";
-import { useToggle } from "@/hooks/useToggle";
 
 export interface OptionButtonProps {
   name: OptionKey;
@@ -57,27 +69,56 @@ export const OptionButton = ({ name, label, value }: OptionButtonProps) => {
 
 export const OptionActionSheet = ({ children }: { children: ReactNode }) => {
   const { open, toggle, selectedOption } = use(OptionCtx)!;
-  const options: Record<OptionKey, string> = {
-    ticket_count: "Number of Tickets",
-    event_type: "Type of Event",
-    category: "Event Category",
-    start_date: "Start Date & Time",
-    end_date: "End Date & Time",
+  const options: Record<OptionKey, { title: string; description?: string }> = {
+    ticket_count: {
+      title: "Number of Tickets",
+      description: "Enter the number of tickets you want to sell.",
+    },
+    event_type: {
+      title: "Type of Event",
+      description: "Select the type of event you want to create.",
+    },
+    category: {
+      title: "Event Category",
+      description: "Select the category of your event.",
+    },
+    start_date: {
+      title: "Event Start date & time",
+      description: "Select the start date and time of your event.",
+    },
+    end_date: {
+      title: "End date & time",
+      description: "Select the end date and time of your event.",
+    },
   };
 
   return (
     <BottomVaul dismissible open={open} onOpenChange={toggle}>
-      <div className="h-fit max-h-96 w-screen overflow-y-scroll p-6 md:w-[30rem]">
+      <div
+        className={cn("h-fit w-screen overflow-y-scroll p-6 md:w-[30rem]", {
+          "relative max-h-96 pb-14": selectedOption === "category",
+        })}
+      >
         <h2 className="font-inter text-lg font-bold tracking-tighter">
-          {selectedOption ? options[selectedOption] : ""}
+          {selectedOption ? options[selectedOption].title : ""}
         </h2>
+        <p className="font-inter text-sm tracking-tight text-macl-gray">
+          {selectedOption ? options[selectedOption].description : ""}
+        </p>
         {children}
-        <button
-          onClick={toggle}
-          className="my-4 flex h-12 w-full items-center justify-center rounded-lg bg-primary font-inter font-semibold tracking-tighter text-white"
+        <div
+          className={cn("flex h-24 w-full items-end", {
+            "fixed bottom-0 left-0 items-center border bg-white px-6":
+              selectedOption === "category",
+          })}
         >
-          Save changes
-        </button>
+          <button
+            onClick={toggle}
+            className="my-4 flex h-12 w-full items-center justify-center rounded-lg bg-primary font-inter text-sm font-semibold tracking-tighter text-white"
+          >
+            Save changes
+          </button>
+        </div>
       </div>
     </BottomVaul>
   );
@@ -98,9 +139,6 @@ export const TicketCount = ({
 
   return (
     <div>
-      <p className="font-inter text-sm tracking-tight text-macl-gray">
-        What&apos;s your estimated ticket count
-      </p>
       <div className="grid w-full grid-cols-3 gap-1 py-8">
         {ticket_count_options.items.map((item) => (
           <button
@@ -158,56 +196,46 @@ interface EventTypeProps {
 
 export const EventType = ({ value, onChange }: EventTypeProps) => {
   return (
-    <div>
-      <p className="font-inter text-sm tracking-tight text-macl-gray">
-        What type of event are you hosting?
-      </p>
-      <div className="py-8">
-        <RadioGroup onValueChange={onChange} defaultValue={value}>
-          {event_type_options.items.map((item) => (
-            <CustomRadio
-              key={item.key}
-              value={String(item.value)}
-              description={item.description}
-              classNames={{
-                base: "space-y-4",
-                label: "font-semibold font-inter tracking-tight",
-                description: "text-sm opacity-60 font-inter tracking-tight",
-              }}
-            >
-              {item.label}
-            </CustomRadio>
-          ))}
-        </RadioGroup>
-      </div>
+    <div className="py-8">
+      <RadioGroup onValueChange={onChange} defaultValue={value}>
+        {event_type_options.items.map((item) => (
+          <CustomRadio
+            key={item.key}
+            value={String(item.value)}
+            description={item.description}
+            classNames={{
+              base: "space-y-4",
+              label: "font-semibold font-inter tracking-tight",
+              description: "text-sm opacity-60 font-inter tracking-tight",
+            }}
+          >
+            {item.label}
+          </CustomRadio>
+        ))}
+      </RadioGroup>
     </div>
   );
 };
 
 export const EventCategory = ({ value, onChange }: EventTypeProps) => {
   return (
-    <div>
-      <p className="font-inter text-sm tracking-tight text-macl-gray">
-        Select an event category?
-      </p>
-      <div className="py-8">
-        <RadioGroup onValueChange={onChange} defaultValue={value}>
-          {category_options.items.map((item) => (
-            <CustomRadio
-              key={item.key}
-              value={String(item.value)}
-              description={item.description}
-              classNames={{
-                base: "space-y-4",
-                label: "font-semibold font-inter tracking-tight",
-                description: "text-sm opacity-60 font-inter tracking-tight",
-              }}
-            >
-              {item.label}
-            </CustomRadio>
-          ))}
-        </RadioGroup>
-      </div>
+    <div className="py-8">
+      <RadioGroup onValueChange={onChange} defaultValue={value}>
+        {category_options.items.map((item) => (
+          <CustomRadio
+            key={item.key}
+            value={String(item.value)}
+            description={item.description}
+            classNames={{
+              base: "space-y-4",
+              label: "font-semibold font-inter tracking-tight",
+              description: "text-sm opacity-60 font-inter tracking-tight",
+            }}
+          >
+            {item.label}
+          </CustomRadio>
+        ))}
+      </RadioGroup>
     </div>
   );
 };
@@ -249,6 +277,113 @@ export const CustomRadio = (props: RadioProps) => {
         )}
       </div>
     </Component>
+  );
+};
+interface EventDateProps {
+  value: number;
+  onChange: (value: number) => void;
+}
+type TimeValue = {
+  hour?: number;
+  minute?: number;
+  timeZone?: string;
+  offset?: number;
+};
+type DateValue = {
+  year?: number;
+  month?: number;
+  day?: number;
+  era?: string;
+};
+type DateTimeValue = DateValue & TimeValue;
+export const EventDate = ({ value, onChange }: EventDateProps) => {
+  const today = useMemo(() => new Date(value), [value]);
+  const [timeValue] = useState<ZonedDateTime>(fromDate(today, "Asia/Manila"));
+  const [dateValue] = useState<CalendarDate>(
+    new CalendarDate(
+      today.getFullYear(),
+      today.getMonth() + 1,
+      today.getDate(),
+    ),
+  );
+  const [dt, setDateTimeValue] = useState<DateTimeValue | null>(null);
+
+  const handleDateChange = useCallback(
+    (v: DateValue | null) => {
+      setDateTimeValue((prev) => ({
+        ...prev,
+        year: v?.year ?? today.getFullYear(),
+        month: v?.month,
+        day: v?.day,
+        era: v?.era,
+      }));
+    },
+    [today],
+  );
+
+  const handleTimeChange = useCallback((v: TimeInputValue | null) => {
+    setDateTimeValue((prev) => ({
+      ...prev,
+      hour: v?.hour,
+      minute: v?.minute,
+    }));
+  }, []);
+
+  useEffect(() => {
+    if (dt) {
+      onChange(
+        new CalendarDateTime(
+          dt.year ?? dateValue.year,
+          dt.month ?? dateValue.month,
+          dt.day ?? dateValue.day,
+          dt.hour ?? timeValue.hour,
+          dt.minute ?? timeValue.minute,
+        )
+          .toDate("Asia/Manila")
+          .getTime(),
+      );
+    }
+  }, [dt, dateValue, timeValue, onChange]);
+
+  return (
+    <div className="space-y-4 py-6">
+      <DatePicker
+        popoverProps={{
+          placement: "top",
+        }}
+        isDateUnavailable={(date) =>
+          new Date(date.toDate("Asia/Manila")).getTime() + 82800000 < Date.now()
+        }
+        radius="none"
+        label="Start Date"
+        onChange={handleDateChange}
+        defaultValue={dateValue}
+        classNames={{
+          innerWrapper: "",
+          label: "h-10 opacity-60 tracking-tight py-2",
+          inputWrapper: "shadow-none bg-white",
+          base: "space-y-2 flex items-center bg-white border border-macd-gray rounded-xl",
+          input: "text-lg",
+          popoverContent: "w-full pointer-events-auto rounded-3xl dark",
+          calendarContent: "bg-gray-700/40 rounded-t-lg",
+        }}
+      />
+      <TimeInput
+        hideTimeZone
+        minValue={timeValue}
+        defaultValue={timeValue}
+        label="Start Time"
+        onChange={handleTimeChange}
+        classNames={{
+          label: "tracking-tight py-2",
+          base: "border h-20 flex items-center overflow-hidden border-macd-gray bg-white rounded-xl",
+          innerWrapper: "rounded-none",
+          input: "text-lg",
+          inputWrapper: "shadow-none rounded-none",
+          segment: "text-lg active:bg-secondary/40 font-semibold px-1.5",
+        }}
+      />
+    </div>
   );
 };
 

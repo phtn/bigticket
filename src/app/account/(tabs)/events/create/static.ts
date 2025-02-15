@@ -100,8 +100,8 @@ export const category_options: OptionFieldData = {
       description: "trade shows",
     },
     {
-      key: "cultural",
-      value: "cultural",
+      key: "festival",
+      value: "festical",
       label: "Festivals & Cultural Events",
       description: "cultural events",
     },
@@ -121,6 +121,12 @@ export const category_options: OptionFieldData = {
       key: "online",
       value: "online",
       label: "Online & Virtual Events",
+      description: "online",
+    },
+    {
+      key: "training",
+      value: "training",
+      label: "Training & Workshops",
       description: "online",
     },
     {
