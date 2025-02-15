@@ -24,7 +24,7 @@ export const Events = () => {
   }, [pending, signedEvents?.length]);
 
   return (
-    <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white md:rounded-lg md:px-6">
+    <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white pb-10 md:rounded-lg md:px-6">
       <div className="bg-white">
         <HyperList
           data={signedEvents}

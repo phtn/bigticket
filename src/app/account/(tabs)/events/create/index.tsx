@@ -94,8 +94,7 @@ export const CreateEvent = () => {
 
   const initialState: InsertEvent = {
     event_id: "",
-    event_desc: "",
-    event_name: "",
+    event_name: undefined,
     start_date: 0,
     end_date: 0,
     event_type: "",
@@ -108,8 +107,6 @@ export const CreateEvent = () => {
     const data: InsertEvent = {
       event_id: "",
       event_name: fd.get("event_name") as string,
-      event_desc: fd.get("event_desc") as string,
-      event_type: fd.get("event_type") as string,
       event_geo: (fd.get("event_geo") as string) ?? undefined,
       event_url: (fd.get("event_url") as string) ?? undefined,
     };
@@ -122,6 +119,8 @@ export const CreateEvent = () => {
           ? eventStartDate + 36000000
           : eventEndDate,
       ticket_count: ticketCount,
+      event_type: eventType,
+      category: eventCategory,
     });
     return data;
   };
@@ -135,7 +134,8 @@ export const CreateEvent = () => {
         size="lg"
         id="event_geo"
         name="event_geo"
-        label="Name of venue"
+        label="Event place / venue"
+        placeholder="The place where the event will take place."
         onChange={handleChangeSite}
         classNames={inputClassNames}
       />,
@@ -293,10 +293,10 @@ export const CreateEvent = () => {
                 time={event_time.compact}
               />
             </div>
-            <div className="flex h-3/5 w-full md:pb-0">
+            <div className="flex h-fit w-full overflow-auto md:pb-0">
               <Form
                 action={action}
-                className="w-full space-y-2 bg-white p-4 md:space-y-3"
+                className="h-full w-full space-y-2 bg-white p-4 md:space-y-3"
               >
                 <div className="w-full md:px-2">
                   <Input
@@ -321,7 +321,7 @@ export const CreateEvent = () => {
                 <div className="w-full md:px-2">
                   <EventSite />
                 </div>
-                <div className="hidden w-full space-y-1.5 px-2">
+                <div className="hidden w-full space-y-2 px-2">
                   <Textarea
                     name="event_desc"
                     label="Description"
@@ -336,10 +336,13 @@ export const CreateEvent = () => {
                 </div>
                 <div className="flex w-full items-center justify-between tracking-tight">
                   <div className="flex space-x-4"></div>
-                  <Button disabled isLoading={pending} type="submit">
+                  <Button
+                    isLoading={pending}
+                    color="primary"
+                    variant="solid"
+                    type="submit"
+                  >
                     Next <span className="ps-2">&rarr;</span>
-                    {/* <Icon name="SpinnerBall" /> */}
-                    {/* Dev Mode */}
                   </Button>
                 </div>
               </Form>
@@ -352,12 +355,10 @@ export const CreateEvent = () => {
 };
 
 const FormContainer = ({ children }: { children: ReactNode }) => (
-  <div
-    className={cn(
-      "mx-auto h-[calc(100vh)] w-screen overflow-y-scroll md:w-[30rem]",
-    )}
-  >
-    <div className="h-[calc(100vh-100px)]">{children}</div>
+  <div className={cn("mx-auto h-fit w-screen md:w-[30rem]")}>
+    <div className="h-[calc(100vh-100px)] space-y-4 overflow-y-scroll pb-6">
+      {children}
+    </div>
   </div>
 );
 

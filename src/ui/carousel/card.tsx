@@ -5,22 +5,21 @@ import {
   CarouselPrevious,
 } from "@/ui/carousel";
 import { Image } from "@nextui-org/react";
-import { type Photo } from "pexels";
 
 interface CardCarouselProps {
-  data: Photo[] | undefined;
+  data: string[] | undefined;
 }
 
 export function CardCarousel({ data }: CardCarouselProps) {
   return (
-    <div className="flex h-full w-full items-center justify-center object-cover">
-      <CarouselContent className="object-cover">
+    <div className="flex h-auto w-full items-center justify-center">
+      <CarouselContent>
         {data?.map((photo, idx) => (
           <CarouselItem key={idx} className="h-fit bg-pink-400 p-0">
             <Image
               radius="none"
-              alt={photo.alt ?? ""}
-              src={photo.src.large}
+              alt={photo}
+              src={photo}
               className="aspect-video h-[440px] w-auto flex-shrink-0 object-cover"
             />
           </CarouselItem>

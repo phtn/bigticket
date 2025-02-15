@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { EventEditorCtx } from "../../ctx";
 import { SidebarCtx } from "@/app/ctx/sidebar";
 
-export const PexelParamList = () => {
+export const PexelParamList = ({ category }: { category?: string }) => {
   const { toggle } = use(SidebarCtx)!;
   //PARAMS
   const params: PexelParams[] = useMemo(
@@ -33,8 +33,8 @@ export const PexelParamList = () => {
   const { updateQueryParams } = use(EventEditorCtx)!;
 
   const initialState: QueryData = useMemo(
-    () => ({ query: "cityscape", locale: "en-US" }),
-    [],
+    () => ({ query: category ?? "party", locale: "en-US" }),
+    [category],
   );
 
   const handleSubmit = useCallback(
@@ -60,23 +60,13 @@ export const PexelParamList = () => {
         id={data.param}
         defaultSelectedKeys={
           data.param === "query"
-            ? [state.query ?? initialState.query ?? "cityscapes"]
+            ? [state.query ?? initialState.locale ?? "party"]
             : [state.locale ?? initialState.locale ?? "jp-JA"]
         }
         selectorIcon={<Icon name="ArrowVertical" />}
         name={data.param}
         key={data.id}
-        label={
-          <div className="flex items-center gap-1">
-            <Icon
-              name="Search"
-              className={cn("size-3.5 stroke-0", {
-                hidden: data.param === "locale",
-              })}
-            />
-            {data.label}
-          </div>
-        }
+        label={<div className="flex items-center gap-1">{data.label}</div>}
         size="lg"
         className="w-full rounded-xl bg-white"
         classNames={{
@@ -269,6 +259,12 @@ const locales: PexelParamItem[] = [
 ];
 
 const queries: PexelParamItem[] = [
+  {
+    id: "party",
+    value: "Party",
+    category: "party",
+    description: "Party",
+  },
   {
     id: "nature",
     value: "Nature",

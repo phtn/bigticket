@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { Tab, Tabs } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -15,6 +16,7 @@ export const TabComponent = ({ children }: { children: ReactNode }) => {
   const selectedKey = pathname.split("/")[2];
   const [selected, setSelected] = useState<string | undefined>(selectedKey);
   const router = useRouter();
+  const sub = pathname.split("/")[3];
 
   const tabs: TabData[] = useMemo(
     () => [
@@ -51,12 +53,15 @@ export const TabComponent = ({ children }: { children: ReactNode }) => {
   );
 
   return (
-    <div className="size-full">
+    <div className={cn("size-full")}>
       <Tabs
         size="sm"
         color="primary"
         variant="light"
-        className="relative top-0.5 z-50 flex h-10 md:absolute md:top-[10rem] md:w-fit md:justify-center"
+        className={cn(
+          "relative top-0.5 z-50 flex h-10 md:absolute md:top-[10rem] md:w-fit md:justify-center",
+          { hidden: sub?.length === 1 },
+        )}
         classNames={{
           tabList:
             "w-fit gap-1 lg:gap-1.5 justfify-start space-x-8 bg-peach sm:space-x-6 md:space-x-5 transition-all duration-300 lg:space-x-8 xl:space-x-12",

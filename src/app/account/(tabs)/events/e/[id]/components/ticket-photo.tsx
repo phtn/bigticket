@@ -7,7 +7,7 @@ import moment from "moment";
 import { useCallback, useMemo, useState } from "react";
 
 interface TicketPhotoProps {
-  event: SelectEvent | undefined;
+  event: SelectEvent | null;
 }
 export const TicketPhoto = ({ event }: TicketPhotoProps) => {
   const [ticket_color, setTicketColor] = useState("bg-macl-mint");

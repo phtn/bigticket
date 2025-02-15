@@ -1,5 +1,5 @@
-import { getPexels } from "@/app/e/[id]/actions";
-import { type QueryData } from "@/app/e/[id]/components/pexels/types";
+import { getPexels } from "@/app/account/(tabs)/events/e/[id]/actions";
+import { type QueryData } from "@/app/account/(tabs)/events/e/[id]/components/pexels/types";
 import { Err } from "@/utils/helpers";
 import { type Photo } from "pexels";
 import { useCallback, useEffect, useState } from "react";
@@ -13,7 +13,7 @@ export const usePexels = ({ query, locale }: QueryData) => {
     async (page: number) => {
       setLoading(true);
       const response = await getPexels(
-        query ?? "cityscapes",
+        query ?? "party",
         page,
         locale ?? "en-US",
       );

@@ -18,6 +18,8 @@ export const Content = () => {
     use(AccountCtx)!;
   const pathname = usePathname();
 
+  const sub = pathname.split("/")[3];
+
   const AvatarOptions = useCallback(() => {
     const options = opts(
       <Spinner size="sm" color="primary" />,
@@ -33,7 +35,7 @@ export const Content = () => {
   }, [vx, photo_url]);
 
   return (
-    <div className="relative w-full">
+    <div className={cn("relative mb-8 w-full", { hidden: sub?.length === 1 })}>
       <section className="relative h-fit w-full bg-gray-200">
         <div
           id="cover-photo"

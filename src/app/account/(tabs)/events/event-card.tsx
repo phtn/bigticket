@@ -23,7 +23,7 @@ export const EventCardAccount = (event: SignedEvent) => {
   const handleEditRoute = useCallback(async () => {
     const userId = await getUserID();
     if (!userId) return;
-    router.push(`/e/${event.event_id}---${userId}`);
+    router.push(`/account/events/e/${event.event_id}---${userId}`);
   }, [router, event.event_id]);
 
   return (
