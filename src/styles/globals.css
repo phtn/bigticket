@@ -5,6 +5,10 @@
 ::-webkit-scrollbar {
   display: none;
 }
+::-webkit-inner-spin-button {
+  appearance: none;
+}
+
 .big-ticket {
   --r: 12px; /* cut size */
   width: 12.25rem;

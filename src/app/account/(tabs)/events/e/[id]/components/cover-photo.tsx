@@ -110,10 +110,10 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
             {currentIndex + 1}/{allImages?.length}
           </p>
         </div>
-        <div className="relative flex max-w-40 items-center gap-2 overflow-hidden">
+        <div className="relative flex max-w-40 items-center gap-1.5 overflow-hidden">
           <ButtonIcon
             onClick={toggle}
-            icon="Sparkles"
+            icon="Sparkle"
             bg="opacity-50 text-primary group-hover/icon:opacity-100"
             color="text-chalk"
           />

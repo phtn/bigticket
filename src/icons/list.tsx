@@ -623,7 +623,7 @@ function ImageIcon(props: SVGProps<SVGSVGElement>) {
           strokeWidth="1.5"
           d="M20.33 17.657c.11-.366.17-.755.17-1.157v-9a4 4 0 0 0-4-4h-9a4 4 0 0 0-4 4v9.07m16.83 1.087l-.088-.104l-2.466-2.976a2 2 0 0 0-3.073-.008l-1.312 1.566l-.214.261m7.153 1.26a4 4 0 0 1-3.713 2.842m0 0l-.117.002h-9a4 4 0 0 1-4-3.93m13.117 3.928l-.093-.106l-3.347-3.996m-9.676.175l.177-.201l3.206-3.827a2 2 0 0 1 3.066 0l3.227 3.853"
         ></path>
-        <circle cx="15.091" cy="8.909" r="1.5" fill="#888888"></circle>
+        <circle cx="15.091" cy="8.909" r="1.5" fill="currentColor"></circle>
       </g>
     </svg>
   );
@@ -967,6 +967,27 @@ function MapPin(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+function Minus(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M20 12H4"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
 function MoreHorizontal(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1029,6 +1050,29 @@ export function Pen(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+function PencilEdit(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        color="currentColor"
+      >
+        <path d="m16.214 4.982l1.402-1.401a1.982 1.982 0 0 1 2.803 2.803l-1.401 1.402m-2.804-2.804l-5.234 5.234c-1.045 1.046-1.568 1.568-1.924 2.205S8.342 14.561 8 16c1.438-.342 2.942-.7 3.579-1.056s1.16-.879 2.205-1.924l5.234-5.234m-2.804-2.804l2.804 2.804"></path>
+        <path d="M21 12c0 4.243 0 6.364-1.318 7.682S16.242 21 12 21s-6.364 0-7.682-1.318S3 16.242 3 12s0-6.364 1.318-7.682S7.758 3 12 3"></path>
+      </g>
+    </svg>
+  );
+}
 function Plus(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1038,12 +1082,36 @@ function Plus(props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       {...props}
     >
-      <g fill="none">
-        <path
-          fill="currentColor"
-          d="M11 20a1 1 0 1 0 2 0v-7h7a1 1 0 1 0 0-2h-7V4a1 1 0 1 0-2 0v7H4a1 1 0 1 0 0 2h7z"
-        ></path>
-      </g>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M12 4v16m8-8H4"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
+export function PlusMinus(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M2.5 12c0-4.478 0-6.718 1.391-8.109S7.521 2.5 12 2.5c4.478 0 6.718 0 8.109 1.391S21.5 7.521 21.5 12c0 4.478 0 6.718-1.391 8.109S16.479 21.5 12 21.5c-4.478 0-6.718 0-8.109-1.391S2.5 16.479 2.5 12M7 17L17 7M9 7v2m0 0v2m0-2h2M9 9H7m10 6h-4"
+        color="currentColor"
+      ></path>
     </svg>
   );
 }
@@ -1294,6 +1362,26 @@ function ShieldCheck(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function Sparkle(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M2 12q9 1 10 10q1-9 10-10q-9-1-10-10q-1 9-10 10"
+      ></path>
+    </svg>
+  );
+}
 function SidebarLeft(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1557,6 +1645,29 @@ function TicketFill(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function TimeSched(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        color="currentColor"
+      >
+        <path d="M12 8v4l1.5 1.5m6.045 2.953C21.182 17.337 22 17.78 22 18.5s-.818 1.163-2.455 2.047l-1.114.601c-1.257.679-1.885 1.018-2.187.772c-.74-.605.413-2.164.696-2.716c.288-.56.282-.858 0-1.408c-.283-.552-1.436-2.111-.696-2.716c.302-.246.93.093 2.187.772z"></path>
+        <path d="M13.026 21.948Q12.52 21.999 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10q-.002 1.03-.2 2"></path>
+      </g>
+    </svg>
+  );
+}
 function Toc(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1672,6 +1783,22 @@ export function VIPIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+function VIPIcon2(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M2.005 19h20v2h-20zm9-11h2v8h-2zM7.97 8l-1.86 5.113L4.247 8H2.123l2.986 7.964h2L10.095 8zm9.035 6v2h-2V8h4a3 3 0 0 1 0 6zm0-4v2h2a1 1 0 1 0 0-2zm-15-7h20v2h-20z"
+      ></path>
+    </svg>
+  );
+}
 export const icons = {
   Activity,
   Airplane,
@@ -1716,11 +1843,14 @@ export const icons = {
   LeftChev,
   Lock,
   MapPin,
+  Minus,
   MoreHorizontal,
   MoreVertical,
   NumberList,
   Pen,
+  PencilEdit,
   Plus,
+  PlusMinus,
   Printer,
   Printer2,
   QrCode,
@@ -1734,6 +1864,7 @@ export const icons = {
   Share,
   ShieldCheck,
   SidebarLeft,
+  Sparkle,
   Sparkles,
   Sparkles2,
   SpinnerBall,
@@ -1743,10 +1874,12 @@ export const icons = {
   Support,
   Tablet,
   TicketFill,
+  TimeSched,
   Toc,
   Tv,
   Upcoming,
   Upload,
   User,
   VIPIcon,
+  VIPIcon2,
 };

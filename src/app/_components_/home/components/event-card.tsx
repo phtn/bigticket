@@ -81,7 +81,7 @@ export const EventCard = (event: SignedEvent) => {
           removeWrapper
           radius="none"
           alt="nightlife"
-          className="object- z-0 h-full w-full border-0"
+          className="z-0 aspect-auto h-full w-full border-0 object-cover"
           src={event.cover_src}
         />
       ) : null}

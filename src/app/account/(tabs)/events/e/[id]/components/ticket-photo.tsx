@@ -31,13 +31,13 @@ export const TicketPhoto = ({ event }: TicketPhotoProps) => {
     [],
   );
   return (
-    <div className="relative flex h-full justify-center rounded-md border border-macl-gray">
+    <div className="relative flex h-full justify-center rounded-md border border-t-0 border-macl-gray sm:border-t">
       <div className="absolute top-0 z-10 flex h-10 w-full items-center text-xs md:justify-end">
         <div className="flex h-7 items-center gap-2 rounded-e-full bg-void/10 pe-1 ps-2.5 font-semibold text-primary backdrop-blur-md md:rounded-e-none md:rounded-s-full">
           Event Ticket
         </div>
       </div>
-      <div className="dbg-tan/20 flex h-[360px] items-center justify-center">
+      <div className="flex h-[420px] items-center justify-center bg-tan">
         <TicketStack
           title={event?.event_name}
           date={date}
