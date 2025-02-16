@@ -2,11 +2,14 @@ import { Icon } from "@/icons";
 import { usePexels } from "@/lib/pexels";
 import { useCarousel } from "@/ui/carousel";
 import { CardCarousel } from "@/ui/carousel/card";
-import { Spinner, Button } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 import { type ChangeEvent, use, useCallback, useEffect, useMemo } from "react";
 import { EventEditorCtx } from "../ctx";
 import { Err } from "@/utils/helpers";
 import { cn } from "@/lib/utils";
+import { ButtonIcon } from "@/ui/button";
+import { SidebarCtx } from "@/app/ctx/sidebar";
+import { useImage } from "@/hooks/useImage";
 
 interface CoverPhotoProps {
   id: string | undefined;
@@ -26,6 +29,8 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
 
   const { images, loading } = usePexels({ query, locale });
   const { currentIndex } = useCarousel();
+  const { toggle } = use(SidebarCtx)!;
+  const { inputFileRef, canvasRef, browseFile, setSelected } = useImage();
 
   useEffect(() => {
     getCoverPhoto(cover_url).catch(Err);
@@ -41,13 +46,14 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
     await createUpload(src, id, "cover_url");
   }, [src, id, createUpload]);
 
-  const handleFileSelect = useCallback(
+  const onFileChange = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files || e.target.files.length === 0) return;
       const file = e.target.files[0];
+      setSelected(file);
       await createFileUpload(file, id, "cover_url");
     },
-    [id, createFileUpload],
+    [id, createFileUpload, setSelected],
   );
 
   const allImages = useMemo(() => {
@@ -62,7 +68,7 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
   }, [cover_src, currentIndex]);
 
   return (
-    <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-gradient-to-tr from-tan via-macl-pink to-macl-purple">
+    <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-md border border-macl-gray bg-gradient-to-tr from-tan via-macl-pink to-macl-purple">
       <div className="absolute hidden">
         <Icon name="ImageIcon" className="size-24 opacity-20" />
       </div>
@@ -104,23 +110,32 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
             {currentIndex + 1}/{allImages?.length}
           </p>
         </div>
-        <div className="relative flex max-w-40 items-center overflow-hidden">
-          <Button
-            size="sm"
-            variant="solid"
-            color="primary"
-            className="border border-gray-200/40 opacity-100 hover:text-primary data-[hover=true]:bg-white data-[hover=true]:opacity-100"
+        <div className="relative flex max-w-40 items-center gap-2 overflow-hidden">
+          <ButtonIcon
+            onClick={toggle}
+            icon="Sparkles"
+            bg="opacity-50 text-primary group-hover/icon:opacity-100"
+            color="text-chalk"
+          />
+
+          <ButtonIcon
+            onClick={browseFile}
+            icon="ImageUpload"
+            bg="opacity-50 text-primary group-hover/icon:opacity-100"
+            color="text-chalk"
           >
             Upload
             <Icon name="Upload" className="size-4" />
-          </Button>
+          </ButtonIcon>
           <input
             type="file"
-            onChange={handleFileSelect}
-            className="absolute right-0 cursor-pointer bg-secondary opacity-0"
+            ref={inputFileRef}
+            onChange={onFileChange}
+            className="pointer-events-none absolute right-0 size-1 cursor-pointer bg-secondary opacity-0"
           />
         </div>
       </div>
+      <canvas ref={canvasRef} className="absolute hidden" />
     </div>
   );
 };

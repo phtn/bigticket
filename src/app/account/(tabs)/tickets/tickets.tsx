@@ -28,17 +28,18 @@ export const Tickets = () => {
   return (
     <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white pb-10 md:rounded-lg md:px-6">
       <div className="bg-white">
-        {Array.from(eventGroups).map(([event_name, tickets]) => (
-          <div key={event_name}>
+        {Array.from(eventGroups).map(([event_name, tickets], i) => (
+          <div key={i}>
             <HyperList
               data={tickets}
               component={TicketCard}
+              keyId="ticket_id"
               container={cn(
-                "relative grid grid-cols-1 pb-10 bg-peach/20 px-2 gap-14 sm:grid-cols-2 lg:grid-cols-3 md:px-4",
+                "relative grid grid-cols-1 pb-10 px-4 portrait:gap-y-24 gap-4 md:gap-6 sm:grid-cols-3 lg:grid-cols-4 md:px-4",
                 { "z-50": !open },
               )}
             >
-              <div className="bg-peach/20 md:rounded-t-md">
+              <div className="md:rounded-t-md">
                 <Header title={String(event_name)}>
                   <Count count={tickets.length}></Count>
                 </Header>

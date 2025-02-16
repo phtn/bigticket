@@ -67,12 +67,11 @@ export const EventCardAccount = (event: SignedEvent) => {
           <div className="space-y-1">
             <p className="flex items-center gap-2 text-tiny capitalize text-secondary drop-shadow-sm">
               <span
-                className={cn(
-                  "rounded-full bg-gray-700/60 px-1 lowercase text-chalk",
-                  { "text-peach": !event?.is_active },
-                )}
+                className={cn("lowercase text-chalk", {
+                  "text-peach": !event?.is_active,
+                })}
               >
-                {event.is_active ? "live" : "not-published"}
+                {event.is_active ? "live" : "not published"}
               </span>
             </p>
             <div className="space-x-1 text-tiny uppercase text-gray-200">

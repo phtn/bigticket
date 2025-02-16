@@ -1,5 +1,10 @@
 import type { Id } from "@vx/dataModel";
-import type { InsertEvent, SelectEvent, UserTicket } from "convex/events/d";
+import type {
+  InsertEvent,
+  SelectEvent,
+  UserTicket,
+  VIP,
+} from "convex/events/d";
 import type { InsertUser, SelectUser, UpdateUser } from "convex/users/d";
 
 export interface ConvexCtxValues {
@@ -48,6 +53,7 @@ export interface ConvexCtxValues {
         photo_url: string,
       ) => Promise<Id<"events"> | null>;
       views: (id: string) => Promise<string | null>;
+      vip: (id: string, vip: VIP) => Promise<string | null>;
     };
   };
 

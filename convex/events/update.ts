@@ -1,6 +1,7 @@
 import { mutation } from "@vx/server";
 import { v } from "convex/values";
 import { checkEvent } from "./create";
+import { VIPSchema } from "./d";
 
 export const status = mutation({
   args: { id: v.string(), is_active: v.boolean() },
@@ -66,5 +67,33 @@ export const likes = mutation({
     const likes = event?.likes ? event.likes + increment : increment;
     await db.patch(event._id, { likes, updated_at: Date.now() });
     return "success";
+  },
+});
+
+export const vip = mutation({
+  args: { id: v.string(), vip: VIPSchema },
+  handler: async ({ db }, { id, vip }) => {
+    const event = await checkEvent(db, id);
+    if (event === null || !vip) {
+      return null;
+    }
+
+    if (!event?.vip_list) {
+      await db.patch(event._id, { vip_list: [vip], updated_at: Date.now() });
+      return "success";
+    }
+
+    let vip_list = event.vip_list.slice();
+
+    const index = event?.vip_list.findIndex((v) => v.email === vip.email);
+    if (index !== -1) {
+      vip_list[index]!.ticket_count += vip.ticket_count;
+      await db.patch(event._id, { vip_list });
+      return "success";
+    } else {
+      vip_list.push(vip);
+      await db.patch(event._id, { vip_list });
+      return "success";
+    }
   },
 });

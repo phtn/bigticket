@@ -31,7 +31,7 @@ export const TicketPhoto = ({ event }: TicketPhotoProps) => {
     [],
   );
   return (
-    <div className="relative flex h-full justify-center border-primary/40 md:border-r xl:border-r-0">
+    <div className="relative flex h-full justify-center rounded-md border border-macl-gray">
       <div className="absolute top-0 z-10 flex h-10 w-full items-center text-xs md:justify-end">
         <div className="flex h-7 items-center gap-2 rounded-e-full bg-void/10 pe-1 ps-2.5 font-semibold text-primary backdrop-blur-md md:rounded-e-none md:rounded-s-full">
           Event Ticket
@@ -48,7 +48,7 @@ export const TicketPhoto = ({ event }: TicketPhotoProps) => {
           color={ticket_color}
         />
       </div>
-      <div className="absolute bottom-0 flex h-20 w-full items-center justify-start overflow-x-scroll border-t border-primary/40 bg-peach/5 px-4 md:space-x-1.5 lg:justify-center lg:space-x-2 lg:px-2">
+      <div className="absolute bottom-0 flex h-20 w-full items-center justify-start overflow-x-scroll border-primary/40 bg-peach/5 px-4 md:space-x-1.5 md:border-t lg:justify-center lg:space-x-2 lg:px-2">
         {palette_one.map((item) => (
           <button
             onClick={handleColorSelect(item.label)}

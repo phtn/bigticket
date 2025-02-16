@@ -33,20 +33,21 @@ export const Content = ({ id }: EventContentProps) => {
         <Topbar event_name={event?.event_name} />
         <ImageQuery category={event?.category} />
 
-        <div className="h-full px-2 md:px-4">
+        <div className="h-full md:px-4">
           <Carousel>
-            <div className="grid h-fit w-full overflow-hidden rounded-xl border border-primary/60 bg-white md:min-h-[420px] md:grid-cols-2">
+            <div className="grid h-fit w-full gap-6 md:min-h-[420px] md:grid-cols-2 md:px-4">
               <CoverPhoto id={event_id} cover_url={event?.cover_url} />
               <TicketPhoto event={event} />
             </div>
           </Carousel>
-          <div className="py-4 text-xs">
-            <div className="w-fit space-y-2 rounded-md bg-gray-200 p-2">
-              <p>
-                <span className="font-bold">Event Configurator</span> &rarr;
-                In-progress
-              </p>
-              <pre className="">id: 010f</pre>
+          <div className="w-full p-4 text-xs">
+            <div className="space-y-2 rounded-md bg-gray-200 p-2">
+              <h2>
+                <span className="text-2xl font-bold tracking-tighter">
+                  Event Details
+                </span>
+              </h2>
+              <pre className=""></pre>
             </div>
           </div>
         </div>

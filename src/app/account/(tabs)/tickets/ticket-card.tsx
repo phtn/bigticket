@@ -1,7 +1,6 @@
 import { useMoment } from "@/hooks/useMoment";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
-import { ButtonIcon } from "@/ui/button";
 import { Card, CardFooter, CardHeader, Spinner } from "@nextui-org/react";
 import type { UserTicket } from "convex/events/d";
 // import { useRouter } from "next/navigation";
@@ -22,27 +21,27 @@ export const TicketCard = (ticket: UserTicket) => {
   return (
     <Card
       isFooterBlurred
-      className="flex h-[500px] w-full items-center justify-center rounded-md border border-primary bg-chalk"
+      className="flex h-[360px] w-full items-center justify-center rounded-sm bg-peach/10"
     >
-      <CardHeader className="_flex absolute z-10 hidden w-full items-start justify-between gap-3 rounded-none bg-black/40 ps-4 backdrop-blur-sm">
-        <section className="w-full overflow-clip text-ellipsis">
-          <p className="max-w-[45ch] bg-gradient-to-b from-white/60 via-white/80 to-white/60 bg-clip-text text-tiny font-bold uppercase text-transparent">
-            {ticket.event_url}
-          </p>
-          <h4 className="p-[1px bg-gradient-to-b from-white via-white/80 to-chalk bg-clip-text font-inter text-xl font-bold capitalize tracking-tight text-transparent shadow-coal drop-shadow-sm">
-            {ticket.event_name}
+      <CardHeader className="absolute top-0 z-10 flex w-full items-start justify-between gap-3 rounded-none bg-peach ps-4 backdrop-blur-sm">
+        <section className="flex w-full items-center justify-between">
+          <h4 className="font-mono font-thin uppercase tracking-widest text-primary">
+            Admit one
           </h4>
-        </section>
-        <section className="flex size-8 items-center justify-center">
-          <ButtonIcon icon="ChartIcon" bg="text-chalk" />
+          <div className="flex items-center gap-2">
+            <p className="max-w-[45ch] text-tiny font-bold uppercase">
+              {ticket.event_name}
+            </p>
+            <Icon name="VIPIcon" className="size-6" />
+          </div>
         </section>
       </CardHeader>
-      <div className="flex w-fit items-center justify-center p-2">
+      <div className="flex w-fit items-start justify-center px-2">
         <QrCodeGen
           url={ticket.ticket_url}
           logo="/icon/logomark_v2.svg"
-          width={340}
-          height={340}
+          width={180}
+          height={180}
         />
       </div>
       <CardFooter className="absolute bottom-0 z-10 w-full rounded-none border-t-1 border-primary bg-primary">

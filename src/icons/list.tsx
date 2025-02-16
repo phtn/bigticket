@@ -628,6 +628,52 @@ function ImageIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+function ImageGen(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        color="currentColor"
+      >
+        <path d="M20.998 11q.002.705.002 1.5c0 4.478 0 6.718-1.391 8.109S15.979 22 11.5 22c-4.478 0-6.718 0-8.109-1.391S2 16.979 2 12.5c0-4.478 0-6.718 1.391-8.109S7.021 3 11.5 3q.795 0 1.5.002"></path>
+        <path d="m18.5 2l.258.697c.338.914.507 1.371.84 1.704c.334.334.791.503 1.705.841L22 5.5l-.697.258c-.914.338-1.371.507-1.704.84c-.334.334-.503.791-.841 1.705L18.5 9l-.258-.697c-.338-.914-.507-1.371-.84-1.704c-.334-.334-.791-.503-1.705-.841L15 5.5l.697-.258c.914-.338 1.371-.507 1.704-.84c.334-.334.503-.791.841-1.705zm-14 19.5c4.372-5.225 9.274-12.116 16.498-7.458"></path>
+      </g>
+    </svg>
+  );
+}
+function ImageUpload(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        color="currentColor"
+      >
+        <path d="M5 21c4.21-4.751 8.941-11.052 16-6.327M17 4.5c.491-.506 1.8-2.5 2.5-2.5M22 4.5c-.491-.506-1.8-2.5-2.5-2.5m0 0v8"></path>
+        <path d="M21 13c-.002 4.147-.053 6.27-1.391 7.609C18.217 22 15.979 22 11.5 22c-4.478 0-6.718 0-8.109-1.391S2 16.979 2 12.5c0-4.478 0-6.718 1.391-8.109S7.021 3 11.5 3H14"></path>
+      </g>
+    </svg>
+  );
+}
 function InfoLine(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1267,7 +1313,7 @@ function SidebarLeft(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function Sparkles(props: SVGProps<SVGSVGElement>) {
+export function Sparkles(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -1276,12 +1322,15 @@ function Sparkles(props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       {...props}
     >
-      <g fill="none" fillRule="evenodd">
-        <path
-          fill="currentColor"
-          d="M5.827 13.004a.19.19 0 0 1 .346 0l.17.371a8.7 8.7 0 0 0 3.3 3.638l.265.155a.181.181 0 0 1 0 .316l-.265.155a8.7 8.7 0 0 0-3.3 3.638l-.17.372a.19.19 0 0 1-.346 0l-.17-.372a8.7 8.7 0 0 0-3.3-3.638l-.265-.155a.181.181 0 0 1 0-.316l.265-.155a8.7 8.7 0 0 0 3.47-4.01Zm.17 3.486l-.175.206q-.187.21-.385.41l-.2.198l-.027.024l.227.223l.195.203l.19.208l.175.205l.175-.205q.187-.21.385-.411l.227-.223l-.027-.024q-.203-.195-.395-.4l-.19-.208zm8.476-13.76a.331.331 0 0 1 .605 0l.15.336l.148.314l.195.39l.226.42l.112.196a15.2 15.2 0 0 0 3.895 4.437l.427.317a15 15 0 0 0 1.383.878a.317.317 0 0 1 0 .553a15 15 0 0 0-1.082.67l-.36.251a15.2 15.2 0 0 0-4.263 4.71l-.131.232a15 15 0 0 0-.402.775l-.147.314l-.15.336a.331.331 0 0 1-.606 0l-.15-.336l-.148-.314l-.196-.39l-.225-.42l-.113-.196a15.2 15.2 0 0 0-3.894-4.437l-.428-.316a15 15 0 0 0-1.382-.88a.317.317 0 0 1 0-.552a15 15 0 0 0 1.082-.669l.36-.252a15.2 15.2 0 0 0 4.262-4.71l.132-.232q.211-.38.402-.775l.147-.314zm.302 3.615a17.2 17.2 0 0 1-3.663 3.95a17.2 17.2 0 0 1 3.663 3.95a17.2 17.2 0 0 1 3.663-3.95a17.2 17.2 0 0 1-3.663-3.95"
-        ></path>
-      </g>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1"
+        d="m15 2l.539 2.392a5.39 5.39 0 0 0 4.07 4.07L22 9l-2.392.539a5.39 5.39 0 0 0-4.07 4.07L15 16l-.539-2.392a5.39 5.39 0 0 0-4.07-4.07L8 9l2.392-.539a5.39 5.39 0 0 0 4.07-4.07zM7 12l.385 1.708a3.85 3.85 0 0 0 2.907 2.907L12 17l-1.708.385a3.85 3.85 0 0 0-2.907 2.907L7 22l-.385-1.708a3.85 3.85 0 0 0-2.907-2.907L2 17l1.708-.385a3.85 3.85 0 0 0 2.907-2.907z"
+        color="currentColor"
+      ></path>
     </svg>
   );
 }
@@ -1607,6 +1656,22 @@ function User(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+export function VIPIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M3.005 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1m8 5.5v7h2v-7zm-.285 0H8.606l-1.497 4.113L5.612 8.5H3.498l2.611 6.964h2zm5.285 5h1.5a2.5 2.5 0 0 0 0-5h-3.5v7h2zm0-2v-1h1.5a.5.5 0 0 1 0 1z"
+      ></path>
+    </svg>
+  );
+}
 export const icons = {
   Activity,
   Airplane,
@@ -1634,6 +1699,8 @@ export const icons = {
   CollectionIcon,
   Copy,
   ImageIcon,
+  ImageGen,
+  ImageUpload,
   InfoLine,
   EGuitarFender,
   EGuitarGray,
@@ -1681,4 +1748,5 @@ export const icons = {
   Upcoming,
   Upload,
   User,
+  VIPIcon,
 };

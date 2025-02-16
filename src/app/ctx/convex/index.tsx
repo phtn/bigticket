@@ -15,7 +15,7 @@ import { createContext, useCallback, useMemo } from "react";
 import type { User } from "@supabase/supabase-js";
 import type { SupabaseUserMetadata } from "@/app/ctx/auth/types";
 import { VxProvider } from "./vx";
-import type { InsertEvent, UserTicket } from "convex/events/d";
+import type { InsertEvent, UserTicket, VIP } from "convex/events/d";
 
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 export const ConvexCtx = createContext<ConvexCtxValues | null>(null);
@@ -146,6 +146,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const updateCoverUrl = useMutation(api.events.update.cover_url);
   const updatePhotoUrl = useMutation(api.events.update.photo_url);
   const updateEventViews = useMutation(api.events.update.views);
+  const updateEventVIP = useMutation(api.events.update.vip);
 
   const events = useMemo(
     () => ({
@@ -164,6 +165,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
         photo_url: async (id: string, photo_url: string) =>
           await updatePhotoUrl({ id, photo_url }),
         views: async (id: string) => await updateEventViews({ id }),
+        vip: async (id: string, vip: VIP) => await updateEventVIP({ id, vip }),
       },
     }),
     [
@@ -175,6 +177,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
       updateCoverUrl,
       updatePhotoUrl,
       updateEventViews,
+      updateEventVIP,
     ],
   );
 

@@ -157,7 +157,7 @@ export const EventViewerCtxProvider = ({
       return (
         counter.tickets.findIndex(
           (ticket) => ticket.event_id === selectedEvent.event_id,
-        ) === -1
+        ) !== -1
       );
     }
     return false;
