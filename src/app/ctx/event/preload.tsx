@@ -1,7 +1,7 @@
 "use client";
 
 import { Err } from "@/utils/helpers";
-import type { SelectEvent } from "convex/events/d";
+import type { SelectEvent, UserTicket } from "convex/events/d";
 import {
   createContext,
   type Dispatch,
@@ -43,6 +43,7 @@ export interface UserCounter {
   following: string[] | undefined;
   following_count: number | undefined;
   follower_count: number | undefined;
+  tickets: UserTicket[] | undefined;
 }
 export const PreloadedEventsCtx =
   createContext<PreloadedEventsCtxValues | null>(null);
@@ -80,6 +81,7 @@ export const PreloadedEventsCtxProvider = ({
       following,
       follower_count,
       following_count,
+      tickets,
     } = user;
     return {
       bookmarks,
@@ -88,6 +90,7 @@ export const PreloadedEventsCtxProvider = ({
       following,
       follower_count,
       following_count,
+      tickets,
     };
   }, [usr.get]);
 

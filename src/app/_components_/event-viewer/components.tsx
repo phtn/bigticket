@@ -5,20 +5,33 @@ import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { Shimmer } from "@/ui/text/sparkles";
 import { opts } from "@/utils/helpers";
-import { Button, Card } from "@nextui-org/react";
+import { Button, Card, Spinner } from "@nextui-org/react";
 import NumberFlow from "@number-flow/react";
-import { use, useCallback } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 
 interface GetTicketButtonProps {
   ticket_value?: number;
   is_private?: boolean;
   h: string;
+  fn: VoidFunction;
 }
 export const GetTicketButton = ({
   ticket_value,
   is_private = false,
   h,
+  fn,
 }: GetTicketButtonProps) => {
+  const [debounced, setDebounced] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!debounced) {
+        setDebounced(true);
+      }
+    }, 750);
+    return () => clearTimeout(timer);
+  }, [debounced]);
+
   const TicketLabel = useCallback(() => {
     const options = opts(
       <h2 className="text-xl font-black">
@@ -61,6 +74,7 @@ export const GetTicketButton = ({
   return (
     <div className={cn("z-1 relative bg-primary")} style={{ height: h }}>
       <Button
+        onPress={fn}
         size="lg"
         disableRipple
         color="primary"
@@ -68,12 +82,18 @@ export const GetTicketButton = ({
         radius="none"
         fullWidth
       >
-        <div
-          className={cn("flex items-center gap-6", { "gap-14": is_private })}
-        >
-          <TicketLabel />
-          <TicketValue />
-        </div>
+        {debounced ? (
+          <div
+            className={cn("flex items-center gap-6", { "gap-14": is_private })}
+          >
+            <TicketLabel />
+            <TicketValue />
+          </div>
+        ) : (
+          <div className="flex items-center justify-center">
+            <Spinner size="md" color="secondary" />
+          </div>
+        )}
       </Button>
     </div>
   );
@@ -82,10 +102,12 @@ export const GetTicketButton = ({
 export const ClaimedTicketButton = ({
   is_private,
   h,
+  fn,
 }: GetTicketButtonProps) => {
   return (
     <div className="z-1 relative bg-primary" style={{ height: h }}>
       <Button
+        onPress={fn}
         size="lg"
         disableRipple
         color="primary"
@@ -94,7 +116,7 @@ export const ClaimedTicketButton = ({
         fullWidth
       >
         <div
-          className={cn("flex items-center justify-evenly", {
+          className={cn("flex w-full items-center justify-evenly", {
             "gap-12": is_private,
           })}
         >

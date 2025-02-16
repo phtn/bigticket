@@ -21,6 +21,7 @@ import {
 } from "react";
 import { ConvexCtx } from "../convex";
 import { PreloadedEventsCtx, type UserCounter } from "./preload";
+import { TicketCtxProvider } from "./ticket";
 
 export interface ActionParams {
   event_id?: string;
@@ -48,6 +49,7 @@ interface EventViewerCtxValues {
     start_time: { full: string; compact: string };
     narrow: { day: string; date: string };
   };
+  isTicketClaimed: boolean;
 }
 export const EventViewerCtx = createContext<EventViewerCtxValues | null>(null);
 
@@ -61,6 +63,7 @@ export const EventViewerCtxProvider = ({
   const { usr, events } = use(ConvexCtx)!;
 
   const [activeEvent, setActiveEvent] = useState<SelectEvent | null>(null);
+  const [isTicketClaimed, setIsTicketClaimed] = useState<boolean>(false);
 
   const { start_time, narrow, event_time, durationHrs, compact } = useMoment({
     date: activeEvent?.event_date ?? selectedEvent?.event_date,
@@ -148,6 +151,25 @@ export const EventViewerCtxProvider = ({
   useEffect(() => {
     isBookmarkActive();
   }, [isBookmarkActive]);
+
+  const checkTicketClaim = useCallback(async () => {
+    if (counter?.tickets && selectedEvent?.event_id) {
+      return (
+        counter.tickets.findIndex(
+          (ticket) => ticket.event_id === selectedEvent.event_id,
+        ) === -1
+      );
+    }
+    return false;
+  }, [counter?.tickets, selectedEvent]);
+
+  const isClaimed = useCallback(() => {
+    setFn(fn, checkTicketClaim, setIsTicketClaimed);
+  }, [checkTicketClaim]);
+
+  useEffect(() => {
+    isClaimed();
+  }, [isClaimed]);
 
   const handleClickSupport = useCallback(async () => {
     console.log("support");
@@ -305,6 +327,7 @@ export const EventViewerCtxProvider = ({
       activeEventInfo,
       moments,
       cover_src,
+      isTicketClaimed,
     }),
     [
       open,
@@ -317,7 +340,12 @@ export const EventViewerCtxProvider = ({
       activeEventInfo,
       moments,
       cover_src,
+      isTicketClaimed,
     ],
   );
-  return <EventViewerCtx value={value}>{children}</EventViewerCtx>;
+  return (
+    <EventViewerCtx value={value}>
+      <TicketCtxProvider>{children}</TicketCtxProvider>
+    </EventViewerCtx>
+  );
 };

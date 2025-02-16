@@ -26,7 +26,9 @@ export const useEvent = () => {
       await events
         .create(args)
         .then(Ok(setLoading, "Event created successfully!"))
-        .then(() => router.push(`/e/${event_id}---${vx?.account_id}`))
+        .then(() =>
+          router.push(`account/events/e/${event_id}---${vx?.account_id}`),
+        )
         .catch(Err);
     },
     [events, router, vx?.email, vx?.nickname, vx?.account_id],

@@ -33,8 +33,8 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
   }, [cover_url, getCoverPhoto, cover_src]);
 
   const src = useMemo(
-    () => images?.[currentIndex - 1]?.src.large,
-    [images, currentIndex],
+    () => images?.[cover_src ? currentIndex - 1 : currentIndex]?.src.large,
+    [images, currentIndex, cover_src],
   );
 
   const handleImageSelect = useCallback(async () => {

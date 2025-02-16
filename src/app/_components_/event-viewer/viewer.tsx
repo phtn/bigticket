@@ -15,6 +15,8 @@ import {
 } from "./components";
 import { usePops } from "@/hooks/usePops";
 import { useDime } from "@/hooks/useDime";
+import { TicketCtx } from "@/app/ctx/event/ticket";
+import { useRouter } from "next/navigation";
 
 export const EventViewer = () => {
   const { open, toggle } = use(EventViewerCtx)!;
@@ -52,9 +54,19 @@ const Container = ({ children }: { children: ReactNode }) => (
 const MediaContainer = () => {
   const ref = useRef<HTMLDivElement | null>(null);
   const { screen } = useDime(ref);
+  const router = useRouter();
 
-  const { activeEvent, activeEventInfo, moments, cover_src } =
+  const { activeEvent, activeEventInfo, moments, cover_src, isTicketClaimed } =
     use(EventViewerCtx)!;
+
+  const { getTicket, claimed } = use(TicketCtx)!;
+
+  const handlePress = useCallback(async () => {
+    await getTicket(activeEvent);
+  }, [getTicket, activeEvent]);
+  const handleViewTickets = useCallback(() => {
+    router.push("/account/tickets");
+  }, [router]);
 
   const event_name = normalizeTitle(activeEvent?.event_name);
 
@@ -64,19 +76,27 @@ const MediaContainer = () => {
         <ClaimedTicketButton
           h={props.h}
           is_private={activeEvent?.is_private}
+          fn={handleViewTickets}
         />,
         <GetTicketButton
           is_private={activeEvent?.is_private}
           ticket_value={activeEvent?.ticket_value}
           h={props.h}
+          fn={handlePress}
         />,
       );
-      return <>{options.get(false)}</>;
+      return <>{options.get(isTicketClaimed || claimed)}</>;
     },
-    [activeEvent?.is_private, activeEvent?.ticket_value],
+    [
+      activeEvent?.is_private,
+      activeEvent?.ticket_value,
+      handlePress,
+      isTicketClaimed,
+      claimed,
+      handleViewTickets,
+    ],
   );
 
-  console.log(ref.current?.clientHeight);
   const contentHeight = useMemo(
     () => `${((screen.height - 314) / 7).toFixed(2)}px`,
     [screen.height],

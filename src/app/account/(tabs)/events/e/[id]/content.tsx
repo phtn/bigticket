@@ -30,7 +30,7 @@ export const Content = ({ id }: EventContentProps) => {
   return (
     <EventEditorCtxProvider>
       <main className="h-screen bg-gray-100">
-        <Topbar event_name={event?.category} />
+        <Topbar event_name={event?.event_name} />
         <ImageQuery category={event?.category} />
 
         <div className="h-full px-2 md:px-4">

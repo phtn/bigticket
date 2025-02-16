@@ -11,7 +11,7 @@ export const Topbar = ({ event_name }: TopbarProps) => {
   return (
     <div className="flex h-20 w-full items-center justify-between px-2 md:px-4">
       <div className="whitespace-nowrap">
-        <h1 className="max-w-[30ch] font-bold tracking-tighter sm:text-xl md:text-2xl md:font-extrabold">
+        <h1 className="max-w-[30ch] text-xl font-bold tracking-tighter md:text-2xl md:font-extrabold">
           {event_name}
         </h1>
       </div>

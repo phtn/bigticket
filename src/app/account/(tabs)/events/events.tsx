@@ -26,6 +26,12 @@ export const Events = () => {
   return (
     <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white pb-10 md:rounded-lg md:px-6">
       <div className="bg-white">
+        <div key={"x"} className="flex items-center gap-4 pe-4 md:pt-4">
+          <Header title="My Events">
+            <Counter />
+          </Header>
+          <CreateEvent />
+        </div>
         <HyperList
           data={signedEvents}
           component={EventCardAccount}
@@ -33,14 +39,7 @@ export const Events = () => {
             "relative grid grid-cols-1 px-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:px-4",
             { "z-50": !open },
           )}
-        >
-          <div key={"x"} className="flex items-center gap-4 pe-4 md:pt-4">
-            <Header title="My Events">
-              <Counter />
-            </Header>
-            <CreateEvent />
-          </div>
-        </HyperList>
+        />
         {signedEvents?.length === 0 ? (
           <EmptyList
             title="My events"

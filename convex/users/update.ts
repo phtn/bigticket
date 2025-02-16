@@ -210,26 +210,40 @@ export const tickets = mutation({
   handler: async ({ db }, { id, tickets }) => {
     // check user
     const user = await checkUser(db, id);
-    if (user === null || tickets) {
+    if (user === null || tickets.length === 0) {
+      console.log("User not found or no tickets provided");
       return null;
     }
 
     // update user
-    const [updated_list, increment] = updateTicketList(user.tickets, tickets);
+    const [updated_list, increment] = updateTicketList(
+      user.tickets,
+      tickets,
+      id,
+    );
     await db.patch(user._id, {
       ...user,
       tickets: updated_list,
       updated_at: Date.now(),
     });
+    const event_id = updated_list?.[0]?.event_id;
 
     // event
-    const target_event = await checkEvent(db, tickets);
+    const target_event = await checkEvent(db, event_id!);
     if (target_event === null || !increment) {
       return null;
     }
+
+    const [updated_event_list, updated] = updateTicketList(
+      target_event.tickets,
+      tickets,
+      id,
+    );
+
     await db.patch(target_event._id, {
       ...target_event,
       ticket_count: updated_list?.length,
+      tickets: updated_event_list,
       updated_at: Date.now(),
     });
     return "success";
@@ -238,28 +252,43 @@ export const tickets = mutation({
 
 function updateTicketList(
   list: UserTicket[] | undefined,
-  tickets: UserTicket[] | undefined,
+  tickets: UserTicket[],
+  id: string,
 ): [UserTicket[] | undefined, boolean] {
-  if (!list || !tickets) {
+  if (tickets.length === 0) {
     return [list, false];
   }
 
+  const ticket_url = (event_id: string, ticket_id: string) =>
+    "https://bigticket.ph/tickets?x=" +
+    id.split("-")[4] +
+    "&e=" +
+    event_id.split("-")[4] +
+    "&t=" +
+    ticket_id.split("-").reverse().join("--");
+
   // default values
   const defaults: Partial<UserTicket> = {
-    ticket_url: "",
-    ticket_index: "",
-    ticket_class: "",
-    ticket_status: "",
+    ticket_index: 0,
+    ticket_class: "premium",
+    ticket_status: "active",
     is_active: true,
     is_claimed: false,
     is_expired: false,
     is_used: false,
   };
 
-  let updated_list: UserTicket[] = list.slice();
+  // init updated_list
+  let updated_list: UserTicket[] = list
+    ? list.slice()
+    : tickets.map((item, i) => ({
+        ...defaults,
+        ...item,
+        ticket_url: ticket_url(item.event_id, tickets[i]!.ticket_id),
+      }));
 
   // map
-  const mappedIndexList = mapArrayIndexes(list, tickets);
+  const mappedIndexList = mapArrayIndexes(updated_list, tickets);
 
   // merged
   updated_list = mappedIndexList.every((id) => id === -1)

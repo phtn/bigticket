@@ -15,11 +15,18 @@ import QRCodeStyling from "qr-code-styling";
 interface QrCodeProps {
   url: string | undefined;
   logo: string;
+  width?: number;
+  height?: number;
 }
-export const QrCodeGen = ({ url, logo }: QrCodeProps) => {
+export const QrCodeGen = ({
+  url,
+  logo,
+  width = 100,
+  height = 100,
+}: QrCodeProps) => {
   const [options] = useState<Options>({
-    width: 100,
-    height: 100,
+    width,
+    height,
     type: "svg" as DrawType,
     data: url,
     image: logo,
