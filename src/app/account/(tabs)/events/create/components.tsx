@@ -282,6 +282,7 @@ export const CustomRadio = (props: RadioProps) => {
 interface EventDateProps {
   value: number;
   onChange: (value: number) => void;
+  label: string;
 }
 type TimeValue = {
   hour?: number;
@@ -296,10 +297,12 @@ type DateValue = {
   era?: string;
 };
 type DateTimeValue = DateValue & TimeValue;
-export const EventDate = ({ value, onChange }: EventDateProps) => {
+export const EventDate = ({ value, onChange, label }: EventDateProps) => {
   const today = useMemo(() => new Date(value), [value]);
-  const [timeValue] = useState<ZonedDateTime>(fromDate(today, "Asia/Manila"));
-  const [dateValue] = useState<CalendarDate>(
+  const [timeValue, setTimeValue] = useState<ZonedDateTime>(
+    fromDate(new Date(value) ?? today, "Asia/Manila"),
+  );
+  const [dateValue, setDateValue] = useState<CalendarDate>(
     new CalendarDate(
       today.getFullYear(),
       today.getMonth() + 1,
@@ -310,6 +313,14 @@ export const EventDate = ({ value, onChange }: EventDateProps) => {
 
   const handleDateChange = useCallback(
     (v: DateValue | null) => {
+      setTimeValue(fromDate(new Date(), "Asia/Manila"));
+      setDateValue(
+        new CalendarDate(
+          v?.year ?? today.getFullYear(),
+          v?.month ?? today.getMonth() + 1,
+          v?.day ?? today.getDate(),
+        ),
+      );
       setDateTimeValue((prev) => ({
         ...prev,
         year: v?.year ?? today.getFullYear(),
@@ -322,27 +333,25 @@ export const EventDate = ({ value, onChange }: EventDateProps) => {
   );
 
   const handleTimeChange = useCallback((v: TimeInputValue | null) => {
-    setDateTimeValue((prev) => ({
-      ...prev,
+    setDateTimeValue(() => ({
       hour: v?.hour,
       minute: v?.minute,
     }));
   }, []);
 
   useEffect(() => {
-    if (dt) {
-      onChange(
-        new CalendarDateTime(
-          dt.year ?? dateValue.year,
-          dt.month ?? dateValue.month,
-          dt.day ?? dateValue.day,
-          dt.hour ?? timeValue.hour,
-          dt.minute ?? timeValue.minute,
-        )
-          .toDate("Asia/Manila")
-          .getTime(),
-      );
-    }
+    if (!dt) return;
+    onChange(
+      new CalendarDateTime(
+        dt.year ?? dateValue.year,
+        dt.month ?? dateValue.month,
+        dt.day ?? dateValue.day,
+        dt.hour ?? timeValue.hour,
+        dt.minute ?? timeValue.minute,
+      )
+        .toDate("Asia/Manila")
+        .getTime(),
+    );
   }, [dt, dateValue, timeValue, onChange]);
 
   return (
@@ -355,7 +364,7 @@ export const EventDate = ({ value, onChange }: EventDateProps) => {
           new Date(date.toDate("Asia/Manila")).getTime() + 82800000 < Date.now()
         }
         radius="none"
-        label="Start Date"
+        label={label + " Date"}
         onChange={handleDateChange}
         defaultValue={dateValue}
         classNames={{
@@ -370,9 +379,8 @@ export const EventDate = ({ value, onChange }: EventDateProps) => {
       />
       <TimeInput
         hideTimeZone
-        minValue={timeValue}
         defaultValue={timeValue}
-        label="Start Time"
+        label={label + " Time"}
         onChange={handleTimeChange}
         classNames={{
           label: "tracking-tight py-2",
@@ -392,4 +400,17 @@ export const inputClassNames = {
   label: "pb-1 opacity-60 text-sm tracking-tight",
   input:
     "font-bold tracking-tight placeholder:font-semibold focus:placeholder:opacity-50 placeholder:text-primary font-inter placeholder:text-sm",
+};
+
+export const ensureValidEndTime = (
+  startTime: number,
+  endTime: number,
+): number => {
+  const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
+
+  while (endTime < startTime) {
+    endTime += oneHour; // Add 1 hour
+  }
+
+  return endTime + 3600000; // Return the corrected end time
 };

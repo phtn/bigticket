@@ -24,6 +24,7 @@ import {
 } from "react";
 import { useEvent } from "../../../useEvent";
 import {
+  ensureValidEndTime,
   EventCategory,
   EventDate,
   EventType,
@@ -48,7 +49,7 @@ export const CreateEvent = () => {
   const { event_time, event_day, narrow } = useMoment({
     start: eventStartDate,
     end:
-      eventEndDate < eventStartDate ? eventStartDate + 3600000 : eventEndDate,
+      eventEndDate < eventStartDate ? eventStartDate + 36000000 : eventEndDate,
   });
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -159,6 +160,10 @@ export const CreateEvent = () => {
     () => `${((screen.height - (64 + dimensions.height)) / 8).toFixed(2)}px`,
     [screen.height, dimensions.height],
   );
+  const adjustedEndTime = useMemo(
+    () => ensureValidEndTime(eventStartDate, eventEndDate),
+    [eventStartDate, eventEndDate],
+  );
 
   const option_value_data = useMemo(
     () => [
@@ -166,9 +171,16 @@ export const CreateEvent = () => {
       eventType,
       eventCategory,
       eventStartDate,
-      eventEndDate < eventStartDate ? eventStartDate + 3600000 : eventEndDate,
+      eventEndDate < eventStartDate ? adjustedEndTime : eventEndDate,
     ],
-    [ticketCount, eventType, eventCategory, eventStartDate, eventEndDate],
+    [
+      ticketCount,
+      eventType,
+      eventCategory,
+      eventStartDate,
+      eventEndDate,
+      adjustedEndTime,
+    ],
   );
 
   const handleCustomTicketCount = useCallback(
@@ -223,13 +235,18 @@ export const CreateEvent = () => {
         case "start_date":
           return (
             <EventDate
+              label="Start"
               value={eventStartDate}
               onChange={handleChangeStartDate}
             />
           );
         case "end_date":
           return (
-            <EventDate value={eventEndDate} onChange={handleChangeEndDate} />
+            <EventDate
+              label="End"
+              value={eventEndDate}
+              onChange={handleChangeEndDate}
+            />
           );
         default:
           return <div className="bg-gray-200 p-2">{option}</div>;
