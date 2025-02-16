@@ -39,7 +39,9 @@ export const Content = (props: AccountContentProps) => {
         <Card className="w-full rounded-lg p-1 font-medium tracking-tight md:max-w-xl">
           <CardHeader>
             <div className="flex w-full items-center justify-between">
-              <h2 className="font-semibold">Profile</h2>
+              <h2 className="text-[16px] font-medium tracking-tighter">
+                Profile
+              </h2>
             </div>
           </CardHeader>
           <HyperList

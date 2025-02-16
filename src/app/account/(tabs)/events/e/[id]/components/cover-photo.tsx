@@ -104,20 +104,22 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
             {currentIndex + 1}/{allImages?.length}
           </p>
         </div>
-        <Button
-          size="sm"
-          variant="solid"
-          color="primary"
-          className="relative opacity-100 hover:text-primary data-[hover=true]:bg-white data-[hover=true]:opacity-100"
-        >
-          Upload
-          <Icon name="Upload" className="size-4" />
+        <div className="relative flex max-w-40 items-center overflow-hidden">
+          <Button
+            size="sm"
+            variant="solid"
+            color="primary"
+            className="border border-gray-200/40 opacity-100 hover:text-primary data-[hover=true]:bg-white data-[hover=true]:opacity-100"
+          >
+            Upload
+            <Icon name="Upload" className="size-4" />
+          </Button>
           <input
             type="file"
             onChange={handleFileSelect}
-            className="absolute opacity-0"
+            className="absolute right-0 cursor-pointer bg-secondary opacity-0"
           />
-        </Button>
+        </div>
       </div>
     </div>
   );

@@ -356,7 +356,7 @@ export const CreateEvent = () => {
 
 const FormContainer = ({ children }: { children: ReactNode }) => (
   <div className={cn("mx-auto h-fit w-screen md:w-[30rem]")}>
-    <div className="h-[calc(100vh-100px)] space-y-4 overflow-y-scroll pb-6">
+    <div className="h-[calc(100vh-100px)] space-y-4 overflow-y-scroll pb-24">
       {children}
     </div>
   </div>
