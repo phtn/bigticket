@@ -44,8 +44,15 @@ export const Content = ({ id }: EventContentProps) => {
   const [event, setEvent] = useState<SelectEvent | null>(null);
   const [user_id, setUserId] = useState<string>();
 
-  const get = useCallback(async () => {
+  const getUserId = useCallback(async () => {
     setUserId(await getUserID());
+  }, []);
+
+  useEffect(() => {
+    getUserId().catch(Err);
+  }, [getUserId]);
+
+  const get = useCallback(async () => {
     if (event_id) return null;
     return await events.get.byId(event_id!);
   }, [events.get, event_id]);
@@ -186,7 +193,7 @@ const BasicContent = ({ event, pending }: BasicContentProps) => {
         icon={pending ? "SpinnerBall" : "ArrowRight"}
       />
       <FieldBlock
-        data={basic_info}
+        data={[]}
         label="Date, Time and Place"
         icon="TimeSched"
         delay={0.2}
