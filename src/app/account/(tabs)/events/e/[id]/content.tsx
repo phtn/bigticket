@@ -10,14 +10,18 @@ import { Carousel } from "@/ui/carousel";
 import { HyperList } from "@/ui/list";
 import { Err } from "@/utils/helpers";
 import { Form, Input, Tab, Tabs } from "@nextui-org/react";
-import type { InsertEvent, VIP, SelectEvent } from "convex/events/d";
+import type { InsertEvent, SelectEvent, VIP } from "convex/events/d";
 import {
+  type Dispatch,
+  type SetStateAction,
+  type TransitionStartFunction,
   use,
   useActionState,
   useCallback,
   useEffect,
   useMemo,
   useState,
+  useTransition,
   type ChangeEvent,
   type JSX,
   type MouseEvent,
@@ -27,9 +31,9 @@ import { ImageQuery } from "./components/pexels";
 import { TicketPhoto } from "./components/ticket-photo";
 import { Topbar } from "./components/topbar";
 import { EventEditorCtxProvider } from "./ctx";
-import { basic_info, type EventField, vip_info, VIPZod } from "./schema";
-import SendTicket from "./components/email/send-ticket";
-import SendInvite from "./components/email/send-invite";
+import { vip_info, VIPZod, type EventField } from "./schema";
+// import SendTicket from "./components/email/send-ticket";
+// import SendInvite from "./components/email/send-invite";
 
 interface EventContentProps {
   id: string;
@@ -41,13 +45,29 @@ export const Content = ({ id }: EventContentProps) => {
   const [user_id, setUserId] = useState<string>();
 
   const get = useCallback(async () => {
-    setEvent(await events.get.byId(event_id!));
     setUserId(await getUserID());
+    if (event_id) return null;
+    return await events.get.byId(event_id!);
   }, [events.get, event_id]);
 
-  useEffect(() => {
-    get().catch(Err);
+  const [pending, fn] = useTransition();
+  const setFn = <T,>(
+    tx: TransitionStartFunction,
+    action: () => Promise<T>,
+    set: Dispatch<SetStateAction<T>>,
+  ) => {
+    tx(async () => {
+      set(await action());
+    });
+  };
+
+  const getEvent = useCallback(() => {
+    setFn(fn, get, setEvent);
   }, [get]);
+
+  useEffect(() => {
+    getEvent();
+  }, [getEvent]);
 
   const tabs: { value: string; title: string; content: JSX.Element }[] =
     useMemo(
@@ -55,12 +75,12 @@ export const Content = ({ id }: EventContentProps) => {
         {
           value: "basic_info",
           title: "Basic Info",
-          content: <BasicContent />,
+          content: <BasicContent event={event} pending={pending} />,
         },
         {
           value: "tickets",
           title: "Tickets",
-          content: <BasicContent />,
+          content: <BasicContent event={event} pending={pending} />,
         },
         {
           value: "vips",
@@ -68,26 +88,8 @@ export const Content = ({ id }: EventContentProps) => {
           content: <VIPContent event={event} user_id={user_id} />,
         },
       ],
-      [event, user_id],
+      [user_id, event, pending],
     );
-
-  const sendTestEmail = useCallback(async () => {
-    console.log("send triggered");
-    const res = await fetch("/api/email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        to: "hq@bigticket.ph",
-        template: "welcome",
-        templateData: {
-          appName: "BigTicket",
-          userName: "Pink",
-          verificationLink: "https://bigticket.ph/verify",
-        },
-      }),
-    });
-    console.log(res.json());
-  }, []);
 
   return (
     <EventEditorCtxProvider>
@@ -112,9 +114,8 @@ export const Content = ({ id }: EventContentProps) => {
                 </span>
               </h2>
               <div className="flex items-center gap-4">
-                <SendInvite />
-                <SendTicket />
-                <Hyper onClick={sendTestEmail} label="Send Email" dark />
+                {/* <SendInvite /> */}
+                {/* <SendTicket /> */}
               </div>
             </div>
 
@@ -142,10 +143,48 @@ export const Content = ({ id }: EventContentProps) => {
   );
 };
 
-const BasicContent = () => {
+interface BasicContentProps {
+  event: SelectEvent | null;
+  pending: boolean;
+}
+const BasicContent = ({ event, pending }: BasicContentProps) => {
+  const basic_info: EventField<InsertEvent>[] = useMemo(
+    () => [
+      {
+        name: "event_name",
+        type: "text",
+        label: "Event name",
+        placeholder: "The name of the event",
+        required: true,
+        defaultValue: event?.event_name,
+      },
+      {
+        name: "event_desc",
+        type: "text",
+        label: "Describe what your event is about.",
+        placeholder: "Provide a brief description of your event.",
+        required: false,
+        defaultValue: event?.event_desc,
+      },
+      {
+        name: "category",
+        type: "text",
+        label: "Event Category",
+        placeholder: "Select a category that fits your event.",
+        required: false,
+        defaultValue: event?.category,
+      },
+    ],
+    [event?.event_name, event?.event_desc, event?.category],
+  );
+
   return (
     <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
-      <FieldBlock data={basic_info} label="Basic Info" icon="ArrowRight" />
+      <FieldBlock
+        data={pending ? [] : basic_info}
+        label="Basic Info"
+        icon={pending ? "SpinnerBall" : "ArrowRight"}
+      />
       <FieldBlock
         data={basic_info}
         label="Date, Time and Place"
@@ -185,6 +224,7 @@ const FieldItem = (field: EventField<InsertEvent>) => (
     placeholder={field.placeholder}
     name={field.name}
     classNames={inputClassNames}
+    defaultValue={field.defaultValue}
   />
 );
 
@@ -238,43 +278,82 @@ const VIPContent = ({ event, user_id }: VIPContentProps) => {
       .catch(Err);
     return { ...vip.data, created_by: user_id, updated_at: Date.now() };
   };
-  const [state, action, pending] = useActionState(addVIP, initialState);
+  const [, action, pending] = useActionState(addVIP, initialState);
   return (
     <Form action={action}>
       <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
-        <VIPBlock
-          data={vip_info}
-          label="Create and Send VIP tickets."
-          icon="VIPIcon2"
-        />
-      </div>
-      <div className="flex h-16 w-full items-center justify-between pe-3 md:w-1/2">
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-fit items-center gap-3 rounded-sm border border-primary/40 px-3">
-            <p className="text-sm font-semibold text-peach">0</p>
-            <p className="font-inter text-xs font-semibold tracking-tight">
-              Claimed
-            </p>
-          </div>
-          <div className="flex h-10 w-fit items-center gap-3 rounded-sm border border-primary/40 px-3">
-            <p className="text-sm font-semibold text-peach">{issued_tickets}</p>
-            <p className="font-inter text-xs font-semibold tracking-tight">
-              Issued
-            </p>
-          </div>
-        </div>
+        <section>
+          <VIPBlock
+            data={vip_info}
+            label="Create and Send VIP tickets."
+            icon="VIPIcon2"
+          />
 
-        <Hyper
-          disabled={pending || state?.email === ""}
-          loading={pending}
-          type="submit"
-          label="Save"
-          dark
-        />
+          <div className="flex h-16 w-full items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex h-10 w-fit items-center gap-3 rounded-sm border border-primary/40 px-3">
+                <p className="text-sm font-semibold text-peach">0</p>
+                <p className="font-inter text-xs font-semibold tracking-tight">
+                  Claimed
+                </p>
+              </div>
+              <div className="flex h-10 w-fit items-center gap-3 rounded-sm border border-primary/40 px-3">
+                <p className="text-sm font-semibold text-peach">
+                  {issued_tickets}
+                </p>
+                <p className="font-inter text-xs font-semibold tracking-tight">
+                  Issued
+                </p>
+              </div>
+            </div>
+
+            <Hyper
+              disabled={pending}
+              loading={pending}
+              type="submit"
+              label="Save"
+              dark
+            />
+          </div>
+        </section>
+        <section>
+          <div className="h-96 w-full overflow-hidden rounded border-[0.33px] border-primary">
+            <div className="flex h-6 items-center border-b-[0.33px] border-primary bg-god px-2 font-inter text-tiny font-semibold opacity-40">
+              VIP List
+            </div>
+            <HyperList
+              data={event?.vip_list}
+              component={VIPListItem}
+              container="w-full"
+              keyId="email"
+              itemStyle="hover:bg-goddess cursor-pointer"
+            />
+          </div>
+        </section>
       </div>
     </Form>
   );
 };
+
+const VIPListItem = (vip: VIP) => (
+  <div className="item-center grid w-full grid-cols-8 border-b-[0.33px] border-dotted border-primary/40">
+    <div className="col-span-3 flex h-10 w-full items-center gap-3 rounded-sm px-3 hover:bg-god/60">
+      <p className="font-inter text-xs font-semibold tracking-tight">
+        {vip.name}
+      </p>
+    </div>
+    <div className="col-span-3 flex h-10 w-full items-center gap-3 px-3 hover:bg-god/60">
+      <p className="font-inter text-xs font-semibold tracking-tight">
+        {vip.email}
+      </p>
+    </div>
+    <div className="col-span-2 flex h-10 w-full items-center gap-3 px-4 hover:bg-god/60">
+      <p className="w-full text-right font-inter text-xs font-semibold tracking-tight">
+        {vip.ticket_count}
+      </p>
+    </div>
+  </div>
+);
 
 const VIPItem = (field: EventField<VIP>) => {
   const [value, setValue] = useState<number>(1);
@@ -287,10 +366,8 @@ const VIPItem = (field: EventField<VIP>) => {
         prev ? +prev + parseInt(e.target.value) : parseInt(e.target.value),
       );
     }
-
     setStrValue(e.target.value);
   };
-
   const handlePress = useCallback(
     (n: number) => (e: MouseEvent) => {
       e.preventDefault();
@@ -298,7 +375,6 @@ const VIPItem = (field: EventField<VIP>) => {
     },
     [],
   );
-
   return (
     <Input
       label={field.label}
@@ -332,19 +408,19 @@ const VIPItem = (field: EventField<VIP>) => {
   );
 };
 const VIPBlock = ({ data, icon, label, delay = 0 }: VIPBlockProps) => (
-  <div className="w-full space-y-4 rounded-sm border-[0.33px] border-primary bg-god px-4 py-5 md:p-6">
+  <div className="w-full space-y-4 rounded border-[0.33px] border-primary bg-god px-4 py-5 md:space-y-8 md:p-6">
     <div className="flex items-center gap-1.5 text-sm">
       <Icon name={icon} className="size-5 text-peach" />
       <span className="font-inter font-medium tracking-tight">{label}</span>
     </div>
-    <section className="h-fit rounded-xl border-[1px] border-primary/40 bg-secondary/10 p-2 text-justify text-xs leading-4 md:p-3 md:text-sm md:leading-5">
+    <section className="h-fit rounded-lg border-[1px] border-primary/40 bg-secondary/10 p-2 text-justify text-tiny md:p-3 md:text-sm">
       Fill out the name, email of the VIP and add the number of tickets. You can
       add multiple VIPs by clicking the save button. You can reduce the number
       of tickets given by entering a negative value.
     </section>
     <HyperList
       data={data}
-      container="xl:space-y-0 space-y-6 xl:grid sm:border-t border-primary/40 md:border-l xl:grid-cols-8 xl:space-x-[0.33px] xl:w-full"
+      container="xl:space-y-0 space-y-6 xl:grid xl:grid-cols-8 xl:space-x-1 xl:w-full"
       itemStyle="whitespace-nowrap first:col-span-3 col-span-3 last:col-span-2"
       component={VIPItem}
       delay={delay}
@@ -355,7 +431,7 @@ const VIPBlock = ({ data, icon, label, delay = 0 }: VIPBlockProps) => (
 
 const inputClassNames = {
   innerWrapper:
-    "lg:border-t-0 lg:border-l-0 border border-macd-gray bg-white p-3 shadow-none",
+    "lg:border-t-0 lg:border-l-0 xl:border-t xl:border-l border border-macd-gray/60 bg-white p-3 shadow-none rounded",
   inputWrapper: "h-16 p-0 bg-white data-hover:bg-white shadow-none",
   label: "ps-3 pb-0.5 opacity-60 text-sm tracking-tight",
   input:

@@ -12,30 +12,6 @@ export interface EventField<T> {
   inputMode?: string;
 }
 
-export const basic_info: EventField<InsertEvent>[] = [
-  {
-    name: "event_name",
-    type: "text",
-    label: "Event name",
-    placeholder: "The name of the event",
-    required: true,
-  },
-  {
-    name: "event_desc",
-    type: "text",
-    label: "Describe what your event is about.",
-    placeholder: "Provide a brief description of your event.",
-    required: false,
-  },
-  {
-    name: "category",
-    type: "text",
-    label: "Event Category",
-    placeholder: "Select a category that fits your event.",
-    required: false,
-  },
-];
-
 export const ticket_info: EventField<InsertEvent>[] = [
   {
     name: "ticket_value",

@@ -32,3 +32,21 @@ export const bulkEmail: EmailData = {
     },
   ],
 };
+
+// const sendTestEmail = useCallback(async () => {
+//     console.log("send triggered");
+//     const res = await fetch("/api/email", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         to: "hq@bigticket.ph",
+//         template: "welcome",
+//         templateData: {
+//           appName: "BigTicket",
+//           userName: "Pink",
+//           verificationLink: "https://bigticket.ph/verify",
+//         },
+//       }),
+//     });
+//     console.log(res.json());
+//   }, []);
