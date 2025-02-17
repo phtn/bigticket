@@ -9,7 +9,7 @@ import { Hyper } from "@/ui/button/button";
 import { Carousel } from "@/ui/carousel";
 import { HyperList } from "@/ui/list";
 import { Err } from "@/utils/helpers";
-import { Form, Input, Tab, Tabs } from "@nextui-org/react";
+import { Checkbox, Form, Input, Tab, Tabs } from "@nextui-org/react";
 import type { InsertEvent, SelectEvent, VIP } from "convex/events/d";
 import {
   type Dispatch,
@@ -53,8 +53,8 @@ export const Content = ({ id }: EventContentProps) => {
   }, [getUserId]);
 
   const get = useCallback(async () => {
-    if (event_id) return null;
-    return await events.get.byId(event_id!);
+    if (!event_id) return null;
+    return await events.get.byId(event_id);
   }, [events.get, event_id]);
 
   const [pending, fn] = useTransition();
@@ -277,15 +277,23 @@ const VIPContent = ({ event, user_id }: VIPContentProps) => {
       console.log(vip.error);
       return;
     }
-    console.log(vip.data);
     updateVIPList({ ...vip.data, created_by: user_id, updated_at: Date.now() })
       .then(() => {
         onSuccess("Added VIP");
       })
       .catch(Err);
-    return { ...vip.data, created_by: user_id, updated_at: Date.now() };
+    return {
+      ...vip.data,
+      created_by: user_id,
+      updated_at: Date.now(),
+      checked: false,
+      invitation_sent: false,
+      tickets_claimed: false,
+      tickets_used: false,
+    };
   };
   const [, action, pending] = useActionState(addVIP, initialState);
+
   return (
     <Form action={action}>
       <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
@@ -323,9 +331,9 @@ const VIPContent = ({ event, user_id }: VIPContentProps) => {
             />
           </div>
         </section>
-        <section>
-          <div className="h-96 w-full overflow-hidden rounded border-[0.33px] border-primary">
-            <div className="flex h-6 items-center border-b-[0.33px] border-primary bg-god px-2 font-inter text-tiny font-semibold opacity-40">
+        <section className="relative">
+          <div className="h-96 w-full overflow-hidden overflow-y-scroll rounded border-[0.33px] border-primary">
+            <div className="flex h-6 items-center border-b-[0.33px] border-primary bg-god px-2 font-inter text-tiny font-semibold">
               VIP List
             </div>
             <HyperList
@@ -336,31 +344,55 @@ const VIPContent = ({ event, user_id }: VIPContentProps) => {
               itemStyle="hover:bg-goddess cursor-pointer"
             />
           </div>
+          <div className="absolute bottom-2 right-2">
+            <Hyper
+              disabled={pending}
+              type="button"
+              label="Send Invitation"
+              dark
+            />
+          </div>
         </section>
       </div>
     </Form>
   );
 };
 
-const VIPListItem = (vip: VIP) => (
-  <div className="item-center grid w-full grid-cols-8 border-b-[0.33px] border-dotted border-primary/40">
-    <div className="col-span-3 flex h-10 w-full items-center gap-3 rounded-sm px-3 hover:bg-god/60">
-      <p className="font-inter text-xs font-semibold tracking-tight">
-        {vip.name}
-      </p>
+const VIPListItem = (vip: VIP) => {
+  const handleChangeSelected = useCallback(
+    (email: string) => (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      if (e.target.value) {
+        console.log(e.target.value, email);
+      }
+    },
+    [],
+  );
+  return (
+    <div className="item-center grid w-full grid-cols-12 border-b-[0.33px] border-dotted border-primary/40">
+      <div className="col-span-4 flex h-10 w-full items-center gap-3 rounded-sm px-3 hover:bg-god/60">
+        <p className="font-inter text-xs font-semibold tracking-tight">
+          {vip.name}
+        </p>
+      </div>
+      <div className="col-span-5 flex h-10 w-full items-center gap-3 px-3 hover:bg-god/60">
+        <p className="font-inter text-xs font-semibold tracking-tight">
+          {vip.email}
+        </p>
+      </div>
+      <div className="col-span-2 flex h-10 w-full items-center gap-3 px-4 hover:bg-god/60">
+        <p className="w-full text-center font-inter text-xs font-semibold tracking-tight">
+          {vip.ticket_count}
+        </p>
+      </div>
+      <div className="col-span-1 flex h-10 w-full items-center gap-3 px-4 hover:bg-god/60">
+        <p className="w-full text-right font-inter text-xs font-semibold tracking-tight">
+          <Checkbox onChange={handleChangeSelected(vip.email)} />
+        </p>
+      </div>
     </div>
-    <div className="col-span-3 flex h-10 w-full items-center gap-3 px-3 hover:bg-god/60">
-      <p className="font-inter text-xs font-semibold tracking-tight">
-        {vip.email}
-      </p>
-    </div>
-    <div className="col-span-2 flex h-10 w-full items-center gap-3 px-4 hover:bg-god/60">
-      <p className="w-full text-right font-inter text-xs font-semibold tracking-tight">
-        {vip.ticket_count}
-      </p>
-    </div>
-  </div>
-);
+  );
+};
 
 const VIPItem = (field: EventField<VIP>) => {
   const [value, setValue] = useState<number>(1);
@@ -420,7 +452,7 @@ const VIPBlock = ({ data, icon, label, delay = 0 }: VIPBlockProps) => (
       <Icon name={icon} className="size-5 text-peach" />
       <span className="font-inter font-medium tracking-tight">{label}</span>
     </div>
-    <section className="h-fit rounded-lg border-[1px] border-primary/40 bg-secondary/10 p-2 text-justify text-tiny md:p-3 md:text-sm">
+    <section className="h-fit rounded-lg border-[1px] border-primary/40 bg-goddess p-2 text-justify text-tiny md:p-3 md:text-sm">
       Fill out the name, email of the VIP and add the number of tickets. You can
       add multiple VIPs by clicking the save button. You can reduce the number
       of tickets given by entering a negative value.
