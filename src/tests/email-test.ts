@@ -1,20 +1,18 @@
 import nodemailer from "nodemailer";
 import { config } from "dotenv";
+import { env } from "@/env";
 
 config();
 
 async function testSMTPConnection() {
   // SMTP Configuration
   const smtpConfig = {
-    host: process.env.SMTP_HOST, //process.env.SMTP_HOST,
-    port: 465, // Number(process.env.SMTP_PORT),
-    service: "Godaddy",
-    secure: true,
-    tls: {
-      ciphers: "SSLv3",
-    },
-    requireTLS: true,
+    host: process.env.SMTP_HOST ?? "smtp.office365.com",
+    port: Number(process.env.SMTP_PORT),
+    secure: process.env.SMTP_SECURE === "true",
     secureConnection: false,
+    debug: true,
+    requireTLS: true,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASSWORD,
@@ -56,6 +54,7 @@ async function testSMTPConnection() {
     console.error("✗ SMTP Test failed:");
     if (error instanceof Error) {
       console.error("Error type:", error.name);
+      console.error(`${env.SMTP_USER}`, `${process.env.SMTP_PASSWORD}`);
       console.error("Error message:", error.message);
     }
     return false;

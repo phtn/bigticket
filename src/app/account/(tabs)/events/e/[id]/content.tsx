@@ -28,6 +28,8 @@ import { TicketPhoto } from "./components/ticket-photo";
 import { Topbar } from "./components/topbar";
 import { EventEditorCtxProvider } from "./ctx";
 import { basic_info, type EventField, vip_info, VIPZod } from "./schema";
+import SendTicket from "./components/email/send-ticket";
+import SendInvite from "./components/email/send-invite";
 
 interface EventContentProps {
   id: string;
@@ -69,6 +71,24 @@ export const Content = ({ id }: EventContentProps) => {
       [event, user_id],
     );
 
+  const sendTestEmail = useCallback(async () => {
+    console.log("send triggered");
+    const res = await fetch("/api/email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to: "hq@bigticket.ph",
+        template: "welcome",
+        templateData: {
+          appName: "BigTicket",
+          userName: "Pink",
+          verificationLink: "https://bigticket.ph/verify",
+        },
+      }),
+    });
+    console.log(res.json());
+  }, []);
+
   return (
     <EventEditorCtxProvider>
       <main className="h-full bg-gray-100">
@@ -84,13 +104,18 @@ export const Content = ({ id }: EventContentProps) => {
           </Carousel>
 
           <div className="w-full p-2 text-xs md:p-4">
-            <div className="flex h-20 items-center">
+            <div className="flex h-20 items-center justify-between">
               <h2 className="flex items-center gap-2">
                 <Icon name="PencilEdit" className="size-4" />
                 <span className="font-inter text-lg font-semibold tracking-tighter">
                   Edit Event Details
                 </span>
               </h2>
+              <div className="flex items-center gap-4">
+                <SendInvite />
+                <SendTicket />
+                <Hyper onClick={sendTestEmail} label="Send Email" dark />
+              </div>
             </div>
 
             <div className="h-full py-6">
@@ -238,6 +263,7 @@ const VIPContent = ({ event, user_id }: VIPContentProps) => {
             </p>
           </div>
         </div>
+
         <Hyper
           disabled={pending || state?.email === ""}
           loading={pending}

@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { Content } from "./content";
 interface EventProps {
   params: Promise<{
@@ -5,6 +6,7 @@ interface EventProps {
   }>;
 }
 const Page = async ({ params }: EventProps) => {
+  console.log(env.SMTP_PASSWORD);
   const slug = (await params).id;
   return <Content id={slug} />;
 };

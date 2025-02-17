@@ -14,12 +14,13 @@
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test:email": "node --loader ts-node/esm dotenv/config src/tests/email-test.ts"
+    "test:email": "node --loader ts-node/esm src/tests/email-test.ts"
   },
   "dependencies": {
     "@next/mdx": "^15.1.4",
     "@nextui-org/react": "^2.6.11",
     "@number-flow/react": "^0.5.5",
+    "@react-email/components": "^0.0.33",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/auth-helpers-react": "^0.5.0",
     "@supabase/supabase-js": "^2.47.14",
@@ -44,6 +45,7 @@
     "motion": "^11.18.0",
     "next": "^15.1.4",
     "nodemailer": "^6.10.0",
+    "nodemailer-express-handlebars": "^7.0.0",
     "pexels": "^1.4.0",
     "qr-code-styling": "^1.9.1",
     "react": "^19.0.0",
@@ -61,6 +63,7 @@
     "@types/google-one-tap": "^1.2.6",
     "@types/node": "^22.10.6",
     "@types/nodemailer": "^6.4.17",
+    "@types/nodemailer-express-handlebars": "^4.0.5",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "@typescript-eslint/eslint-plugin": "^8.20.0",

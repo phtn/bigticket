@@ -31,9 +31,11 @@ export const Hyper = ({
   label,
   loading = false,
   dark = false,
+  ...props
 }: HyperProps) => {
   return (
     <button
+      {...props}
       type="submit"
       className={cn(
         "flex h-10 items-center gap-1 overflow-hidden rounded-sm border-[1.5px] border-primary/40 bg-goddess/80 px-5 drop-shadow-sm transition-all duration-300 active:scale-95 md:hover:text-peach",

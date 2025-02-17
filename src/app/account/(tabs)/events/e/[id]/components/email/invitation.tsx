@@ -1,0 +1,86 @@
+import {
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Img,
+  Link,
+  Preview,
+  Section,
+  Tailwind,
+  Text,
+} from "@react-email/components";
+import type { VIP } from "convex/events/d";
+
+const baseUrl = `https://bigticket.ph`;
+
+export const BigTicketInvitation = ({ name, email, ticket_count }: VIP) => {
+  const previewText = `You are invited!`;
+
+  return (
+    <Html>
+      <Head />
+      <Preview>{previewText}</Preview>
+      <Tailwind>
+        <Body className="mx-auto my-auto bg-gray-200 font-sans">
+          <Container className="mx-auto my-[40px] w-full max-w-[465px] rounded-lg border-[0.33px] border-[#14141b] bg-white p-[24px] px-10 shadow-lg">
+            <Section className="mt-[32px]">
+              <Img
+                src={`${baseUrl}/png/wordmark.png`}
+                width="auto"
+                height="100"
+                alt="big-ticket-wordmark"
+                className="mx-auto my-0"
+              />
+            </Section>
+            <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal tracking-tight text-black">
+              You&apos;re invited!
+            </Heading>
+            <Text className="text-[14px] leading-[24px] text-black">
+              Yo Ohio,
+            </Text>
+            <Text className="text-[14px] leading-[24px] text-black">
+              <strong>{"Listen,"}</strong> (
+              <Link
+                href={`mailto:${email}`}
+                className="text-blue-600 no-underline"
+              >
+                {email}
+              </Link>
+              ) Your exclusive VIP ticket grants you priority entry, premium
+              seating, and special perks. Scan your QR code at the entrance and
+              enjoy the show!
+            </Text>
+            <Section className="mb-[32px] mt-[32px] flex items-center px-20 text-center">
+              <Button
+                className="flex h-8 items-center justify-center rounded-lg bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
+                href={baseUrl}
+              >
+                Claim your {ticket_count} ticket{ticket_count > 1 ? "s" : ""}
+              </Button>
+            </Section>
+            <Text className="text-[14px] leading-[24px] text-black">
+              or copy and paste this URL into your browser:{" "}
+              <Link href={baseUrl} className="text-blue-600 no-underline">
+                {baseUrl}
+              </Link>
+            </Text>
+            <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
+            <Text className="text-[12px] leading-[24px] text-[#666666]">
+              This invitation was intended for{" "}
+              <span className="text-black">{name}</span>. This invite was sent
+              from <span className="text-black">{"ip"}</span> located in{" "}
+              <span className="text-black">{"Manila, Philippines"}</span>. If
+              you were not expecting this invitation, you can ignore this email.
+              If you are concerned about your account&apos;s safety, please
+              reply to this email to get in touch with us.
+            </Text>
+          </Container>
+        </Body>
+      </Tailwind>
+    </Html>
+  );
+};
