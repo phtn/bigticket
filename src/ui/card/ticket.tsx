@@ -48,7 +48,9 @@ export const TicketStack = ({
         <div className="h-4"></div>
         <div className="flex h-28 items-center rounded-xl rounded-t-2xl px-2">
           <div className="flex h-24 w-[6.25rem] flex-shrink-0 items-center justify-center rounded-s-md border-[0.33px] border-primary">
-            {title && site && <QrCodeGen url={url} logo="/icon/icon.svg" />}
+            {title && site && (
+              <QrCodeGen url={url} logo="/icon/logomark_v2.svg" />
+            )}
           </div>
           <div className="h-24 w-full rounded-e-md border-[0.33px] border-l-0 border-primary">
             <div className="flex h-1/2 w-full items-center border-b border-macl-gray px-2">

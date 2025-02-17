@@ -9,6 +9,12 @@ export const env = createEnv({
     CONVEX_DEPLOYMENT: z.string(),
     //PEXELS
     PEXELS_API: z.string(),
+    SMTP_HOST: z.string(),
+    SMTP_PORT: z.string(),
+    SMTP_SECURE: z.string(),
+    SMTP_USER: z.string(),
+    SMTP_PASSWORD: z.string(),
+    SMTP_FROM_EMAIL: z.string(),
   },
 
   client: {
@@ -39,6 +45,12 @@ export const env = createEnv({
 
     //PEXELS
     PEXELS_API: process.env.PEXELS_API,
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_SECURE: process.env.SMTP_SECURE,
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+    SMTP_FROM_EMAIL: process.env.SMTP_FROM_EMAIL,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

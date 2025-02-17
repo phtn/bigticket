@@ -83,7 +83,7 @@ export const Content = ({ id }: EventContentProps) => {
             </div>
           </Carousel>
 
-          <div className="w-full p-4 text-xs">
+          <div className="w-full p-2 text-xs md:p-4">
             <div className="flex h-20 items-center">
               <h2 className="flex items-center gap-2">
                 <Icon name="PencilEdit" className="size-4" />
@@ -213,19 +213,38 @@ const VIPContent = ({ event, user_id }: VIPContentProps) => {
       .catch(Err);
     return { ...vip.data, created_by: user_id, updated_at: Date.now() };
   };
-  const [, action, pending] = useActionState(addVIP, initialState);
+  const [state, action, pending] = useActionState(addVIP, initialState);
   return (
     <Form action={action}>
       <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
         <VIPBlock
           data={vip_info}
-          label="Add Event VIPs to your list."
+          label="Create and Send VIP tickets."
           icon="VIPIcon2"
         />
       </div>
-      <div className="flex h-16 items-center justify-between md:w-1/2 md:px-2">
-        <p className="text-sm">0/{issued_tickets}</p>
-        <Hyper loading={pending} type="submit" label="Save" />
+      <div className="flex h-16 w-full items-center justify-between pe-3 md:w-1/2">
+        <div className="flex items-center gap-2">
+          <div className="flex h-10 w-fit items-center gap-3 rounded-sm border border-primary/40 px-3">
+            <p className="text-sm font-semibold text-peach">0</p>
+            <p className="font-inter text-xs font-semibold tracking-tight">
+              Claimed
+            </p>
+          </div>
+          <div className="flex h-10 w-fit items-center gap-3 rounded-sm border border-primary/40 px-3">
+            <p className="text-sm font-semibold text-peach">{issued_tickets}</p>
+            <p className="font-inter text-xs font-semibold tracking-tight">
+              Issued
+            </p>
+          </div>
+        </div>
+        <Hyper
+          disabled={pending || state?.email === ""}
+          loading={pending}
+          type="submit"
+          label="Save"
+          dark
+        />
       </div>
     </Form>
   );
@@ -269,7 +288,7 @@ const VIPItem = (field: EventField<VIP>) => {
       className="appearance-none"
       endContent={
         field.name === "ticket_count" ? (
-          <div className="-mb-2 -mr-1 flex items-end">
+          <div className="-mb-3 -mr-1.5 flex items-end md:-mr-2.5">
             <ButtonIcon
               onClick={handlePress(-1)}
               icon="Minus"
@@ -287,19 +306,19 @@ const VIPItem = (field: EventField<VIP>) => {
   );
 };
 const VIPBlock = ({ data, icon, label, delay = 0 }: VIPBlockProps) => (
-  <div className="w-full space-y-4 rounded-sm border-[0.33px] border-primary bg-god p-4 md:p-6">
+  <div className="w-full space-y-4 rounded-sm border-[0.33px] border-primary bg-god px-4 py-5 md:p-6">
     <div className="flex items-center gap-1.5 text-sm">
       <Icon name={icon} className="size-5 text-peach" />
       <span className="font-inter font-medium tracking-tight">{label}</span>
     </div>
-    <section className="h-20 rounded-sm border-[1px] border-primary/40 bg-secondary/15 p-2 text-justify text-xs leading-4 md:p-3 md:text-sm md:leading-5">
+    <section className="h-fit rounded-xl border-[1px] border-primary/40 bg-secondary/10 p-2 text-justify text-xs leading-4 md:p-3 md:text-sm md:leading-5">
       Fill out the name, email of the VIP and add the number of tickets. You can
       add multiple VIPs by clicking the save button. You can reduce the number
       of tickets given by entering a negative value.
     </section>
     <HyperList
       data={data}
-      container="xl:space-y-0 space-y-6 xl:grid xl:grid-cols-8 xl:space-x-[0.33px] xl:w-full"
+      container="xl:space-y-0 space-y-6 xl:grid sm:border-t border-primary/40 md:border-l xl:grid-cols-8 xl:space-x-[0.33px] xl:w-full"
       itemStyle="whitespace-nowrap first:col-span-3 col-span-3 last:col-span-2"
       component={VIPItem}
       delay={delay}
@@ -310,9 +329,9 @@ const VIPBlock = ({ data, icon, label, delay = 0 }: VIPBlockProps) => (
 
 const inputClassNames = {
   innerWrapper:
-    " border-[0.33px] border-macd-gray bg-white p-3 rounded-xl shadow-none",
+    "lg:border-t-0 lg:border-l-0 border border-macd-gray bg-white p-3 shadow-none",
   inputWrapper: "h-16 p-0 bg-white data-hover:bg-white shadow-none",
   label: "ps-3 pb-0.5 opacity-60 text-sm tracking-tight",
   input:
-    "font-bold tracking-tight placeholder:font-semibold shadow-none focus:placeholder:opacity-50 placeholder:text-primary font-inter placeholder:text-sm",
+    "font-bold tracking-tight placeholder:font-semibold shadow-none focus:placeholder:opacity-40 placeholder:text-primary font-inter placeholder:text-sm",
 };

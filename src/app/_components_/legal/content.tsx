@@ -142,18 +142,14 @@ const Article = ({ id, title, content, keyId }: Section) => {
 const Footer = ({ company, label, href }: FooterProps) => (
   <footer className="flex items-center justify-between px-2 py-4 text-center text-xs capitalize leading-none tracking-tighter text-primary">
     <div className="flex w-full items-start justify-between">
-      <p className="font-semibold">
+      <p className="font-semibold opacity-60">
         {company} &copy;{new Date().getFullYear()}
       </p>
       <div className="justify-start">
-        <p className="">
-          {new Date().toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+        <p className="">February 17, 2025</p>
+        <p className="text-left text-tiny tracking-tight opacity-80">
+          Last updated
         </p>
-        <p className="text-left font-light tracking-tight">Last updated</p>
       </div>
 
       <Link

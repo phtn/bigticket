@@ -1,4 +1,5 @@
 import { Icon, type IconName } from "@/icons";
+import { cn } from "@/lib/utils";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 export const HyperButton = () => {
@@ -20,6 +21,7 @@ interface HyperProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   start?: IconName;
   label?: string;
   loading?: boolean;
+  dark?: boolean;
 }
 
 export const Hyper = ({
@@ -28,11 +30,15 @@ export const Hyper = ({
   end,
   label,
   loading = false,
+  dark = false,
 }: HyperProps) => {
   return (
     <button
       type="submit"
-      className="flex h-10 items-center gap-1 overflow-hidden rounded-sm border-[1.5px] border-primary/40 bg-goddess/80 px-4 drop-shadow-sm md:hover:bg-goddess"
+      className={cn(
+        "flex h-10 items-center gap-1 overflow-hidden rounded-sm border-[1.5px] border-primary/40 bg-goddess/80 px-5 drop-shadow-sm transition-all duration-300 active:scale-95 md:hover:text-peach",
+        { "bg-primary text-chalk": dark },
+      )}
     >
       {start && <Icon name={start} className="size-5 text-peach" />}
       {loading ? (

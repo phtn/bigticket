@@ -29,8 +29,8 @@ export const Proxima = () => {
                 />
               </div>
               <div className="font-inst space-y-0.5">
-                <p>Bandang Almar,</p>
-                <p>Philippines</p>
+                <p></p>
+                <p>Manila, Philippines</p>
                 {/* <p>Taguig, Metro Manila 1634</p> */}
               </div>
             </section>
