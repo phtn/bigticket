@@ -3,9 +3,9 @@
 import { Hyper } from "@/ui/button/button";
 import { Err, Ok } from "@/utils/helpers";
 import type { VIP } from "convex/events/d";
-import { useState } from "react";
+import { type MouseEvent, useState } from "react";
 
-const SendInvite = ({ vip_list }: { vip_list: VIP[] }) => {
+const SendInvite = ({ vip_list }: { vip_list: VIP[] | undefined }) => {
   const [loading, setLoading] = useState(false);
 
   const sendInvite = async (vip: VIP) => {
@@ -24,8 +24,9 @@ const SendInvite = ({ vip_list }: { vip_list: VIP[] }) => {
     await res.json().then(Ok(setLoading)).catch(Err);
   };
 
-  const handleSendInvites = () => {
-    vip_list.forEach((vip) => {
+  const handleSendInvites = (e: MouseEvent) => {
+    e.preventDefault();
+    vip_list?.forEach((vip) => {
       (async () => {
         await sendInvite(vip);
       })()

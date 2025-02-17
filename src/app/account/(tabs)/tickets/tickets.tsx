@@ -29,7 +29,7 @@ export const Tickets = () => {
     <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white pb-10 md:rounded-lg md:px-6">
       <div className="bg-white">
         {Array.from(eventGroups).map(([event_name, tickets], i) => (
-          <div key={i}>
+          <div key={`${tickets[i]?.ticket_id}`}>
             <HyperList
               data={tickets}
               component={TicketCard}

@@ -287,6 +287,9 @@ function updateTicketList(
         ticket_url: ticket_url(item.event_id, tickets[i]!.ticket_id),
       }));
 
+  //
+  console.log(updated_list);
+
   // map
   const mappedIndexList = mapArrayIndexes(updated_list, tickets);
 

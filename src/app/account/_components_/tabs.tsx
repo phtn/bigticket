@@ -21,7 +21,7 @@ export const TabComponent = ({ children }: { children: ReactNode }) => {
   const tabs: TabData[] = useMemo(
     () => [
       {
-        id: "",
+        id: "/",
         title: "Overview",
         description: "Account overview.",
       },

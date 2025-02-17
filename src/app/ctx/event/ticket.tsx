@@ -66,6 +66,8 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
         }),
       );
 
+      console.table(user_id);
+
       const response = await usr.update.tickets(user_id, tickets);
       if (response === "success") {
         setClaimed(true);

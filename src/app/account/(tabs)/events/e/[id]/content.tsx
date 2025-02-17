@@ -32,6 +32,7 @@ import { TicketPhoto } from "./components/ticket-photo";
 import { Topbar } from "./components/topbar";
 import { EventEditorCtxProvider } from "./ctx";
 import { vip_info, VIPZod, type EventField } from "./schema";
+import SendInvite from "./components/email/send-invite";
 // import SendTicket from "./components/email/send-ticket";
 // import SendInvite from "./components/email/send-invite";
 
@@ -345,12 +346,7 @@ const VIPContent = ({ event, user_id }: VIPContentProps) => {
             />
           </div>
           <div className="absolute bottom-2 right-2">
-            <Hyper
-              disabled={pending}
-              type="button"
-              label="Send Invitation"
-              dark
-            />
+            <SendInvite vip_list={event?.vip_list} />
           </div>
         </section>
       </div>
