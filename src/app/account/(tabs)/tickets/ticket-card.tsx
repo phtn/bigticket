@@ -20,6 +20,7 @@ export const TicketCard = (ticket: UserTicket) => {
 
   return (
     <Card
+      id={ticket.ticket_id}
       isFooterBlurred
       className="flex h-[360px] w-full items-center justify-center rounded-sm bg-peach/10"
     >
@@ -58,7 +59,7 @@ export const TicketCard = (ticket: UserTicket) => {
                   "text-peach": !ticket?.is_active,
                 })}
               >
-                {`${ticket.ticket_index} / ${ticket.ticket_count}`}
+                {`${ticket.ticket_index} / ${ticket.ticket_id.split("-")[0]}`}
               </span>
             </p>
             <div className="space-x-1 text-tiny uppercase text-gray-200">

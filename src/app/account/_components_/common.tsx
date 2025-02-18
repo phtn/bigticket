@@ -1,6 +1,7 @@
 import { Icon } from "@/icons";
 import { type ReactNode } from "react";
 import { motion } from "motion/react";
+import { Spinner } from "@nextui-org/react";
 
 interface HeaderProps {
   children?: ReactNode;
@@ -39,12 +40,13 @@ interface EmptyListProps {
   title: string;
   count: number;
   message: string;
+  loading?: boolean
 }
-export const EmptyList = ({ count, message, title }: EmptyListProps) => {
+export const EmptyList = ({ count, message, title, loading = false }: EmptyListProps) => {
   return (
     <div className="space-y-6">
       <Header title={title}>
-        <Count count={count} />
+        {loading ? <Spinner size="sm" /> : <Count count={count} />}
       </Header>
       <div className="flex items-center justify-center">
         <div className="flex h-20 min-w-56 items-center justify-center">

@@ -50,6 +50,7 @@ export const UserTicketSchema = v.object({
   ticket_value: v.number(),
   ticket_count: v.number(),
   ticket_url: v.optional(v.string()),
+  user_id: v.optional(v.string()),
   ticket_index: v.optional(v.number()),
   ticket_class: v.optional(v.string()),
   ticket_status: v.optional(v.string()),

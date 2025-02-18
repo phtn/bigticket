@@ -64,6 +64,7 @@ const MediaContainer = () => {
   const handlePress = useCallback(async () => {
     await getTicket(activeEvent);
   }, [getTicket, activeEvent]);
+
   const handleViewTickets = useCallback(() => {
     router.push("/account/tickets");
   }, [router]);
