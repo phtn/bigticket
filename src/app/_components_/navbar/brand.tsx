@@ -48,7 +48,7 @@ export const Tickets = () => (
 
 export const Title = () => (
   <Link href={"/"} className="z-1 relative h-12 px-2">
-    <h2 className="absolute left-[6.5px] top-[9px]">
+    <h2 className="absolute left-[6.5px] top-[2px] md:top-[1px]">
       <span className="font-lucky text-[33px] font-extrabold text-white">
         BIG
       </span>

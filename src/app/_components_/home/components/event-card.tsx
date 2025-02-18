@@ -15,6 +15,12 @@ import {
 } from "@nextui-org/react";
 import { use, useCallback, useEffect, useState } from "react";
 
+const isLightColor = (r: number | undefined, g: number | undefined, b: number | undefined) => {
+  // Calculate the luminance of the color
+  const luminance = 0.299 * (r ?? 0) + 0.587 * (g ?? 0) + 0.114 * (b ?? 0);
+  return luminance > 186; // A threshold value to determine if the color is light
+};
+
 export const EventCard = (event: SignedEvent) => {
   const { event_day, event_time, narrow } = useMoment({
     date: event?.event_date,
@@ -25,6 +31,7 @@ export const EventCard = (event: SignedEvent) => {
   const { toggle, counter, bookmarkFn, incrementViews } = use(EventViewerCtx)!;
 
   const [bookmarked, setBookmarked] = useState<boolean>(false);
+  const [textColor, setTextColor] = useState("#000");
 
   const handleBookmarkEvent = useCallback(async () => {
     setBookmarked((prev) => !prev);
@@ -42,12 +49,32 @@ export const EventCard = (event: SignedEvent) => {
     setBookmarked(counter?.bookmarks?.includes(event?.event_id) ?? false);
   }, [counter?.bookmarks, event]);
 
+  useEffect(() => {
+    if (event.cover_src) {
+      const img = document.createElement('img');
+      img.src = event.cover_src;
+      img.crossOrigin = "Anonymous";
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0, img.width, img.height);
+          const topleft = ctx.getImageData(0, 0, 200, 20); // Get the color of the top-left pixel
+          const [r, g, b] = topleft.data;
+          setTextColor(isLightColor(r, g, b) ? "#000" : "#fff");
+        }
+      };
+    }
+  }, [event.cover_src]);
+
   const BookmarkButton = useCallback(
     () => (
       <ButtonIcon
         icon={bookmarked ? "BookmarkCheck" : "BookmarkPlus"}
-        bg={bookmarked ? "text-teal-500 opacity-100" : "text-chalk"}
-        shadow="text-coal"
+        bg={bookmarked ? "text-teal-500 opacity-100" : "opacity-20"}
+        shadow={bookmarked ? "text-coal opacity-100" : ""}
         color={bookmarked ? "text-white fill-white" : ""}
         onClick={handleBookmarkEvent}
       />
@@ -60,12 +87,12 @@ export const EventCard = (event: SignedEvent) => {
       isFooterBlurred
       className="h-[280px] w-full overflow-hidden rounded-3xl border border-primary-700 bg-primary-700"
     >
-      <CardHeader className="absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4">
+      <CardHeader className="absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4" style={{ color: textColor }}>
         <section className="w-full overflow-clip text-ellipsis">
-          <p className="max-w-[45ch] bg-gradient-to-b from-white/60 via-white/80 to-white/60 bg-clip-text text-tiny font-bold uppercase text-transparent">
+          <p className="max-w-[35ch] whitespace-nowrap text-tiny font-bold uppercase" style={{ color: textColor }}>
             {event.event_geo ?? event.event_url}
           </p>
-          <h4 className="p-[1px bg-gradient-to-b from-white via-white/80 to-chalk bg-clip-text font-inter text-xl font-bold capitalize tracking-tight text-transparent shadow-coal drop-shadow-sm">
+          <h4 className="p-[1px font-inter text-xl font-bold capitalize tracking-tight shadow-coal drop-shadow-sm" style={{ color: textColor }}>
             {event.event_name}
           </h4>
         </section>
@@ -81,7 +108,7 @@ export const EventCard = (event: SignedEvent) => {
           removeWrapper
           radius="none"
           alt="nightlife"
-          className="z-0 aspect-auto h-full w-full border-0 object-cover"
+          className="z-0 aspect-auto h-full w-full border-0 object-cover object-top"
           src={event.cover_src}
         />
       ) : null}

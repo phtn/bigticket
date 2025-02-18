@@ -17,7 +17,7 @@ export const ButtonIcon = (props: ButtonIconProps) => (
     <Icon
       name="Squircle"
       className={cn(
-        "absolute z-0 size-10 text-background opacity-60 transition-all duration-300 group-hover/icon:opacity-100",
+        "absolute z-0 size-10 text-background opacity-60 transition-all duration-300 group-hover/icon:opacity-0",
         props.bg,
       )}
     />
