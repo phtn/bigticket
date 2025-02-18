@@ -298,14 +298,14 @@ const VIPContent = ({ event, user_id }: VIPContentProps) => {
   return (
     <Form action={action}>
       <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
-        <section>
+        <section className="h-full">
           <VIPBlock
             data={vip_info}
             label="Create and Send VIP tickets."
             icon="VIPIcon2"
           />
 
-          <div className="flex h-16 w-full items-center justify-between">
+          <div className="flex h-1/6 w-full items-end justify-between">
             <div className="flex items-center gap-2">
               <div className="flex h-10 w-fit items-center gap-3 rounded-sm border border-primary/40 px-3">
                 <p className="text-sm font-semibold text-peach">0</p>
@@ -443,7 +443,7 @@ const VIPItem = (field: EventField<VIP>) => {
   );
 };
 const VIPBlock = ({ data, icon, label, delay = 0 }: VIPBlockProps) => (
-  <div className="w-full space-y-4 rounded border-[0.33px] border-primary bg-god px-4 py-5 md:space-y-8 md:p-6">
+  <div className="w-full h-5/6 space-y-4 rounded border-[0.33px] border-primary bg-god px-4 py-5 md:space-y-8 md:p-6">
     <div className="flex items-center gap-1.5 text-sm">
       <Icon name={icon} className="size-5 text-peach" />
       <span className="font-inter font-medium tracking-tight">{label}</span>

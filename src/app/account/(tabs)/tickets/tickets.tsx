@@ -46,7 +46,6 @@ export const Tickets = () => {
   return (
     <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white pb-10 md:rounded-lg md:px-6">
       <div className="bg-white">
-        <Header title="My Tickets"></Header>
         {groups.map((group, i) => (
           <div key={`_${group[0]}`}>
             <HyperList
@@ -69,12 +68,14 @@ export const Tickets = () => {
 
         {groups.length === 0 ? (
           <EmptyList
-            title="My tickets"
+            title="My Tickets"
             count={0}
             message="You have no tickets yet."
             loading={pending}
           />
-        ) : null}
+        ) :
+          <Header title="My Tickets"></Header>
+        }
       </div>
     </div>
   );

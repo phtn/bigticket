@@ -15,11 +15,6 @@ import {
 } from "@nextui-org/react";
 import { use, useCallback, useEffect, useState } from "react";
 
-const isLightColor = (r: number | undefined, g: number | undefined, b: number | undefined) => {
-  // Calculate the luminance of the color
-  const luminance = 0.299 * (r ?? 0) + 0.587 * (g ?? 0) + 0.114 * (b ?? 0);
-  return luminance > 186; // A threshold value to determine if the color is light
-};
 
 export const EventCard = (event: SignedEvent) => {
   const { event_day, event_time, narrow } = useMoment({
@@ -30,8 +25,8 @@ export const EventCard = (event: SignedEvent) => {
   const { getEvent } = use(PreloadedEventsCtx)!;
   const { toggle, counter, bookmarkFn, incrementViews } = use(EventViewerCtx)!;
 
+
   const [bookmarked, setBookmarked] = useState<boolean>(false);
-  const [textColor, setTextColor] = useState("#000");
 
   const handleBookmarkEvent = useCallback(async () => {
     setBookmarked((prev) => !prev);
@@ -45,29 +40,10 @@ export const EventCard = (event: SignedEvent) => {
     await incrementViews();
   }, [getEvent, event?.event_id, toggle, incrementViews]);
 
+
   useEffect(() => {
     setBookmarked(counter?.bookmarks?.includes(event?.event_id) ?? false);
   }, [counter?.bookmarks, event]);
-
-  useEffect(() => {
-    if (event.cover_src) {
-      const img = document.createElement('img');
-      img.src = event.cover_src;
-      img.crossOrigin = "Anonymous";
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0, img.width, img.height);
-          const topleft = ctx.getImageData(0, 0, 200, 20); // Get the color of the top-left pixel
-          const [r, g, b] = topleft.data;
-          setTextColor(isLightColor(r, g, b) ? "#000" : "#fff");
-        }
-      };
-    }
-  }, [event.cover_src]);
 
   const BookmarkButton = useCallback(
     () => (
@@ -87,12 +63,12 @@ export const EventCard = (event: SignedEvent) => {
       isFooterBlurred
       className="h-[280px] w-full overflow-hidden rounded-3xl border border-primary-700 bg-primary-700"
     >
-      <CardHeader className="absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4" style={{ color: textColor }}>
+      <CardHeader className={cn("absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4 text-white", { "text-coal": event?.is_cover_light })}>
         <section className="w-full overflow-clip text-ellipsis">
-          <p className="max-w-[35ch] whitespace-nowrap text-tiny font-bold uppercase" style={{ color: textColor }}>
+          <p className="max-w-[35ch] whitespace-nowrap text-tiny font-bold uppercase">
             {event.event_geo ?? event.event_url}
           </p>
-          <h4 className="p-[1px font-inter text-xl font-bold capitalize tracking-tight shadow-coal drop-shadow-sm" style={{ color: textColor }}>
+          <h4 className="p-[1px font-inter text-xl font-bold capitalize tracking-tight shadow-coal drop-shadow-sm">
             {event.event_name}
           </h4>
         </section>

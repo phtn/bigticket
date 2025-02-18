@@ -47,11 +47,12 @@ export interface ConvexCtxValues {
       cover_url: (
         id: string,
         cover_url: string,
-      ) => Promise<Id<"events"> | null>;
+      ) => Promise<string | null>;
       photo_url: (
         id: string,
         photo_url: string,
-      ) => Promise<Id<"events"> | null>;
+      ) => Promise<string | null>;
+      isCoverLight: (id: string, is_cover_light: boolean) => Promise<string | null>;
       views: (id: string) => Promise<string | null>;
       vip: (id: string, vip: VIP) => Promise<string | null>;
     };

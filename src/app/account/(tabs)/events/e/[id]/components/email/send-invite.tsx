@@ -5,7 +5,10 @@ import { Err, Ok } from "@/utils/helpers";
 import type { VIP } from "convex/events/d";
 import { type MouseEvent, useState } from "react";
 
-const SendInvite = ({ vip_list }: { vip_list: VIP[] | undefined }) => {
+export interface SendInviteProps {
+  vip_list: VIP[] | undefined;
+}
+const SendInvite = ({ vip_list }: SendInviteProps) => {
   const [loading, setLoading] = useState(false);
 
   const sendInvite = async (vip: VIP) => {
@@ -36,8 +39,8 @@ const SendInvite = ({ vip_list }: { vip_list: VIP[] | undefined }) => {
   };
 
   return (
-    <Hyper onClick={handleSendInvites} disabled={loading}>
-      {loading ? "Sending..." : "Send Invitation"}
+    <Hyper onClick={handleSendInvites} disabled={loading || !vip_list || vip_list.length === 0}>
+      {loading ? "Sending..." : `Send Invitation`}
     </Hyper>
   );
 };

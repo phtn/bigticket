@@ -25,7 +25,7 @@ export const photo_url = mutation({
     }
 
     await db.patch(event._id, { photo_url, updated_at: Date.now() });
-    return event._id;
+    return "success";
   },
 });
 
@@ -38,6 +38,19 @@ export const cover_url = mutation({
     }
 
     await db.patch(event._id, { cover_url, updated_at: Date.now() });
+    return "success";
+  },
+});
+
+export const isCoverLight = mutation({
+  args: { id: v.string(), is_cover_light: v.boolean() },
+  handler: async ({ db }, { id, is_cover_light }) => {
+    const event = await checkEvent(db, id);
+    if (event === null) {
+      return null;
+    }
+
+    await db.patch(event._id, { is_cover_light, updated_at: Date.now() });
     return event._id;
   },
 });

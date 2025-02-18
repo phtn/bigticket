@@ -145,6 +145,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const updateEventStatus = useMutation(api.events.update.status);
   const updateCoverUrl = useMutation(api.events.update.cover_url);
   const updatePhotoUrl = useMutation(api.events.update.photo_url);
+  const updateEventIsCoverLight = useMutation(api.events.update.isCoverLight);
   const updateEventViews = useMutation(api.events.update.views);
   const updateEventVIP = useMutation(api.events.update.vip);
 
@@ -164,6 +165,8 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
           await updateCoverUrl({ id, cover_url }),
         photo_url: async (id: string, photo_url: string) =>
           await updatePhotoUrl({ id, photo_url }),
+        isCoverLight: async (id: string, is_cover_light: boolean) =>
+          await updateEventIsCoverLight({ id, is_cover_light }),
         views: async (id: string) => await updateEventViews({ id }),
         vip: async (id: string, vip: VIP) => await updateEventVIP({ id, vip }),
       },
@@ -178,6 +181,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
       updatePhotoUrl,
       updateEventViews,
       updateEventVIP,
+      updateEventIsCoverLight,
     ],
   );
 

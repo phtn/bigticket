@@ -3,13 +3,13 @@ import { usePexels } from "@/lib/pexels";
 import { useCarousel } from "@/ui/carousel";
 import { CardCarousel } from "@/ui/carousel/card";
 import { Spinner } from "@nextui-org/react";
-import { type ChangeEvent, use, useCallback, useEffect, useMemo } from "react";
+import { type ChangeEvent, use, useCallback, useEffect, useMemo, useRef } from "react";
 import { EventEditorCtx } from "../ctx";
 import { Err } from "@/utils/helpers";
 import { cn } from "@/lib/utils";
 import { ButtonIcon } from "@/ui/button";
 import { SidebarCtx } from "@/app/ctx/sidebar";
-import { useImage } from "@/hooks/useImage";
+import { getAverageColor, isLightColor } from "@/hooks/useImage";
 
 interface CoverPhotoProps {
   id: string | undefined;
@@ -20,21 +20,30 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
   const {
     query,
     locale,
-    createUpload,
-    createFileUpload,
+    getRefs,
+    cover_src,
     uploading,
     getCoverPhoto,
-    cover_src,
+    uploadFromFile,
+    uploadFromSource,
+    onInputFileChange,
+    updateTextColor,
+    browseFile,
   } = use(EventEditorCtx)!;
 
   const { images, loading } = usePexels({ query, locale });
   const { currentIndex } = useCarousel();
   const { toggle } = use(SidebarCtx)!;
-  const { inputFileRef, canvasRef, browseFile, setSelected } = useImage();
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    getRefs({ canvasRef, inputFileRef });
+  }, [canvasRef, inputFileRef, getRefs]);
 
   useEffect(() => {
     getCoverPhoto(cover_url).catch(Err);
-    console.log(cover_src);
   }, [cover_url, getCoverPhoto, cover_src]);
 
   const src = useMemo(
@@ -43,17 +52,34 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
   );
 
   const handleImageSelect = useCallback(async () => {
-    await createUpload(src, id, "cover_url");
-  }, [src, id, createUpload]);
+    if (!src) return;
+    const img = document.createElement('img');
+    img.src = src;
+    img.crossOrigin = "Anonymous";
+    let lightText = false;
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        const sampleWidth = 100;
+        const sampleHeight = 400;
+        canvas.width = sampleWidth;
+        canvas.height = sampleHeight;
+        ctx.drawImage(img, 0, 0, sampleWidth, sampleHeight, 0, 0, sampleWidth, sampleHeight);
+        const { r, g, b } = getAverageColor(ctx, sampleWidth, sampleHeight);
+        lightText = isLightColor(r, g, b);
+      }
+    }
+    await updateTextColor(id, lightText);
+    await uploadFromSource(src, id, "cover_url");
+  }, [src, id, uploadFromSource, updateTextColor]);
 
-  const onFileChange = useCallback(
+  const onChange = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
-      if (!e.target.files || e.target.files.length === 0) return;
-      const file = e.target.files[0];
-      setSelected(file);
-      await createFileUpload(file, id, "cover_url");
+      const file = onInputFileChange(e)
+      await uploadFromFile(file, id, "cover_url");
     },
-    [id, createFileUpload, setSelected],
+    [id, onInputFileChange, uploadFromFile],
   );
 
   const allImages = useMemo(() => {
@@ -130,7 +156,7 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
           <input
             type="file"
             ref={inputFileRef}
-            onChange={onFileChange}
+            onChange={onChange}
             className="pointer-events-none absolute right-0 size-1 cursor-pointer bg-secondary opacity-0"
           />
         </div>

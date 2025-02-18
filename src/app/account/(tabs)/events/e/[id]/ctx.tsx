@@ -1,11 +1,13 @@
 "use client";
 
 import { ConvexCtx } from "@/app/ctx/convex";
-import { Err, guid, Ok } from "@/utils/helpers";
+import { useImage } from "@/hooks/useImage";
+import { Err, Ok } from "@/utils/helpers";
 import { log } from "@/utils/logger";
-import { type Id } from "@vx/dataModel";
 import {
+  type ChangeEvent,
   createContext,
+  type RefObject,
   use,
   useCallback,
   useMemo,
@@ -14,26 +16,35 @@ import {
 } from "react";
 
 interface EventEditorCtxValues {
-  createUpload: (
+  uploadFromSource: (
     src: string | undefined,
     event_id: string | undefined,
     field: "cover_url" | "photo_url",
-  ) => Promise<Id<"events"> | null>;
-  createFileUpload: (
+  ) => Promise<string | null>;
+  uploadFromFile: (
     file: File | undefined,
     event_id: string | undefined,
     field: "cover_url" | "photo_url",
-  ) => Promise<Id<"events"> | null>;
+  ) => Promise<string | null>;
   getCoverPhoto: (cover_url: string | undefined) => Promise<void>;
   cover_src: string | null;
   uploading: boolean;
   query: string | undefined;
   locale: string | undefined;
+  getRefs: (props: ImageRefs) => void;
+  browseFile: VoidFunction
+  onInputFileChange: (e: ChangeEvent<HTMLInputElement>) => File | undefined;
+  updateTextColor: (id: string | undefined, light: boolean) => Promise<void>;
   updateQueryParams: (
     query: string | undefined,
     locale: string | undefined,
   ) => void;
 }
+interface ImageRefs {
+  canvasRef: RefObject<HTMLCanvasElement | null>
+  inputFileRef: RefObject<HTMLInputElement | null>
+}
+
 export const EventEditorCtx = createContext<EventEditorCtxValues | null>(null);
 
 export const EventEditorCtxProvider = ({
@@ -45,6 +56,15 @@ export const EventEditorCtxProvider = ({
   const [query, setQuery] = useState<string | undefined>("cityscapes");
   const [locale, setLocale] = useState<string | undefined>("en-US");
   const [cover_src, setCoverSrc] = useState<string | null>(null);
+  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
+  const [inputFile, setInputFile] = useState<HTMLInputElement | null>(null);
+
+  const getRefs = useCallback(({ canvasRef, inputFileRef }: ImageRefs) => {
+    setCanvas(canvasRef.current);
+    setInputFile(inputFileRef.current);
+  }, []);
+
+  const { fromSource, fromFile, browseFile, onInputFileChange } = useImage(canvas, inputFile);
 
   const updateQueryParams = useCallback(
     (q: string | undefined, l: string | undefined) => {
@@ -59,12 +79,16 @@ export const EventEditorCtxProvider = ({
 
   const getCoverPhoto = useCallback(
     async (cover_url: string | undefined) => {
-      console.log(cover_url);
       if (!cover_url) return;
       setCoverSrc(await files.get(cover_url));
     },
     [files],
   );
+
+  const updateTextColor = useCallback(async (id: string | undefined, light: boolean) => {
+    if (!id) return;
+    await events.update.isCoverLight(id, light);
+  }, [events.update]);
 
   const saveFn = useCallback(
     async (
@@ -73,91 +97,91 @@ export const EventEditorCtxProvider = ({
       field: "cover_url" | "photo_url",
     ) => {
       if (!url || !event_id) return null;
+
+      const updateField = async (updateFn: (id: string, url: string) => Promise<string | null>, successMessage: string) => {
+        try {
+          await updateFn(event_id, url);
+          Ok(setLoading, successMessage)();
+          return "success"
+        } catch (e) {
+          Err(setLoading, "Failed to update photo.")(e as Error);
+          return null
+        }
+      };
+
       switch (field) {
         case "cover_url":
-          await events.update
-            .cover_url(event_id, url)
-            .then(Ok(setLoading, "Cover photo updated!"))
-            .catch(Err(setLoading));
-          return null;
+          return await updateField(events.update.cover_url, "Cover photo updated!");
         case "photo_url":
-          await events.update
-            .photo_url(event_id, url)
-            .then(Ok(setLoading, "Event photo updated!"))
-            .catch(Err(setLoading));
-          return null;
+          return await updateField(events.update.photo_url, "Event photo updated!");
         default:
           return null;
       }
     },
-    [events.update],
+    [events.update, setLoading],
   );
 
-  const createFileUpload = useCallback(
+  const uploadFromFile = useCallback(
     async (
       file: File | undefined,
       event_id: string | undefined,
       field: "cover_url" | "photo_url",
     ) => {
       setLoading(true);
-      const url = await files.create(file);
+      const webp = await fromFile(file);
+      const url = await files.create(webp as File);
       return await saveFn(url, event_id, field);
     },
-    [files, saveFn],
+    [files, saveFn, fromFile],
   );
 
-  const createUpload = useCallback(
+  const uploadFromSource = useCallback(
     async (
       src: string | undefined,
       event_id: string | undefined,
       field: "cover_url" | "photo_url",
     ) => {
+
       setLoading(true);
       if (!src) return null;
-      const promise = await urlsToFiles([src]);
-
-      const file = promise[0]?.file;
-
-      const url = await files.create(file);
+      const webp = await fromSource(src);
+      const url = await files.create(webp as File);
       return await saveFn(url, event_id, field);
     },
-    [files, saveFn],
+    [files, saveFn, fromSource],
   );
 
   const value = useMemo(
     () => ({
-      createUpload,
-      createFileUpload,
+      uploadFromSource,
+      uploadFromFile,
+      updateTextColor,
       uploading,
       query,
       locale,
       updateQueryParams,
       getCoverPhoto,
       cover_src,
+      getRefs,
+      browseFile,
+      onInputFileChange,
     }),
     [
-      createUpload,
-      createFileUpload,
+      uploadFromSource,
+      uploadFromFile,
+      updateTextColor,
       uploading,
       query,
       locale,
       updateQueryParams,
       getCoverPhoto,
       cover_src,
+      getRefs,
+      browseFile,
+      onInputFileChange
     ],
   );
   return <EventEditorCtx value={value}>{children}</EventEditorCtx>;
 };
 
-export async function urlsToFiles(urls: (string | null)[]) {
-  const filePromises = urls?.map(async (url, i) => {
-    if (!url) url = "_";
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const filename = "BIG" + guid().split("-")[2];
-    const file = new File([blob], filename, { type: blob.type });
-    return { url, filename, file, id: i + 1 };
-  });
 
-  return Promise.all(filePromises);
-}

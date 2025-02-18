@@ -93,6 +93,7 @@ export const EventSchema = v.object({
   thumbnail: v.optional(v.string()),
   cover_url: v.optional(v.string()),
   photo_url: v.optional(v.string()),
+  is_cover_light: v.optional(v.boolean()),
   //TICKETS
   ticket_count: v.optional(v.number()),
   ticket_count_limit: v.optional(v.number()),

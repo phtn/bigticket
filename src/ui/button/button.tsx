@@ -1,6 +1,7 @@
 import { Icon, type IconName } from "@/icons";
 import { cn } from "@/lib/utils";
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { opts } from "@/utils/helpers";
+import { useCallback, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 export const HyperButton = () => {
   return (
@@ -33,23 +34,22 @@ export const Hyper = ({
   dark = false,
   ...props
 }: HyperProps) => {
+  const LabelOptions = useCallback(() => {
+    const options = opts(<Icon name="SpinnerBall" />, <span className="font-inter text-sm font-semibold tracking-tight">
+      {label}
+    </span>);
+    return <>{options.get(loading)}</>
+  }, [label, loading]);
   return (
     <button
       {...props}
-      type="submit"
       className={cn(
-        "min-w-lg flex h-10 items-center gap-1 overflow-hidden rounded-sm border-[1.5px] border-primary/40 bg-goddess/80 px-5 drop-shadow-sm transition-all duration-300 active:scale-95 md:hover:text-peach",
-        { "bg-primary text-chalk": dark },
+        "min-w-36 flex h-10 items-center justify-center gap-1 overflow-hidden rounded-sm border-[1.5px] border-primary/40 bg-goddess/80 px-5 drop-shadow-sm transition-all duration-300 active:scale-95 md:hover:text-peach",
+        { "bg-primary text-chalk": dark, "opacity-60 cursor-not-allowed border-gray-200": props.disabled },
       )}
     >
       {start && <Icon name={start} className="size-5 text-peach" />}
-      {loading ? (
-        <Icon name="SpinnerBall" />
-      ) : (
-        <span className="font-inter text-sm font-semibold tracking-tight">
-          {label}
-        </span>
-      )}
+      <LabelOptions />
       {children}
       {end && <Icon name={end} className="size-5 text-peach" />}
     </button>

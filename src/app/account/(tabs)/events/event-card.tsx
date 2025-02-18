@@ -37,15 +37,15 @@ export const EventCardAccount = (event: SignedEvent) => {
     >
       <CardHeader className="absolute z-10 flex w-full items-start justify-between gap-3 rounded-none bg-black/40 ps-4 backdrop-blur-sm">
         <section className="w-full overflow-clip text-ellipsis">
-          <p className="max-w-[45ch] bg-gradient-to-b from-white/60 via-white/80 to-white/60 bg-clip-text text-tiny font-bold uppercase text-transparent">
+          <p className="max-w-[45ch] bg-gradient-to-br from-white/60 via-white/80 to-white/60 bg-clip-text text-tiny font-bold uppercase text-transparent">
             {event.event_geo ?? event.event_url}
           </p>
-          <h4 className="p-[1px bg-gradient-to-b from-white via-white/80 to-chalk bg-clip-text font-inter text-xl font-bold capitalize tracking-tight text-transparent shadow-coal drop-shadow-sm">
+          <h4 className="p-[1px font-inter text-xl text-chalk font-bold capitalize tracking-tight shadow-coal drop-shadow-sm">
             {event.event_name}
           </h4>
         </section>
         <section className="flex size-8 items-center justify-center">
-          <ButtonIcon icon="ChartIcon" bg="text-chalk" />
+          <ButtonIcon icon="ChartIcon" bg="text-chalk opacity-20" color="text-chalk" />
         </section>
       </CardHeader>
       {event.cover_src ? (

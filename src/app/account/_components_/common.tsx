@@ -46,7 +46,7 @@ export const EmptyList = ({ count, message, title, loading = false }: EmptyListP
   return (
     <div className="space-y-6">
       <Header title={title}>
-        {loading ? <Spinner size="sm" /> : <Count count={count} />}
+        {loading ? <Spinner /> : <Count count={count} />}
       </Header>
       <div className="flex items-center justify-center">
         <div className="flex h-20 min-w-56 items-center justify-center">
