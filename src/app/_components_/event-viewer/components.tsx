@@ -177,16 +177,19 @@ export const ActionPanel = ({ h }: { h: string }) => {
 interface EventGroupDetailProps {
   host_id: string | undefined;
   host_name: string | undefined;
-  event_geo: string | undefined;
   event_url: string | undefined;
+  event_venue: string | undefined;
   h: string;
+  is_online?: boolean
 }
 export const EventGroupDetail = ({
   host_name,
-  event_geo,
+  event_venue,
   event_url,
+  is_online,
   h,
 }: EventGroupDetailProps) => {
+  const [venue_name, venue_address] = event_venue?.split("---") ?? ["", ""];
   return (
     <div className="row-span-2 h-full">
       <div
@@ -197,13 +200,20 @@ export const EventGroupDetail = ({
         <span>{host_name}</span>
       </div>
       <div
-        className="flex h-1/2 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white p-4 font-medium"
+        className="flex h-1/2 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white px-4 font-semibold"
         style={{ height: h }}
       >
-        <span>Location</span>
-        <span>{event_geo ?? event_url}</span>
+        <span>{is_online ? "Website" : "Venue"}</span>
+        <div className="text-right overflow-x-scroll">
+          {is_online ? <div>{event_url}</div> :
+            <>
+              <p className="max-w-[30ch]">{venue_name}</p>
+              <p className="text-tiny font-normal whitespace-nowrap max-w-[50ch] text-ellipsis opacity-80">{venue_address}</p>
+            </>
+          }
+        </div>
       </div>
-    </div>
+    </div >
   );
 };
 

@@ -73,6 +73,8 @@ export const EventSchema = v.object({
   event_date: v.optional(v.float64()),
   event_time: v.optional(v.float64()),
   event_geo: v.optional(v.string()),
+  venue_name: v.optional(v.string()),
+  venue_address: v.optional(v.string()),
   event_url: v.optional(v.string()),
   event_phone: v.optional(v.string()),
   event_email: v.optional(v.string()),

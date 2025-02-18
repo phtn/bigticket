@@ -37,7 +37,7 @@ export const EventViewer = () => {
         icon="Fire"
         title=""
         variant="god"
-        className="absolute z-50 w-full rounded-none border-0 bg-transparent backdrop-blur-0"
+        className="absolute z-50 w-full rounded-none border-0 bg-transparent/10"
         wrapperStyle="border-gray-500 md:border-l-2"
       >
         <Container>
@@ -132,7 +132,7 @@ const MediaContainer = () => {
                 radius="none"
                 alt={`${activeEvent?.event_name}-cover`}
                 src={cover_src ?? "/svg/star_v2.svg"}
-                className="relative z-0 h-[250px] w-screen md:w-[30rem]"
+                className="relative aspect-auto z-0 h-auto w-screen md:w-[30rem]"
               />
               <TitleDisplay
                 event_name={event_name}
@@ -147,23 +147,15 @@ const MediaContainer = () => {
         </Tabs>
       </div>
 
-      <div
-      // className={cn(
-      //   "grid grid-rows-7",
-      //   { "": height < 700 },
-      //   { "h-[calc(100vh-300px)]": height < 741 },
-      //   { "h-[calc(100vh-384px)]": height > 742 },
-      //   { "h-[calc(100vh-374px)]": height > 800 },
-      //   "md:h-[calc(100vh-420px)]",
-      // )}
-      >
+      <div>
         <EventTicketButton h={contentHeight} />
         <ActionPanel h={contentHeight} />
         <EventGroupDetail
           host_name={activeEvent?.host_name}
-          event_geo={activeEvent?.event_geo}
           event_url={activeEvent?.event_url}
+          is_online={activeEvent?.event_type === "online"}
           host_id={activeEvent?.host_id}
+          event_venue={`${activeEvent?.venue_name ?? activeEvent?.event_geo ?? "Not set"}---${activeEvent?.venue_address ?? ""}`}
           h={contentHeight}
         />
         <InfoGrid data={activeEventInfo} h={contentHeight} />
