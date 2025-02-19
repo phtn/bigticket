@@ -1,38 +1,40 @@
-import { Count, EmptyList, Header } from "../../_components_/common";
-import { use, useCallback, useMemo } from "react";
 import { VxCtx } from "@/app/ctx/convex/vx";
-import { type UserTicket } from "convex/events/d";
-import { HyperList } from "@/ui/list";
 import { cn } from "@/lib/utils";
-import { TicketCard } from "./ticket-card";
-import { Spinner } from "@nextui-org/react";
+import { HyperList } from "@/ui/list";
 import { opts } from "@/utils/helpers";
+import { Spinner } from "@nextui-org/react";
+import { type UserTicket } from "convex/events/d";
+import { use, useCallback, useMemo } from "react";
+import { Count, EmptyList, Header } from "../../_components_/common";
+import { TicketCard } from "./ticket-card";
+import { TicketViewer } from "./ticket-viewer";
 
 export const Tickets = () => {
   const { vx, pending } = use(VxCtx)!;
 
-  function ticketsByEvent(
-    arr: UserTicket[] | undefined,
-  ): Map<string, UserTicket[]> {
-    const map = new Map<string, UserTicket[]>();
+  const ticketsByEvent = useCallback(
+    (arr: UserTicket[] | undefined): Map<string, UserTicket[]> => {
+      const map = new Map<string, UserTicket[]>();
 
-    if (!arr) {
-      return map;
-    }
-
-    arr.forEach((item) => {
-      if (!map.has(item.event_name)) {
-        map.set(item.event_name, []);
+      if (!arr) {
+        return map;
       }
-      map.get(item.event_name)!.push(item);
-    });
 
-    return map;
-  }
+      arr.forEach((item) => {
+        if (!map.has(item.event_name)) {
+          map.set(item.event_name, []);
+        }
+        map.get(item.event_name)!.push(item);
+      });
+
+      return map;
+    },
+    [],
+  );
 
   const eventGroups = useMemo(
     () => ticketsByEvent(vx?.tickets) ?? [],
-    [vx?.tickets],
+    [vx?.tickets, ticketsByEvent],
   );
   const groups = useMemo(
     () => Array.from(eventGroups.entries()),
@@ -84,6 +86,7 @@ export const Tickets = () => {
         ) : (
           <Header title="My Tickets"></Header>
         )}
+        <TicketViewer />
       </div>
     </div>
   );

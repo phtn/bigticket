@@ -61,13 +61,25 @@ const MediaContainer = () => {
 
   const { getTicket, user_id, user_email } = use(TicketCtx)!;
 
-  const beenClaimed = useMemo(() => activeEvent?.tickets?.findIndex(ticket => ticket.user_id === user_id) !== -1, [activeEvent?.tickets, user_id]);
+  const beenClaimed = useMemo(
+    () =>
+      activeEvent?.tickets?.findIndex(
+        (ticket) => ticket.user_id === user_id,
+      ) !== -1,
+    [activeEvent?.tickets, user_id],
+  );
   const is_vip = useMemo(() => {
     if (!activeEvent?.vip_list || !user_email) return false;
-    return activeEvent.vip_list?.findIndex(vip => vip.email === user_email) !== -1;
+    return (
+      activeEvent.vip_list?.findIndex((vip) => vip.email === user_email) !== -1
+    );
   }, [activeEvent?.vip_list, user_email]);
 
-  const ticket_count = useMemo(() => activeEvent?.vip_list?.find((t) => t.email === user_email)?.ticket_count, [activeEvent?.vip_list, user_email]);
+  const ticket_count = useMemo(
+    () =>
+      activeEvent?.vip_list?.find((t) => t.email === user_email)?.ticket_count,
+    [activeEvent?.vip_list, user_email],
+  );
 
   const handleGetTickets = useCallback(async () => {
     if (is_vip) {
@@ -148,7 +160,7 @@ const MediaContainer = () => {
                 radius="none"
                 alt={`${activeEvent?.event_name}-cover`}
                 src={cover_src ?? "/svg/star_v2.svg"}
-                className="relative aspect-auto z-0 h-auto w-screen md:w-[30rem]"
+                className="relative z-0 aspect-auto h-auto w-screen md:w-[30rem]"
               />
               <TitleDisplay
                 event_name={event_name}

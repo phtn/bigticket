@@ -3,20 +3,23 @@ import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { Card, CardFooter, CardHeader, Spinner } from "@nextui-org/react";
 import type { UserTicket } from "convex/events/d";
-// import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { use, useCallback } from "react";
 import { QrCodeGen } from "../../_components_/qr";
+import { TicketViewerCtx } from "./ctx";
 
 export const TicketCard = (ticket: UserTicket) => {
   const { event_date, event_day, start_time, end_time } = useMoment({
     start: ticket.event_start,
     end: ticket.event_end,
   });
-  // const router = useRouter();
+
+  const { toggle, getTicket } = use(TicketViewerCtx)!;
+
   const handleViewScannable = useCallback(() => {
-    // router.push(ticket.ticket_url!);
-    console.log(ticket.ticket_url);
-  }, [ticket.ticket_url]);
+    if (!ticket) return;
+    getTicket(ticket);
+    toggle();
+  }, [ticket, getTicket, toggle]);
 
   return (
     <Card
@@ -28,16 +31,15 @@ export const TicketCard = (ticket: UserTicket) => {
         <section className="flex w-full items-center justify-between">
           <div className="flex items-center gap-2">
             <Icon name="VIPIcon" className="size-9 text-gray-200" />
-            <p className="max-w-[20ch] text-left leading-[14px] text-tiny font-medium uppercase">
+            <p className="max-w-[20ch] text-left text-tiny font-medium uppercase leading-[14px]">
               {ticket.event_name}
             </p>
           </div>
-          <div className="flex items-center h-full">
-            <h4 className="font-inter max-w-[5ch] text-center font-bold leading-none uppercase tracking-tighter text-white">
+          <div className="flex h-full items-center">
+            <h4 className="max-w-[5ch] text-center font-inter font-bold uppercase leading-none tracking-tighter text-white">
               Admit one
             </h4>
           </div>
-
         </section>
       </CardHeader>
       <div className="flex w-fit items-start justify-center px-2">
@@ -64,9 +66,11 @@ export const TicketCard = (ticket: UserTicket) => {
               >
                 {`${ticket.ticket_index} / ${ticket.ticket_count}`}
               </span>
-              <span className="text-gray-400 font-bold">Ticket number </span>
+              <span className="font-bold text-gray-400">Ticket number </span>
               <span>&rarr;</span>
-              <span className="text-gray-300 font-mono">{ticket.ticket_id.split("-")[0]}</span>
+              <span className="font-mono text-gray-300">
+                {ticket.ticket_id.split("-")[0]}
+              </span>
             </p>
             <div className="space-x-1 text-tiny uppercase text-gray-200">
               <span className="drop-shadow-md">
