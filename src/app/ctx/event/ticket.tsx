@@ -43,7 +43,12 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
     async (e: SelectEvent | null) => {
       if (!e || !user_id) return null;
 
-      const ticket_count = e.tickets?.filter((t) => t.user_id === user_id).length;
+      let ticket_count = 0
+      const is_vip = e.vip_list?.find((vip) => vip.email === user?.email)
+      if (is_vip?.ticket_count && !is_vip?.tickets_claimed) {
+        ticket_count = is_vip.ticket_count ?? 0;
+      }
+      console.log(ticket_count)
       if (!ticket_count) return null;
       setCount(ticket_count);
 
@@ -77,7 +82,7 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
       }
       return response;
     },
-    [user_id, usr.update],
+    [user_id, usr.update, user],
   );
 
   const value = useMemo(

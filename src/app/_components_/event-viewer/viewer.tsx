@@ -64,7 +64,7 @@ const MediaContainer = () => {
   const beenClaimed = useMemo(() => activeEvent?.tickets?.findIndex(ticket => ticket.user_id === user_id) !== -1, [activeEvent?.tickets, user_id]);
   const is_vip = useMemo(() => {
     if (!activeEvent?.vip_list || !user_email) return false;
-    return activeEvent?.vip_list?.findIndex(vip => vip.email === user_email) !== -1;
+    return activeEvent.vip_list?.findIndex(vip => vip.email === user_email) !== -1;
   }, [activeEvent?.vip_list, user_email]);
 
   const ticket_count = useMemo(() => activeEvent?.vip_list?.find((t) => t.email === user_email)?.ticket_count, [activeEvent?.vip_list, user_email]);

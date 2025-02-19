@@ -253,6 +253,13 @@ const VIPContent = ({ event, user_id }: VIPContentProps) => {
     ticket_count: 1,
   };
 
+  const defaults = {
+    checked: false,
+    invitation_sent: false,
+    tickets_claimed: false,
+    tickets_used: false,
+  }
+
   const { events } = use(ConvexCtx)!;
   const issued_tickets = useMemo(
     () => event?.vip_list?.reduce((acc, cur) => acc + cur.ticket_count, 0) ?? 0,
@@ -278,19 +285,17 @@ const VIPContent = ({ event, user_id }: VIPContentProps) => {
       console.log(vip.error);
       return;
     }
-    updateVIPList({ ...vip.data, created_by: user_id, updated_at: Date.now() })
+    updateVIPList({ ...vip.data, ...defaults, created_by: user_id, updated_at: Date.now() })
       .then(() => {
         onSuccess("Added VIP");
       })
       .catch(Err);
     return {
       ...vip.data,
+      ...defaults,
       created_by: user_id,
       updated_at: Date.now(),
-      checked: false,
-      invitation_sent: false,
-      tickets_claimed: false,
-      tickets_used: false,
+
     };
   };
   const [, action, pending] = useActionState(addVIP, initialState);

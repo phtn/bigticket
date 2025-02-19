@@ -254,7 +254,7 @@ export const EventViewerCtxProvider = ({
       { label: "Tickets Remaining", value: "50" },
       { label: "Date", value: compact },
       { label: "Time", value: event_time.compact },
-      { label: "Duration", value: `${durationHrs?.toFixed(1)} hours` },
+      { label: "Duration", value: getDuration(durationHrs) },
       { label: "Likes", value: activeEvent?.likes ?? 0 },
       { label: "Views", value: activeEvent?.views ?? 0 },
       { label: "Bookmarks", value: activeEvent?.bookmarks ?? 0 },
@@ -349,3 +349,10 @@ export const EventViewerCtxProvider = ({
     </EventViewerCtx>
   );
 };
+
+const getDuration = (duration: number | undefined) => {
+  if (!duration) return "0 hours";
+  return duration % +duration.toFixed(2) === 0
+    ? `${duration} hour${duration > 1 ? "s" : ""}`
+    : `${duration.toFixed(0)} hour${duration > 1 ? "s " : " "} ${+(duration % +duration.toFixed(2)).toFixed(2) * 60}m`;
+}

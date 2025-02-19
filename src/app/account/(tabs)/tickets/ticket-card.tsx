@@ -24,17 +24,20 @@ export const TicketCard = (ticket: UserTicket) => {
       isFooterBlurred
       className="flex h-[360px] w-full items-center justify-center rounded-sm bg-peach/10"
     >
-      <CardHeader className="absolute top-0 z-10 flex w-full items-start justify-between gap-3 rounded-none bg-peach ps-4 backdrop-blur-sm">
+      <CardHeader className="absolute top-0 z-10 flex w-full items-start justify-between gap-3 rounded-none bg-peach backdrop-blur-sm">
         <section className="flex w-full items-center justify-between">
-          <h4 className="font-mono font-thin uppercase tracking-widest text-primary">
-            Admit one
-          </h4>
           <div className="flex items-center gap-2">
-            <p className="max-w-[45ch] text-tiny font-bold uppercase">
+            <Icon name="VIPIcon" className="size-9 text-gray-200" />
+            <p className="max-w-[20ch] text-left leading-[14px] text-tiny font-medium uppercase">
               {ticket.event_name}
             </p>
-            <Icon name="VIPIcon" className="size-6" />
           </div>
+          <div className="flex items-center h-full">
+            <h4 className="font-inter max-w-[5ch] text-center font-bold leading-none uppercase tracking-tighter text-white">
+              Admit one
+            </h4>
+          </div>
+
         </section>
       </CardHeader>
       <div className="flex w-fit items-start justify-center px-2">
@@ -59,8 +62,11 @@ export const TicketCard = (ticket: UserTicket) => {
                   "text-peach": !ticket?.is_active,
                 })}
               >
-                {`${ticket.ticket_index} / ${ticket.ticket_id.split("-")[0]}`}
+                {`${ticket.ticket_index} / ${ticket.ticket_count}`}
               </span>
+              <span className="text-gray-400 font-bold">Ticket number </span>
+              <span>&rarr;</span>
+              <span className="text-gray-300 font-mono">{ticket.ticket_id.split("-")[0]}</span>
             </p>
             <div className="space-x-1 text-tiny uppercase text-gray-200">
               <span className="drop-shadow-md">
