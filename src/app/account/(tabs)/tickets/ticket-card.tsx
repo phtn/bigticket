@@ -31,7 +31,7 @@ export const TicketCard = (ticket: UserTicket) => {
         <section className="flex w-full items-center justify-between">
           <div className="flex items-center gap-2">
             <Icon name="VIPIcon" className="size-9 text-gray-200" />
-            <p className="max-w-[20ch] text-left text-tiny font-medium uppercase leading-[14px]">
+            <p className="max-w-[16ch] text-left text-tiny font-medium capitalize leading-[14px] text-gray-100">
               {ticket.event_name}
             </p>
           </div>

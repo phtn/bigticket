@@ -83,9 +83,7 @@ export const Tickets = () => {
             message="You have no tickets yet."
             loading={pending}
           />
-        ) : (
-          <Header title="My Tickets"></Header>
-        )}
+        ) : null}
         <TicketViewer />
       </div>
     </div>
