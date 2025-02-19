@@ -39,9 +39,11 @@ const SendInvite = ({ vip_list }: SendInviteProps) => {
   };
 
   return (
-    <Hyper onClick={handleSendInvites} disabled={loading || !vip_list || vip_list.length === 0}>
-      {loading ? "Sending..." : `Send Invitation`}
-    </Hyper>
+    <Hyper
+      onClick={handleSendInvites}
+      disabled={loading || !vip_list || vip_list.length === 0}
+      label={loading ? "Sending..." : `Send Invitation`}
+    ></Hyper>
   );
 };
 

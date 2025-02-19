@@ -1,9 +1,15 @@
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
-import React, { type HTMLAttributes, useCallback, useMemo } from "react";
+import {
+  type HTMLAttributes,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 interface WarpBackgroundProps extends HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+  children: ReactNode;
   perspective?: number;
   beamsPerSide?: number;
   beamSize?: number;
@@ -58,6 +64,11 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
   gridColor = "hsl(var(--border))",
   ...props
 }) => {
+  const [topBeams, setTopBeams] = useState<IBeam[]>([]);
+  const [rightBeams, setRightBeams] = useState<IBeam[]>([]);
+  const [bottomBeams, setBottomBeams] = useState<IBeam[]>([]);
+  const [leftBeams, setLeftBeams] = useState<IBeam[]>([]);
+
   const generateBeams = useCallback(() => {
     const beams = [];
     const cellsPerSide = Math.floor(200 / beamSize);
@@ -67,18 +78,24 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
       const x = Math.floor(i * step);
       const delay =
         Math.random() * (beamDelayMax - beamDelayMin) + beamDelayMin;
-      beams.push({ x, delay });
+      beams.push({
+        x,
+        delay,
+        width: `${beamSize}%`,
+        duration: beamDuration,
+        hue: Math.floor(Math.random() * 360),
+        aspectRatio: Math.floor(Math.random() * 20) + 1,
+      });
     }
     return beams;
-  }, [beamsPerSide, beamSize, beamDelayMax, beamDelayMin]);
+  }, [beamsPerSide, beamSize, beamDelayMax, beamDelayMin, beamDuration]);
 
-  const topBeams = useMemo(() => generateBeams(), [generateBeams]);
-  const rightBeams = useMemo(() => generateBeams(), [generateBeams]);
-  const bottomBeams = useMemo(() => generateBeams(), [generateBeams]);
-  const leftBeams = useMemo(() => generateBeams(), [generateBeams]);
-
-  const hue = useCallback(() => Math.floor(Math.random() * 360), []);
-  const aspectRatio = useCallback(() => Math.floor(Math.random() * 20) + 1, []);
+  useEffect(() => {
+    setTopBeams(generateBeams());
+    setRightBeams(generateBeams());
+    setBottomBeams(generateBeams());
+    setLeftBeams(generateBeams());
+  }, [generateBeams]);
 
   return (
     <div className={cn("relative bg-coal p-6", className)} {...props}>
@@ -97,57 +114,25 @@ export const WarpDrive: React.FC<WarpBackgroundProps> = ({
         {/* top side */}
         <div className="absolute [background-size:var(--beam-size)_var(--beam-size)] [background:linear-gradient(var(--grid-color)_0_1px,_transparent_1px_var(--beam-size))_50%_-0.5px_/var(--beam-size)_var(--beam-size),linear-gradient(90deg,_var(--grid-color)_0_1px,_transparent_1px_var(--beam-size))_50%_50%_/var(--beam-size)_var(--beam-size)] [container-type:inline-size] [height:100cqmax] [transform-origin:50%_0%] [transform-style:preserve-3d] [transform:rotateX(-90deg)] [width:100cqi]">
           {topBeams.map((beam, index) => (
-            <Beam
-              key={`top-${index}`}
-              width={`${beamSize}%`}
-              x={`${beam.x * beamSize}%`}
-              delay={beam.delay}
-              duration={beamDuration}
-              hue={hue()}
-              aspectRatio={aspectRatio()}
-            />
+            <Beam key={`top-${index}`} {...beam} />
           ))}
         </div>
         {/* bottom side */}
         <div className="absolute top-full [background-size:var(--beam-size)_var(--beam-size)] [background:linear-gradient(var(--grid-color)_0_1px,_transparent_1px_var(--beam-size))_50%_-0.5px_/var(--beam-size)_var(--beam-size),linear-gradient(90deg,_var(--grid-color)_0_1px,_transparent_1px_var(--beam-size))_50%_50%_/var(--beam-size)_var(--beam-size)] [container-type:inline-size] [height:100cqmax] [transform-origin:50%_0%] [transform-style:preserve-3d] [transform:rotateX(-90deg)] [width:100cqi]">
           {bottomBeams.map((beam, index) => (
-            <Beam
-              key={`bottom-${index}`}
-              width={`${beamSize}%`}
-              x={`${beam.x * beamSize}%`}
-              delay={beam.delay}
-              duration={beamDuration}
-              hue={hue()}
-              aspectRatio={aspectRatio()}
-            />
+            <Beam key={`bottom-${index}`} {...beam} />
           ))}
         </div>
         {/* left side */}
         <div className="absolute left-0 top-0 [background-size:var(--beam-size)_var(--beam-size)] [background:linear-gradient(var(--grid-color)_0_1px,_transparent_1px_var(--beam-size))_50%_-0.5px_/var(--beam-size)_var(--beam-size),linear-gradient(90deg,_var(--grid-color)_0_1px,_transparent_1px_var(--beam-size))_50%_50%_/var(--beam-size)_var(--beam-size)] [container-type:inline-size] [height:100cqmax] [transform-origin:0%_0%] [transform-style:preserve-3d] [transform:rotate(90deg)_rotateX(-90deg)] [width:100cqh]">
           {leftBeams.map((beam, index) => (
-            <Beam
-              key={`left-${index}`}
-              width={`${beamSize}%`}
-              x={`${beam.x * beamSize}%`}
-              delay={beam.delay}
-              duration={beamDuration}
-              hue={hue()}
-              aspectRatio={aspectRatio()}
-            />
+            <Beam key={`left-${index}`} {...beam} />
           ))}
         </div>
         {/* right side */}
         <div className="absolute right-0 top-0 [background-size:var(--beam-size)_var(--beam-size)] [background:linear-gradient(var(--grid-color)_0_1px,_transparent_1px_var(--beam-size))_50%_-0.5px_/var(--beam-size)_var(--beam-size),linear-gradient(90deg,_var(--grid-color)_0_1px,_transparent_1px_var(--beam-size))_50%_50%_/var(--beam-size)_var(--beam-size)] [container-type:inline-size] [height:100cqmax] [transform-origin:100%_0%] [transform-style:preserve-3d] [transform:rotate(-90deg)_rotateX(-90deg)] [width:100cqh]">
           {rightBeams.map((beam, index) => (
-            <Beam
-              key={`right-${index}`}
-              width={`${beamSize}%`}
-              x={`${beam.x * beamSize}%`}
-              delay={beam.delay}
-              duration={beamDuration}
-              hue={hue()}
-              aspectRatio={aspectRatio()}
-            />
+            <Beam key={`right-${index}`} {...beam} />
           ))}
         </div>
       </div>

@@ -3,7 +3,14 @@ import { usePexels } from "@/lib/pexels";
 import { useCarousel } from "@/ui/carousel";
 import { CardCarousel } from "@/ui/carousel/card";
 import { Spinner } from "@nextui-org/react";
-import { type ChangeEvent, use, useCallback, useEffect, useMemo, useRef } from "react";
+import {
+  type ChangeEvent,
+  use,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { EventEditorCtx } from "../ctx";
 import { Err } from "@/utils/helpers";
 import { cn } from "@/lib/utils";
@@ -53,7 +60,7 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
 
   const handleImageSelect = useCallback(async () => {
     if (!src) return;
-    const img = document.createElement('img');
+    const img = document.createElement("img");
     img.src = src;
     img.crossOrigin = "Anonymous";
     let lightText = false;
@@ -65,18 +72,28 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
         const sampleHeight = 400;
         canvas.width = sampleWidth;
         canvas.height = sampleHeight;
-        ctx.drawImage(img, 0, 0, sampleWidth, sampleHeight, 0, 0, sampleWidth, sampleHeight);
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          sampleWidth,
+          sampleHeight,
+          0,
+          0,
+          sampleWidth,
+          sampleHeight,
+        );
         const { r, g, b } = getAverageColor(ctx, sampleWidth, sampleHeight);
         lightText = isLightColor(r, g, b);
       }
-    }
+    };
     await updateTextColor(id, lightText);
     await uploadFromSource(src, id, "cover_url");
   }, [src, id, uploadFromSource, updateTextColor]);
 
   const onChange = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
-      const file = onInputFileChange(e)
+      const file = onInputFileChange(e);
       await uploadFromFile(file, id, "cover_url");
     },
     [id, onInputFileChange, uploadFromFile],
@@ -94,11 +111,7 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
   }, [cover_src, currentIndex]);
 
   return (
-    <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-md border border-macl-gray bg-gradient-to-tr from-tan via-macl-pink to-macl-purple">
-      <div className="absolute hidden">
-        <Icon name="ImageIcon" className="size-24 opacity-20" />
-      </div>
-
+    <div className="relative flex w-full items-center justify-center overflow-hidden border-macl-gray bg-gradient-to-tr from-tan via-macl-pink to-macl-purple md:h-full md:rounded-md md:border">
       <div className="absolute top-0 z-10 flex h-10 w-full items-center justify-between pe-2 text-xs">
         <div className="flex h-7 items-center gap-2 rounded-e-full bg-white/20 pe-2 ps-1 font-semibold text-white backdrop-blur-md">
           Cover Photo

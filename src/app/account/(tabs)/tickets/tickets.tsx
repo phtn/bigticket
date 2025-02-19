@@ -11,9 +11,9 @@ import { opts } from "@/utils/helpers";
 export const Tickets = () => {
   const { vx, pending } = use(VxCtx)!;
 
-
-
-  function ticketsByEvent(arr: UserTicket[] | undefined): Map<string, UserTicket[]> {
+  function ticketsByEvent(
+    arr: UserTicket[] | undefined,
+  ): Map<string, UserTicket[]> {
     const map = new Map<string, UserTicket[]>();
 
     if (!arr) {
@@ -30,18 +30,22 @@ export const Tickets = () => {
     return map;
   }
 
-  const eventGroups = useMemo(() => ticketsByEvent(vx?.tickets) ?? [], [vx?.tickets]);
-  const groups = useMemo(() => Array.from(eventGroups.entries()), [eventGroups]);
+  const eventGroups = useMemo(
+    () => ticketsByEvent(vx?.tickets) ?? [],
+    [vx?.tickets],
+  );
+  const groups = useMemo(
+    () => Array.from(eventGroups.entries()),
+    [eventGroups],
+  );
 
-  const Counter = useCallback(({ count }: { count: number }) => {
-    const options = opts(
-      <Spinner size="sm" />,
-      <Count count={count} />,
-    );
-    return <>{options.get(pending)}</>;
-  }, [pending]);
-
-
+  const Counter = useCallback(
+    ({ count }: { count: number }) => {
+      const options = opts(<Spinner size="sm" />, <Count count={count} />);
+      return <>{options.get(pending)}</>;
+    },
+    [pending],
+  );
 
   return (
     <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white pb-10 md:rounded-lg md:px-6">
@@ -59,7 +63,11 @@ export const Tickets = () => {
             >
               <div key={i} className="md:rounded-t-md">
                 <Header title={String(group[0])}>
-                  {vx ? <Counter count={group[1].length} /> : <Spinner size="sm" />}
+                  {vx ? (
+                    <Counter count={group[1].length} />
+                  ) : (
+                    <Spinner size="sm" />
+                  )}
                 </Header>
               </div>
             </HyperList>
@@ -73,9 +81,9 @@ export const Tickets = () => {
             message="You have no tickets yet."
             loading={pending}
           />
-        ) :
+        ) : (
           <Header title="My Tickets"></Header>
-        }
+        )}
       </div>
     </div>
   );

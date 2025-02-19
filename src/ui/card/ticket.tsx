@@ -33,7 +33,7 @@ export const TicketStack = ({
         )}
       />
       <Ticket tickets={tickets} color={color}>
-        <div className="flex h-14 items-center justify-center rounded-xl rounded-b-2xl border-[0.33px] border-b-0 border-macl-gray px-2">
+        <div className="flex h-14 items-center justify-center rounded-xl rounded-b-2xl border-[0.33px] border-macl-gray px-2">
           <h1
             className={cn(
               "text-[38px] font-extrabold leading-none -tracking-wider",
@@ -62,17 +62,14 @@ export const TicketStack = ({
               <span className="place-self-start font-mono text-[8px] italic tracking-tighter">
                 Date|Time:
               </span>
-              <span className="font-mono text-sm font-light tracking-tighter">
+              <span className="font-inter text-sm font-semibold tracking-tighter">
                 {date}
               </span>
             </div>
-            <div className="flex h-1/4 flex-shrink-0 items-center justify-end space-x-0.5 whitespace-nowrap px-1">
-              <span className="text-xl font-extrabold -tracking-wider">
-                {day}
-              </span>
-              <span className="text-lg font-extrabold -tracking-wider">
-                {time}
-              </span>
+            <div className="flex h-1/4 items-center justify-end gap-1 space-x-0.5 whitespace-nowrap px-1 text-xl font-extrabold -tracking-wider">
+              <span>{day?.substring(0, 3)}</span>
+              <span className="">&middot;</span>
+              <span>{time}</span>
             </div>
           </div>
         </div>
@@ -88,23 +85,10 @@ interface TicketProps {
 }
 const Ticket = ({ children, tickets }: TicketProps) => {
   return (
-    <div className="the-ticket absolute mt-[8px] h-[200px] w-[355px] rotate-2 scale-95 overflow-hidden rounded-2xl border-[0.33px] border-macl-gray bg-[#eee] p-2 transition-all duration-300 group-hover:rotate-0 group-hover:shadow-lg">
+    <div className="the-ticket absolute mt-[8px] h-[200px] w-[355px] rotate-2 scale-90 overflow-hidden rounded-2xl border-[0.33px] border-macl-gray bg-[#eee] p-2 transition-all duration-300 group-hover:rotate-0 group-hover:shadow-lg md:group-hover:scale-95">
       <p className="absolute left-6 top-1 rounded-sm bg-[#eee] px-1 font-mono text-[8px] leading-none tracking-widest text-primary">
         authentic &middot; valid &middot; {tickets ? `1/${tickets}` : null}
       </p>
-
-      {/* <div
-        className={cn(
-          "absolute -left-3 top-16 size-5 rounded-full bg-indigo-300",
-          color,
-        )}
-      />
-      <div
-        className={cn(
-          "absolute -right-3 top-16 size-5 rounded-full bg-indigo-300",
-          color,
-        )}
-      /> */}
       <div className="absolute left-4 top-[72px] h-px w-[322] rounded-full border-b-2 border-dashed border-macd-gray/40" />
       {children}
     </div>

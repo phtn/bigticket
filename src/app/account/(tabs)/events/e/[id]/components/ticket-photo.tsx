@@ -3,26 +3,17 @@ import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { TicketStack } from "@/ui/card/ticket";
 import type { SelectEvent } from "convex/events/d";
-import moment from "moment";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
 interface TicketPhotoProps {
   event: SelectEvent | null;
 }
 export const TicketPhoto = ({ event }: TicketPhotoProps) => {
   const [ticket_color, setTicketColor] = useState("bg-macl-mint");
-  const { event_time } = useMoment({
+  const { event_time, compact, event_day } = useMoment({
     start: event?.start_date,
     end: event?.end_date,
   });
-  const date = useMemo(
-    () => moment(event?.event_date).format("LT"),
-    [event?.event_date],
-  );
-  const day = useMemo(
-    () => moment(event?.event_date).format("dddd"),
-    [event?.event_date],
-  );
 
   const handleColorSelect = useCallback(
     (color: string) => () => {
@@ -31,24 +22,24 @@ export const TicketPhoto = ({ event }: TicketPhotoProps) => {
     [],
   );
   return (
-    <div className="relative flex h-full justify-center rounded-md border border-t-0 border-macl-gray sm:border-t">
+    <div className="relative flex h-full justify-center border-t-0 border-macl-gray bg-white sm:border-t md:rounded-md md:border">
       <div className="absolute top-0 z-10 flex h-10 w-full items-center text-xs md:justify-end">
-        <div className="flex h-7 items-center gap-2 rounded-e-full bg-void/10 pe-1 ps-2.5 font-semibold text-primary backdrop-blur-md md:rounded-e-none md:rounded-s-full">
+        <div className="flex h-7 items-center gap-2 rounded-e-full bg-void/60 pe-2.5 ps-1.5 font-inter font-semibold tracking-tight text-primary md:rounded-e-none md:rounded-s-full">
           Event Ticket
         </div>
       </div>
-      <div className="flex h-[420px] items-center justify-center bg-tan">
+      <div className="flex h-[360px] items-center justify-center bg-tan md:h-[400px]">
         <TicketStack
           title={event?.event_name}
-          date={date}
+          date={compact}
           time={event_time.compact}
           site={event?.event_geo ?? event?.event_url}
-          day={day}
+          day={event_day}
           tickets={event?.ticket_count}
           color={ticket_color}
         />
       </div>
-      <div className="absolute bottom-0 flex h-20 w-full items-center justify-start overflow-x-scroll border-primary/40 bg-peach/5 px-4 md:space-x-1.5 md:border-t lg:justify-center lg:space-x-2 lg:px-2">
+      <div className="absolute bottom-0 flex h-20 w-full items-center justify-start overflow-x-scroll border-primary/40 px-4 md:space-x-1.5 md:border-t lg:justify-center lg:space-x-2 lg:px-2">
         {palette_one.map((item) => (
           <button
             onClick={handleColorSelect(item.label)}
