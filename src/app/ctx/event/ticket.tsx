@@ -14,17 +14,22 @@ import {
 } from "react";
 import { ConvexCtx } from "../convex";
 import { onSuccess } from "../toast";
+import { AuthCtx } from "../auth";
 
 interface TicketCtxValues {
   getTicket: (activeEvent: SelectEvent | null) => Promise<string | null>;
   user_id: string | undefined;
+  user_email: string | undefined;
+  count: number
 }
 export const TicketCtx = createContext<TicketCtxValues | null>(null);
 
 export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
   const { usr } = use(ConvexCtx)!;
+  const { user } = use(AuthCtx)!
 
   const [user_id, setUserId] = useState<string>();
+  const [count, setCount] = useState<number>(0);
   const getUserId = useCallback(async () => {
     setUserId(await getUserID());
   }, []);
@@ -33,13 +38,15 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
     getUserId().catch(Err);
   }, [getUserId]);
 
-  const ticket_count = useMemo(() => {
-    return 5;
-  }, []);
 
   const getTicket = useCallback(
     async (e: SelectEvent | null) => {
       if (!e || !user_id) return null;
+
+      const ticket_count = e.tickets?.filter((t) => t.user_id === user_id).length;
+      if (!ticket_count) return null;
+      setCount(ticket_count);
+
       const {
         event_id,
         event_name,
@@ -70,15 +77,17 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
       }
       return response;
     },
-    [user_id, usr.update, ticket_count],
+    [user_id, usr.update],
   );
 
   const value = useMemo(
     () => ({
+      count,
       getTicket,
       user_id,
+      user_email: user?.email,
     }),
-    [getTicket, user_id],
+    [count, getTicket, user_id, user?.email],
   );
   return <TicketCtx value={value}>{children}</TicketCtx>;
 };

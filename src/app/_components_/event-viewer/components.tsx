@@ -12,12 +12,16 @@ import { use, useCallback, useEffect, useMemo, useState } from "react";
 interface GetTicketButtonProps {
   ticket_value?: number;
   is_private?: boolean;
+  is_vip?: boolean;
+  count?: number;
   h: string;
   fn: VoidFunction;
 }
 export const GetTicketButton = ({
   ticket_value,
   is_private = false,
+  is_vip = false,
+  count = 0,
   h,
   fn,
 }: GetTicketButtonProps) => {
@@ -36,9 +40,9 @@ export const GetTicketButton = ({
     const options = opts(
       <h2 className="text-xl font-black">
         <span className="font-bold italic tracking-tighter text-teal-400">
-          Claim
+          {is_vip ? "Claim" : "Diamond"}
         </span>
-        Ticket
+        Ticket{count > 1 && "s"}
       </h2>,
       <h2 className="text-xl font-black">
         <span className="font-bold italic tracking-tighter text-slate-400">
@@ -48,15 +52,16 @@ export const GetTicketButton = ({
       </h2>,
     );
     return <>{options.get(is_private)}</>;
-  }, [is_private]);
+  }, [is_private, is_vip, count]);
+
   const TicketValue = useCallback(() => {
     const options = opts(
       <h3 className="flex items-center justify-center gap-1 text-orange-100">
-        <Icon name="Lock" className="size-3.5" />
+        <Icon name={is_vip ? "Sparkle" : "Lock"} className="size-3.5" />
         <Shimmer
           sparklesCount={6}
           className="font-inter text-[16px]"
-          text="Private Event"
+          text={is_vip ? "You are VIP" : "Members Only"}
         />
       </h3>,
       <NumberFlow
@@ -70,7 +75,7 @@ export const GetTicketButton = ({
       />,
     );
     return <>{options.get(is_private)}</>;
-  }, [ticket_value, is_private]);
+  }, [ticket_value, is_private, is_vip]);
   return (
     <div className={cn("z-1 relative bg-primary")} style={{ height: h }}>
       <Button
@@ -100,7 +105,8 @@ export const GetTicketButton = ({
 };
 
 export const ClaimedTicketButton = ({
-  is_private,
+  is_private = false,
+  count = 0,
   h,
   fn,
 }: GetTicketButtonProps) => {
@@ -122,14 +128,14 @@ export const ClaimedTicketButton = ({
         >
           <h2 className="flex items-center gap-0.5 text-xl font-black">
             <span className="font-bold italic tracking-tighter text-teal-400">
-              Ticket
+              Ticket{count > 1 && "s"}
             </span>
             Claimed
             <Icon name="Check" className="text-teal-400" />
           </h2>
           <div className="flex items-center gap-2">
             <p className="font-inter text-sm font-semibold capitalize">
-              view my ticket
+              view my ticket{count > 1 && "s"}
             </p>
             <Icon name="QrCode" className="opacity-80" />
           </div>

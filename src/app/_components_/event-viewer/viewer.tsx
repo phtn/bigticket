@@ -59,13 +59,21 @@ const MediaContainer = () => {
   const { activeEvent, activeEventInfo, moments, cover_src, isTicketClaimed } =
     use(EventViewerCtx)!;
 
-  const { getTicket, user_id } = use(TicketCtx)!;
+  const { getTicket, user_id, user_email } = use(TicketCtx)!;
 
   const beenClaimed = useMemo(() => activeEvent?.tickets?.findIndex(ticket => ticket.user_id === user_id) !== -1, [activeEvent?.tickets, user_id]);
+  const is_vip = useMemo(() => {
+    if (!activeEvent?.vip_list || !user_email) return false;
+    return activeEvent?.vip_list?.findIndex(vip => vip.email === user_email) !== -1;
+  }, [activeEvent?.vip_list, user_email]);
+
+  const ticket_count = useMemo(() => activeEvent?.vip_list?.find((t) => t.email === user_email)?.ticket_count, [activeEvent?.vip_list, user_email]);
 
   const handleGetTickets = useCallback(async () => {
-    await getTicket(activeEvent);
-  }, [getTicket, activeEvent]);
+    if (is_vip) {
+      await getTicket(activeEvent);
+    }
+  }, [getTicket, activeEvent, is_vip]);
 
   const handleViewTickets = useCallback(() => {
     router.push("/account/tickets");
@@ -78,25 +86,31 @@ const MediaContainer = () => {
       const options = opts(
         <ClaimedTicketButton
           h={props.h}
+          is_vip={is_vip}
+          count={ticket_count}
           is_private={activeEvent?.is_private}
           fn={handleViewTickets}
         />,
         <GetTicketButton
+          h={props.h}
+          is_vip={is_vip}
+          count={ticket_count}
           is_private={activeEvent?.is_private}
           ticket_value={activeEvent?.ticket_value}
-          h={props.h}
           fn={handleGetTickets}
         />,
       );
       return <>{options.get(isTicketClaimed && beenClaimed)}</>;
     },
     [
+      is_vip,
+      beenClaimed,
+      ticket_count,
+      isTicketClaimed,
+      handleGetTickets,
+      handleViewTickets,
       activeEvent?.is_private,
       activeEvent?.ticket_value,
-      handleGetTickets,
-      isTicketClaimed,
-      beenClaimed,
-      handleViewTickets,
     ],
   );
 

@@ -245,7 +245,7 @@ export const EventViewerCtxProvider = ({
     () => [
       {
         label: "Ticket Sales",
-        value: activeEvent?.is_private ? "EXCLUSIVE" : "OPEN",
+        value: activeEvent?.is_private ? "PRIVATE EVENT" : "OPEN",
       },
       {
         label: activeEvent?.is_private ? "Tickets Claimed" : "Tickets Sold",
