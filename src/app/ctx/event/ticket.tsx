@@ -17,7 +17,7 @@ import { onSuccess } from "../toast";
 
 interface TicketCtxValues {
   getTicket: (activeEvent: SelectEvent | null) => Promise<string | null>;
-  claimed: boolean;
+  user_id: string | undefined;
 }
 export const TicketCtx = createContext<TicketCtxValues | null>(null);
 
@@ -25,8 +25,6 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
   const { usr } = use(ConvexCtx)!;
 
   const [user_id, setUserId] = useState<string>();
-  const [claimed, setClaimed] = useState<boolean>(false);
-
   const getUserId = useCallback(async () => {
     setUserId(await getUserID());
   }, []);
@@ -68,7 +66,6 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
 
       const response = await usr.update.tickets(user_id, tickets);
       if (response === "success") {
-        setClaimed(true);
         onSuccess("Ticket claimed successfully!");
       }
       return response;
@@ -79,9 +76,9 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(
     () => ({
       getTicket,
-      claimed,
+      user_id,
     }),
-    [getTicket, claimed],
+    [getTicket, user_id],
   );
   return <TicketCtx value={value}>{children}</TicketCtx>;
 };

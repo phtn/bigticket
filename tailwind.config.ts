@@ -86,6 +86,7 @@ export default {
         "background-position-spin":
           "background-position-spin 3000ms infinite alternate",
         enter: "enter 0.3s ease-out normal both",
+        "enter-200": "enter 0.3s delay-200 ease-out normal both",
         shine: "shine var(--duration) infinite linear",
         "line-shadow": "line-shadow 15s linear infinite",
       },
@@ -95,6 +96,22 @@ export default {
           "100%": { backgroundPosition: "bottom center" },
         },
         enter: {
+          "0%": {
+            opacity: "0",
+            transform: "translateZ(0) scale(0.90)",
+          },
+          "60%": {
+            opacity: "0.75",
+            transform: "translateZ(0) scale(1.02)",
+            backfaceVisibility: "hidden",
+            webkitFontSmoothing: "antialiased",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateZ(0) scale(1)",
+          },
+        },
+        "enter-200": {
           "0%": {
             opacity: "0",
             transform: "translateZ(0) scale(0.90)",

@@ -210,44 +210,50 @@ export const tickets = mutation({
   handler: async ({ db }, { id, tickets }) => {
     // check user
     const user = await checkUser(db, id);
-    if (user === null || tickets.length === 0) {
+    if (user === null || !tickets || tickets.length === 0) {
       console.log("User not found or no tickets provided");
       return null;
     }
 
-    // update user
-    const [updated_list, increment] = updateTicketList(
+    const target_event_id = tickets[0]?.event_id;
+    if (!target_event_id) return null;
+
+    // update user tickets 
+    const [updated_user_tickets] = updateTicketList(
       user.tickets,
       tickets,
       id,
     );
+
+    // update user
     await db.patch(user._id, {
       ...user,
-      tickets: updated_list,
+      tickets: updated_user_tickets,
       updated_at: Date.now(),
     });
-    const event_id = updated_list?.[0]?.event_id;
-    const target_id = tickets?.[0]?.event_id;
 
-    // event
-    const target_event = await checkEvent(db, target_id!);
-    if (target_event === null || !increment) {
+    // check event
+    const target_event = await checkEvent(db, target_event_id);
+    if (target_event === null) {
       return null;
     }
-
-    const [updated_event_list, updated] = updateTicketList(
+    // update event tickets 
+    const [updated_event_tickets] = updateTicketList(
       target_event.tickets,
       tickets,
       id,
     );
 
+    // check if user is a VIP
     const vip_list = target_event.vip_list ?? [];
     const is_vip = vip_list.findIndex((vip) => vip.email === user.email) !== -1;
 
+    // update event
     await db.patch(target_event._id, {
       ...target_event,
       vip_list: is_vip ? vip_list.map(vip => ({ ...vip, is_claimed: true })) : vip_list,
-      tickets: updated_event_list,
+      tickets: updated_event_tickets,
+      ticket_count: updated_event_tickets.length,
       updated_at: Date.now(),
     });
     return "success";
@@ -271,6 +277,7 @@ function updateTicketList(
   const defaults: Partial<UserTicket> = {
     ticket_class: "premium",
     ticket_status: "active",
+    ticket_index: 0,
     is_active: true,
     is_claimed: false,
     is_expired: false,
@@ -279,7 +286,7 @@ function updateTicketList(
   };
 
   if (!list) {
-    tickets.map((item, i) => ({
+    tickets = tickets.map((item, i) => ({
       ...defaults,
       ...item,
       ticket_index: i + 1,

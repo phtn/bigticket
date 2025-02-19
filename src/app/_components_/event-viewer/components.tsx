@@ -7,7 +7,7 @@ import { Shimmer } from "@/ui/text/sparkles";
 import { opts } from "@/utils/helpers";
 import { Button, Card, Spinner } from "@nextui-org/react";
 import NumberFlow from "@number-flow/react";
-import { use, useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useState } from "react";
 
 interface GetTicketButtonProps {
   ticket_value?: number;
@@ -189,7 +189,17 @@ export const EventGroupDetail = ({
   is_online,
   h,
 }: EventGroupDetailProps) => {
-  const [venue_name, venue_address] = event_venue?.split("---") ?? ["", ""];
+  const [venue_name, venue_address] = useMemo(() => event_venue?.split("---") ?? ["", ""], [event_venue]);
+  const [debounced, setDebounced] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!debounced) {
+        setDebounced(true);
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }
+    , [debounced]);
   return (
     <div className="row-span-2 h-full">
       <div
@@ -197,21 +207,21 @@ export const EventGroupDetail = ({
         style={{ height: h }}
       >
         <span>Organizers</span>
-        <span>{host_name}</span>
+        {!debounced ? <Spinner size="sm" /> : <span className=" animate-enter">{host_name}</span>}
       </div>
       <div
         className="flex h-1/2 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white px-4 font-semibold"
         style={{ height: h }}
       >
         <span>{is_online ? "Website" : "Venue"}</span>
-        <div className="text-right overflow-x-scroll">
+        {!debounced ? <Spinner size="sm" /> : <div className="text-right overflow-x-scroll">
           {is_online ? <div>{event_url}</div> :
             <>
-              <p className="max-w-[30ch]">{venue_name}</p>
-              <p className="text-tiny font-normal whitespace-nowrap max-w-[50ch] text-ellipsis opacity-80">{venue_address}</p>
+              <p className="max-w-[30ch] animate-enter">{venue_name}</p>
+              <p className="text-tiny font-normal whitespace-nowrap max-w-[50ch] text-ellipsis animate-enter delay-200 opacity-80">{venue_address}</p>
             </>
           }
-        </div>
+        </div>}
       </div>
     </div >
   );

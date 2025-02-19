@@ -59,9 +59,11 @@ const MediaContainer = () => {
   const { activeEvent, activeEventInfo, moments, cover_src, isTicketClaimed } =
     use(EventViewerCtx)!;
 
-  const { getTicket, claimed } = use(TicketCtx)!;
+  const { getTicket, user_id } = use(TicketCtx)!;
 
-  const handlePress = useCallback(async () => {
+  const beenClaimed = useMemo(() => activeEvent?.tickets?.findIndex(ticket => ticket.user_id === user_id) !== -1, [activeEvent?.tickets, user_id]);
+
+  const handleGetTickets = useCallback(async () => {
     await getTicket(activeEvent);
   }, [getTicket, activeEvent]);
 
@@ -83,17 +85,17 @@ const MediaContainer = () => {
           is_private={activeEvent?.is_private}
           ticket_value={activeEvent?.ticket_value}
           h={props.h}
-          fn={handlePress}
+          fn={handleGetTickets}
         />,
       );
-      return <>{options.get(isTicketClaimed || claimed)}</>;
+      return <>{options.get(isTicketClaimed && beenClaimed)}</>;
     },
     [
       activeEvent?.is_private,
       activeEvent?.ticket_value,
-      handlePress,
+      handleGetTickets,
       isTicketClaimed,
-      claimed,
+      beenClaimed,
       handleViewTickets,
     ],
   );
