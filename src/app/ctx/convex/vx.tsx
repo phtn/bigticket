@@ -22,6 +22,7 @@ interface VxCtxValues {
   vx: SelectUser | null;
   pending: boolean;
   photo_url: string | null;
+  getVxUser: VoidFunction;
 }
 export const VxCtx = createContext<VxCtxValues | null>(null);
 
@@ -52,7 +53,7 @@ export const VxProvider = ({ children }: { children: ReactNode }) => {
     return await usr.get.byId(userId);
   }, [usr.get, createvx]);
 
-  const getVxuser = useCallback(() => {
+  const getVxUser = useCallback(() => {
     setFn(fn, getVx, setVx);
   }, [getVx]);
 
@@ -70,9 +71,9 @@ export const VxProvider = ({ children }: { children: ReactNode }) => {
   }, [getPhoto]);
 
   useEffect(() => {
-    getVxuser();
+    getVxUser();
     getPhotoURL();
-  }, [getVxuser, getPhotoURL]);
+  }, [getVxUser, getPhotoURL]);
 
   const setAccountId = useCallback(async (account_id: string | undefined) => {
     if (!account_id) return;
@@ -90,8 +91,9 @@ export const VxProvider = ({ children }: { children: ReactNode }) => {
       vx,
       pending,
       photo_url,
+      getVxUser,
     }),
-    [vx, pending, photo_url],
+    [vx, pending, photo_url, getVxUser],
   );
   return <VxCtx value={value}>{children}</VxCtx>;
 };

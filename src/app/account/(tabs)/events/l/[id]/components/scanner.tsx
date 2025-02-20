@@ -1,16 +1,19 @@
-import { type IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
+"use client";
 
-interface ScanCodeProps {
-  getFn: (data: IDetectedBarcode[]) => void;
-}
+import { Scanner } from "@yudiel/react-qr-scanner";
+import { use } from "react";
+import { LiveViewCtx } from "../ctx";
 
-export const ScanCode = ({ getFn }: ScanCodeProps) => {
+export const ScanCode = () => {
+  const { getQrcode } = use(LiveViewCtx)!;
   return (
     <Scanner
-      onScan={async (data) => {
-        if (data) {
-          getFn(data);
-        }
+      onScan={getQrcode}
+      components={{ finder: true }}
+      formats={["qr_code"]}
+      allowMultiple
+      classNames={{
+        video: "border border-secondary rounded-xl",
       }}
     />
   );

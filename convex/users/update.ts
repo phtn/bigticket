@@ -218,12 +218,8 @@ export const tickets = mutation({
     const target_event_id = tickets[0]?.event_id;
     if (!target_event_id) return null;
 
-    // update user tickets 
-    const [updated_user_tickets] = updateTicketList(
-      user.tickets,
-      tickets,
-      id,
-    );
+    // update user tickets
+    const [updated_user_tickets] = updateTicketList(user.tickets, tickets, id);
 
     // update user
     await db.patch(user._id, {
@@ -237,7 +233,7 @@ export const tickets = mutation({
     if (target_event === null) {
       return null;
     }
-    // update event tickets 
+    // update event tickets
     const [updated_event_tickets] = updateTicketList(
       target_event.tickets,
       tickets,
@@ -251,7 +247,9 @@ export const tickets = mutation({
     // update event
     await db.patch(target_event._id, {
       ...target_event,
-      vip_list: is_vip ? vip_list.map(vip => ({ ...vip, is_claimed: true })) : vip_list,
+      vip_list: is_vip
+        ? vip_list.map((vip) => ({ ...vip, tickets_claimed: true }))
+        : vip_list,
       tickets: updated_event_tickets,
       ticket_count: updated_event_tickets.length,
       updated_at: Date.now(),
@@ -296,17 +294,19 @@ function updateTicketList(
   }
 
   const updatedList = list.map((item) => {
-    const matchingTicket = tickets.find((ticket) => ticket.event_id === item.event_id);
+    const matchingTicket = tickets.find(
+      (ticket) => ticket.event_id === item.event_id,
+    );
     return matchingTicket ? { ...item, ...matchingTicket } : item;
   });
 
-  const newTickets = tickets.filter(
-    (ticket) => !list.some((item) => item.event_id === ticket.event_id)
-  ).map((item, i) => ({
-    ...defaults,
-    ...item,
-    ticket_url: ticket_url(item.event_id, item.ticket_id),
-  }));
+  const newTickets = tickets
+    .filter((ticket) => !list.some((item) => item.event_id === ticket.event_id))
+    .map((item, i) => ({
+      ...defaults,
+      ...item,
+      ticket_url: ticket_url(item.event_id, item.ticket_id),
+    }));
 
   return [updatedList.concat(newTickets), true];
 }

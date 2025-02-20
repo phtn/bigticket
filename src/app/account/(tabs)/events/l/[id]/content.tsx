@@ -27,9 +27,8 @@ const LiveView = () => {
     host_id,
     open,
     toggle,
-    getQrcode,
-    qrcode,
     ticket_data,
+    qrcode,
   } = use(LiveViewCtx)!;
 
   useEffect(() => {
@@ -45,7 +44,7 @@ const LiveView = () => {
   }, [open, toggle, qrcode]);
 
   return (
-    <main className="flex h-[calc(100vh-65px)] justify-center bg-void">
+    <main className="flex h-[calc(100vh-65px)] justify-center overflow-hidden bg-void">
       <div className="container h-full w-full">
         <div className="relative h-3/6 md:h-4/6">
           <Image
@@ -59,9 +58,11 @@ const LiveView = () => {
             <p className="text-secondary">{event_id}</p>
             <p className="text-chalk">{user_id}</p>
             <p className="text-chalk">{event?.host_id}</p>
-            <p className="text-sky-400">{ticket_data?.user_account}</p>
-            <p className="text-sky-400">{ticket_data?.event_account}</p>
-            <p className="text-sky-400">{ticket_data?.ticket_account}</p>
+            <p className="text-sky-400">user: {ticket_data?.user_account}</p>
+            <p className="text-sky-400">event: {ticket_data?.event_account}</p>
+            <p className="text-sky-400">
+              ticket: {ticket_data?.ticket_account}
+            </p>
             <p className="text-chalk">
               access role: {host_id === event?.host_id ? "Host" : "Guest"}
             </p>
@@ -87,8 +88,8 @@ const LiveView = () => {
           />
         </button>
         {open && (
-          <div className="fixed top-36 z-50 h-fit w-full border md:left-1/4 md:flex md:h-[36rem] md:w-fit md:justify-center">
-            <ScanCode getFn={getQrcode} />
+          <div className="fixed top-36 z-50 h-fit w-full md:left-1/4 md:flex md:h-[36rem] md:w-fit md:justify-center">
+            <ScanCode />
           </div>
         )}
       </div>

@@ -2,6 +2,7 @@
 
 import { getAccountID } from "@/app/actions";
 import { ConvexCtx } from "@/app/ctx/convex";
+import { onError, onSuccess } from "@/app/ctx/toast";
 import { useToggle } from "@/hooks/useToggle";
 import { Err } from "@/utils/helpers";
 import { type IDetectedBarcode } from "@yudiel/react-qr-scanner";
@@ -50,7 +51,7 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
   const [pending, fn] = useTransition();
   const { open, toggle } = useToggle();
 
-  const { events, files } = use(ConvexCtx)!;
+  const { events, files, usr } = use(ConvexCtx)!;
 
   const setFn = <T,>(
     tx: TransitionStartFunction,
@@ -105,20 +106,62 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
   }, [getHostId]);
 
   const getQrcode = useCallback((data: IDetectedBarcode[]) => {
-    console.log(data);
-    console.log(data?.[0]);
-    console.log(data?.[0]?.rawValue);
-    console.log(data?.[0]?.format);
     setQrcode(data?.[0]?.rawValue ?? null);
   }, []);
 
+  const scannable_tickets = useMemo(() => {
+    return event?.tickets
+      ?.filter((ticket) => !ticket.is_claimed)
+      .map((t) => t.ticket_id);
+  }, [event]);
+
+  const findAndValidateTicket = useCallback(
+    async (ticket_account: string | undefined) => {
+      if (!scannable_tickets) return false;
+      if (!ticket_account) {
+        onError("Ticket not found.");
+        return false;
+      }
+      const ticket_id = ticket_account?.split("--").reverse().join("-");
+      if (scannable_tickets.includes(ticket_id)) {
+        const validTicket = event?.tickets?.find(
+          (t) => t.ticket_id === ticket_id,
+        );
+        try {
+          if (!validTicket?.user_id) return;
+          await usr.update.tickets(validTicket.user_id, [validTicket]);
+          onSuccess("Ticket Validated");
+        } catch (e) {
+          onError("Ticket validation failed");
+          console.error(e);
+          return false;
+        }
+      } else {
+        onError("Ticket already used");
+        return false;
+      }
+    },
+    [scannable_tickets, event?.tickets, usr.update],
+  );
+
   const processQrcode = useCallback(async () => {
     if (!qrcode) return;
-    const [user_account, event_account, ticket_account] = qrcode
-      .substring(qrcode.indexOf("?") + 1)
-      .split("&");
+    const [x, e, t] = qrcode.substring(qrcode.indexOf("?") + 1).split("&");
+
+    const user_account = x?.split("=").pop();
+    const event_account = e?.split("=").pop();
+    const ticket_account = t?.split("=").pop();
     setTicketData({ user_account, event_account, ticket_account });
-  }, [qrcode]);
+
+    if (event_account === event?.event_id.split("-").pop()) {
+      // user ticket validation
+      await findAndValidateTicket(ticket_account);
+      setQrcode(null);
+    } else {
+      onError("Invalid ticket");
+      setQrcode(null);
+    }
+  }, [qrcode, event?.event_id, findAndValidateTicket]);
 
   useEffect(() => {
     processQrcode().catch(Err);

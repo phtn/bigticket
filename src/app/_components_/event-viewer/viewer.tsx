@@ -112,7 +112,7 @@ const MediaContainer = () => {
           fn={handleGetTickets}
         />,
       );
-      return <>{options.get(isTicketClaimed && beenClaimed)}</>;
+      return <>{options.get(isTicketClaimed || beenClaimed)}</>;
     },
     [
       is_vip,

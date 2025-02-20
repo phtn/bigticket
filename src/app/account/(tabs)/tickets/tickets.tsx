@@ -4,13 +4,17 @@ import { HyperList } from "@/ui/list";
 import { opts } from "@/utils/helpers";
 import { Spinner } from "@nextui-org/react";
 import { type UserTicket } from "convex/events/d";
-import { use, useCallback, useMemo } from "react";
+import { use, useCallback, useEffect, useMemo } from "react";
 import { Count, EmptyList, Header } from "../../_components_/common";
 import { TicketCard } from "./ticket-card";
 import { TicketViewer } from "./ticket-viewer";
 
 export const Tickets = () => {
-  const { vx, pending } = use(VxCtx)!;
+  const { vx, pending, getVxUser } = use(VxCtx)!;
+
+  useEffect(() => {
+    getVxUser();
+  }, [getVxUser]);
 
   const ticketsByEvent = useCallback(
     (arr: UserTicket[] | undefined): Map<string, UserTicket[]> => {

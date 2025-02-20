@@ -30,17 +30,17 @@ export const QrCodeGen = ({
     type: "svg" as DrawType,
     data: url,
     image: logo,
-    margin: 0.5,
+    margin: 0.75,
     qrOptions: {
       typeNumber: 0 as TypeNumber,
       mode: "Byte" as Mode,
-      errorCorrectionLevel: "M" as ErrorCorrectionLevel,
+      errorCorrectionLevel: "L" as ErrorCorrectionLevel,
     },
     imageOptions: {
-      hideBackgroundDots: true,
-      imageSize: 0.5,
-      margin: 0.5,
-      crossOrigin: "same-origin",
+      hideBackgroundDots: false,
+      imageSize: 1,
+      margin: 0.75,
+      crossOrigin: "Anonymous",
     },
     dotsOptions: {
       color: "#09090b",
@@ -52,11 +52,11 @@ export const QrCodeGen = ({
           { offset: 1, color: "#27272a" },
         ],
       },
-      type: "dots" as DotType,
+      type: "classy-rounded" as DotType,
     },
     cornersSquareOptions: {
-      color: "#14141b",
-      type: "extra-rounded" as CornerSquareType,
+      color: "#52525b",
+      type: "square" as CornerSquareType,
       // gradient: {
       //   type: 'linear', // 'radial'
       //   rotation: 180,
@@ -64,20 +64,11 @@ export const QrCodeGen = ({
       // },
     },
     cornersDotOptions: {
-      color: "#14141b",
-      // type: "none" as CornerDotType,
-      gradient: {
-        type: "radial",
-        rotation: 0,
-        colorStops: [
-          { offset: 0, color: "#475569" },
-          { offset: 1, color: "#64748b" },
-        ],
-      },
+      color: "#52525b",
     },
     backgroundOptions: {
       color: "transparent",
-      round: 0.15,
+      round: 0,
       // gradient: {
       //   type: 'linear', // 'radial'
       //   rotation: 0,
