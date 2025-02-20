@@ -43,7 +43,7 @@ export const VIPContent = ({ event, user_id }: VIPContentProps) => {
     checked: false,
     invitation_sent: false,
     tickets_claimed: false,
-    tickets_used: false,
+    tickets_used: 0,
   };
 
   const { events } = use(ConvexCtx)!;

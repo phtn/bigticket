@@ -215,8 +215,8 @@ export const tickets = mutation({
       return null;
     }
 
-    const target_event_id = tickets[0]?.event_id;
-    if (!target_event_id) return null;
+    const event_id = tickets[0]?.event_id;
+    if (!event_id) return null;
 
     // update user tickets
     const [updated_user_tickets] = updateTicketList(user.tickets, tickets, id);
@@ -229,7 +229,7 @@ export const tickets = mutation({
     });
 
     // check event
-    const target_event = await checkEvent(db, target_event_id);
+    const target_event = await checkEvent(db, event_id);
     if (target_event === null) {
       return null;
     }
@@ -241,15 +241,15 @@ export const tickets = mutation({
     );
 
     // check if user is a VIP
-    const vip_list = target_event.vip_list ?? [];
-    const is_vip = vip_list.findIndex((vip) => vip.email === user.email) !== -1;
+    const vipList = target_event.vip_list ?? [];
+    const isVip = vipList.some((vip) => vip.email === user.email);
+    const vip_list = isVip
+      ? vipList.map((vip) => ({ ...vip, tickets_claimed: true }))
+      : vipList;
 
-    // update event
     await db.patch(target_event._id, {
       ...target_event,
-      vip_list: is_vip
-        ? vip_list.map((vip) => ({ ...vip, tickets_claimed: true }))
-        : vip_list,
+      vip_list,
       tickets: updated_event_tickets,
       ticket_count: updated_event_tickets.length,
       updated_at: Date.now(),
@@ -265,9 +265,9 @@ function updateTicketList(
 ): [UserTicket[], boolean] {
   const ticket_url = (event_id: string, ticket_id: string) =>
     "https://bigticket.ph/tickets?x=" +
-    id.split("-")[4] +
+    id.split("-").pop() +
     "&e=" +
-    event_id.split("-")[4] +
+    event_id.split("-").pop() +
     "&t=" +
     ticket_id.split("-").reverse().join("--");
 
@@ -295,14 +295,16 @@ function updateTicketList(
 
   const updatedList = list.map((item) => {
     const matchingTicket = tickets.find(
-      (ticket) => ticket.event_id === item.event_id,
+      (ticket) => ticket.ticket_id === item.ticket_id,
     );
     return matchingTicket ? { ...item, ...matchingTicket } : item;
   });
 
   const newTickets = tickets
-    .filter((ticket) => !list.some((item) => item.event_id === ticket.event_id))
-    .map((item, i) => ({
+    .filter(
+      (ticket) => !list.some((item) => item.ticket_id === ticket.ticket_id),
+    )
+    .map((item) => ({
       ...defaults,
       ...item,
       ticket_url: ticket_url(item.event_id, item.ticket_id),

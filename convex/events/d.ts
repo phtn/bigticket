@@ -30,10 +30,10 @@ export const VIPSchema = v.object({
   created_by: v.optional(v.string()),
   updated_at: v.optional(v.float64()),
   ticket_count: v.number(),
+  tickets_claimed: v.optional(v.boolean()),
+  tickets_used: v.optional(v.number()),
   checked: v.optional(v.boolean()),
   invitation_sent: v.optional(v.boolean()),
-  tickets_claimed: v.optional(v.boolean()),
-  tickets_used: v.optional(v.boolean()),
 });
 
 export type VIP = Infer<typeof VIPSchema>;

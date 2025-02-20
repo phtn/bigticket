@@ -129,6 +129,7 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
         );
         try {
           if (!validTicket?.user_id) return;
+          validTicket.is_claimed = true;
           await usr.update.tickets(validTicket.user_id, [validTicket]);
           onSuccess("Ticket Validated");
         } catch (e) {

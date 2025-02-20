@@ -59,15 +59,15 @@ const MediaContainer = () => {
   const { activeEvent, activeEventInfo, moments, cover_src, isTicketClaimed } =
     use(EventViewerCtx)!;
 
-  const { getTicket, user_id, user_email } = use(TicketCtx)!;
+  const { getTicket, user_email } = use(TicketCtx)!;
 
-  const beenClaimed = useMemo(
-    () =>
-      activeEvent?.tickets?.findIndex(
-        (ticket) => ticket.user_id === user_id,
-      ) !== -1,
-    [activeEvent?.tickets, user_id],
-  );
+  // const beenClaimed = useMemo(
+  //   () =>
+  //     activeEvent?.tickets?.findIndex(
+  //       (ticket) => ticket.user_id === user_id,
+  //     ) !== -1,
+  //   [activeEvent?.tickets, user_id],
+  // );
   const is_vip = useMemo(() => {
     if (!activeEvent?.vip_list || !user_email) return false;
     return (
@@ -112,11 +112,11 @@ const MediaContainer = () => {
           fn={handleGetTickets}
         />,
       );
-      return <>{options.get(isTicketClaimed || beenClaimed)}</>;
+      return <>{options.get(isTicketClaimed)}</>;
     },
     [
       is_vip,
-      beenClaimed,
+      // beenClaimed,
       ticket_count,
       isTicketClaimed,
       handleGetTickets,

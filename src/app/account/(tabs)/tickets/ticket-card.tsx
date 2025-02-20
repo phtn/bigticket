@@ -25,7 +25,7 @@ export const TicketCard = (ticket: UserTicket) => {
     <Card
       id={ticket.ticket_id}
       isFooterBlurred
-      className="flex h-[360px] w-full items-center justify-center rounded-sm bg-peach/10"
+      className="flex h-[360px] w-full items-center justify-center rounded-sm bg-primary/20"
     >
       <CardHeader className="absolute top-0 z-10 flex w-full items-start justify-between gap-3 rounded-none bg-peach backdrop-blur-sm">
         <section className="flex w-full items-center justify-between">
@@ -36,7 +36,12 @@ export const TicketCard = (ticket: UserTicket) => {
             </p>
           </div>
           <div className="flex h-full items-center">
-            <h4 className="max-w-[5ch] text-center font-inter font-bold uppercase leading-none tracking-tighter text-white">
+            <h4
+              className={cn(
+                "max-w-[5ch] text-center font-inter font-bold uppercase leading-none tracking-tighter text-white",
+                { "text-teal-500": ticket?.is_claimed },
+              )}
+            >
               Admit one
             </h4>
           </div>
