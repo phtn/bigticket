@@ -1,13 +1,13 @@
 import { guid } from "@/utils/helpers";
-import {
-  type ChangeEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { type ChangeEvent, useCallback, useEffect, useState } from "react";
 
-export const useImage = (canvas: HTMLCanvasElement | null, inputFile: HTMLInputElement | null) => {
-  const [selectedFile, setSelectedFile] = useState<File | undefined>(inputFile?.files?.[0]);
+export const useImage = (
+  canvas: HTMLCanvasElement | null,
+  inputFile: HTMLInputElement | null,
+) => {
+  const [selectedFile, setSelectedFile] = useState<File | undefined>(
+    inputFile?.files?.[0],
+  );
   const [isLight, setIsLight] = useState<boolean>(true);
 
   const browseFile = useCallback(() => {
@@ -21,7 +21,7 @@ export const useImage = (canvas: HTMLCanvasElement | null, inputFile: HTMLInputE
     if (!e.target.files || e.target.files.length === 0) return;
     setSelectedFile(e.target.files[0]);
     return e.target.files[0];
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (!selectedFile) return;
@@ -39,7 +39,6 @@ export const useImage = (canvas: HTMLCanvasElement | null, inputFile: HTMLInputE
       img.src = event.target?.result as string;
     };
     reader.readAsDataURL(selectedFile);
-
   }, [selectedFile, canvas]);
 
   useEffect(() => {
@@ -48,23 +47,29 @@ export const useImage = (canvas: HTMLCanvasElement | null, inputFile: HTMLInputE
     }
   }, [selectedFile]);
 
-  const fromFile = useCallback(async (file: File | undefined) => {
-    if (!file) return;
-    return await convertToWebPFile(file, canvas);
-  }, [canvas]);
+  const fromFile = useCallback(
+    async (file: File | undefined) => {
+      if (!file) return;
+      return await convertToWebPFile(file, canvas);
+    },
+    [canvas],
+  );
 
-  const fromSource = useCallback(async (src: string) => {
-    const fileData = await urlToFile(src);
-    if (!fileData) return;
-    return await convertToWebPFile(fileData.file, canvas);
-  }, [canvas]);
+  const fromSource = useCallback(
+    async (src: string) => {
+      const fileData = await urlToFile(src);
+      if (!fileData) return;
+      return await convertToWebPFile(fileData.file, canvas);
+    },
+    [canvas],
+  );
 
   return { onInputFileChange, browseFile, isLight, fromSource, fromFile };
 };
 
 export const getTextColor = (src: string, w?: number, h?: number) => {
   if (src) {
-    const img = document.createElement('img');
+    const img = document.createElement("img");
     img.src = src;
     img.crossOrigin = "Anonymous";
     img.onload = () => {
@@ -75,15 +80,25 @@ export const getTextColor = (src: string, w?: number, h?: number) => {
         const sampleHeight = h ?? 400;
         canvas.width = sampleWidth;
         canvas.height = sampleHeight;
-        ctx.drawImage(img, 0, 0, sampleWidth, sampleHeight, 0, 0, sampleWidth, sampleHeight);
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          sampleWidth,
+          sampleHeight,
+          0,
+          0,
+          sampleWidth,
+          sampleHeight,
+        );
         const { r, g, b } = getAverageColor(ctx, sampleWidth, sampleHeight);
-        return isLightColor(r, g, b)
+        return isLightColor(r, g, b);
       }
-    }
+    };
   }
 
-  return true
-}
+  return true;
+};
 
 async function convertToWebPFile(
   inputFile: File,
@@ -104,8 +119,8 @@ async function convertToWebPFile(
   return new Promise((resolve, reject) => {
     img.onload = () => {
       // Set canvas size to match image
-      const dw = img.width * 0.4;
-      const dh = img.height * 0.4;
+      const dw = img.width * 0.66;
+      const dh = img.height * 0.66;
       canvas.width = dw;
       canvas.height = dh;
 
@@ -127,7 +142,7 @@ async function convertToWebPFile(
           URL.revokeObjectURL(imageUrl);
         },
         "image/webp",
-        0.80,
+        1,
       ); // 0.8 is the quality (0-1)
     };
 
@@ -140,16 +155,26 @@ async function convertToWebPFile(
   });
 }
 
-export const isLightColor = (r: number | undefined, g: number | undefined, b: number | undefined) => {
+export const isLightColor = (
+  r: number | undefined,
+  g: number | undefined,
+  b: number | undefined,
+) => {
   // Calculate the luminance of the color
   const luminance = 0.299 * (r ?? 0) + 0.587 * (g ?? 0) + 0.114 * (b ?? 0);
   return luminance > 186; // A threshold value to determine if the color is light
 };
 
-export const getAverageColor = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
+export const getAverageColor = (
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+) => {
   const imageData = ctx.getImageData(0, 0, width, height);
   const data = imageData.data;
-  let r = 0, g = 0, b = 0;
+  let r = 0,
+    g = 0,
+    b = 0;
 
   for (let i = 0; i < data.length; i += 4) {
     r += data[i] ?? 0;
@@ -178,7 +203,7 @@ export async function urlsToFiles(urls: (string | null)[]) {
   const filePromises = urls?.map(async (url) => {
     if (!url) url = "_";
     const fileData = await urlToFile(url);
-    return fileData
+    return fileData;
   });
   return Promise.all(filePromises);
 }

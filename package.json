@@ -29,6 +29,7 @@
     "@trpc/client": "^11.0.0-rc.700",
     "@trpc/react-query": "^11.0.0-rc.700",
     "@trpc/server": "^11.0.0-rc.700",
+    "@yudiel/react-qr-scanner": "^2.2.1",
     "animejs": "^3.2.2",
     "axios": "^1.7.9",
     "babel-plugin-react-compiler": "^19.0.0-beta-e552027-20250112",

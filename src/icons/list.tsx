@@ -606,6 +606,40 @@ function EGuitarGray(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function Energy(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="m6.194 11.397l5.998-8.085c.47-.632 1.348-.239 1.348.603v6.258c0 .505.345.913.77.913h2.918c.663 0 1.016.927.578 1.518l-5.998 8.084c-.47.632-1.348.239-1.348-.603v-6.258c0-.505-.345-.913-.77-.913H6.771c-.663 0-1.016-.927-.578-1.517"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
+function DotSm(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path fill="currentColor" d="M12 16a4 4 0 1 1 0-8a4 4 0 0 1 0 8Z"></path>
+    </svg>
+  );
+}
 function ImageIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1070,6 +1104,27 @@ function PencilEdit(props: SVGProps<SVGSVGElement>) {
         <path d="m16.214 4.982l1.402-1.401a1.982 1.982 0 0 1 2.803 2.803l-1.401 1.402m-2.804-2.804l-5.234 5.234c-1.045 1.046-1.568 1.568-1.924 2.205S8.342 14.561 8 16c1.438-.342 2.942-.7 3.579-1.056s1.16-.879 2.205-1.924l5.234-5.234m-2.804-2.804l2.804 2.804"></path>
         <path d="M21 12c0 4.243 0 6.364-1.318 7.682S16.242 21 12 21s-6.364 0-7.682-1.318S3 16.242 3 12s0-6.364 1.318-7.682S7.758 3 12 3"></path>
       </g>
+    </svg>
+  );
+}
+function Play(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M18.89 12.846c-.353 1.343-2.023 2.292-5.364 4.19c-3.23 1.835-4.845 2.752-6.146 2.384a3.25 3.25 0 0 1-1.424-.841C5 17.614 5 15.743 5 12s0-5.614.956-6.579a3.25 3.25 0 0 1 1.424-.84c1.301-.37 2.916.548 6.146 2.383c3.34 1.898 5.011 2.847 5.365 4.19a3.3 3.3 0 0 1 0 1.692"
+        color="currentColor"
+      ></path>
     </svg>
   );
 }
@@ -1542,6 +1597,52 @@ function SpinnerClock(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+function SpinnersPulseRing(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
+        transform="matrix(0 0 0 0 12 12)"
+      >
+        <animateTransform
+          attributeName="transform"
+          calcMode="spline"
+          dur="1.2s"
+          keySplines=".52,.6,.25,.99"
+          repeatCount="indefinite"
+          type="translate"
+          values="12 12;0 0"
+        ></animateTransform>
+        <animateTransform
+          additive="sum"
+          attributeName="transform"
+          calcMode="spline"
+          dur="1.2s"
+          keySplines=".52,.6,.25,.99"
+          repeatCount="indefinite"
+          type="scale"
+          values="0;1"
+        ></animateTransform>
+        <animate
+          attributeName="opacity"
+          calcMode="spline"
+          dur="1.2s"
+          keySplines=".52,.6,.25,.99"
+          repeatCount="indefinite"
+          values="1;0"
+        ></animate>
+      </path>
+    </svg>
+  );
+}
 function Stats(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1825,12 +1926,14 @@ export const icons = {
   Cocktail,
   CollectionIcon,
   Copy,
+  DotSm,
   ImageIcon,
   ImageGen,
   ImageUpload,
   InfoLine,
   EGuitarFender,
   EGuitarGray,
+  Energy,
   EyeOpen,
   Fire,
   Fullscreen,
@@ -1849,6 +1952,7 @@ export const icons = {
   NumberList,
   Pen,
   PencilEdit,
+  Play,
   Plus,
   PlusMinus,
   Printer,
@@ -1869,6 +1973,7 @@ export const icons = {
   Sparkles2,
   SpinnerBall,
   SpinnerClock,
+  SpinnersPulseRing,
   Stats,
   Squircle,
   Support,
