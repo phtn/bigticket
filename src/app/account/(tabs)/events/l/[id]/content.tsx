@@ -50,7 +50,10 @@ const LiveView = () => {
           <Image
             src={cover_url ?? "/icon/logomark_v2.svg"}
             alt={event?.event_name}
-            className="aspect-video h-lvh w-auto object-cover object-center"
+            className={cn(
+              "aspect-square h-lvh w-auto object-cover object-center",
+              { "aspect-video": cover_url },
+            )}
           />
           <div className="absolute left-2 top-2 z-10 bg-void/10 p-2 backdrop-blur-md">
             <p className="text-chalk">{event?.event_name}</p>

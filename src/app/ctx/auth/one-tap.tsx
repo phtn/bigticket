@@ -81,16 +81,7 @@ export const GoogleOneTap = () => {
           }
         }
 
-        // window.google.accounts.id.renderButton(
-        //   document.getElementById("holy-tap")!,
-        //   {
-        //     type: "icon",
-        //     shape: "pill",
-        //   },
-        // );
-
         window.google.accounts.id.prompt();
-        // Show the One Tap prompt
       };
 
       // Handle the Google Credential Response
@@ -122,13 +113,13 @@ export const GoogleOneTap = () => {
         log("check user-session, With user session", user);
         loadGoogleScript();
       }
-    }, 2000);
+    }, 2500);
 
     return () => clearTimeout(timeout);
   }, [supabase, pending, userSessionData, generateNonce, updateUser, user]);
 
   return (
-    <div id="holy-tap" className="hidden">
+    <div id="tap-dat-ass" className="hidden">
       Google One Tap is enabled.
     </div>
   );

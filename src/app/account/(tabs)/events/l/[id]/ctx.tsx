@@ -46,7 +46,6 @@ export const LiveViewCtx = createContext<LiveViewCtxValues | null>(null);
 export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
   const [event_id, setEventId] = useState<string | null>(null);
   const [host_id, setHostId] = useState<string | null>(null);
-  const [event, setEvent] = useState<SelectEvent | null>(null);
   const [cover_url, setCoverUrl] = useState<string | null>(null);
   const [qrcode, setQrcode] = useState<string | null>(null);
   const [ticket_data, setTicketData] = useState<TicketData | null>(null);
@@ -54,6 +53,8 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
   const { open, toggle } = useToggle();
 
   const { events, files, usr } = use(ConvexCtx)!;
+
+  const event = events.get.byId(event_id!);
 
   const setFn = <T,>(
     tx: TransitionStartFunction,
@@ -65,27 +66,27 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const getEventById = useCallback(
-    async () => (event_id ? events.get.byId(event_id) : null),
-    [event_id, events.get],
-  );
+  // const getEventById = useCallback(async () => {
+  //   if (event_id) {
+  //     const e = events.get.byId(event_id);
+  //     setEvent(e);
+  //   }
+  //   return null;
+  // }, [event_id, events.get]);
 
-  const getEvent = useCallback(() => {
-    setFn(fn, getEventById, setEvent);
-  }, [getEventById]);
+  // useEffect(() => {
+  //   getEventById();
+  // }, [getEventById]);
 
   const getEventId = useCallback((id: string | null) => {
     setEventId(id);
   }, []);
 
-  useEffect(() => {
-    getEvent();
-  }, [getEvent]);
+  const getImageSrc = useCallback(async () => {
+    const src = await files.get(event?.cover_url);
+    return src;
+  }, [event, files]);
 
-  const getImageSrc = useCallback(
-    async () => (event ? await files.get(event.cover_url) : null),
-    [event, files],
-  );
   const getCoverUrl = useCallback(() => {
     setFn(fn, getImageSrc, setCoverUrl);
   }, [getImageSrc]);
@@ -169,6 +170,10 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     processQrcode().catch(Err);
   }, [processQrcode]);
+
+  useEffect(() => {
+    console.log(pending, event_id);
+  }, [pending, event_id]);
 
   const value = useMemo(
     () => ({

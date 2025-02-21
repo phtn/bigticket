@@ -8,7 +8,7 @@ export default function SearchLayout({
   ev: ReactNode;
 }) {
   return (
-    <main className="h-screen w-full bg-tan">
+    <main className="h-screen w-full">
       <div className="flex-grow">{children}</div>
       {ev}
     </main>
