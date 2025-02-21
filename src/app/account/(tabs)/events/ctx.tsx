@@ -30,7 +30,7 @@ export const EventCtxProvider = ({ children }: { children: ReactNode }) => {
     tx: TransitionStartFunction,
     action: () => SelectEvent[] | undefined,
   ) => {
-    tx(() => {
+    tx(async () => {
       setEventList(action());
     });
   };
