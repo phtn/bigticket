@@ -5,13 +5,15 @@ export const all = query({
   handler: async ({ db }) => (await db.query("events").take(25)).reverse(),
 });
 
-export const byId = mutation({
+export const byId = query({
   args: { id: v.string() },
-  handler: async ({ db }, { id }) =>
-    await db
+  handler: async ({ db }, { id }) => {
+    const event = await db
       .query("events")
       .withIndex("by_event_id", (q) => q.eq("event_id", id))
-      .first(),
+      .first();
+    return event ?? null;
+  },
 });
 
 export const byType = mutation({
@@ -23,7 +25,7 @@ export const byType = mutation({
       .first(),
 });
 
-export const byHostId = mutation({
+export const byHostId = query({
   args: { host_id: v.string() },
   handler: async ({ db }, { host_id }) =>
     (
@@ -32,6 +34,25 @@ export const byHostId = mutation({
         .withIndex("by_host_id", (q) => q.eq("host_id", host_id))
         .collect()
     ).reverse(),
+});
+
+export const byIds = query({
+  args: {
+    ids: v.array(v.string()),
+  },
+  handler: async ({ db }, { ids }) => {
+    const events = await Promise.all(
+      ids
+        .map((id) =>
+          db
+            .query("events")
+            .withIndex("by_event_id", (q) => q.eq("event_id", id))
+            .collect(),
+        )
+        .reverse(),
+    );
+    return events.flat();
+  },
 });
 
 export const byCode = mutation({

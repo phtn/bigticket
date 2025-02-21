@@ -16,7 +16,7 @@ import { Checkbox, Form, Input } from "@nextui-org/react";
 import { Hyper } from "@/ui/button/button";
 import { HyperList } from "@/ui/list";
 import SendInvite from "../email/send-invite";
-import { inputClassNames } from "../../content";
+import { inputClassNames } from "../../editor";
 import { ButtonIcon } from "@/ui/button";
 import { type EventField, vip_info, VIPZod } from "./schema";
 import { BlockHeader } from "./components";
@@ -29,7 +29,7 @@ interface VIPBlockProps {
 }
 interface VIPContentProps {
   event: SelectEvent | null;
-  user_id: string | undefined;
+  user_id: string | null;
 }
 
 export const VIPContent = ({ event, user_id }: VIPContentProps) => {

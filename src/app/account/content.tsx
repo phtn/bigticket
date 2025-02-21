@@ -1,21 +1,21 @@
 "use client";
 
-import type { SelectEvent } from "convex/events/d";
-import { PreloadedEventsCtxProvider } from "../ctx/event/preload";
-import { Header } from "./_components_/common";
 import { Icon } from "@/icons";
 import { Card, CardHeader } from "@nextui-org/react";
+import type { SelectEvent } from "convex/events/d";
 import { use } from "react";
 import { VxCtx } from "../ctx/convex/vx";
+import { PreloadedUserEventsCtxProvider } from "../ctx/event/user";
+import { Header } from "./_components_/common";
 
 export interface AccountContentProps {
-  slug: string[] | undefined;
-  preloaded: SelectEvent[];
+  id: string | undefined;
+  events: SelectEvent[];
 }
 export const Content = (props: AccountContentProps) => {
   const { vx } = use(VxCtx)!;
   return (
-    <PreloadedEventsCtxProvider {...props}>
+    <PreloadedUserEventsCtxProvider {...props}>
       <div className="min-h-[80vh] w-full justify-center rounded-none pb-10 md:rounded-lg md:px-6">
         <div className="">
           <Header title="Activity">
@@ -53,6 +53,6 @@ export const Content = (props: AccountContentProps) => {
           </div>
         </div>
       </div>
-    </PreloadedEventsCtxProvider>
+    </PreloadedUserEventsCtxProvider>
   );
 };

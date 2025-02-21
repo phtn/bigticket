@@ -1,18 +1,18 @@
 "use client";
 
+import { PreloadedUserEventsCtx } from "@/app/ctx/event/user";
+import { SidebarCtx } from "@/app/ctx/sidebar";
+import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { opts } from "@/utils/helpers";
 import { Spinner } from "@nextui-org/react";
 import { use, useCallback } from "react";
-import { EventCardAccount } from "./event-card";
-import { cn } from "@/lib/utils";
 import { Count, EmptyList, Header } from "../../_components_/common";
-import { SidebarCtx } from "@/app/ctx/sidebar";
-import { PreloadedEventsCtx } from "@/app/ctx/event/";
 import { CreateEvent } from "./create";
+import { EventCardAccount } from "./event-card";
 
 export const Events = () => {
-  const { signedEvents, pending } = use(PreloadedEventsCtx)!;
+  const { signedEvents, pending } = use(PreloadedUserEventsCtx)!;
   const { open } = use(SidebarCtx)!;
 
   const Counter = useCallback(() => {

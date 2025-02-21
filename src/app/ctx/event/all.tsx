@@ -23,6 +23,7 @@ interface ImageURL {
   logo_src?: string;
 }
 export type SignedEvent = SelectEvent & ImageURL;
+//
 interface PreloadedEventsCtxValues {
   signedEvents: SignedEvent[] | undefined;
   pending: boolean;
@@ -31,10 +32,11 @@ interface PreloadedEventsCtxValues {
   counter: UserCounter | null;
   is_pending: boolean;
 }
+//
 interface PreloadedEventsCtxProps {
   children: ReactNode;
-  preloaded: SelectEvent[];
-  slug: string[] | undefined;
+  events: SelectEvent[];
+  id?: string | undefined;
 }
 export interface UserCounter {
   bookmarks: string[] | undefined;
@@ -50,7 +52,7 @@ export const PreloadedEventsCtx =
 
 export const PreloadedEventsCtxProvider = ({
   children,
-  preloaded,
+  events,
 }: PreloadedEventsCtxProps) => {
   const [selectedEvent, setSelectedEvent] = useState<SignedEvent | null>(null);
   const [pending, setPending] = useState<boolean>(false);
@@ -121,12 +123,12 @@ export const PreloadedEventsCtxProvider = ({
 
   const createSignedEvents = useCallback(async () => {
     setPending(true);
-    if (!preloaded) return;
-    const promises = preloaded ? preloaded.map(collectEvent) : [];
+    if (!events) return;
+    const promises = events ? events.map(collectEvent) : [];
     const resolve = await Promise.all(promises);
     if (resolve.length <= 0) setPending(false);
     setSignedEvents(resolve);
-  }, [preloaded, collectEvent]);
+  }, [events, collectEvent]);
 
   useEffect(() => {
     createSignedEvents()

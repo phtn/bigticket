@@ -1,6 +1,8 @@
 "use client";
 
 import { ConvexCtx } from "@/app/ctx/convex";
+import { type SignedEvent } from "@/app/ctx/event/all";
+import { PreloadedUserEventsCtx } from "@/app/ctx/event/user";
 import { useImage } from "@/hooks/useImage";
 import { Err, Ok } from "@/utils/helpers";
 import { log } from "@/utils/logger";
@@ -32,17 +34,20 @@ interface EventEditorCtxValues {
   query: string | undefined;
   locale: string | undefined;
   getRefs: (props: ImageRefs) => void;
-  browseFile: VoidFunction
+  browseFile: VoidFunction;
   onInputFileChange: (e: ChangeEvent<HTMLInputElement>) => File | undefined;
   updateTextColor: (id: string | undefined, light: boolean) => Promise<void>;
   updateQueryParams: (
     query: string | undefined,
     locale: string | undefined,
   ) => void;
+  getSignedEvent: (event_id: string | undefined) => void;
+  signedEvent: SignedEvent | null;
+  pending: boolean;
 }
 interface ImageRefs {
-  canvasRef: RefObject<HTMLCanvasElement | null>
-  inputFileRef: RefObject<HTMLInputElement | null>
+  canvasRef: RefObject<HTMLCanvasElement | null>;
+  inputFileRef: RefObject<HTMLInputElement | null>;
 }
 
 export const EventEditorCtx = createContext<EventEditorCtxValues | null>(null);
@@ -53,18 +58,36 @@ export const EventEditorCtxProvider = ({
   children: ReactNode;
 }) => {
   const [uploading, setLoading] = useState(false);
+  const [pending, setPending] = useState(false);
   const [query, setQuery] = useState<string | undefined>("cityscapes");
   const [locale, setLocale] = useState<string | undefined>("en-US");
   const [cover_src, setCoverSrc] = useState<string | null>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [inputFile, setInputFile] = useState<HTMLInputElement | null>(null);
+  const [signedEvent, setSignedEvent] = useState<SignedEvent | null>(null);
+
+  const { signedEvents } = use(PreloadedUserEventsCtx)!;
+
+  const getSignedEvent = useCallback(
+    (event_id: string | undefined) => {
+      setPending(true);
+      if (!event_id) return;
+      const event = signedEvents?.find((e) => e.event_id === event_id) ?? null;
+      setSignedEvent(event);
+      setPending(false);
+    },
+    [signedEvents],
+  );
 
   const getRefs = useCallback(({ canvasRef, inputFileRef }: ImageRefs) => {
     setCanvas(canvasRef.current);
     setInputFile(inputFileRef.current);
   }, []);
 
-  const { fromSource, fromFile, browseFile, onInputFileChange } = useImage(canvas, inputFile);
+  const { fromSource, fromFile, browseFile, onInputFileChange } = useImage(
+    canvas,
+    inputFile,
+  );
 
   const updateQueryParams = useCallback(
     (q: string | undefined, l: string | undefined) => {
@@ -85,10 +108,13 @@ export const EventEditorCtxProvider = ({
     [files],
   );
 
-  const updateTextColor = useCallback(async (id: string | undefined, light: boolean) => {
-    if (!id) return;
-    await events.update.isCoverLight(id, light);
-  }, [events.update]);
+  const updateTextColor = useCallback(
+    async (id: string | undefined, light: boolean) => {
+      if (!id) return;
+      await events.update.isCoverLight(id, light);
+    },
+    [events.update],
+  );
 
   const saveFn = useCallback(
     async (
@@ -98,22 +124,31 @@ export const EventEditorCtxProvider = ({
     ) => {
       if (!url || !event_id) return null;
 
-      const updateField = async (updateFn: (id: string, url: string) => Promise<string | null>, successMessage: string) => {
+      const updateField = async (
+        updateFn: (id: string, url: string) => Promise<string | null>,
+        successMessage: string,
+      ) => {
         try {
           await updateFn(event_id, url);
           Ok(setLoading, successMessage)();
-          return "success"
+          return "success";
         } catch (e) {
           Err(setLoading, "Failed to update photo.")(e as Error);
-          return null
+          return null;
         }
       };
 
       switch (field) {
         case "cover_url":
-          return await updateField(events.update.cover_url, "Cover photo updated!");
+          return await updateField(
+            events.update.cover_url,
+            "Cover photo updated!",
+          );
         case "photo_url":
-          return await updateField(events.update.photo_url, "Event photo updated!");
+          return await updateField(
+            events.update.photo_url,
+            "Event photo updated!",
+          );
         default:
           return null;
       }
@@ -141,7 +176,6 @@ export const EventEditorCtxProvider = ({
       event_id: string | undefined,
       field: "cover_url" | "photo_url",
     ) => {
-
       setLoading(true);
       if (!src) return null;
       const webp = await fromSource(src);
@@ -165,6 +199,9 @@ export const EventEditorCtxProvider = ({
       getRefs,
       browseFile,
       onInputFileChange,
+      getSignedEvent,
+      signedEvent,
+      pending,
     }),
     [
       uploadFromSource,
@@ -178,10 +215,11 @@ export const EventEditorCtxProvider = ({
       cover_src,
       getRefs,
       browseFile,
-      onInputFileChange
+      onInputFileChange,
+      getSignedEvent,
+      signedEvent,
+      pending,
     ],
   );
   return <EventEditorCtx value={value}>{children}</EventEditorCtx>;
 };
-
-

@@ -1,6 +1,5 @@
-import { fetchQuery } from "convex/nextjs";
-import { api } from "@vx/api";
 import { Content } from "./content";
+import { preloadAllEvents } from "@/app/actions";
 
 export interface PageProps {
   params: Promise<{
@@ -9,8 +8,8 @@ export interface PageProps {
 }
 
 const Page = async ({ params }: PageProps) => {
-  const events = await fetchQuery(api.events.get.all);
   const { slug } = await params;
-  return <Content slug={slug} preloaded={events} />;
+  const events = await preloadAllEvents();
+  return <Content slug={slug} events={events} />;
 };
 export default Page;

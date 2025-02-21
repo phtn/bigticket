@@ -54,8 +54,8 @@ export const EmptyList = ({
         {loading ? <Spinner size="sm" /> : <Count count={count} />}
       </Header>
       <div className="flex items-center justify-center">
-        <div className="flex h-20 min-w-56 items-center justify-center">
-          {message}
+        <div className="flex h-20 min-w-56 animate-enter items-center justify-center font-inter text-sm tracking-tighter opacity-80">
+          {loading ? <Icon name="SpinnerBall" /> : message}
         </div>
       </div>
     </div>

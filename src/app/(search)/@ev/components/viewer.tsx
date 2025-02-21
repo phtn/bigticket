@@ -1,42 +1,77 @@
+import { EventViewerCtx } from "@/app/ctx/event";
+import { TicketCtx } from "@/app/ctx/event/ticket";
+import { useDime } from "@/hooks/useDime";
+import { usePops } from "@/hooks/usePops";
 import { cn } from "@/lib/utils";
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
 import { normalizeTitle, opts } from "@/utils/helpers";
 import { Image, Tab, Tabs } from "@nextui-org/react";
-import { type ReactNode, use, useCallback, useMemo, useRef } from "react";
-import { EventViewerCtx } from "../../ctx/event";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  type PointerEvent,
+  type ReactNode,
+  use,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ActionPanel,
-  GetTicketButton,
+  ClaimedTicketButton,
   EventGroupDetail,
   EventViewerFooter,
+  GetTicketButton,
   InfoGrid,
-  ClaimedTicketButton,
-} from "./components";
-import { usePops } from "@/hooks/usePops";
-import { useDime } from "@/hooks/useDime";
-import { TicketCtx } from "@/app/ctx/event/ticket";
-import { useRouter } from "next/navigation";
+} from ".";
 
 export const EventViewer = () => {
-  const { open, toggle } = use(EventViewerCtx)!;
+  const { open, toggle, activeEvent, getEvent } = use(EventViewerCtx)!;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const event_id = searchParams.get("x");
+
+  useEffect(() => {
+    if (event_id) {
+      getEvent(event_id);
+    }
+  }, [event_id, getEvent]);
+
+  const handleCloseDrawer = useCallback(() => {
+    router.push("/", { scroll: false });
+    toggle();
+  }, [toggle, router]);
+
+  const handleDrag = useCallback(
+    (e: PointerEvent<HTMLDivElement>, pct = 50) => {
+      if (pct < 50) {
+        handleCloseDrawer();
+      }
+    },
+    [handleCloseDrawer],
+  );
 
   usePops(open, toggle);
 
   return (
     <SideVaul
-      open={open}
+      open={!!event_id}
+      onClose={handleCloseDrawer}
       onOpenChange={toggle}
+      onDrag={handleDrag}
+      onRelease={handleCloseDrawer}
       direction="right"
       title={"Event Viewer"}
       description={"View event details."}
       dismissible
     >
       <FlatWindow
-        closeFn={toggle}
+        closeFn={handleCloseDrawer}
         icon="Fire"
         title=""
-        variant="god"
+        variant={activeEvent?.is_cover_light ? "goddess" : "void"}
         className="absolute z-50 w-full rounded-none border-0 bg-transparent/10"
         wrapperStyle="border-gray-500 md:border-l-2"
       >
@@ -56,18 +91,22 @@ const MediaContainer = () => {
   const { screen } = useDime(ref);
   const router = useRouter();
 
-  const { activeEvent, activeEventInfo, moments, cover_src, isTicketClaimed } =
+  const { activeEvent, activeEventInfo, moments, cover_src, counter, user_id } =
     use(EventViewerCtx)!;
+
+  const isClaimed = useMemo(() => {
+    const userInEvent =
+      counter?.tickets?.findIndex(
+        (ticket) => ticket.event_id === activeEvent?.event_id,
+      ) !== -1;
+    const userHasTickets =
+      counter?.tickets?.findIndex((ticket) => ticket.user_id === user_id) !==
+      -1;
+    return userInEvent ? userHasTickets : false;
+  }, [counter, user_id, activeEvent?.event_id]);
 
   const { getTicket, user_email } = use(TicketCtx)!;
 
-  // const beenClaimed = useMemo(
-  //   () =>
-  //     activeEvent?.tickets?.findIndex(
-  //       (ticket) => ticket.user_id === user_id,
-  //     ) !== -1,
-  //   [activeEvent?.tickets, user_id],
-  // );
   const is_vip = useMemo(() => {
     if (!activeEvent?.vip_list || !user_email) return false;
     return (
@@ -112,13 +151,12 @@ const MediaContainer = () => {
           fn={handleGetTickets}
         />,
       );
-      return <>{options.get(isTicketClaimed)}</>;
+      return <>{options.get(isClaimed)}</>;
     },
     [
       is_vip,
-      // beenClaimed,
       ticket_count,
-      isTicketClaimed,
+      isClaimed,
       handleGetTickets,
       handleViewTickets,
       activeEvent?.is_private,
@@ -130,6 +168,15 @@ const MediaContainer = () => {
     () => `${((screen.height - 314) / 7).toFixed(2)}px`,
     [screen.height],
   );
+
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setVisible(true);
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <div className="mx-auto h-[calc(100vh-64px)] w-full max-w-6xl overflow-y-scroll font-inter tracking-tight md:h-full md:w-[30rem]">
@@ -162,11 +209,13 @@ const MediaContainer = () => {
                 src={cover_src ?? "/svg/star_v2.svg"}
                 className="relative z-0 aspect-auto h-auto w-screen md:w-[30rem]"
               />
-              <TitleDisplay
-                event_name={event_name}
-                narrow={moments.narrow}
-                time={moments.start_time.compact}
-              />
+              {visible && (
+                <TitleDisplay
+                  event_name={event_name}
+                  narrow={moments.narrow}
+                  time={moments.start_time.compact}
+                />
+              )}
             </div>
           </Tab>
           <Tab key={"details"} title="Details">
@@ -199,8 +248,8 @@ interface TitleDisplayProps {
   time: string;
 }
 const TitleDisplay = ({ event_name, narrow, time }: TitleDisplayProps) => (
-  <div className="absolute bottom-0 left-0 z-10 w-fit space-y-0.5 rounded-sm bg-void/40 py-3 backdrop-blur-sm md:bottom-2 md:left-2">
-    <p className="w-fit space-x-1.5 rounded-e-xl bg-void/60 px-1.5 py-0.5 text-xs uppercase tracking-wide text-peach">
+  <div className="absolute bottom-0 left-0 z-10 w-fit animate-enter space-y-0.5 rounded-sm bg-void/40 py-3 backdrop-blur-sm md:bottom-2 md:left-2">
+    <p className="w-fit space-x-1.5 rounded-e-xl bg-void/60 px-1.5 py-0.5 text-tiny font-bold uppercase tracking-tighter text-chalk opacity-70">
       <span>{narrow.day}</span> <span>{narrow.date}</span> <span>{time}</span>
     </p>
     <div className="px-3">

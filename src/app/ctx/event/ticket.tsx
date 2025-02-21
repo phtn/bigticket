@@ -1,13 +1,11 @@
 "use client";
 
-import { getUserID } from "@/app/actions";
-import { Err, guid } from "@/utils/helpers";
+import { guid } from "@/utils/helpers";
 import type { SelectEvent, UserTicket } from "convex/events/d";
 import {
   createContext,
   use,
   useCallback,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -15,40 +13,32 @@ import {
 import { ConvexCtx } from "../convex";
 import { onSuccess } from "../toast";
 import { AuthCtx } from "../auth";
+import { getUserID } from "@/app/actions";
 
 interface TicketCtxValues {
   getTicket: (activeEvent: SelectEvent | null) => Promise<string | null>;
-  user_id: string | undefined;
   user_email: string | undefined;
-  count: number
+  count: number;
 }
 export const TicketCtx = createContext<TicketCtxValues | null>(null);
 
 export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
   const { usr } = use(ConvexCtx)!;
-  const { user } = use(AuthCtx)!
+  const { user } = use(AuthCtx)!;
 
-  const [user_id, setUserId] = useState<string>();
   const [count, setCount] = useState<number>(0);
-  const getUserId = useCallback(async () => {
-    setUserId(await getUserID());
-  }, []);
-
-  useEffect(() => {
-    getUserId().catch(Err);
-  }, [getUserId]);
-
 
   const getTicket = useCallback(
     async (e: SelectEvent | null) => {
+      const user_id = await getUserID();
       if (!e || !user_id) return null;
 
-      let ticket_count = 0
-      const is_vip = e.vip_list?.find((vip) => vip.email === user?.email)
+      let ticket_count = 0;
+      const is_vip = e.vip_list?.find((vip) => vip.email === user?.email);
       if (is_vip?.ticket_count && !is_vip?.tickets_claimed) {
         ticket_count = is_vip.ticket_count ?? 0;
       }
-      console.log(ticket_count)
+      console.log(ticket_count);
       if (!ticket_count) return null;
       setCount(ticket_count);
 
@@ -82,17 +72,16 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
       }
       return response;
     },
-    [user_id, usr.update, user],
+    [usr.update, user],
   );
 
   const value = useMemo(
     () => ({
       count,
       getTicket,
-      user_id,
       user_email: user?.email,
     }),
-    [count, getTicket, user_id, user?.email],
+    [count, getTicket, user?.email],
   );
   return <TicketCtx value={value}>{children}</TicketCtx>;
 };

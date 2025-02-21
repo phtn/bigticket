@@ -2,7 +2,7 @@
 
 import { env } from "@/env";
 import { api } from "@vx/api";
-import { fetchMutation } from "convex/nextjs";
+import { fetchQuery, preloadedQueryResult, preloadQuery } from "convex/nextjs";
 import { cookies } from "next/headers";
 
 export type Modes = "light" | "dark" | "system";
@@ -46,7 +46,7 @@ export const setUserID = async (id: string) => {
 export const getUserID = async () => {
   const cookieStore = await cookies();
   const id = cookieStore.get("big-ticket--id")?.value;
-  return id;
+  return id ?? null;
 };
 
 export const deleteUserID = async () => {
@@ -63,7 +63,7 @@ export const setAccountID = async (id: string) => {
 
 export const getAccountID = async () => {
   const cookieStore = await cookies();
-  const id = cookieStore.get("big-ticket--account-id")?.value;
+  const id = cookieStore.get("big-ticket--account-id")?.value ?? null;
   return id;
 };
 
@@ -72,8 +72,22 @@ export const deleteAccountID = async () => {
   cookieStore.delete("big-ticket--account-id");
 };
 
-export const fetchEventById = async (id: string) => {
-  return await fetchMutation(api.events.get.byId, {
-    id: id,
+export const fetchAllEvents = async () => {
+  const events = await fetchQuery(api.events.get.all);
+  return events;
+};
+
+export const preloadAllEvents = async () => {
+  const preloadedEvents = await preloadQuery(api.events.get.all);
+  const events = preloadedQueryResult(preloadedEvents);
+  return events;
+};
+
+export const preloadEventsByHostId = async (host_id: string | null) => {
+  if (!host_id) return [];
+  const preloadedEvents = await preloadQuery(api.events.get.byHostId, {
+    host_id,
   });
+  const events = preloadedQueryResult(preloadedEvents);
+  return events;
 };

@@ -1,11 +1,16 @@
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
 import { QrCodeGen } from "../../_components_/qr";
-import { use } from "react";
+import { use, useCallback } from "react";
 import { TicketViewerCtx } from "./ctx";
+import { opts } from "@/utils/helpers";
 
 export const TicketViewer = () => {
   const { ticket, open, toggle } = use(TicketViewerCtx)!;
+  const TicketStatusIndicator = useCallback(() => {
+    const options = opts(<TicketScanned />, <TicketNotScanned />);
+    return <>{options.get(ticket?.is_claimed ?? false)}</>;
+  }, [ticket?.is_claimed]);
   return (
     <SideVaul
       open={open}
@@ -33,13 +38,29 @@ export const TicketViewer = () => {
             />
           </div>
           <div className="flex h-24 w-full"></div>
-          <div className="flex h-14 w-full items-center justify-center gap-4 bg-secondary font-inter font-bold uppercase tracking-tighter text-white">
-            <span>valid ticket</span>
-            <span>&middot;</span>
-            <span>admit one</span>
-          </div>
+          <TicketStatusIndicator />
         </div>
       </FlatWindow>
     </SideVaul>
+  );
+};
+
+const TicketNotScanned = () => {
+  return (
+    <div className="flex h-14 w-full items-center justify-center gap-4 bg-peach font-inter font-bold uppercase tracking-tighter text-white">
+      <span>valid ticket</span>
+      <span>&middot;</span>
+      <span>admit one</span>
+    </div>
+  );
+};
+
+const TicketScanned = () => {
+  return (
+    <div className="flex h-14 w-full items-center justify-center gap-4 bg-teal-500 font-inter font-bold uppercase tracking-tighter text-white">
+      <span>valid ticket</span>
+      <span>&middot;</span>
+      <span>Ticket Already Scanned</span>
+    </div>
   );
 };

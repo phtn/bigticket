@@ -7,7 +7,7 @@ import type {
 } from "convex/events/d";
 import type { InsertUser, SelectUser, UpdateUser } from "convex/users/d";
 
-export interface ConvexCtxValues {
+export interface DConvexCtxValues {
   usr: {
     create: (args: InsertUser) => Promise<Id<"users"> | null>;
     get: {
@@ -38,10 +38,10 @@ export interface ConvexCtxValues {
   events: {
     create: (event: InsertEvent) => Promise<Id<"events"> | null>;
     get: {
-      // all: () => SelectEvent[] | undefined;
-      byId: (id: string) => Promise<SelectEvent | null>;
-      byIds: (ids: string[]) => Promise<SelectEvent[] | undefined>;
-      byHostId: (id: string) => Promise<SelectEvent[] | undefined>;
+      all: () => SelectEvent[] | undefined;
+      byId: (id: string) => SelectEvent | null;
+      byIds: (ids: string[]) => SelectEvent[] | undefined;
+      byHostId: (id: string) => SelectEvent[] | undefined;
     };
     update: {
       status: (id: string, is_active: boolean) => Promise<Id<"events"> | null>;
@@ -54,7 +54,6 @@ export interface ConvexCtxValues {
       views: (id: string) => Promise<string | null>;
       vip: (id: string, vip: VIP) => Promise<string | null>;
     };
-    getAllEvents: () => SelectEvent[] | undefined;
   };
 
   files: {
@@ -62,13 +61,4 @@ export interface ConvexCtxValues {
     get: (storageId: string | undefined) => Promise<string | null>;
   };
   createvx: () => Promise<string | null>;
-
-  // logs: {
-  //   create: (
-  //     args: InsertLog,
-  //   ) => Promise<(string & { __tableName: "logs" }) | null>;
-  //   get: {
-  //     byId: (id: string) => Promise<SelectLog[] | null>;
-  //   };
-  // };
 }

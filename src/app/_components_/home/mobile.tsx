@@ -1,10 +1,10 @@
 import { HyperList } from "@/ui/list";
-import { EventCard } from "./components/event-card";
+import { EventCard } from "../../(search)/event-card";
 import { Hero } from "./components/hero";
 import { use, useCallback, useState } from "react";
 import { Proxima } from "../proxima";
 import { Collections } from "../sidebar";
-import { PreloadedEventsCtx } from "@/app/ctx/event/preload";
+import { PreloadedEventsCtx } from "@/app/ctx/event/all";
 import { categories, type Category } from "./components/category";
 import { cn } from "@/lib/utils";
 

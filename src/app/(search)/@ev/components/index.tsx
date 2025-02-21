@@ -32,7 +32,7 @@ export const GetTicketButton = ({
       if (!debounced) {
         setDebounced(true);
       }
-    }, 750);
+    }, 1000);
     return () => clearTimeout(timer);
   }, [debounced]);
 
@@ -96,7 +96,7 @@ export const GetTicketButton = ({
           </div>
         ) : (
           <div className="flex items-center justify-center">
-            <Spinner size="md" color="secondary" />
+            <Spinner size="sm" color="secondary" />
           </div>
         )}
       </Button>
@@ -186,7 +186,7 @@ interface EventGroupDetailProps {
   event_url: string | undefined;
   event_venue: string | undefined;
   h: string;
-  is_online?: boolean
+  is_online?: boolean;
 }
 export const EventGroupDetail = ({
   host_name,
@@ -195,7 +195,10 @@ export const EventGroupDetail = ({
   is_online,
   h,
 }: EventGroupDetailProps) => {
-  const [venue_name, venue_address] = useMemo(() => event_venue?.split("---") ?? ["", ""], [event_venue]);
+  const [venue_name, venue_address] = useMemo(
+    () => event_venue?.split("---") ?? ["", ""],
+    [event_venue],
+  );
   const [debounced, setDebounced] = useState(false);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -204,8 +207,7 @@ export const EventGroupDetail = ({
       }
     }, 1000);
     return () => clearTimeout(timer);
-  }
-    , [debounced]);
+  }, [debounced]);
   return (
     <div className="row-span-2 h-full">
       <div
@@ -213,23 +215,35 @@ export const EventGroupDetail = ({
         style={{ height: h }}
       >
         <span>Organizers</span>
-        {!debounced ? <Spinner size="sm" /> : <span className=" animate-enter">{host_name}</span>}
+        {!debounced ? (
+          <Spinner size="sm" />
+        ) : (
+          <span className="animate-enter">{host_name}</span>
+        )}
       </div>
       <div
         className="flex h-1/2 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white px-4 font-semibold"
         style={{ height: h }}
       >
         <span>{is_online ? "Website" : "Venue"}</span>
-        {!debounced ? <Spinner size="sm" /> : <div className="text-right overflow-x-scroll">
-          {is_online ? <div>{event_url}</div> :
-            <>
-              <p className="max-w-[30ch] animate-enter">{venue_name}</p>
-              <p className="text-tiny font-normal whitespace-nowrap max-w-[50ch] text-ellipsis animate-enter delay-200 opacity-80">{venue_address}</p>
-            </>
-          }
-        </div>}
+        {!debounced ? (
+          <Spinner size="sm" />
+        ) : (
+          <div className="overflow-x-scroll text-right">
+            {is_online ? (
+              <div>{event_url}</div>
+            ) : (
+              <>
+                <p className="max-w-[30ch] animate-enter">{venue_name}</p>
+                <p className="max-w-[50ch] animate-enter text-ellipsis whitespace-nowrap text-tiny font-normal opacity-80 delay-200">
+                  {venue_address}
+                </p>
+              </>
+            )}
+          </div>
+        )}
       </div>
-    </div >
+    </div>
   );
 };
 

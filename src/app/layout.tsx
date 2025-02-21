@@ -3,13 +3,14 @@ import "@/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import {
-  Inter,
   Cherry_Bomb_One,
+  Inter,
   Luckiest_Guy,
   Poetsen_One,
 } from "next/font/google";
-import Providers from "./ctx";
+import { type ReactNode } from "react";
 import { Navbar } from "./_components_/navbar";
+import Providers from "./ctx";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -31,14 +32,14 @@ const poet = Poetsen_One({
   subsets: ["latin"],
 });
 export const metadata: Metadata = {
-  title: "BigTicket",
+  title: "Big Ticket",
   description: "Excitement guaranteed!",
   icons: [{ rel: "icon", url: "/icon/logomark_v2.svg" }],
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{ children: ReactNode }>) {
   return (
     <html
       lang="en"

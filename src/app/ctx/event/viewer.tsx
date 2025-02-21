@@ -1,7 +1,7 @@
 "use client";
 
-import { type InfoItem } from "@/app/_components_/event-viewer/components";
-import { fetchEventById, getUserID } from "@/app/actions";
+import { type InfoItem } from "@/app/(search)/@ev/components";
+import { getUserID } from "@/app/actions";
 import { useMoment } from "@/hooks/useMoment";
 import { useToggle } from "@/hooks/useToggle";
 import { type IconName } from "@/icons";
@@ -14,13 +14,15 @@ import {
   useMemo,
   useState,
   useTransition,
-  type Dispatch,
-  type ReactNode,
-  type SetStateAction,
-  type TransitionStartFunction,
+} from "react";
+import type {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  TransitionStartFunction,
 } from "react";
 import { ConvexCtx } from "../convex";
-import { PreloadedEventsCtx, type UserCounter } from "./preload";
+import { PreloadedEventsCtx, type SignedEvent, type UserCounter } from "./all";
 import { TicketCtxProvider } from "./ticket";
 
 export interface ActionParams {
@@ -49,7 +51,8 @@ interface EventViewerCtxValues {
     start_time: { full: string; compact: string };
     narrow: { day: string; date: string };
   };
-  isTicketClaimed: boolean;
+  user_id: string | null;
+  getEvent: (event_id: string) => void;
 }
 export const EventViewerCtx = createContext<EventViewerCtxValues | null>(null);
 
@@ -59,44 +62,53 @@ export const EventViewerCtxProvider = ({
   children: ReactNode;
 }) => {
   const { open, toggle } = useToggle();
-  const { counter, selectedEvent } = use(PreloadedEventsCtx)!;
+  const { counter, signedEvents } = use(PreloadedEventsCtx)!;
   const { usr, events } = use(ConvexCtx)!;
 
-  const [activeEvent, setActiveEvent] = useState<SelectEvent | null>(null);
-  const [isTicketClaimed, setIsTicketClaimed] = useState<boolean>(false);
+  const [user_id, setUser_id] = useState<string | null>(null);
+  const [activeEvent, setActiveEvent] = useState<SignedEvent | null>(null);
+
+  const getEvent = useCallback(
+    (event_id: string) => {
+      const event =
+        signedEvents?.find((event) => event.event_id === event_id) ?? null;
+      setActiveEvent(event);
+    },
+    [signedEvents],
+  );
 
   const { start_time, narrow, event_time, durationHrs, compact } = useMoment({
-    date: activeEvent?.event_date ?? selectedEvent?.event_date,
-    start: activeEvent?.start_date ?? selectedEvent?.start_date,
-    end: activeEvent?.end_date ?? selectedEvent?.end_date,
+    date: activeEvent?.event_date,
+    start: activeEvent?.start_date,
+    end: activeEvent?.end_date,
   });
 
   const moments = useMemo(() => ({ start_time, narrow }), [start_time, narrow]);
 
-  const getEventUpdate = useCallback(async () => {
-    if (!selectedEvent) return null;
-    return (await fetchEventById(selectedEvent.event_id)) as SelectEvent;
-  }, [selectedEvent]);
+  // const getEventUpdate = useCallback(async () => {
+  //   if (!activeEvent) return null;
+  //   return (await fetchEventById(activeEvent.event_id)) as SelectEvent;
+  // }, [activeEvent]);
 
   const incrementViews = useCallback(async () => {
-    if (!selectedEvent) return;
-    await events.update.views(selectedEvent.event_id);
-  }, [selectedEvent, events.update]);
+    if (!activeEvent) return;
+    await events.update.views(activeEvent.event_id);
+  }, [activeEvent, events.update]);
 
   const actionParams: ActionParams = useMemo(
     () => ({
-      event_name: selectedEvent?.event_name,
-      event_id: selectedEvent?.event_id,
+      event_name: activeEvent?.event_name,
+      event_id: activeEvent?.event_id,
     }),
-    [selectedEvent],
+    [activeEvent],
   );
   const shareData: ShareData = useMemo(
     () => ({
-      title: selectedEvent?.event_name,
-      text: selectedEvent?.event_id,
-      url: selectedEvent?.event_url,
+      title: activeEvent?.event_name,
+      text: activeEvent?.event_id,
+      url: activeEvent?.event_url,
     }),
-    [selectedEvent],
+    [activeEvent],
   );
 
   const [liked, setLiked] = useState(false);
@@ -113,21 +125,32 @@ export const EventViewerCtxProvider = ({
     });
   };
 
-  const getActiveEvent = useCallback(() => {
-    setFn(fn, getEventUpdate, setActiveEvent);
-  }, [getEventUpdate]);
+  const getId = useCallback(async () => {
+    return await getUserID();
+  }, []);
+  const getUserId = useCallback(() => {
+    setFn(fn, getId, setUser_id);
+  }, [getId]);
 
   useEffect(() => {
-    getActiveEvent();
-    console.log(bookmarked ? "" : ".", liked ? "" : ".");
-  }, [getActiveEvent, bookmarked, liked]);
+    getUserId();
+  }, [getUserId]);
+
+  // const getActiveEvent = useCallback(() => {
+  //   setFn(fn, getEventUpdate, setActiveEvent);
+  // }, [getEventUpdate]);
+
+  // useEffect(() => {
+  //   getActiveEvent();
+  //   console.log(bookmarked ? "" : ".", liked ? "" : ".");
+  // }, [getActiveEvent, bookmarked, liked]);
 
   const isLiked = useCallback(async () => {
-    if (counter?.likes && selectedEvent?.event_id) {
-      return counter.likes.includes(selectedEvent.event_id);
+    if (counter?.likes && activeEvent?.event_id) {
+      return counter.likes.includes(activeEvent.event_id);
     }
     return false;
-  }, [counter?.likes, selectedEvent]);
+  }, [counter?.likes, activeEvent]);
 
   const isLikeActive = useCallback(() => {
     setFn(fn, isLiked, setLiked);
@@ -138,11 +161,11 @@ export const EventViewerCtxProvider = ({
   }, [isLikeActive]);
 
   const isBookmarked = useCallback(async () => {
-    if (counter?.bookmarks && selectedEvent?.event_id) {
-      return counter.bookmarks.includes(selectedEvent.event_id);
+    if (counter?.bookmarks && activeEvent?.event_id) {
+      return counter.bookmarks.includes(activeEvent.event_id);
     }
     return false;
-  }, [counter?.bookmarks, selectedEvent]);
+  }, [counter?.bookmarks, activeEvent]);
 
   const isBookmarkActive = useCallback(() => {
     setFn(fn, isBookmarked, setBookmarked);
@@ -151,25 +174,6 @@ export const EventViewerCtxProvider = ({
   useEffect(() => {
     isBookmarkActive();
   }, [isBookmarkActive]);
-
-  const checkTicketClaim = useCallback(async () => {
-    if (counter?.tickets && selectedEvent?.event_id) {
-      return (
-        counter.tickets.findIndex(
-          (ticket) => ticket.event_id === selectedEvent.event_id,
-        ) !== -1
-      );
-    }
-    return false;
-  }, [counter?.tickets, selectedEvent]);
-
-  const isClaimed = useCallback(() => {
-    setFn(fn, checkTicketClaim, setIsTicketClaimed);
-  }, [checkTicketClaim]);
-
-  useEffect(() => {
-    isClaimed();
-  }, [isClaimed]);
 
   const handleClickSupport = useCallback(async () => {
     console.log("support");
@@ -313,7 +317,7 @@ export const EventViewerCtxProvider = ({
       likeItem,
     ],
   );
-  const cover_src = selectedEvent?.cover_src ?? null;
+  const cover_src = activeEvent?.cover_src ?? null;
 
   const value = useMemo(
     () => ({
@@ -327,7 +331,8 @@ export const EventViewerCtxProvider = ({
       activeEventInfo,
       moments,
       cover_src,
-      isTicketClaimed,
+      user_id,
+      getEvent,
     }),
     [
       open,
@@ -340,7 +345,8 @@ export const EventViewerCtxProvider = ({
       activeEventInfo,
       moments,
       cover_src,
-      isTicketClaimed,
+      user_id,
+      getEvent,
     ],
   );
   return (
@@ -355,4 +361,4 @@ const getDuration = (duration: number | undefined) => {
   return duration % +duration.toFixed(2) === 0
     ? `${duration} hour${duration > 1 ? "s" : ""}`
     : `${duration.toFixed(0)} hour${duration > 1 ? "s " : " "} ${+(duration % +duration.toFixed(2)).toFixed(2) * 60}m`;
-}
+};

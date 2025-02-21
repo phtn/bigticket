@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 import { HyperSpace } from "@/ui/cursor";
 import { HyperList } from "@/ui/list";
 import { use, useCallback, useState } from "react";
-import { EventCard } from "./components/event-card";
+import { EventCard } from "../../(search)/event-card";
 import { Hero } from "./components/hero";
 import { Collections } from "../sidebar";
-import { PreloadedEventsCtx } from "@/app/ctx/event/preload";
+import { PreloadedEventsCtx } from "@/app/ctx/event/all";
 import { categories, type Category } from "./components/category";
 import { Proxima } from "../proxima";
 

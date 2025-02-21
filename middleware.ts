@@ -12,5 +12,13 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/account", "/e/:path"],
+  matcher: [
+    "/account",
+    "/e/:path",
+    {
+      source: "/((?!.*\\..*|_next).*)",
+      missing: [{ type: "header", key: "next-action" }],
+    },
+    "/(api|trpc)(.*)",
+  ],
 };

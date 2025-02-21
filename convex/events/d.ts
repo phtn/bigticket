@@ -27,7 +27,7 @@ export type Review = Infer<typeof ReviewSchema>;
 export const VIPSchema = v.object({
   email: v.string(),
   name: v.optional(v.string()),
-  created_by: v.optional(v.string()),
+  created_by: v.optional(v.union(v.string(), v.null())),
   updated_at: v.optional(v.float64()),
   ticket_count: v.number(),
   tickets_claimed: v.optional(v.boolean()),

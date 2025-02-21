@@ -25,29 +25,47 @@ export const TicketCard = (ticket: UserTicket) => {
     <Card
       id={ticket.ticket_id}
       isFooterBlurred
-      className="flex h-[360px] w-full items-center justify-center rounded-sm bg-primary/20"
+      className="_border-[0.33px] flex h-[360px] w-full items-center justify-center rounded-sm border-primary bg-white"
     >
-      <CardHeader className="absolute top-0 z-10 flex w-full items-start justify-between gap-3 rounded-none bg-peach backdrop-blur-sm">
+      <CardHeader
+        className={cn(
+          "absolute top-0 z-10 flex w-full items-start justify-between gap-3 rounded-none bg-peach backdrop-blur-sm",
+          { "bg-teal-500": ticket?.is_claimed },
+        )}
+      >
         <section className="flex w-full items-center justify-between">
           <div className="flex items-center gap-2">
-            <Icon name="VIPIcon" className="size-9 text-gray-200" />
+            <Icon name="VIPIcon" className="size-9 text-white" />
             <p className="max-w-[16ch] text-left text-tiny font-medium capitalize leading-[14px] text-gray-100">
               {ticket.event_name}
             </p>
           </div>
-          <div className="flex h-full items-center">
-            <h4
-              className={cn(
-                "max-w-[5ch] text-center font-inter font-bold uppercase leading-none tracking-tighter text-white",
-                { "text-teal-500": ticket?.is_claimed },
-              )}
-            >
-              Admit one
-            </h4>
+          <div className="relative flex h-full items-center justify-center">
+            {ticket.is_claimed ? (
+              <h4
+                className={cn(
+                  "relative max-w-[7ch] text-center font-inter font-bold uppercase leading-none tracking-tighter text-white",
+                )}
+              >
+                Ticket scanned
+                <Icon
+                  name="Check"
+                  className="absolute -right-1 -top-0 text-white drop-shadow-sm"
+                />
+              </h4>
+            ) : (
+              <h4
+                className={cn(
+                  "max-w-[5ch] text-center font-inter font-bold uppercase leading-none tracking-tighter text-white",
+                )}
+              >
+                Admit one
+              </h4>
+            )}
           </div>
         </section>
       </CardHeader>
-      <div className="flex w-fit items-start justify-center px-2">
+      <div className="flex w-fit items-start justify-center border-[0.33px] border-macl-gray px-2">
         <QrCodeGen
           url={ticket.ticket_url}
           logo="/icon/logomark_v2.svg"
@@ -56,20 +74,15 @@ export const TicketCard = (ticket: UserTicket) => {
         />
       </div>
       <CardFooter className="absolute bottom-0 z-10 w-full rounded-none border-t-1 border-primary bg-primary">
-        <div className="flex flex-grow items-center gap-2 bg-primary">
-          {/* <Image
-              alt="Breathing app icon"
-              className="h-24 w-full rounded-full"
-              src={cover_url}
-            /> */}
+        <div className="flex flex-grow items-center bg-primary">
           <div className="space-y-1">
-            <p className="flex items-center gap-2 text-tiny capitalize text-secondary drop-shadow-sm">
+            <p className="flex items-center gap-4 text-tiny capitalize text-secondary drop-shadow-sm">
               <span
                 className={cn("lowercase text-secondary", {
                   "text-peach": !ticket?.is_active,
                 })}
               >
-                {`${ticket.ticket_index} / ${ticket.ticket_count}`}
+                {`${ticket.ticket_index}/${ticket.ticket_count}`}
               </span>
               <span className="font-bold text-gray-400">Ticket number </span>
               <span>&rarr;</span>

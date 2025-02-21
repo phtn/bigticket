@@ -6,15 +6,15 @@ interface UseMoment {
   start?: number | undefined;
   end?: number | undefined;
 }
-export const useMoment = ({ date, start, end }: UseMoment) => {
-  const compact = useMemo(() => moment(date).format("ll"), [date]);
+export const useMoment = ({ start, end }: UseMoment) => {
+  const compact = useMemo(() => moment(start).format("ll"), [start]);
   const narrow = useMemo(() => {
-    const d = moment(date).format("dddl");
-    return { day: d.substring(0, 4), date: d.substring(3, 7) };
-  }, [date]);
+    const d = moment(start).format("dddl");
+    return { day: d.substring(0, 3), date: d.substring(3, d.lastIndexOf("/")) };
+  }, [start]);
 
-  const event_date = useMemo(() => moment(date).format("lll"), [date]);
-  const event_day = useMemo(() => moment(date).format("dddd"), [date]);
+  const event_date = useMemo(() => moment(start).format("lll"), [start]);
+  const event_day = useMemo(() => moment(start).format("dddd"), [start]);
 
   const atMinutes = useCallback((time: string) => {
     return time.indexOf(":");

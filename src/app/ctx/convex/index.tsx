@@ -2,23 +2,24 @@
 
 import { env } from "@/env";
 import { api } from "@vx/api";
-import {
-  ConvexProvider,
-  ConvexReactClient,
-  useMutation,
-  useQuery,
-} from "convex/react";
+import { ConvexProvider, ConvexReactClient, useMutation } from "convex/react";
 import type { CreateUser, UpdateUser } from "convex/users/d";
 import type { ReactNode } from "react";
-import type { ConvexCtxValues } from "./types";
 import { createContext, useCallback, useMemo } from "react";
 import type { User } from "@supabase/supabase-js";
 import type { SupabaseUserMetadata } from "@/app/ctx/auth/types";
 import { VxProvider } from "./vx";
 import type { InsertEvent, UserTicket, VIP } from "convex/events/d";
+import {
+  useEventById,
+  useEventsByIds,
+  useEventsByHostId,
+  useEventAll,
+} from "./hooks";
+import type { DConvexCtxValues } from "./d";
 
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
-export const ConvexCtx = createContext<ConvexCtxValues | null>(null);
+export const ConvexCtx = createContext<DConvexCtxValues | null>(null);
 
 const CtxProvider = ({ children, user }: ProviderProps) => {
   const createUser = useMutation(api.users.create.default);
@@ -72,7 +73,6 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
           record: Record<string, string | number | boolean>,
         ) => await addMetadata({ id, record }),
       },
-      //
     }),
     [
       addMetadata,
@@ -139,9 +139,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   }, [user, usr]);
 
   const createEvent = useMutation(api.events.create.default);
-  const getAllEvents = useQuery(api.events.get.all);
-  const getEventById = useMutation(api.events.get.byId);
-  const getEventsByHostId = useMutation(api.events.get.byHostId);
+
   const updateEventStatus = useMutation(api.events.update.status);
   const updateCoverUrl = useMutation(api.events.update.cover_url);
   const updatePhotoUrl = useMutation(api.events.update.photo_url);
@@ -153,10 +151,10 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
     () => ({
       create: async (args: InsertEvent) => await createEvent(args),
       get: {
-        all: () => getAllEvents,
-        byId: async (id: string) => await getEventById({ id }),
-        byHostId: async (host_id: string) =>
-          await getEventsByHostId({ host_id }),
+        all: useEventAll,
+        byId: useEventById,
+        byIds: useEventsByIds,
+        byHostId: useEventsByHostId,
       },
       update: {
         status: async (id: string, is_active: boolean) =>
@@ -173,9 +171,6 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
     }),
     [
       createEvent,
-      getAllEvents,
-      getEventById,
-      getEventsByHostId,
       updateEventStatus,
       updateCoverUrl,
       updatePhotoUrl,
@@ -202,6 +197,7 @@ interface ProviderProps {
   children: ReactNode;
   user: User | null;
 }
+
 const Provider = ({ children, user }: ProviderProps) => {
   return (
     <ConvexProvider client={convex}>
@@ -211,17 +207,5 @@ const Provider = ({ children, user }: ProviderProps) => {
     </ConvexProvider>
   );
 };
+
 export default Provider;
-
-// const createLog = useMutation(api.logs.create.default);
-// const getLogById = useMutation(api.logs.get.byId);
-
-// const logs = useMemo(
-//   () => ({
-//     create: async (args: InsertLog) => await createLog(args),
-//     get: {
-//       byId: async (id: string) => await getLogById({ id }),
-//     },
-//   }),
-//   [createLog, getLogById],
-// );

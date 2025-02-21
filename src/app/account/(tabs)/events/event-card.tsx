@@ -1,7 +1,7 @@
 "use client";
 
 import { getUserID } from "@/app/actions";
-import { type SignedEvent } from "@/app/ctx/event/preload";
+import { type SignedEvent } from "@/app/ctx/event/all";
 import { useMoment } from "@/hooks/useMoment";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
@@ -60,8 +60,8 @@ export const EventCardAccount = (event: SignedEvent) => {
         </section>
         <section className="flex size-8 items-center justify-center">
           <ButtonIcon
-            icon="ChartIcon"
-            bg="text-chalk opacity-20"
+            icon="Settings"
+            bg="text-chalk opacity-0"
             color="text-chalk"
           />
         </section>
@@ -77,27 +77,27 @@ export const EventCardAccount = (event: SignedEvent) => {
       ) : null}
       <CardFooter className="absolute bottom-0 z-10 w-full rounded-none border-t-1 border-primary bg-primary">
         <div className="flex flex-grow items-center gap-2 bg-primary">
-          {/* <Image
-            alt="Breathing app icon"
-            className="h-24 w-full rounded-full"
-            src={cover_url}
-          /> */}
           <div className="space-y-1">
             <div className="flex items-center gap-1 text-tiny">
               <span
                 className={cn("font-bold uppercase text-teal-400", {
-                  "font-light text-peach": !event?.is_active,
+                  "font-semibold text-orange-300/80": !event?.is_active,
                 })}
               >
                 {event.is_active ? "live" : "not published"}
               </span>
-              <div className="relative flex size-5 items-center justify-center">
-                <Icon
-                  name="SpinnersPulseRing"
-                  className="absolute size-5 text-teal-400"
-                />
-                <Icon name="DotSm" className="absolute size-4 text-teal-400" />
-              </div>
+              {event.is_active ? (
+                <div className="relative flex size-5 items-center justify-center">
+                  <Icon
+                    name="SpinnersPulseRing"
+                    className="absolute size-5 text-teal-400"
+                  />
+                  <Icon
+                    name="DotSm"
+                    className="absolute size-4 text-teal-400"
+                  />
+                </div>
+              ) : null}
             </div>
             <div className="space-x-1 text-tiny uppercase text-gray-200">
               <span className="drop-shadow-md">

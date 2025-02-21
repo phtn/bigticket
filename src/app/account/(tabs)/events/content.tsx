@@ -1,17 +1,17 @@
 "use client";
 
 import type { SelectEvent } from "convex/events/d";
-import { PreloadedEventsCtxProvider } from "@/app/ctx/event/preload";
 import { Events } from "./events";
+import { PreloadedUserEventsCtxProvider } from "@/app/ctx/event/user";
 
 export interface AccountContentProps {
-  slug: string[] | undefined;
-  preloaded: SelectEvent[];
+  events: SelectEvent[];
+  id: string | undefined;
 }
 export const Content = (props: AccountContentProps) => {
   return (
-    <PreloadedEventsCtxProvider {...props}>
+    <PreloadedUserEventsCtxProvider {...props}>
       <Events />
-    </PreloadedEventsCtxProvider>
+    </PreloadedUserEventsCtxProvider>
   );
 };

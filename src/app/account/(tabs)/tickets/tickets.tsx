@@ -84,7 +84,9 @@ export const Tickets = () => {
           <EmptyList
             title="My Tickets"
             count={0}
-            message="You have no tickets yet."
+            message={
+              pending ? "Getting your tickets..." : "You have no tickets yet."
+            }
             loading={pending}
           />
         ) : null}

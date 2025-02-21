@@ -1,14 +1,15 @@
-import type { InsertEvent, SelectEvent } from "convex/events/d";
-import type { EventField } from "./schema";
-import { useMemo } from "react";
+import { type SignedEvent } from "@/app/ctx/event/all";
 import { type IconName } from "@/icons";
 import { HyperList } from "@/ui/list";
 import { Input } from "@nextui-org/react";
-import { inputClassNames } from "../../content";
+import type { InsertEvent } from "convex/events/d";
+import { useMemo } from "react";
+import { inputClassNames } from "../../editor";
 import { BlockHeader } from "./components";
+import type { EventField } from "./schema";
 
 interface BasicContentProps {
-  event: SelectEvent | null;
+  event: SignedEvent | null;
   pending: boolean;
 }
 
@@ -44,7 +45,7 @@ export const BasicContent = ({ event, pending }: BasicContentProps) => {
   );
 
   return (
-    <div className="grid w-full grid-cols-1 gap-6 bg-primary md:grid-cols-2 md:rounded">
+    <div className="grid w-full grid-cols-1 gap-6 bg-primary md:grid-cols-2 md:rounded-lg">
       <FieldBlock
         data={pending ? [] : basic_info}
         label="Basic Info"

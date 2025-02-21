@@ -1,15 +1,14 @@
 "use client";
 
-import { Home } from "./_components_/home";
-import { GoogleOneTap } from "./ctx/auth/one-tap";
+import { Home } from "@/app/_components_/home";
+import { GoogleOneTap } from "@/app/ctx/auth/one-tap";
 import { type SelectEvent } from "convex/events/d";
-import { PreloadedEventsCtxProvider } from "./ctx/event/preload";
-import { EventViewerCtxProvider } from "./ctx/event";
-import { EventViewer } from "./_components_/event-viewer/viewer";
+import { PreloadedEventsCtxProvider } from "@/app/ctx/event/all";
+import { EventViewerCtxProvider } from "@/app/ctx/event";
 
 export interface MainContentProps {
   slug: string[] | undefined;
-  preloaded: SelectEvent[];
+  events: SelectEvent[];
 }
 
 export const Content = (props: MainContentProps) => {
@@ -18,7 +17,6 @@ export const Content = (props: MainContentProps) => {
       <PreloadedEventsCtxProvider {...props}>
         <EventViewerCtxProvider>
           <Home />
-          <EventViewer />
         </EventViewerCtxProvider>
       </PreloadedEventsCtxProvider>
       <GoogleOneTap />

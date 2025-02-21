@@ -100,7 +100,7 @@ export const getTextColor = (src: string, w?: number, h?: number) => {
   return true;
 };
 
-async function convertToWebPFile(
+export async function convertToWebPFile(
   inputFile: File,
   canvas: HTMLCanvasElement | null,
   filename = "bigT.webp",
@@ -119,8 +119,8 @@ async function convertToWebPFile(
   return new Promise((resolve, reject) => {
     img.onload = () => {
       // Set canvas size to match image
-      const dw = img.width * 0.66;
-      const dh = img.height * 0.66;
+      const dw = 800;
+      const dh = 800 / (img.width / img.height);
       canvas.width = dw;
       canvas.height = dh;
 
@@ -142,7 +142,7 @@ async function convertToWebPFile(
           URL.revokeObjectURL(imageUrl);
         },
         "image/webp",
-        1,
+        0.7,
       ); // 0.8 is the quality (0-1)
     };
 
@@ -154,6 +154,8 @@ async function convertToWebPFile(
     img.src = imageUrl;
   });
 }
+
+export default convertToWebPFile;
 
 export const isLightColor = (
   r: number | undefined,
