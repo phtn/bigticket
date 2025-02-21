@@ -28,18 +28,16 @@ export const EventCtxProvider = ({ children }: { children: ReactNode }) => {
 
   const setEvents = (
     tx: TransitionStartFunction,
-    action: () => Promise<SelectEvent[] | undefined>,
+    action: () => SelectEvent[] | undefined,
   ) => {
-    tx(async () => {
-      setEventList(await action());
+    tx(() => {
+      setEventList(action());
     });
   };
 
-  const getEvents = useCallback(async () => events.get.all(), [events.get]);
-
   const getAllEvents = useCallback(() => {
-    setEvents(fn, getEvents);
-  }, [getEvents]);
+    setEvents(fn, events.get.all);
+  }, [events.get]);
 
   useEffect(() => {
     getAllEvents();
