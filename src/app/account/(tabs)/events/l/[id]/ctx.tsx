@@ -66,7 +66,7 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getEventById = useCallback(
-    async () => (event_id ? await events.get.byId(event_id) : null),
+    async () => (event_id ? events.get.byId(event_id) : null),
     [event_id, events.get],
   );
 
