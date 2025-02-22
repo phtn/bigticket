@@ -2,11 +2,10 @@ import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { ButtonIcon } from "@/ui/button";
 import NumberFlow, { continuous, NumberFlowGroup } from "@number-flow/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { type GetTicketButtonProps } from "..";
 
 export const GetTicketButton = ({ ticket_value, h }: GetTicketButtonProps) => {
-  const [debounced, setDebounced] = useState(false);
   const [ticketCount, setTicketCount] = useState(1);
   const [xScaling, setXScaling] = useState(false);
 
@@ -23,15 +22,6 @@ export const GetTicketButton = ({ ticket_value, h }: GetTicketButtonProps) => {
     },
     [],
   );
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!debounced) {
-        setDebounced(true);
-      }
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [debounced]);
 
   return (
     <div className={cn("z-1 relative h-full bg-primary")} style={{ height: h }}>

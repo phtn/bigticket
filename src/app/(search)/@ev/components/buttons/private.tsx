@@ -1,4 +1,4 @@
-export const Private = ({ count }: { count: number }) => {
+export const PrivateNoAccess = ({ count }: { count: number }) => {
   return (
     <h2 className="text-xl font-black">
       <span className="font-bold italic tracking-tighter text-teal-400">

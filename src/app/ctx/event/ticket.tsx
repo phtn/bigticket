@@ -17,7 +17,7 @@ import { getUserID } from "@/app/actions";
 
 interface TicketCtxValues {
   getVIPTicket: (event: SelectEvent | null) => Promise<string | null>;
-  getTicket: (event: SelectEvent | null) => Promise<string | null>;
+  getBasicTicket: (event: SelectEvent | null) => Promise<string | null>;
   user_email: string | undefined;
   count: number;
 }
@@ -81,7 +81,7 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
     [usr.update, user?.email],
   );
 
-  const getTicket = useCallback(
+  const getBasicTicket = useCallback(
     async (e: SelectEvent | null) => {
       const user_id = await getUserID();
       if (!e || !user_id) return null;
@@ -133,10 +133,10 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       count,
       getVIPTicket,
-      getTicket,
+      getBasicTicket,
       user_email: user?.email,
     }),
-    [count, getVIPTicket, getTicket, user?.email],
+    [count, getVIPTicket, getBasicTicket, user?.email],
   );
 
   return <TicketCtx.Provider value={value}>{children}</TicketCtx.Provider>;

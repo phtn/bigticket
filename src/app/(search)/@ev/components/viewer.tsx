@@ -19,8 +19,9 @@ import {
   useState,
 } from "react";
 import { ActionPanel, EventGroupDetail, EventViewerFooter, InfoGrid } from ".";
-import { ClaimedTicketButton } from "./buttons/claimed";
 import { GetTicketButton } from "./buttons/paid";
+import { VIPButton } from "./buttons/vip";
+import { ClaimedTicketButton } from "./buttons/claimed";
 
 export const EventViewer = () => {
   const { open, toggle, activeEvent, getEvent } = use(EventViewerCtx)!;
@@ -88,7 +89,7 @@ const MediaContainer = () => {
     return userInEvent ? userHasTickets : false;
   }, [counter, user_id, activeEvent?.event_id]);
 
-  const { getVIPTicket, user_email } = use(TicketCtx)!;
+  const { getVIPTicket, getBasicTicket, user_email } = use(TicketCtx)!;
 
   const is_vip = useMemo(() => {
     if (!activeEvent?.vip_list || !user_email) return false;
@@ -104,28 +105,53 @@ const MediaContainer = () => {
   );
 
   const handleGetTickets = useCallback(async () => {
+    if (!user_email) return;
     if (is_vip) {
-      await getVIPTicket(activeEvent);
+      return await getVIPTicket(activeEvent);
     }
-  }, [getVIPTicket, activeEvent, is_vip]);
+    return await getBasicTicket(activeEvent);
+  }, [getVIPTicket, getBasicTicket, activeEvent, is_vip, user_email]);
 
   const handleViewTickets = useCallback(() => {
+    if (!user_email) return;
     router.push("/account/tickets");
-  }, [router]);
+  }, [router, user_email]);
 
+  const [debounced, setDebounced] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!debounced) {
+        setDebounced(true);
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [debounced]);
   // const event_name = normalizeTitle(activeEvent?.event_name);
   const event_name = activeEvent?.event_name ?? null;
 
   const EventTicketButton = useCallback(
     (props: { h: string }) => {
-      const options = opts(
+      const vipOptions = isClaimed ? (
         <ClaimedTicketButton
           h={props.h}
           is_vip={is_vip}
           count={ticket_count}
           is_private={activeEvent?.is_private}
           fn={handleViewTickets}
-        />,
+        />
+      ) : (
+        <VIPButton
+          debounced={debounced}
+          h={props.h}
+          count={ticket_count}
+          is_private={activeEvent?.is_private}
+          ticket_price={activeEvent?.ticket_value}
+          fn={handleGetTickets}
+        />
+      );
+
+      const options = opts(
+        vipOptions,
         <GetTicketButton
           h={props.h}
           is_vip={is_vip}
@@ -145,6 +171,7 @@ const MediaContainer = () => {
       handleViewTickets,
       activeEvent?.is_private,
       activeEvent?.ticket_value,
+      debounced,
     ],
   );
 
@@ -177,6 +204,7 @@ const MediaContainer = () => {
         <EventTicketButton h={contentHeight} />
         <ActionPanel h={contentHeight} />
         <EventGroupDetail
+          debounced={debounced}
           host_name={activeEvent?.host_name}
           event_url={activeEvent?.event_url}
           is_online={activeEvent?.event_type === "online"}

@@ -1,8 +1,39 @@
 import { Icon } from "@/icons";
 import { Shimmer } from "@/ui/text/sparkles";
-import { Button, cn, Spinner } from "@nextui-org/react";
+import { Button, cn } from "@nextui-org/react";
+import { PrivateNoAccess } from "./private";
 
-export const VIPTicketLabel = () => {
+interface VIPButtonProps {
+  debounced: boolean;
+  count: number | undefined;
+  h: string;
+  is_private: boolean | undefined;
+  ticket_price?: number;
+  fn: VoidFunction;
+}
+export const VIPButton = ({ count, h, is_private, fn }: VIPButtonProps) => (
+  <div className="z-1 relative bg-primary" style={{ height: h }}>
+    <Button
+      onPress={fn}
+      size="lg"
+      disableRipple
+      color="primary"
+      className="h-full"
+      radius="none"
+      fullWidth
+    >
+      <div
+        className={cn("flex w-full items-center justify-evenly", {
+          "gap-12": is_private,
+        })}
+      >
+        <PrivateNoAccess count={count ?? 0} />
+        <VIPTicketLabel />
+      </div>
+    </Button>
+  </div>
+);
+const VIPTicketLabel = () => {
   return (
     <h3 className="flex items-center justify-center gap-1 text-orange-100">
       <Icon name="Sparkle" className="size-3.5" />
@@ -14,22 +45,3 @@ export const VIPTicketLabel = () => {
     </h3>
   );
 };
-interface VIPButtonProps {
-  debounced: boolean;
-  count: number;
-}
-export const VIPButton = ({ debounced, count }: VIPButtonProps) => (
-  <>
-    {debounced ? (
-      <Button className={cn("flex w-full items-center justify-between", {})}>
-        <VIPTicketLabel />
-        {count}
-        <div className="flex gap-2"></div>
-      </Button>
-    ) : (
-      <div className="flex w-screen items-center justify-center md:w-[30rem]">
-        <Spinner size="sm" color="secondary" />
-      </div>
-    )}
-  </>
-);

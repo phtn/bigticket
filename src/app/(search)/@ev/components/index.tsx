@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { Card, Spinner } from "@nextui-org/react";
 import NumberFlow from "@number-flow/react";
-import { use, useCallback, useEffect, useMemo, useState } from "react";
+import { use, useCallback, useMemo } from "react";
 
 export interface GetTicketButtonProps {
   ticket_value?: number;
@@ -58,6 +58,7 @@ interface EventGroupDetailProps {
   event_venue: string | undefined;
   h: string;
   is_online?: boolean;
+  debounced: boolean;
 }
 export const EventGroupDetail = ({
   host_name,
@@ -65,20 +66,13 @@ export const EventGroupDetail = ({
   event_url,
   is_online,
   h,
+  debounced,
 }: EventGroupDetailProps) => {
   const [venue_name, venue_address] = useMemo(
     () => event_venue?.split("---") ?? ["", ""],
     [event_venue],
   );
-  const [debounced, setDebounced] = useState(false);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!debounced) {
-        setDebounced(true);
-      }
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [debounced]);
+
   return (
     <div className="row-span-2 h-full">
       <div
