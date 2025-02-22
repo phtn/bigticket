@@ -113,7 +113,7 @@ export const GoogleOneTap = () => {
         log("check user-session, With user session", user);
         loadGoogleScript();
       }
-    }, 2500);
+    }, 2000);
 
     return () => clearTimeout(timeout);
   }, [supabase, pending, userSessionData, generateNonce, updateUser, user]);

@@ -11,7 +11,6 @@ export interface DConvexCtxValues {
   usr: {
     create: (args: InsertUser) => Promise<Id<"users"> | null>;
     get: {
-      byId: (id: string) => Promise<SelectUser | null>;
       byEmail: (email: string) => Promise<SelectUser | null>;
       byAccountId: (account_id: string) => Promise<SelectUser | null>;
       byRole: (role: string[]) => Promise<SelectUser[]>;
@@ -37,12 +36,6 @@ export interface DConvexCtxValues {
 
   events: {
     create: (event: InsertEvent) => Promise<Id<"events"> | null>;
-    get: {
-      all: () => SelectEvent[] | undefined;
-      byId: (id: string) => SelectEvent | null;
-      byIds: (ids: string[]) => SelectEvent[] | undefined;
-      byHostId: (id: string) => SelectEvent[] | undefined;
-    };
     update: {
       status: (id: string, is_active: boolean) => Promise<Id<"events"> | null>;
       cover_url: (id: string, cover_url: string) => Promise<string | null>;
@@ -61,4 +54,9 @@ export interface DConvexCtxValues {
     get: (storageId: string | undefined) => Promise<string | null>;
   };
   createvx: () => Promise<string | null>;
+  getUserById: (id: string) => SelectUser | null;
+  getEventById: (id: string) => SelectEvent | null;
+  getEventsByIds: (ids: string[]) => SelectEvent[] | undefined;
+  getAllEvents: () => SelectEvent[] | undefined;
+  getEventsByHostId: (id: string) => SelectEvent[] | undefined;
 }

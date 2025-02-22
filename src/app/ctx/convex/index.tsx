@@ -15,6 +15,7 @@ import {
   useEventsByIds,
   useEventsByHostId,
   useEventAll,
+  useUserById,
 } from "./hooks";
 import type { DConvexCtxValues } from "./d";
 
@@ -23,7 +24,6 @@ export const ConvexCtx = createContext<DConvexCtxValues | null>(null);
 
 const CtxProvider = ({ children, user }: ProviderProps) => {
   const createUser = useMutation(api.users.create.default);
-  const getUserById = useMutation(api.users.get.byId);
   const getUserByEmail = useMutation(api.users.get.byEmail);
   const getUserByAccountId = useMutation(api.users.get.byAccountId);
   const getUsersByRole = useMutation(api.users.get.byRole);
@@ -42,7 +42,6 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
     () => ({
       create: async (args: CreateUser) => await createUser(args),
       get: {
-        byId: async (id: string) => await getUserById({ id }),
         byEmail: async (email: string) => await getUserByEmail({ email }),
         byAccountId: async (account_id: string) =>
           await getUserByAccountId({ account_id }),
@@ -77,7 +76,6 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
     [
       addMetadata,
       createUser,
-      getUserById,
       updateUser,
       getUserByAccountId,
       getUsersByRole,
@@ -150,12 +148,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const events = useMemo(
     () => ({
       create: async (args: InsertEvent) => await createEvent(args),
-      get: {
-        all: useEventAll,
-        byId: useEventById,
-        byIds: useEventsByIds,
-        byHostId: useEventsByHostId,
-      },
+
       update: {
         status: async (id: string, is_active: boolean) =>
           await updateEventStatus({ id, is_active }),
@@ -180,14 +173,35 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
     ],
   );
 
+  const getUserById = useUserById;
+  const getAllEvents = useEventAll;
+  const getEventById = useEventById;
+  const getEventsByIds = useEventsByIds;
+  const getEventsByHostId = useEventsByHostId;
+
   const value = useMemo(
     () => ({
       usr,
       createvx,
       files,
       events,
+      getUserById,
+      getAllEvents,
+      getEventById,
+      getEventsByIds,
+      getEventsByHostId,
     }),
-    [usr, createvx, files, events],
+    [
+      usr,
+      createvx,
+      files,
+      events,
+      getUserById,
+      getAllEvents,
+      getEventById,
+      getEventsByIds,
+      getEventsByHostId,
+    ],
   );
 
   return <ConvexCtx value={value}>{children}</ConvexCtx>;

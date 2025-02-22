@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { ButtonIcon } from "@/ui/button";
 import NumberFlow, { continuous, NumberFlowGroup } from "@number-flow/react";
 import { useCallback, useMemo, useState } from "react";
-import { type GetTicketButtonProps } from "..";
+import { type GetTicketButtonProps } from "./d";
 
 export const GetTicketButton = ({ ticket_value, h }: GetTicketButtonProps) => {
   const [ticketCount, setTicketCount] = useState(1);

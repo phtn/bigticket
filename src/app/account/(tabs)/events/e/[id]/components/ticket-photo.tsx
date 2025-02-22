@@ -1,18 +1,18 @@
+import { type XEvent } from "@/app/types";
 import { useMoment } from "@/hooks/useMoment";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { TicketStack } from "@/ui/card/ticket";
-import type { SelectEvent } from "convex/events/d";
 import { useCallback, useState } from "react";
 
 interface TicketPhotoProps {
-  event: SelectEvent | null;
+  xEvent: XEvent | null;
 }
-export const TicketPhoto = ({ event }: TicketPhotoProps) => {
+export const TicketPhoto = ({ xEvent }: TicketPhotoProps) => {
   const [ticket_color, setTicketColor] = useState("bg-macl-mint");
   const { event_time, compact, event_day } = useMoment({
-    start: event?.start_date,
-    end: event?.end_date,
+    start: xEvent?.start_date,
+    end: xEvent?.end_date,
   });
 
   const handleColorSelect = useCallback(
@@ -30,12 +30,12 @@ export const TicketPhoto = ({ event }: TicketPhotoProps) => {
       </div>
       <div className="flex h-[360px] items-center justify-center bg-tan md:h-[400px]">
         <TicketStack
-          title={event?.event_name}
+          title={xEvent?.event_name}
           date={compact}
           time={event_time.compact}
-          site={event?.event_geo ?? event?.event_url}
+          site={xEvent?.event_geo ?? xEvent?.event_url}
           day={event_day}
-          tickets={event?.ticket_count}
+          tickets={xEvent?.ticket_count}
           color={ticket_color}
         />
       </div>

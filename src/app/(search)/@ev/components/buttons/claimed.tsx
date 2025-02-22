@@ -1,6 +1,6 @@
 import { Button, cn } from "@nextui-org/react";
-import { type GetTicketButtonProps } from "..";
 import { Icon } from "@/icons";
+import { type GetTicketButtonProps } from "./d";
 
 export const ClaimedTicketButton = ({
   is_private = false,

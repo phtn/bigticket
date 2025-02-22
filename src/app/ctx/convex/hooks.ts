@@ -7,11 +7,12 @@ export const useEventAll = () => {
 export const useEventById = (id: string) => {
   return useQuery(api.events.get.byId, { id }) ?? null;
 };
-
+export const useUserById = (id: string) => {
+  return useQuery(api.users.get.byId, { id }) ?? null;
+};
 export const useEventsByIds = (ids: string[]) => {
   return useQuery(api.events.get.byIds, { ids });
 };
-
 export const useEventsByHostId = (host_id: string) => {
   return useQuery(api.events.get.byHostId, { host_id });
 };

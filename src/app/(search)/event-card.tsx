@@ -1,7 +1,5 @@
 "use client";
 
-import { EventViewerCtx } from "@/app/ctx/event";
-import { type SignedEvent } from "@/app/ctx/event/all";
 import { useMoment } from "@/hooks/useMoment";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
@@ -14,51 +12,61 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { use, useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { type XEvent } from "../types";
 
-export const EventCard = (event: SignedEvent) => {
+export const EventCard = (xEvent: XEvent) => {
   const { event_day, event_time, narrow } = useMoment({
-    date: event?.event_date,
-    start: event?.start_date,
-    end: event?.end_date,
+    start: xEvent.start_date,
+    end: xEvent.end_date,
   });
-  const { counter, bookmarkFn, incrementViews } = use(EventViewerCtx)!;
+  const {
+    cover_src,
+    event_id,
+    host_name,
+    venue_name,
+    event_geo,
+    event_name,
+    is_cover_light,
+  } = xEvent;
+
+  // const { incrementViews } = use(EventViewerCtx)!;
 
   const router = useRouter();
 
-  const [bookmarked, setBookmarked] = useState<boolean>(false);
+  // const [bookmarked, setBookmarked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleBookmarkEvent = useCallback(async () => {
-    setBookmarked((prev) => !prev);
-    await bookmarkFn();
-  }, [bookmarkFn]);
+  // const handleBookmarkEvent = useCallback(async () => {
+  //   setBookmarked((prev) => !prev);
+  //   await bookmarkFn();
+  // }, [bookmarkFn]);
 
   const handleSelectEvent = useCallback(async () => {
     setLoading(true);
     const timer = setTimeout(() => {
       setLoading(false);
     }, 600);
-    await incrementViews();
-    router.push(`/?x=${event.event_id}`, { scroll: false });
+    // await incrementViews();
+    router.push(`/?x=${event_id}`, { scroll: false });
     return () => clearTimeout(timer);
-  }, [event?.event_id, incrementViews, router]);
+  }, [event_id, router]);
 
-  useEffect(() => {
-    setBookmarked(counter?.bookmarks?.includes(event?.event_id) ?? false);
-  }, [counter?.bookmarks, event]);
+  // useEffect(() => {
+  //   setBookmarked(counter?.bookmarks?.includes(event?.event_id) ?? false);
+  // }, [counter?.bookmarks, event]);
 
   const BookmarkButton = useCallback(
     () => (
       <ButtonIcon
-        icon={bookmarked ? "BookmarkCheck" : "BookmarkPlus"}
-        bg={bookmarked ? "text-teal-500 opacity-100" : "opacity-20"}
-        shadow={bookmarked ? "text-coal opacity-100" : ""}
-        color={bookmarked ? "text-white fill-white" : ""}
-        onClick={handleBookmarkEvent}
+        icon={false ? "BookmarkCheck" : "BookmarkPlus"}
+        bg={false ? "text-teal-500 opacity-100" : "opacity-20"}
+        shadow={false ? "text-coal opacity-100" : ""}
+        color={false ? "text-white fill-white" : ""}
+        onClick={() => console.log("bookmark")}
       />
     ),
-    [handleBookmarkEvent, bookmarked],
+    [],
   );
 
   return (
@@ -69,31 +77,31 @@ export const EventCard = (event: SignedEvent) => {
       <CardHeader
         className={cn(
           "absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4 text-white",
-          { "text-coal": event?.is_cover_light },
+          { "text-coal": is_cover_light },
         )}
       >
         <section className="w-full overflow-clip text-ellipsis">
           <p className="max-w-[35ch] whitespace-nowrap bg-gradient-to-br from-white/60 from-20% via-white/80 via-15% to-white/70 to-40% bg-clip-text text-tiny font-bold uppercase text-transparent">
-            {event.venue_name ?? event.event_geo}
+            {venue_name ?? event_geo}
           </p>
           <h4 className="p-[1px font-inter text-xl font-bold capitalize tracking-tight shadow-coal drop-shadow-sm">
-            {event.event_name}
+            {event_name}
           </h4>
         </section>
         <section className="relative flex size-8 items-center justify-center">
           <div className="absolute -right-8 -top-10">
-            <Heart isActive={bookmarked} />
+            <Heart isActive={false} />
           </div>
           <BookmarkButton />
         </section>
       </CardHeader>
-      {event.cover_src ? (
+      {cover_src ? (
         <Image
           removeWrapper
           radius="none"
           alt="nightlife"
           className="z-0 aspect-auto h-full w-full border-0 object-cover object-top"
-          src={event.cover_src}
+          src={cover_src}
         />
       ) : null}
       <CardFooter className="absolute -bottom-[2px] z-10 border-t-[0.33px] border-primary/40 bg-black/10">
@@ -105,7 +113,7 @@ export const EventCard = (event: SignedEvent) => {
           /> */}
           <div className="space-y-0.5">
             <p className="text-tiny font-semibold text-teal-300 drop-shadow-md">
-              {event.host_name}
+              {host_name}
             </p>
             <div className="space-x-2 text-tiny font-bold uppercase text-chalk">
               <span className="drop-shadow-md">{event_day}</span>

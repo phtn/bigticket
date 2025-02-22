@@ -79,8 +79,8 @@ export const fetchAllEvents = async () => {
 
 export const preloadAllEvents = async () => {
   const preloadedEvents = await preloadQuery(api.events.get.all);
-  const events = preloadedQueryResult(preloadedEvents);
-  return events;
+  // const events = preloadedQueryResult(preloadedEvents);
+  return preloadedEvents;
 };
 
 export const preloadEventsByHostId = async (host_id: string | null) => {
@@ -90,4 +90,21 @@ export const preloadEventsByHostId = async (host_id: string | null) => {
   });
   const events = preloadedQueryResult(preloadedEvents);
   return events;
+};
+
+export const fetchUser = async () => {
+  const userId = await getUserID();
+  console.log(userId);
+  if (!userId) return null;
+  const user = await fetchQuery(api.users.get.byId, { id: userId });
+  return user;
+};
+
+export const preloadUser = async () => {
+  const userId = await getUserID();
+  console.log(userId);
+  if (!userId) return null;
+  const preloadedUser = await preloadQuery(api.users.get.byId, { id: userId });
+  const user = preloadedQueryResult(preloadedUser);
+  return user;
 };

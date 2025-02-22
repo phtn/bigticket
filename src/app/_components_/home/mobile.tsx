@@ -1,15 +1,18 @@
 import { HyperList } from "@/ui/list";
 import { EventCard } from "../../(search)/event-card";
 import { Hero } from "./components/hero";
-import { use, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { Proxima } from "../proxima";
 import { Collections } from "../sidebar";
-import { PreloadedEventsCtx } from "@/app/ctx/event/all";
 import { categories, type Category } from "./components/category";
 import { cn } from "@/lib/utils";
+import { type XEvent } from "@/app/types";
 
-export const MobileView = () => {
-  const { signedEvents } = use(PreloadedEventsCtx)!;
+interface MobileViewProps {
+  xEvents: XEvent[];
+}
+
+export const MobileView = ({ xEvents }: MobileViewProps) => {
   const [selected, setSelected] = useState<string>("all");
 
   const handleSelectCategory = useCallback(
@@ -49,7 +52,7 @@ export const MobileView = () => {
       <Collections />
       <HyperList
         keyId="event_id"
-        data={signedEvents}
+        data={xEvents}
         component={EventCard}
         container="space-y-4 h-full"
         itemStyle=""

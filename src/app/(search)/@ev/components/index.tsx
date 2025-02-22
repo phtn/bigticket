@@ -1,26 +1,19 @@
-import { EventViewerCtx } from "@/app/ctx/event";
-import { type ActionItem } from "@/app/ctx/event/viewer";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { Card, Spinner } from "@nextui-org/react";
 import NumberFlow from "@number-flow/react";
-import { use, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { type InfoItem, type PanelItem } from "../useEventInfo";
 
-export interface GetTicketButtonProps {
-  ticket_value?: number;
-  is_private?: boolean;
-  is_vip?: boolean;
-  count?: number;
+interface ActionPanelProps {
   h: string;
-  fn: VoidFunction;
+  data: PanelItem[] | undefined;
 }
 
-export const ActionPanel = ({ h }: { h: string }) => {
-  const { actions } = use(EventViewerCtx)!;
-
-  const ActionButton = useCallback(
-    (action: ActionItem) => {
+export const ActionPanel = ({ h, data }: ActionPanelProps) => {
+  const PanelButton = useCallback(
+    (action: PanelItem) => {
       return (
         <button
           id={action.label}
@@ -41,8 +34,8 @@ export const ActionPanel = ({ h }: { h: string }) => {
 
   return (
     <HyperList
-      data={actions}
-      component={ActionButton}
+      data={data}
+      component={PanelButton}
       container="grid grid-cols-6 w-full border-b-[0.33px] border-zinc-400 bg-white font-medium"
       itemStyle="bg-gray-100"
       delay={0.3}
@@ -113,7 +106,7 @@ export const EventGroupDetail = ({
 };
 
 interface InfoGridProps {
-  data: InfoItem[];
+  data: InfoItem[] | undefined;
   h: string;
 }
 export const InfoGrid = ({ data, h }: InfoGridProps) => {
@@ -146,11 +139,6 @@ export const InfoGrid = ({ data, h }: InfoGridProps) => {
     />
   );
 };
-
-export interface InfoItem {
-  label: string;
-  value?: string | number;
-}
 
 export const EventViewerFooter = ({ h }: { h: string }) => (
   <div

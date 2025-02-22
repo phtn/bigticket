@@ -1,151 +1,129 @@
-"use client";
+// "use client";
 
-import { Err } from "@/utils/helpers";
-import type { SelectEvent, UserTicket } from "convex/events/d";
-import {
-  createContext,
-  type Dispatch,
-  type SetStateAction,
-  type TransitionStartFunction,
-  use,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useTransition,
-  type ReactNode,
-} from "react";
-import { ConvexCtx } from "../convex";
-import { getUserID } from "@/app/actions";
+// import { Err } from "@/utils/helpers";
+// import type { SelectEvent, UserTicket } from "convex/events/d";
+// import {
+//   createContext,
+//   type Dispatch,
+//   type SetStateAction,
+//   type TransitionStartFunction,
+//   use,
+//   useCallback,
+//   useEffect,
+//   useMemo,
+//   useState,
+//   useTransition,
+//   type ReactNode,
+// } from "react";
+// import { ConvexCtx } from "../convex";
+// import { getUserID } from "@/app/actions";
+// import { type Preloaded, usePreloadedQuery } from "convex/react";
+// import type { api } from "@vx/api";
 
-interface ImageURL {
-  cover_src: string | null;
-  logo_src?: string;
-}
-export type SignedEvent = SelectEvent & ImageURL;
-//
-interface PreloadedEventsCtxValues {
-  signedEvents: SignedEvent[] | undefined;
-  pending: boolean;
-  selectedEvent: SignedEvent | null;
-  getEvent: (event_id: string) => void;
-  counter: UserCounter | null;
-  is_pending: boolean;
-}
-//
-interface PreloadedEventsCtxProps {
-  children: ReactNode;
-  events: SelectEvent[];
-  id?: string | undefined;
-}
-export interface UserCounter {
-  bookmarks: string[] | undefined;
-  likes: string[] | undefined;
-  followers: string[] | undefined;
-  following: string[] | undefined;
-  following_count: number | undefined;
-  follower_count: number | undefined;
-  tickets: UserTicket[] | undefined;
-}
-export const PreloadedEventsCtx =
-  createContext<PreloadedEventsCtxValues | null>(null);
+// interface ImageURL {
+//   cover_src: string | null;
+//   logo_src?: string;
+// }
+// export type SignedEvent = SelectEvent & ImageURL;
 
-export const PreloadedEventsCtxProvider = ({
-  children,
-  events,
-}: PreloadedEventsCtxProps) => {
-  const [selectedEvent, setSelectedEvent] = useState<SignedEvent | null>(null);
-  const [pending, setPending] = useState<boolean>(false);
-  const [signedEvents, setSignedEvents] = useState<SignedEvent[]>();
-  const [counter, setCounter] = useState<UserCounter | null>(null);
-  const { files, usr } = use(ConvexCtx)!;
+// interface PreloadedEventsCtxValues {
+//   signedEvents: SignedEvent[] | undefined;
+//   // pending: boolean;
+//   // getEvent: (event_id: string) => void;
+//   // counter: UserCounter | null;
+//   // is_pending: boolean;
+// }
 
-  const [is_pending, fn] = useTransition();
-  const setFn = <T,>(
-    tx: TransitionStartFunction,
-    action: () => Promise<T>,
-    set: Dispatch<SetStateAction<T>>,
-  ) => {
-    tx(async () => {
-      set(await action());
-    });
-  };
+// interface PreloadedEventsCtxProps {
+//   children: ReactNode;
+//   preloadedEvents: Preloaded<typeof api.events.get.all>;
+//   id?: string | undefined;
+// }
+// export interface UserCounter {
+//   bookmarks: string[] | undefined;
+//   likes: string[] | undefined;
+//   followers: string[] | undefined;
+//   following: string[] | undefined;
+//   following_count: number | undefined;
+//   follower_count: number | undefined;
+//   tickets: UserTicket[] | undefined;
+// }
+// export const PreloadedEventsCtx =
+//   createContext<PreloadedEventsCtxValues | null>(null);
 
-  const userCounter = useCallback(async () => {
-    const id = await getUserID();
-    if (!id) return null;
-    const user = await usr.get.byId(id);
-    if (!user) return null;
-    const {
-      bookmarks,
-      likes,
-      followers,
-      following,
-      follower_count,
-      following_count,
-      tickets,
-    } = user;
-    return {
-      bookmarks,
-      likes,
-      followers,
-      following,
-      follower_count,
-      following_count,
-      tickets,
-    };
-  }, [usr.get]);
+// export const PreloadedEventsCtxProvider = ({
+//   children,
+//   preloadedEvents,
+// }: PreloadedEventsCtxProps) => {
+//   const events = usePreloadedQuery(preloadedEvents);
 
-  const getUserCounter = useCallback(() => {
-    setFn(fn, userCounter, setCounter);
-  }, [userCounter]);
+//   const [signedEvents, setSignedEvents] = useState<SignedEvent[]>();
+//   const [userId, setUserId] = useState<string | null>(null);
+//   const [counter, setCounter] = useState<UserCounter | null>(null);
+//   const { files, getUserById } = use(ConvexCtx)!;
 
-  useEffect(() => {
-    getUserCounter();
-  }, [getUserCounter]);
+//   const getUserId = useCallback(async () => await getUserID(), []);
+//   useEffect(() => {
+//     getUserId().then(setUserId).catch(Err);
+//   }, [getUserId]);
 
-  const getEvent = useCallback(
-    (event_id: string) => {
-      const event =
-        signedEvents?.find((event) => event.event_id === event_id) ?? null;
-      setSelectedEvent(event);
-    },
-    [signedEvents],
-  );
+//   const user = userId && getUserById(userId);
 
-  const collectEvent = useCallback(
-    async (event: SelectEvent) => ({
-      ...event,
-      cover_src: await files.get(event.cover_url),
-    }),
-    [files],
-  );
+//   // const userCounter = useCallback(async () => {
+//   //   if (!userId || !user) return null;
+//   //   const {
+//   //     bookmarks,
+//   //     likes,
+//   //     followers,
+//   //     following,
+//   //     follower_count,
+//   //     following_count,
+//   //     tickets,
+//   //   } = user;
+//   //   return {
+//   //     bookmarks,
+//   //     likes,
+//   //     followers,
+//   //     following,
+//   //     follower_count,
+//   //     following_count,
+//   //     tickets,
+//   //   };
+//   // }, [user, userId]);
 
-  const createSignedEvents = useCallback(async () => {
-    setPending(true);
-    if (!events) return;
-    const promises = events ? events.map(collectEvent) : [];
-    const resolve = await Promise.all(promises);
-    if (resolve.length <= 0) setPending(false);
-    setSignedEvents(resolve);
-  }, [events, collectEvent]);
+//   // const getEvent = useCallback(
+//   //   (event_id: string) => {
+//   //     const event =
+//   //       signedEvents?.find((event) => event.event_id === event_id) ?? null;
+//   //     setSelectedEvent(event);
+//   //   },
+//   //   [signedEvents],
+//   // );
 
-  useEffect(() => {
-    createSignedEvents()
-      .then(() => setPending(false))
-      .catch(Err(setPending));
-  }, [createSignedEvents]);
+//   const collectEvent = useCallback(
+//     async (event: SelectEvent) => ({
+//       ...event,
+//       cover_src: await files.get(event.cover_url),
+//     }),
+//     [files],
+//   );
 
-  const value = useMemo(
-    () => ({
-      signedEvents,
-      pending,
-      selectedEvent,
-      getEvent,
-      counter,
-      is_pending,
-    }),
-    [signedEvents, pending, getEvent, selectedEvent, counter, is_pending],
-  );
-  return <PreloadedEventsCtx value={value}>{children}</PreloadedEventsCtx>;
-};
+//   const createSignedEvents = useCallback(async () => {
+//     if (!events) return [];
+//     const promises = events.map(collectEvent);
+//     const resolve = await Promise.all(promises);
+//     setSignedEvents(resolve);
+//   }, [events, collectEvent]);
+
+//   useEffect(() => {
+//     createSignedEvents().catch(Err);
+//   }, [createSignedEvents]);
+
+//   const value = useMemo(
+//     () => ({
+//       signedEvents,
+//     }),
+//     [signedEvents],
+//   );
+//   return <PreloadedEventsCtx value={value}>{children}</PreloadedEventsCtx>;
+// };

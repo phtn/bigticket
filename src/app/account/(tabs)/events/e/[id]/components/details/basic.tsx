@@ -1,4 +1,3 @@
-import { type SignedEvent } from "@/app/ctx/event/all";
 import { type IconName } from "@/icons";
 import { HyperList } from "@/ui/list";
 import { Input } from "@nextui-org/react";
@@ -7,13 +6,14 @@ import { useMemo } from "react";
 import { inputClassNames } from "../../editor";
 import { BlockHeader } from "./components";
 import type { EventField } from "./schema";
+import type { XEvent } from "@/app/types";
 
 interface BasicContentProps {
-  event: SignedEvent | null;
+  xEvent: XEvent | null;
   pending: boolean;
 }
 
-export const BasicContent = ({ event, pending }: BasicContentProps) => {
+export const BasicContent = ({ xEvent, pending }: BasicContentProps) => {
   const basic_info: EventField<InsertEvent>[] = useMemo(
     () => [
       {
@@ -22,7 +22,7 @@ export const BasicContent = ({ event, pending }: BasicContentProps) => {
         label: "Event name",
         placeholder: "The name of the event",
         required: true,
-        defaultValue: event?.event_name,
+        defaultValue: xEvent?.event_name,
       },
       {
         name: "event_desc",
@@ -30,7 +30,7 @@ export const BasicContent = ({ event, pending }: BasicContentProps) => {
         label: "Describe what your event is about.",
         placeholder: "Provide a brief description of your event.",
         required: false,
-        defaultValue: event?.event_desc,
+        defaultValue: xEvent?.event_desc,
       },
       {
         name: "category",
@@ -38,10 +38,10 @@ export const BasicContent = ({ event, pending }: BasicContentProps) => {
         label: "Event Category",
         placeholder: "Select a category that fits your event.",
         required: false,
-        defaultValue: event?.category,
+        defaultValue: xEvent?.category,
       },
     ],
-    [event?.event_name, event?.event_desc, event?.category],
+    [xEvent?.event_name, xEvent?.event_desc, xEvent?.category],
   );
 
   return (

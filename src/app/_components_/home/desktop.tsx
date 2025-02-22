@@ -6,11 +6,15 @@ import { use, useCallback, useState } from "react";
 import { EventCard } from "../../(search)/event-card";
 import { Hero } from "./components/hero";
 import { Collections } from "../sidebar";
-import { PreloadedEventsCtx } from "@/app/ctx/event/all";
 import { categories, type Category } from "./components/category";
 import { Proxima } from "../proxima";
+import { type XEvent } from "@/app/types";
 
-export const DesktopView = () => {
+interface DesktopViewProps {
+  xEvents: XEvent[];
+}
+
+export const DesktopView = ({ xEvents }: DesktopViewProps) => {
   const { isInputHovered } = use(CursorCtx)!;
   return (
     <div
@@ -19,14 +23,17 @@ export const DesktopView = () => {
       )}
     >
       <Collections />
-      <MainContent />
+      <MainContent xEvents={xEvents} />
       <HyperSpace isInputHovered={isInputHovered} />
     </div>
   );
 };
 
-const MainContent = () => {
-  const { signedEvents } = use(PreloadedEventsCtx)!;
+interface MainContentProps {
+  xEvents: XEvent[];
+}
+
+const MainContent = ({ xEvents }: MainContentProps) => {
   const [selected, setSelected] = useState<string>("all");
 
   const handleSelectCategory = useCallback(
@@ -68,7 +75,7 @@ const MainContent = () => {
         <section id="photos" className="">
           <HyperList
             keyId="event_id"
-            data={signedEvents}
+            data={xEvents}
             component={EventCard}
             container="overflow-scroll md:h-fit grid grid-cols-1 gap-4 sm:grid-cols-3 px-4"
             delay={0.1}

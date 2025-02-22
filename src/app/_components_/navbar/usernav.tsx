@@ -1,5 +1,7 @@
 "use client";
 
+import { useSession } from "@/app/ctx/auth/useSession";
+import { ConvexCtx } from "@/app/ctx/convex";
 import { VxCtx } from "@/app/ctx/convex/vx";
 import { CursorCtx } from "@/app/ctx/cursor";
 import { SidebarCtx } from "@/app/ctx/sidebar";
@@ -10,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { ButtonIcon } from "@/ui/button";
 import { HyperList } from "@/ui/list";
 import { TextLoader } from "@/ui/loader/text";
-import { opts } from "@/utils/helpers";
+import { Err, opts } from "@/utils/helpers";
 import {
   Avatar,
   Input,
@@ -18,8 +20,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
+import { api } from "@vx/api";
+import { useQuery } from "convex/react";
+import { SelectUser } from "convex/users/d";
 import { useRouter } from "next/navigation";
-import { type JSX, use, useCallback, useMemo } from "react";
+import {
+  type JSX,
+  use,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 interface NavItem {
   id: string;
@@ -28,7 +40,34 @@ interface NavItem {
 }
 
 export const UserNav = () => {
-  const { photo_url } = use(VxCtx)!;
+  const { files } = use(ConvexCtx)!;
+  const [vx, setVx] = useState<SelectUser | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [pending, setPending] = useState<boolean>(false);
+  const { user } = useSession()?.userSessionData;
+
+  const userById = useQuery(api.users.get.byId, { id: user?.id ?? "" });
+  useEffect(() => {
+    setPending(true);
+    if (userById) {
+      setVx(userById);
+    }
+  }, [userById]);
+
+  const getPhoto = useCallback(async () => {
+    if (!vx?.photo_url) return null;
+    const url = vx?.photo_url;
+    if (url.startsWith("https")) {
+      setPending(false);
+      return url;
+    }
+    setPending(false);
+    return await files.get(url);
+  }, [files, vx?.photo_url]);
+
+  useEffect(() => {
+    getPhoto().then(setPhotoUrl).catch(Err(setPending));
+  }, [getPhoto]);
 
   const navs: NavItem[] = useMemo(
     () => [
@@ -40,16 +79,16 @@ export const UserNav = () => {
       {
         id: "user",
         label: "user",
-        content: <UserAvatar photo_url={photo_url ?? undefined} />,
+        content: <UserAvatar photo_url={photoUrl ?? undefined} />,
       },
     ],
-    [photo_url],
+    [photoUrl],
   );
 
   const NavOptions = useCallback(() => {
-    const options = opts(<NavList data={navs} />, <UserLoader />);
-    return <>{options.get(!!photo_url)}</>;
-  }, [photo_url, navs]);
+    const options = opts(<UserLoader />, <NavList data={navs} />);
+    return <>{options.get(pending || !photoUrl)}</>;
+  }, [photoUrl, navs]);
 
   return <NavOptions />;
 };

@@ -8,23 +8,34 @@ import { useCallback, useEffect, useState } from "react";
 import { DesktopView } from "./desktop";
 import { MobileView } from "./mobile";
 import { Image } from "@nextui-org/react";
+import { usePreloadedQuery, type Preloaded } from "convex/react";
+import { type api } from "@vx/api";
+import { useEvents } from "./useEvents";
 
-export const Home = () => {
+export interface HomeProps {
+  preloadedEvents: Preloaded<typeof api.events.get.all>;
+}
+export const Home = (props: HomeProps) => {
   const [ready, setReady] = useState<boolean>(false);
   const { isDesktop } = useScreen();
+  const events = usePreloadedQuery(props.preloadedEvents);
+  const { xEvents, loading } = useEvents(events);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setReady(true);
-    }, 4000);
+    }, 2800);
     return () => clearTimeout(timer);
   }, []);
 
   const ViewOptions = useCallback(() => {
-    const options = opts(<DesktopView />, <MobileView />);
+    const options = opts(
+      <DesktopView xEvents={xEvents} />,
+      <MobileView xEvents={xEvents} />,
+    );
     return <>{options.get(isDesktop)}</>;
-  }, [isDesktop]);
-  return ready ? <ViewOptions /> : <Loader />;
+  }, [isDesktop, xEvents]);
+  return ready && !loading ? <ViewOptions /> : <Loader />;
 };
 
 const Loader = () => (

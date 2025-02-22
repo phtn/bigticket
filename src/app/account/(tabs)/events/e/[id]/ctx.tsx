@@ -1,8 +1,8 @@
 "use client";
 
 import { ConvexCtx } from "@/app/ctx/convex";
-import { type SignedEvent } from "@/app/ctx/event/all";
 import { PreloadedUserEventsCtx } from "@/app/ctx/event/user";
+import { type XEvent } from "@/app/types";
 import { useImage } from "@/hooks/useImage";
 import { Err, Ok } from "@/utils/helpers";
 import { log } from "@/utils/logger";
@@ -41,8 +41,8 @@ interface EventEditorCtxValues {
     query: string | undefined,
     locale: string | undefined,
   ) => void;
-  getSignedEvent: (event_id: string | undefined) => void;
-  signedEvent: SignedEvent | null;
+  getXEvent: (event_id: string | undefined) => void;
+  xEvent: XEvent | null;
   pending: boolean;
 }
 interface ImageRefs {
@@ -64,19 +64,19 @@ export const EventEditorCtxProvider = ({
   const [cover_src, setCoverSrc] = useState<string | null>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [inputFile, setInputFile] = useState<HTMLInputElement | null>(null);
-  const [signedEvent, setSignedEvent] = useState<SignedEvent | null>(null);
+  const [xEvent, setXEvent] = useState<XEvent | null>(null);
 
-  const { signedEvents } = use(PreloadedUserEventsCtx)!;
+  const { x } = use(PreloadedUserEventsCtx)!;
 
-  const getSignedEvent = useCallback(
+  const getXEvent = useCallback(
     (event_id: string | undefined) => {
       setPending(true);
       if (!event_id) return;
-      const event = signedEvents?.find((e) => e.event_id === event_id) ?? null;
-      setSignedEvent(event);
+      const event = x?.find((e) => e.event_id === event_id) ?? null;
+      setXEvent(event);
       setPending(false);
     },
-    [signedEvents],
+    [x],
   );
 
   const getRefs = useCallback(({ canvasRef, inputFileRef }: ImageRefs) => {
@@ -199,8 +199,8 @@ export const EventEditorCtxProvider = ({
       getRefs,
       browseFile,
       onInputFileChange,
-      getSignedEvent,
-      signedEvent,
+      getXEvent,
+      xEvent,
       pending,
     }),
     [
@@ -216,8 +216,8 @@ export const EventEditorCtxProvider = ({
       getRefs,
       browseFile,
       onInputFileChange,
-      getSignedEvent,
-      signedEvent,
+      getXEvent,
+      xEvent,
       pending,
     ],
   );

@@ -1,14 +1,19 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { opts } from "@/utils/helpers";
+import { Err, opts } from "@/utils/helpers";
 import { Button, Image, Spinner } from "@nextui-org/react";
-import { memo, use, useCallback } from "react";
+import { memo, use, useCallback, useEffect, useState } from "react";
 import { AccountContext, AccountCtx } from "./ctx";
 import { PfpEditor } from "./side-pfp";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/icons";
+import { ConvexCtx } from "../ctx/convex";
+import { SelectUser } from "convex/users/d";
+import { useSession } from "../ctx/auth/useSession";
+import { api } from "@vx/api";
+import { useQuery } from "convex/react";
 
 export const Profile = memo(() => <ProfileContent />);
 Profile.displayName = "Profile";
@@ -16,6 +21,36 @@ Profile.displayName = "Profile";
 export const Content = () => {
   const { vx, fileChange, inputFileRef, browseFile, photo_url } =
     use(AccountCtx)!;
+
+  const { files } = use(ConvexCtx)!;
+  const [vxuser, setVx] = useState<SelectUser | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [pending, setPending] = useState<boolean>(false);
+  const { user } = useSession()?.userSessionData;
+
+  const userById = useQuery(api.users.get.byId, { id: user?.id ?? "" });
+  useEffect(() => {
+    setPending(true);
+    if (userById) {
+      setVx(userById);
+    }
+  }, [userById]);
+
+  const getPhoto = useCallback(async () => {
+    if (!vxuser?.photo_url) return null;
+    const url = vxuser?.photo_url;
+    if (url.startsWith("https")) {
+      setPending(false);
+      return url;
+    }
+    setPending(false);
+    return await files.get(url);
+  }, [files, vxuser?.photo_url]);
+
+  useEffect(() => {
+    getPhoto().then(setPhotoUrl).catch(Err(setPending));
+  }, [getPhoto]);
+
   const pathname = usePathname();
 
   const sub = pathname.split("/")[3];
@@ -26,13 +61,13 @@ export const Content = () => {
       <Image
         alt="user-pfp"
         radius="none"
-        src={photo_url ?? undefined}
+        src={photoUrl ?? undefined}
         className="aspect-auto w-24 md:w-28 lg:w-32"
-        isLoading={!vx}
+        isLoading={!photoUrl}
       />,
     );
-    return <>{options.get(!vx)}</>;
-  }, [vx, photo_url]);
+    return <>{options.get(!photoUrl)}</>;
+  }, [photo_url]);
 
   return (
     <div className={cn("relative mb-8 w-full", { hidden: sub?.length === 1 })}>

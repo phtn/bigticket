@@ -2,23 +2,17 @@
 
 import { Home } from "@/app/_components_/home";
 import { GoogleOneTap } from "@/app/ctx/auth/one-tap";
-import { type SelectEvent } from "convex/events/d";
-import { PreloadedEventsCtxProvider } from "@/app/ctx/event/all";
-import { EventViewerCtxProvider } from "@/app/ctx/event";
+import { type Preloaded } from "convex/react";
+import { type api } from "@vx/api";
 
 export interface MainContentProps {
-  slug: string[] | undefined;
-  events: SelectEvent[];
+  preloadedEvents: Preloaded<typeof api.events.get.all>;
 }
 
 export const Content = (props: MainContentProps) => {
   return (
     <>
-      <PreloadedEventsCtxProvider {...props}>
-        <EventViewerCtxProvider>
-          <Home />
-        </EventViewerCtxProvider>
-      </PreloadedEventsCtxProvider>
+      <Home {...props} />
       <GoogleOneTap />
     </>
   );

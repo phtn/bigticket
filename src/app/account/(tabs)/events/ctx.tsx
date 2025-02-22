@@ -22,7 +22,7 @@ export const EventCtx = createContext<EventCtxValues | null>(null);
 
 export const EventCtxProvider = ({ children }: { children: ReactNode }) => {
   const [eventList, setEventList] = useState<SelectEvent[]>();
-  const { events } = use(ConvexCtx)!;
+  const { getAllEvents } = use(ConvexCtx)!;
 
   const [pending, fn] = useTransition();
 
@@ -35,13 +35,13 @@ export const EventCtxProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const getAllEvents = useCallback(() => {
-    setEvents(fn, events.get.all);
-  }, [events.get]);
+  const getEvents = useCallback(() => {
+    setEvents(fn, getAllEvents);
+  }, [getAllEvents]);
 
   useEffect(() => {
-    getAllEvents();
-  }, [getAllEvents]);
+    getEvents();
+  }, [getEvents]);
 
   const value = useMemo(
     () => ({

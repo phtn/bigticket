@@ -1,39 +1,51 @@
-import { EventViewerCtx } from "@/app/ctx/event";
-import { TicketCtx } from "@/app/ctx/event/ticket";
+import { useEvents } from "@/app/_components_/home/useEvents";
+import { VxCtx } from "@/app/ctx/convex/vx";
+import { type XEvent } from "@/app/types";
 import { useDime } from "@/hooks/useDime";
 import { usePops } from "@/hooks/usePops";
+import { useToggle } from "@/hooks/useToggle";
 import { cn } from "@/lib/utils";
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
 import { opts } from "@/utils/helpers";
 import { Image } from "@nextui-org/react";
+import { type api } from "@vx/api";
+import { usePreloadedQuery, type Preloaded } from "convex/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  type ReactNode,
-  type RefObject,
   use,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
+  type ReactNode,
+  type RefObject,
 } from "react";
-import { ActionPanel, EventGroupDetail, EventViewerFooter, InfoGrid } from ".";
-import { GetTicketButton } from "./buttons/paid";
-import { VIPButton } from "./buttons/vip";
-import { ClaimedTicketButton } from "./buttons/claimed";
+import {
+  ActionPanel,
+  EventGroupDetail,
+  EventViewerFooter,
+  InfoGrid,
+} from "./components";
+import { ClaimedTicketButton } from "./components/buttons/claimed";
+import { GetTicketButton } from "./components/buttons/paid";
+import { VIPButton } from "./components/buttons/vip";
+import { useEventInfo } from "./useEventInfo";
+import { type Moments, useEventViewer } from "./useEventViewer";
+import { useTicketCart } from "./useTicketCart";
 
-export const EventViewer = () => {
-  const { open, toggle, activeEvent, getEvent } = use(EventViewerCtx)!;
-  const router = useRouter();
+export interface EventViewerProps {
+  preloadedEvents: Preloaded<typeof api.events.get.all>;
+}
+export const EventViewer = ({ preloadedEvents }: EventViewerProps) => {
   const searchParams = useSearchParams();
-  const event_id = searchParams.get("x");
-
-  useEffect(() => {
-    if (event_id) {
-      getEvent(event_id);
-    }
-  }, [event_id, getEvent]);
+  const eventId = searchParams.get("x");
+  const events = usePreloadedQuery(preloadedEvents);
+  const { xEvents } = useEvents(events);
+  const { xEvent, moments } = useEventViewer({ xEvents, eventId });
+  const { open, toggle } = useToggle();
+  const router = useRouter();
 
   const handleCloseDrawer = useCallback(() => {
     router.push("/", { scroll: false });
@@ -44,7 +56,7 @@ export const EventViewer = () => {
 
   return (
     <SideVaul
-      open={!!event_id}
+      open={!!eventId}
       onClose={handleCloseDrawer}
       onOpenChange={toggle}
       direction="right"
@@ -55,12 +67,13 @@ export const EventViewer = () => {
         closeFn={handleCloseDrawer}
         icon="Fire"
         title=""
-        variant={activeEvent?.is_cover_light ? "goddess" : "void"}
+        // variant={xEvent?.is_cover_light ? "goddess" : "void"}
+        variant={false ? "goddess" : "void"}
         className="absolute z-50 w-full rounded-none border-0 bg-transparent/10"
         wrapperStyle="border-gray-500 md:border-l-2"
       >
         <Container>
-          <MediaContainer />
+          <MediaContainer xEvent={xEvent} moments={moments} />
         </Container>
       </FlatWindow>
     </SideVaul>
@@ -70,52 +83,53 @@ const Container = ({ children }: { children: ReactNode }) => (
   <div className={cn("", "w-full")}>{children}</div>
 );
 
-const MediaContainer = () => {
+interface MediaContainerProps {
+  xEvent: XEvent | undefined;
+  moments: Moments;
+}
+
+const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const { screen } = useDime(ref);
   const router = useRouter();
+  const { xEventInfo, panelItems } = useEventInfo(xEvent);
+  const { vx } = use(VxCtx)!;
 
-  const { activeEvent, activeEventInfo, moments, cover_src, counter, user_id } =
-    use(EventViewerCtx)!;
+  // const isClaimed = useMemo(() => {
+  //   const userInEvent =
+  //     counter?.tickets?.findIndex(
+  //       (ticket) => ticket.event_id === xEvent?.event_id,
+  //     ) !== -1;
+  //   const userHasTickets =
+  //     counter?.tickets?.findIndex((ticket) => ticket.user_id === user_id) !==
+  //     -1;
+  //   return userInEvent ? userHasTickets : false;
+  // }, [counter, user_id, xEvent?.event_id]);
 
-  const isClaimed = useMemo(() => {
-    const userInEvent =
-      counter?.tickets?.findIndex(
-        (ticket) => ticket.event_id === activeEvent?.event_id,
-      ) !== -1;
-    const userHasTickets =
-      counter?.tickets?.findIndex((ticket) => ticket.user_id === user_id) !==
-      -1;
-    return userInEvent ? userHasTickets : false;
-  }, [counter, user_id, activeEvent?.event_id]);
-
-  const { getVIPTicket, getBasicTicket, user_email } = use(TicketCtx)!;
+  const ticketCart = useTicketCart(xEvent, vx?.email);
 
   const is_vip = useMemo(() => {
-    if (!activeEvent?.vip_list || !user_email) return false;
-    return (
-      activeEvent.vip_list?.findIndex((vip) => vip.email === user_email) !== -1
-    );
-  }, [activeEvent?.vip_list, user_email]);
+    if (!xEvent?.vip_list || !vx?.email) return false;
+    return xEvent.vip_list?.findIndex((vip) => vip.email === vx?.email) !== -1;
+  }, [xEvent?.vip_list, vx?.email]);
 
   const ticket_count = useMemo(
-    () =>
-      activeEvent?.vip_list?.find((t) => t.email === user_email)?.ticket_count,
-    [activeEvent?.vip_list, user_email],
+    () => xEvent?.vip_list?.find((t) => t.email === vx?.email)?.ticket_count,
+    [xEvent?.vip_list, vx?.email],
   );
 
   const handleGetTickets = useCallback(async () => {
-    if (!user_email) return;
+    if (!vx?.email || !xEvent) return;
     if (is_vip) {
-      return await getVIPTicket(activeEvent);
+      return await ticketCart?.getVIPTicket();
     }
-    return await getBasicTicket(activeEvent);
-  }, [getVIPTicket, getBasicTicket, activeEvent, is_vip, user_email]);
+    return await ticketCart?.getBasicTicket();
+  }, [ticketCart, xEvent, is_vip, vx?.email]);
 
   const handleViewTickets = useCallback(() => {
-    if (!user_email) return;
+    if (!vx?.email) return;
     router.push("/account/tickets");
-  }, [router, user_email]);
+  }, [router, vx?.email]);
 
   const [debounced, setDebounced] = useState(false);
   useEffect(() => {
@@ -126,52 +140,63 @@ const MediaContainer = () => {
     }, 1000);
     return () => clearTimeout(timer);
   }, [debounced]);
-  // const event_name = normalizeTitle(activeEvent?.event_name);
-  const event_name = activeEvent?.event_name ?? null;
+  // const event_name = normalizeTitle(xEvent?.event_name);
+  const event_name = xEvent?.event_name ?? null;
 
-  const EventTicketButton = useCallback(
-    (props: { h: string }) => {
-      const vipOptions = isClaimed ? (
+  const ClaimedOptions = useCallback(
+    ({ h }: { h: string }) => {
+      const options = opts(
         <ClaimedTicketButton
-          h={props.h}
+          h={h}
           is_vip={is_vip}
           count={ticket_count}
-          is_private={activeEvent?.is_private}
+          is_private={xEvent?.is_private}
           fn={handleViewTickets}
-        />
-      ) : (
+        />,
         <VIPButton
           debounced={debounced}
-          h={props.h}
+          h={h}
           count={ticket_count}
-          is_private={activeEvent?.is_private}
-          ticket_price={activeEvent?.ticket_value}
-          fn={handleGetTickets}
-        />
-      );
-
-      const options = opts(
-        vipOptions,
-        <GetTicketButton
-          h={props.h}
-          is_vip={is_vip}
-          count={ticket_count}
-          is_private={activeEvent?.is_private}
-          ticket_value={activeEvent?.ticket_value}
+          is_private={xEvent?.is_private}
+          ticket_price={xEvent?.ticket_value}
           fn={handleGetTickets}
         />,
       );
-      return <>{options.get(isClaimed)}</>;
+      return <>{options.get(false)}</>;
     },
     [
       is_vip,
       ticket_count,
-      isClaimed,
       handleGetTickets,
       handleViewTickets,
-      activeEvent?.is_private,
-      activeEvent?.ticket_value,
+      xEvent?.is_private,
+      xEvent?.ticket_value,
       debounced,
+    ],
+  );
+
+  const EventTicketButton = useCallback(
+    (props: { h: string }) => {
+      const options = opts(
+        <ClaimedOptions h={props.h} />,
+        <GetTicketButton
+          h={props.h}
+          is_vip={is_vip}
+          count={ticket_count}
+          is_private={xEvent?.is_private}
+          ticket_value={xEvent?.ticket_value}
+          fn={handleGetTickets}
+        />,
+      );
+      return <>{options.get(false)}</>;
+    },
+    [
+      is_vip,
+      ticket_count,
+      handleGetTickets,
+      xEvent?.is_private,
+      xEvent?.ticket_value,
+      ClaimedOptions,
     ],
   );
 
@@ -196,23 +221,23 @@ const MediaContainer = () => {
         visible={visible}
         narrow={moments.narrow}
         time={moments.start_time.compact}
-        cover_src={cover_src}
+        cover_src={xEvent?.cover_src ?? null}
         ref={ref}
       />
 
       <div>
         <EventTicketButton h={contentHeight} />
-        <ActionPanel h={contentHeight} />
+        <ActionPanel h={contentHeight} data={panelItems} />
         <EventGroupDetail
           debounced={debounced}
-          host_name={activeEvent?.host_name}
-          event_url={activeEvent?.event_url}
-          is_online={activeEvent?.event_type === "online"}
-          host_id={activeEvent?.host_id}
-          event_venue={`${activeEvent?.venue_name ?? activeEvent?.event_geo ?? "Not set"}---${activeEvent?.venue_address ?? ""}`}
+          host_name={xEvent?.host_name}
+          event_url={xEvent?.event_url}
+          is_online={xEvent?.event_type === "online"}
+          host_id={xEvent?.host_id}
+          event_venue={`${xEvent?.venue_name ?? xEvent?.event_geo ?? "Not set"}---${xEvent?.venue_address ?? ""}`}
           h={contentHeight}
         />
-        <InfoGrid data={activeEventInfo} h={contentHeight} />
+        <InfoGrid data={xEventInfo} h={contentHeight} />
       </div>
       <EventViewerFooter h={contentHeight} />
     </div>

@@ -52,9 +52,9 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
   const [pending, fn] = useTransition();
   const { open, toggle } = useToggle();
 
-  const { events, files, usr } = use(ConvexCtx)!;
+  const { files, usr, getEventById } = use(ConvexCtx)!;
 
-  const event = events.get.byId(event_id!);
+  const event = getEventById(event_id!);
 
   const setFn = <T,>(
     tx: TransitionStartFunction,

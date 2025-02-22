@@ -1,21 +1,12 @@
 "use client";
 
-import { EventViewer } from "@/app/(search)/@ev/components/viewer";
-import {
-  EventViewerCtxProvider,
-  PreloadedEventsCtxProvider,
-} from "@/app/ctx/event";
-import type { SelectEvent } from "convex/events/d";
+import { EventViewer } from "@/app/(search)/@ev/viewer";
+import { type api } from "@vx/api";
+import { type Preloaded } from "convex/react";
 
 export interface EVContentProps {
-  events: SelectEvent[];
+  preloadedEvents: Preloaded<typeof api.events.get.all>;
 }
 export const EVContent = (props: EVContentProps) => {
-  return (
-    <PreloadedEventsCtxProvider {...props}>
-      <EventViewerCtxProvider>
-        <EventViewer />
-      </EventViewerCtxProvider>
-    </PreloadedEventsCtxProvider>
-  );
+  return <EventViewer {...props} />;
 };

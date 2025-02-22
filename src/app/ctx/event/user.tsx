@@ -12,7 +12,7 @@ import {
   type ReactNode,
 } from "react";
 import { ConvexCtx } from "../convex";
-import { type SignedEvent } from "./all";
+import type { XEvent } from "@/app/types";
 
 interface PreloadedUserEventsCtxProps {
   children: ReactNode;
@@ -20,7 +20,7 @@ interface PreloadedUserEventsCtxProps {
   id: string | undefined;
 }
 interface PreloadedUserEventsCtxValues {
-  signedEvents: SignedEvent[] | undefined;
+  x: XEvent[] | undefined;
   pending: boolean;
 }
 export const PreloadedUserEventsCtx =
@@ -31,7 +31,7 @@ export const PreloadedUserEventsCtxProvider = ({
   events,
 }: PreloadedUserEventsCtxProps) => {
   const { files } = use(ConvexCtx)!;
-  const [signedEvents, setSignedEvents] = useState<SignedEvent[]>();
+  const [x, setXEvents] = useState<XEvent[]>();
   const [pending, setPending] = useState(false);
 
   const getUrl = useCallback(
@@ -48,7 +48,7 @@ export const PreloadedUserEventsCtxProvider = ({
     const promises = events ? events.map(getUrl) : [];
     const resolve = await Promise.all(promises);
     if (resolve.length <= 0) setPending(false);
-    setSignedEvents(resolve);
+    setXEvents(resolve);
   }, [events, getUrl]);
 
   useEffect(() => {
@@ -59,10 +59,10 @@ export const PreloadedUserEventsCtxProvider = ({
 
   const value = useMemo(
     () => ({
-      signedEvents,
+      x,
       pending,
     }),
-    [signedEvents, pending],
+    [x, pending],
   );
   return (
     <PreloadedUserEventsCtx value={value}>{children}</PreloadedUserEventsCtx>

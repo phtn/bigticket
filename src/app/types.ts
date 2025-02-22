@@ -1,3 +1,4 @@
+import { type SelectEvent } from "convex/events/d";
 import type { HTMLProps } from "react";
 
 export type ClassName = HTMLProps<HTMLElement>["className"];
@@ -43,3 +44,5 @@ export interface EmailConfig {
   };
   fromEmail: string;
 }
+
+export type XEvent = SelectEvent & { cover_src: string | null };

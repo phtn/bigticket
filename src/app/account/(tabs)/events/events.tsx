@@ -12,16 +12,13 @@ import { CreateEvent } from "./create";
 import { EventCardAccount } from "./event-card";
 
 export const Events = () => {
-  const { signedEvents, pending } = use(PreloadedUserEventsCtx)!;
+  const { x, pending } = use(PreloadedUserEventsCtx)!;
   const { open } = use(SidebarCtx)!;
 
   const Counter = useCallback(() => {
-    const options = opts(
-      <Spinner size="sm" />,
-      <Count count={signedEvents?.length} />,
-    );
+    const options = opts(<Spinner size="sm" />, <Count count={x?.length} />);
     return <>{options.get(pending)}</>;
-  }, [pending, signedEvents?.length]);
+  }, [pending, x?.length]);
 
   return (
     <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white pb-10 md:rounded-lg md:px-6">
@@ -33,17 +30,17 @@ export const Events = () => {
           <CreateEvent />
         </div>
         <HyperList
-          data={signedEvents}
+          data={x}
           component={EventCardAccount}
           container={cn(
             "relative grid grid-cols-1 px-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:px-4",
             { "z-50": !open },
           )}
         />
-        {signedEvents?.length === 0 ? (
+        {x?.length === 0 ? (
           <EmptyList
             title="My events"
-            count={signedEvents?.length ?? 0}
+            count={x?.length ?? 0}
             message="You have no events yet."
           />
         ) : null}

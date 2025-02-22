@@ -182,7 +182,7 @@ async function convertToWebPFile(
   return new Promise((resolve, reject) => {
     img.onload = () => {
       // Set canvas size to match image
-      const dw = img.width * 0.4;
+      const dw = img.width * 0.6;
       const dh = img.height * 0.4;
       canvas.width = dw;
       canvas.height = dh;
@@ -205,7 +205,7 @@ async function convertToWebPFile(
           URL.revokeObjectURL(imageUrl);
         },
         "image/webp",
-        0.75,
+        0.7,
       ); // 0.8 is the quality (0-1)
     };
 

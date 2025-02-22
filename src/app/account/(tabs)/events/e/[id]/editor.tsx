@@ -31,12 +31,12 @@ interface EventEditorProps {
 }
 export const EventEditor = ({ id }: EventEditorProps) => {
   const [event_id] = id?.split("---") ?? [];
-  const { getSignedEvent, signedEvent: event, pending } = use(EventEditorCtx)!;
+  const { getXEvent, xEvent, pending } = use(EventEditorCtx)!;
   const [user_id, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    getSignedEvent(event_id);
-  }, [getSignedEvent, event_id]);
+    getXEvent(event_id);
+  }, [getXEvent, event_id]);
 
   const getUserId = useCallback(async () => {
     setUserId(await getUserID());
@@ -51,34 +51,34 @@ export const EventEditor = ({ id }: EventEditorProps) => {
       {
         value: "info",
         title: "Info",
-        content: <BasicContent event={event} pending={pending} />,
+        content: <BasicContent xEvent={xEvent} pending={pending} />,
       },
       {
         value: "tickets",
         title: "Tickets",
-        content: <BasicContent event={event} pending={pending} />,
+        content: <BasicContent xEvent={xEvent} pending={pending} />,
       },
       {
         value: "vips",
         title: "VIPs",
-        content: <VIPContent event={event} user_id={user_id} />,
+        content: <VIPContent xEvent={xEvent} user_id={user_id} />,
       },
     ],
-    [user_id, event, pending],
+    [user_id, xEvent, pending],
   );
 
   return (
     <EventEditorCtxProvider>
       <main className="h-full bg-gray-200">
-        <Topbar event_name={event?.event_name} />
-        <ImageQuery category={event?.category} />
+        <Topbar event_name={xEvent?.event_name} />
+        <ImageQuery category={xEvent?.category} />
 
         <div className="space-y-8">
           <div className="h-fit md:px-4">
             <Carousel>
               <div className="grid h-fit w-full grid-cols-1 gap-10 md:min-h-[400px] md:grid-cols-2 md:gap-6 md:px-4">
-                <CoverPhoto id={event_id} cover_url={event?.cover_url} />
-                <TicketPhoto event={event} />
+                <CoverPhoto id={event_id} cover_url={xEvent?.cover_url} />
+                <TicketPhoto xEvent={xEvent} />
               </div>
             </Carousel>
           </div>

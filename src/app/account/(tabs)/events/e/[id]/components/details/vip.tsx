@@ -1,4 +1,4 @@
-import type { SelectEvent, VIP } from "convex/events/d";
+import type { VIP } from "convex/events/d";
 import { type IconName } from "@/icons";
 import {
   type ChangeEvent,
@@ -20,6 +20,7 @@ import { inputClassNames } from "../../editor";
 import { ButtonIcon } from "@/ui/button";
 import { type EventField, vip_info, VIPZod } from "./schema";
 import { BlockHeader } from "./components";
+import { type XEvent } from "@/app/types";
 
 interface VIPBlockProps {
   data: EventField<VIP>[];
@@ -28,11 +29,11 @@ interface VIPBlockProps {
   delay?: number;
 }
 interface VIPContentProps {
-  event: SelectEvent | null;
+  xEvent: XEvent | null;
   user_id: string | null;
 }
 
-export const VIPContent = ({ event, user_id }: VIPContentProps) => {
+export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
   const initialState: VIP = {
     name: "",
     email: "",
@@ -48,16 +49,17 @@ export const VIPContent = ({ event, user_id }: VIPContentProps) => {
 
   const { events } = use(ConvexCtx)!;
   const issued_tickets = useMemo(
-    () => event?.vip_list?.reduce((acc, cur) => acc + cur.ticket_count, 0) ?? 0,
-    [event],
+    () =>
+      xEvent?.vip_list?.reduce((acc, cur) => acc + cur.ticket_count, 0) ?? 0,
+    [xEvent],
   );
 
   const updateVIPList = useCallback(
     async (data: VIP) => {
-      if (!event?.event_id) return;
-      return await events.update.vip(event?.event_id, data);
+      if (!xEvent?.event_id) return;
+      return await events.update.vip(xEvent?.event_id, data);
     },
-    [event?.event_id, events.update],
+    [xEvent?.event_id, events.update],
   );
 
   const addVIP = (initialState: VIP | undefined, fd: FormData) => {
@@ -131,18 +133,18 @@ export const VIPContent = ({ event, user_id }: VIPContentProps) => {
             <div className="flex h-11 w-full items-center justify-between border-b border-gray-500 px-3 font-inter text-tiny font-bold">
               <div className="flex items-center gap-4">
                 <span>VIP Guests:</span>
-                <span className="font-normal">{event?.vip_list?.length}</span>
+                <span className="font-normal">{xEvent?.vip_list?.length}</span>
               </div>
             </div>
             <HyperList
-              data={event?.vip_list}
+              data={xEvent?.vip_list}
               component={VIPListItem}
               container=""
               keyId="email"
             />
           </div>
           <div className="absolute bottom-2 right-2">
-            <SendInvite vip_list={event?.vip_list} />
+            <SendInvite vip_list={xEvent?.vip_list} />
           </div>
         </section>
       </div>
