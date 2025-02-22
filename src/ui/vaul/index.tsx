@@ -7,21 +7,13 @@ interface ComponentProps {
   description?: string;
 }
 const Component = ({
-  direction,
   children,
-  open,
-  onOpenChange,
   title,
   description,
-  dismissible = false,
+  ...props
 }: ComponentProps & DialogProps) => {
   return (
-    <Drawer.Root
-      open={open}
-      onOpenChange={onOpenChange}
-      direction={direction}
-      dismissible={dismissible}
-    >
+    <Drawer.Root {...props}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0" />
         <Drawer.Content className="fixed bottom-10 right-0 top-16 z-[100] flex h-fit w-fit flex-col bg-transparent outline-none">

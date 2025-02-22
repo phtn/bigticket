@@ -133,11 +133,12 @@ export const ClaimedTicketButton = ({
             Claimed
             <Icon name="Check" className="text-teal-400" />
           </h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <p className="font-inter text-sm font-semibold capitalize">
-              view my ticket{count > 1 && "s"}
+              view ticket{count > 1 && "s"}
             </p>
-            <Icon name="QrCode" className="opacity-80" />
+            {/* &rarr; */}
+            {/* <Icon name="ArrowRight" className="opacity-80" /> */}
           </div>
         </div>
       </Button>

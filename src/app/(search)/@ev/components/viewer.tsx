@@ -44,15 +44,6 @@ export const EventViewer = () => {
     toggle();
   }, [toggle, router]);
 
-  const handleDrag = useCallback(
-    (e: PointerEvent<HTMLDivElement>, pct = 50) => {
-      if (pct < 50) {
-        handleCloseDrawer();
-      }
-    },
-    [handleCloseDrawer],
-  );
-
   usePops(open, toggle);
 
   return (
@@ -60,12 +51,9 @@ export const EventViewer = () => {
       open={!!event_id}
       onClose={handleCloseDrawer}
       onOpenChange={toggle}
-      onDrag={handleDrag}
-      onRelease={handleCloseDrawer}
       direction="right"
       title={"Event Viewer"}
       description={"View event details."}
-      dismissible
     >
       <FlatWindow
         closeFn={handleCloseDrawer}
