@@ -3,13 +3,11 @@ import { type ActionItem } from "@/app/ctx/event/viewer";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
-import { Shimmer } from "@/ui/text/sparkles";
-import { opts } from "@/utils/helpers";
-import { Button, Card, Spinner } from "@nextui-org/react";
+import { Card, Spinner } from "@nextui-org/react";
 import NumberFlow from "@number-flow/react";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 
-interface GetTicketButtonProps {
+export interface GetTicketButtonProps {
   ticket_value?: number;
   is_private?: boolean;
   is_vip?: boolean;
@@ -17,134 +15,6 @@ interface GetTicketButtonProps {
   h: string;
   fn: VoidFunction;
 }
-export const GetTicketButton = ({
-  ticket_value,
-  is_private = false,
-  is_vip = false,
-  count = 0,
-  h,
-  fn,
-}: GetTicketButtonProps) => {
-  const [debounced, setDebounced] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!debounced) {
-        setDebounced(true);
-      }
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [debounced]);
-
-  const TicketLabel = useCallback(() => {
-    const options = opts(
-      <h2 className="text-xl font-black">
-        <span className="font-bold italic tracking-tighter text-teal-400">
-          {is_vip ? "Claim" : "Diamond"}
-        </span>
-        Ticket{count > 1 && "s"}
-      </h2>,
-      <h2 className="text-xl font-black">
-        <span className="font-bold italic tracking-tighter text-slate-400">
-          Buy
-        </span>
-        Tickets
-      </h2>,
-    );
-    return <>{options.get(is_private)}</>;
-  }, [is_private, is_vip, count]);
-
-  const TicketValue = useCallback(() => {
-    const options = opts(
-      <h3 className="flex items-center justify-center gap-1 text-orange-100">
-        <Icon name={is_vip ? "Sparkle" : "Lock"} className="size-3.5" />
-        <Shimmer
-          sparklesCount={6}
-          className="font-inter text-[16px]"
-          text={is_vip ? "You are VIP" : "Members Only"}
-        />
-      </h3>,
-      <NumberFlow
-        value={ticket_value ?? 0}
-        format={{
-          notation: "standard",
-          currency: "PHP",
-          currencyDisplay: "narrowSymbol",
-          style: "currency",
-        }}
-      />,
-    );
-    return <>{options.get(is_private)}</>;
-  }, [ticket_value, is_private, is_vip]);
-  return (
-    <div className={cn("z-1 relative bg-primary")} style={{ height: h }}>
-      <Button
-        onPress={fn}
-        size="lg"
-        disableRipple
-        color="primary"
-        className="h-full"
-        radius="none"
-        fullWidth
-      >
-        {debounced ? (
-          <div
-            className={cn("flex items-center gap-6", { "gap-14": is_private })}
-          >
-            <TicketLabel />
-            <TicketValue />
-          </div>
-        ) : (
-          <div className="flex items-center justify-center">
-            <Spinner size="sm" color="secondary" />
-          </div>
-        )}
-      </Button>
-    </div>
-  );
-};
-
-export const ClaimedTicketButton = ({
-  is_private = false,
-  count = 0,
-  h,
-  fn,
-}: GetTicketButtonProps) => {
-  return (
-    <div className="z-1 relative bg-primary" style={{ height: h }}>
-      <Button
-        onPress={fn}
-        size="lg"
-        disableRipple
-        color="primary"
-        className="h-full"
-        radius="none"
-        fullWidth
-      >
-        <div
-          className={cn("flex w-full items-center justify-evenly", {
-            "gap-12": is_private,
-          })}
-        >
-          <h2 className="flex items-center gap-0.5 text-xl font-black">
-            <span className="font-bold italic tracking-tighter text-teal-400">
-              Ticket{count > 1 && "s"}
-            </span>
-            Claimed
-            <Icon name="Check" className="text-teal-400" />
-          </h2>
-          <div className="flex items-center gap-1">
-            <p className="font-inter text-sm font-semibold capitalize">
-              view ticket{count > 1 && "s"}
-            </p>
-            {/* &rarr; */}
-            {/* <Icon name="ArrowRight" className="opacity-80" /> */}
-          </div>
-        </div>
-      </Button>
-    </div>
-  );
-};
 
 export const ActionPanel = ({ h }: { h: string }) => {
   const { actions } = use(EventViewerCtx)!;
