@@ -2,7 +2,7 @@
 
 import { NextUIProvider } from "@nextui-org/react";
 import { TRPCProvider } from "@/trpc/react";
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Toasts } from "./toast";
 import AuthProvider from "./auth";
 import { CursorProvider } from "./cursor";
@@ -22,4 +22,6 @@ const Providers = ({ children }: { children: ReactNode }) => {
     </NextUIProvider>
   );
 };
+
+
 export default Providers;

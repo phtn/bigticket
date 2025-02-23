@@ -6,12 +6,20 @@ export const all = query({
 });
 
 export const byId = query({
-  args: { id: v.string() },
-  handler: async ({ db }, { id }) =>
-    (await db
+  args: { id: v.optional(v.string()) },
+  handler: async ({ db, auth }, { id }) => {
+    if (!id) return null;
+    const tokenIdentity = (await auth.getUserIdentity())?.tokenIdentifier;
+    console.log(tokenIdentity);
+    if (!tokenIdentity) return null;
+
+    const user = await db
       .query("users")
       .withIndex("by_uid", (q) => q.eq("id", id))
-      .first()) ?? null,
+      .first();
+
+    return user ?? null;
+  },
 });
 
 export const byEmail = mutation({

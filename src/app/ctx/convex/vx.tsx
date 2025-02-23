@@ -1,4 +1,4 @@
-import { getUserID, setAccountID } from "@/app/actions";
+import { setAccountID } from "@/app/actions";
 import type { SelectUser } from "convex/users/d";
 import {
   createContext,
@@ -18,7 +18,6 @@ import type {
 import { ConvexCtx } from ".";
 import { Err } from "@/utils/helpers";
 import { useSession } from "../auth/useSession";
-import { log } from "@/utils/logger";
 import { useQuery } from "convex/react";
 import { api } from "@vx/api";
 
@@ -33,7 +32,7 @@ export const VxCtx = createContext<VxCtxValues | null>(null);
 export const VxProvider = ({ children }: { children: ReactNode }) => {
   const [vx, setVx] = useState<SelectUser | null>(null);
   const [photo_url, setPhotoURL] = useState<string | null>(null);
-  const { usr, createvx, files, getUserById } = use(ConvexCtx)!;
+  const { createvx, files, getUserById } = use(ConvexCtx)!;
   const { user } = useSession()?.userSessionData;
 
   const userById = useQuery(api.users.get.byId, { id: user?.id ?? "" });
@@ -55,13 +54,14 @@ export const VxProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getVx = useCallback(async () => {
+    const getUser = (id: string) => getUserById(id);
     if (!user?.id) return null;
-    const vxuser = getUserById(user?.id);
+    const vxuser = getUser(user.id)
     if (!vxuser) {
       await createvx();
     }
-    return getUserById(user?.id);
-  }, [usr.get, createvx]);
+    return vxuser;
+  }, [user, createvx, getUserById]);
 
   const getVxUser = useCallback(() => {
     setFn(fn, getVx, setVx);

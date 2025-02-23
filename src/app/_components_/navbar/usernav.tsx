@@ -1,18 +1,17 @@
 "use client";
 
-import { useSession } from "@/app/ctx/auth/useSession";
-import { ConvexCtx } from "@/app/ctx/convex";
-import { VxCtx } from "@/app/ctx/convex/vx";
 import { CursorCtx } from "@/app/ctx/cursor";
 import { SidebarCtx } from "@/app/ctx/sidebar";
+import { UserCtx } from "@/app/ctx/user/ctx";
 import { useScreen } from "@/hooks/useScreen";
+import { useStorage } from "@/hooks/useStorage";
 import { useToggle } from "@/hooks/useToggle";
 import { Icon, type IconName } from "@/icons";
 import { cn } from "@/lib/utils";
 import { ButtonIcon } from "@/ui/button";
 import { HyperList } from "@/ui/list";
 import { TextLoader } from "@/ui/loader/text";
-import { Err, opts } from "@/utils/helpers";
+import { opts } from "@/utils/helpers";
 import {
   Avatar,
   Input,
@@ -20,18 +19,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
-import { api } from "@vx/api";
-import { useQuery } from "convex/react";
-import { SelectUser } from "convex/users/d";
 import { useRouter } from "next/navigation";
-import {
-  type JSX,
-  use,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { type JSX, use, useCallback, useMemo } from "react";
 
 interface NavItem {
   id: string;
@@ -40,34 +29,9 @@ interface NavItem {
 }
 
 export const UserNav = () => {
-  const { files } = use(ConvexCtx)!;
-  const [vx, setVx] = useState<SelectUser | null>(null);
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const [pending, setPending] = useState<boolean>(false);
-  const { user } = useSession()?.userSessionData;
-
-  const userById = useQuery(api.users.get.byId, { id: user?.id ?? "" });
-  useEffect(() => {
-    setPending(true);
-    if (userById) {
-      setVx(userById);
-    }
-  }, [userById]);
-
-  const getPhoto = useCallback(async () => {
-    if (!vx?.photo_url) return null;
-    const url = vx?.photo_url;
-    if (url.startsWith("https")) {
-      setPending(false);
-      return url;
-    }
-    setPending(false);
-    return await files.get(url);
-  }, [files, vx?.photo_url]);
-
-  useEffect(() => {
-    getPhoto().then(setPhotoUrl).catch(Err(setPending));
-  }, [getPhoto]);
+  const { xUser } = use(UserCtx)!;
+  const { item } = useStorage<{ photoUrl: string | null }>("xUser")
+  const photoUrl = item?.photoUrl ?? null;
 
   const navs: NavItem[] = useMemo(
     () => [
@@ -79,7 +43,7 @@ export const UserNav = () => {
       {
         id: "user",
         label: "user",
-        content: <UserAvatar photo_url={photoUrl ?? undefined} />,
+        content: <UserAvatar photo_url={photoUrl} />,
       },
     ],
     [photoUrl],
@@ -87,7 +51,7 @@ export const UserNav = () => {
 
   const NavOptions = useCallback(() => {
     const options = opts(<UserLoader />, <NavList data={navs} />);
-    return <>{options.get(pending || !photoUrl)}</>;
+    return <>{options.get(!photoUrl)}</>;
   }, [photoUrl, navs]);
 
   return <NavOptions />;
@@ -153,16 +117,32 @@ const Collection = () => {
     />
   );
 };
+// const Dap = () => {
+//   const clickFn = useCallback(async () => {
+//     const response = await fetchId();
+//     console.log(response);
+//   }, []);
+//   return (
+//     <ButtonIcon
+//       onClick={clickFn}
+//       icon="CarDashboard"
+//       bg="text-white"
+//       color="text-macl-gray"
+//     />
+//   );
+// };
 interface MenuItem {
   id: number;
   label: string;
   href: string;
   icon: IconName;
 }
-const UserAvatar = (props: { photo_url: string | undefined }) => {
+const UserAvatar = (props: { photo_url: string | null }) => {
   const { open, toggle } = useToggle();
+  const avatar = props.photo_url ?? undefined;
   const { isDesktop } = useScreen();
   const router = useRouter();
+
   const handleRoute = useCallback(
     (href: string, toggle: VoidFunction) => () => {
       toggle();
@@ -177,13 +157,13 @@ const UserAvatar = (props: { photo_url: string | undefined }) => {
         id: 1,
         label: "Profile",
         href: "/account",
-        icon: "User",
+        icon: "UserSettings",
       },
       {
         id: 2,
         label: "Tickets",
         href: "/account/tickets",
-        icon: "TicketFill",
+        icon: "Ticket",
       },
       {
         id: 3,
@@ -197,14 +177,14 @@ const UserAvatar = (props: { photo_url: string | undefined }) => {
       return (
         <button
           onClick={handleRoute(href, toggle)}
-          className="flex w-full items-center justify-between gap-12 rounded-lg px-3 py-3"
+          className="flex w-full items-center justify-between group gap-12 rounded-lg px-3 py-3"
         >
           <div className="flex items-center">
-            <h2 className="font-inter font-semibold tracking-tighter text-void">
+            <h2 className="font-inter font-semibold tracking-tighter">
               {label}
             </h2>
           </div>
-          <Icon name={icon} className="text-primary/60" />
+          <Icon name={icon} className="text-chalk group-hover:scale-110 size-5 transition-all duration-300 group-hover:text-white" />
         </button>
       );
     };
@@ -216,7 +196,7 @@ const UserAvatar = (props: { photo_url: string | undefined }) => {
         data={menu}
         component={MenuListItem}
         container="w-full space-y-2 py-2"
-        itemStyle="first:bg-primary/20 first:hover:bg-primary/30 hover:bg-peach/60 bg-peach/40 last:bg-secondary/40 last:hover:bg-secondary/80 transition-colors border-[0.33px] border-macl-gray duration-300 rounded-lg"
+        itemStyle="first:bg-primary hover:opacity-90 bg-peach last:bg-secondary transition-colors border-[0.33px] first:border-macl-gray border-gray-300 text-white duration-300 rounded-lg"
       />
     );
   }, [handleRoute, toggle]);
@@ -227,11 +207,11 @@ const UserAvatar = (props: { photo_url: string | undefined }) => {
         <PopoverTrigger className="cursor-pointer border border-macl-gray">
           <Avatar
             alt="user-pfp"
-            src={props?.photo_url}
+            src={avatar}
             size={isDesktop ? "md" : "sm"}
           />
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] border-[0.33px] border-[#464749] bg-white">
+        <PopoverContent className="w-[200px] border-[0.33px] border-macl-gray bg-[#464749]">
           <UserMenu />
         </PopoverContent>
       </Popover>

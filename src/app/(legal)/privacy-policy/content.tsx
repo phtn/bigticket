@@ -1,3 +1,5 @@
+"use client"
+
 import { Content } from "@/app/_components_/legal/content";
 import type { Section } from "@/app/_components_/legal/types";
 

@@ -1,55 +1,30 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Err, opts } from "@/utils/helpers";
+import { opts } from "@/utils/helpers";
 import { Button, Image, Spinner } from "@nextui-org/react";
-import { memo, use, useCallback, useEffect, useState } from "react";
+import { memo, use, useCallback } from "react";
 import { AccountContext, AccountCtx } from "./ctx";
 import { PfpEditor } from "./side-pfp";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/icons";
-import { ConvexCtx } from "../ctx/convex";
-import { SelectUser } from "convex/users/d";
-import { useSession } from "../ctx/auth/useSession";
-import { api } from "@vx/api";
-import { useQuery } from "convex/react";
+import { UserCtx, UserCtxProvider } from "../ctx/user/ctx";
+import { useStorage } from "@/hooks/useStorage";
 
 export const Profile = memo(() => <ProfileContent />);
 Profile.displayName = "Profile";
 
 export const Content = () => {
-  const { vx, fileChange, inputFileRef, browseFile, photo_url } =
+  const { fileChange, inputFileRef, browseFile, } =
     use(AccountCtx)!;
 
-  const { files } = use(ConvexCtx)!;
-  const [vxuser, setVx] = useState<SelectUser | null>(null);
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const [pending, setPending] = useState<boolean>(false);
-  const { user } = useSession()?.userSessionData;
+  const { xUser } = use(UserCtx)!;
+  const { item } = useStorage<{ photoUrl: string | null }>("xUser")
+  const photoUrl = item?.photoUrl ?? null;
 
-  const userById = useQuery(api.users.get.byId, { id: user?.id ?? "" });
-  useEffect(() => {
-    setPending(true);
-    if (userById) {
-      setVx(userById);
-    }
-  }, [userById]);
 
-  const getPhoto = useCallback(async () => {
-    if (!vxuser?.photo_url) return null;
-    const url = vxuser?.photo_url;
-    if (url.startsWith("https")) {
-      setPending(false);
-      return url;
-    }
-    setPending(false);
-    return await files.get(url);
-  }, [files, vxuser?.photo_url]);
 
-  useEffect(() => {
-    getPhoto().then(setPhotoUrl).catch(Err(setPending));
-  }, [getPhoto]);
 
   const pathname = usePathname();
 
@@ -67,10 +42,12 @@ export const Content = () => {
       />,
     );
     return <>{options.get(!photoUrl)}</>;
-  }, [photo_url]);
+  }, [photoUrl]);
 
   return (
-    <div className={cn("relative mb-8 w-full", { hidden: sub?.length === 1 })}>
+    <div
+      className={cn("relative mb-8 w-full", { hidden: sub?.length === 1 })}
+    >
       <section className="relative h-fit w-full bg-gray-200">
         <div
           id="cover-photo"
@@ -80,12 +57,14 @@ export const Content = () => {
           <div className="whitespace-nowrap font-inter leading-none">
             <Link
               className="flex items-center"
-              href={`${pathname}/preview?page=${vx?.account_id}`}
+              href={`${pathname}/preview?page=${xUser?.account_id}`}
             >
-              <h2 className="font-semibold tracking-tighter">{vx?.nickname}</h2>
+              <h2 className="font-semibold tracking-tighter">
+                {xUser?.nickname}
+              </h2>
             </Link>
             <h3 className="text-xs font-light tracking-tighter md:text-sm">
-              {vx?.email}
+              {xUser?.email}
             </h3>
           </div>
 
@@ -129,6 +108,8 @@ export const Content = () => {
 };
 const ProfileContent = () => (
   <AccountContext>
-    <Content />
+    <UserCtxProvider>
+      <Content />
+    </UserCtxProvider>
   </AccountContext>
 );

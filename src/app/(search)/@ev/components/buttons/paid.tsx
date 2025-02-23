@@ -76,7 +76,7 @@ const PaidButtonX = ({ price, count, fn, h, xScaling }: PaidButtonProps) => {
               trend={0}
               willChange
               className={cn(
-                "w-16 text-right font-sans font-light tracking-tight text-teal-300",
+                "w-20 text-right font-sans font-light tracking-tight text-teal-300",
                 { "w-20": count * price > 100000 },
               )}
               value={price * count}

@@ -1,20 +1,16 @@
-import { VxCtx } from "@/app/ctx/convex/vx";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { opts } from "@/utils/helpers";
 import { Spinner } from "@nextui-org/react";
 import { type UserTicket } from "convex/events/d";
-import { use, useCallback, useEffect, useMemo } from "react";
+import { use, useCallback, useMemo } from "react";
 import { Count, EmptyList, Header } from "../../_components_/common";
 import { TicketCard } from "./ticket-card";
 import { TicketViewer } from "./ticket-viewer";
+import { UserCtx } from "@/app/ctx/user/ctx";
 
 export const Tickets = () => {
-  const { vx, pending, getVxUser } = use(VxCtx)!;
-
-  useEffect(() => {
-    getVxUser();
-  }, [getVxUser]);
+  const { xUser, pending } = use(UserCtx)!
 
   const ticketsByEvent = useCallback(
     (arr: UserTicket[] | undefined): Map<string, UserTicket[]> => {
@@ -37,8 +33,8 @@ export const Tickets = () => {
   );
 
   const eventGroups = useMemo(
-    () => ticketsByEvent(vx?.tickets) ?? [],
-    [vx?.tickets, ticketsByEvent],
+    () => ticketsByEvent(xUser?.tickets) ?? [],
+    [xUser?.tickets, ticketsByEvent],
   );
   const groups = useMemo(
     () => Array.from(eventGroups.entries()),
@@ -69,7 +65,7 @@ export const Tickets = () => {
             >
               <div key={i} className="md:rounded-t-md">
                 <Header title={String(group[0])}>
-                  {vx ? (
+                  {xUser ? (
                     <Counter count={group[1].length} />
                   ) : (
                     <Spinner size="sm" />

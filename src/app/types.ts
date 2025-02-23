@@ -1,5 +1,5 @@
 import { type SelectEvent } from "convex/events/d";
-import type { HTMLProps } from "react";
+import type { HTMLProps, Dispatch, SetStateAction } from "react";
 
 export type ClassName = HTMLProps<HTMLElement>["className"];
 
@@ -46,3 +46,6 @@ export interface EmailConfig {
 }
 
 export type XEvent = SelectEvent & { cover_src: string | null };
+
+export type SetState<T> = Dispatch<SetStateAction<T>>;
+export type FPromise<T> = () => Promise<T>;

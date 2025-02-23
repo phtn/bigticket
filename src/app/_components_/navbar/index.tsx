@@ -1,5 +1,6 @@
 "use client";
 
+import { UserCtxProvider } from "@/app/ctx/user/ctx";
 import { Brand, BrandName, Tickets, Title } from "./brand";
 import { UserNav } from "./usernav";
 
@@ -12,7 +13,9 @@ export const Navbar = () => {
           <Title />
         </BrandName>
       </Brand>
-      <UserNav />
+      <UserCtxProvider>
+        <UserNav />
+      </UserCtxProvider>
     </div>
   );
 };

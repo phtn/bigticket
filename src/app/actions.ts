@@ -55,21 +55,34 @@ export const deleteUserID = async () => {
 };
 
 ////////////////////
-/// ACCOUNT
+/// ACCOUNT_ID
 export const setAccountID = async (id: string) => {
   const cookieStore = await cookies();
   cookieStore.set("big-ticket--account-id", id, { ...defaultOpts, path: "/" });
 };
-
 export const getAccountID = async () => {
   const cookieStore = await cookies();
   const id = cookieStore.get("big-ticket--account-id")?.value ?? null;
   return id;
 };
-
 export const deleteAccountID = async () => {
   const cookieStore = await cookies();
   cookieStore.delete("big-ticket--account-id");
+};
+////////////////////
+/// USER_EMAIL
+export const setUserEmail = async (id: string) => {
+  const cookieStore = await cookies();
+  cookieStore.set("big-ticket--user-email", id, { ...defaultOpts, path: "/" });
+};
+export const getUserEmail = async () => {
+  const cookieStore = await cookies();
+  const id = cookieStore.get("big-ticket--user-email")?.value ?? null;
+  return id;
+};
+export const deleteUserEmail = async () => {
+  const cookieStore = await cookies();
+  cookieStore.delete("big-ticket--user-email");
 };
 
 export const fetchAllEvents = async () => {
@@ -77,9 +90,9 @@ export const fetchAllEvents = async () => {
   return events;
 };
 
+
 export const preloadAllEvents = async () => {
   const preloadedEvents = await preloadQuery(api.events.get.all);
-  // const events = preloadedQueryResult(preloadedEvents);
   return preloadedEvents;
 };
 
@@ -94,10 +107,15 @@ export const preloadEventsByHostId = async (host_id: string | null) => {
 
 export const fetchUser = async () => {
   const userId = await getUserID();
-  console.log(userId);
+  const acctId = await getAccountID();
+  console.log(userId, acctId);
   if (!userId) return null;
   const user = await fetchQuery(api.users.get.byId, { id: userId });
   return user;
+};
+
+export const fetchId = async () => {
+  return await getUserID();
 };
 
 export const preloadUser = async () => {
