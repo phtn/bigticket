@@ -32,3 +32,16 @@
   /* mask: radial-gradient(var(--r) at var(--r), #0000 calc(110% - 1px), #000)
     calc(-1 * var(--r)); */
 }
+
+.small-ticket {
+  --r: 5px; /* cut size */
+  --h: 40px;
+  --offset: calc(50%-20px);
+  width: calc(2 * var(--h));
+  height: var(--h);
+
+  mask: radial-gradient(var(--r) at var(--r) 50%, #0000 calc(120% - 1px), #000)
+    calc(-1 * var(--r));
+  /* mask: radial-gradient(var(--r) at var(--r), #0000 calc(110% - 1px), #000)
+    calc(-1 * var(--r)); */
+}

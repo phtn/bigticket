@@ -728,6 +728,29 @@ function InfoLine(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function EventStar(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        color="currentColor"
+      >
+        <path d="m17.777 13.65l.792 1.597a.98.98 0 0 0 .64.476l1.435.24c.918.155 1.134.826.472 1.489L20 18.577a.99.99 0 0 0-.234.82l.32 1.394c.252 1.102-.329 1.529-1.296.952l-1.345-.803c-.244-.145-.644-.145-.891 0l-1.346.803c-.963.577-1.548.146-1.296-.952l.32-1.393a.99.99 0 0 0-.234-.821l-1.116-1.125c-.657-.663-.445-1.334.472-1.488l1.436-.24a.98.98 0 0 0 .634-.477l.792-1.597c.432-.867 1.134-.867 1.561 0M18 2v2M6 2v2"></path>
+        <path d="M21.5 11.5c-.004-3.866-.073-5.872-1.252-7.146C18.996 3 16.98 3 12.95 3h-1.9C7.02 3 5.004 3 3.752 4.354C2.5 5.707 2.5 7.886 2.5 12.244v.513c0 4.357 0 6.536 1.252 7.89c1.194 1.29 3.081 1.35 6.748 1.353M3 8h18"></path>
+      </g>
+    </svg>
+  );
+}
 function EyeOpen(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1746,8 +1769,24 @@ function Tablet(props: SVGProps<SVGSVGElement>) {
 
 export function Ticket(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.709 7.65c.157-.157.428-.173.587 0c.932 1.018 1.449 1.772 1.619 2.606c.097.48.111.968.04 1.443c-.19 1.285-1.23 2.325-3.312 4.406l-2.538 2.538c-2.08 2.081-3.121 3.122-4.406 3.313c-.475.07-.963.056-1.443-.041c-.834-.17-1.588-.686-2.605-1.619c-.174-.16-.158-.43 0-.588c.876-.876.834-2.338-.093-3.266c-.928-.927-2.39-.969-3.266-.093c-.157.158-.429.174-.588 0c-.933-1.017-1.449-1.77-1.619-2.605a4.2 4.2 0 0 1-.04-1.443c.19-1.285 1.23-2.325 3.312-4.406l2.538-2.538c2.08-2.081 3.121-3.122 4.406-3.313c.475-.07.963-.056 1.443.041c.835.17 1.588.687 2.605 1.62c.174.159.158.43 0 .586c-.876.877-.834 2.339.094 3.266c.927.928 2.39.97 3.265.093M19 15L9 5" color="currentColor"></path></svg>
-  )
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M19.709 7.65c.157-.157.428-.173.587 0c.932 1.018 1.449 1.772 1.619 2.606c.097.48.111.968.04 1.443c-.19 1.285-1.23 2.325-3.312 4.406l-2.538 2.538c-2.08 2.081-3.121 3.122-4.406 3.313c-.475.07-.963.056-1.443-.041c-.834-.17-1.588-.686-2.605-1.619c-.174-.16-.158-.43 0-.588c.876-.876.834-2.338-.093-3.266c-.928-.927-2.39-.969-3.266-.093c-.157.158-.429.174-.588 0c-.933-1.017-1.449-1.77-1.619-2.605a4.2 4.2 0 0 1-.04-1.443c.19-1.285 1.23-2.325 3.312-4.406l2.538-2.538c2.08-2.081 3.121-3.122 4.406-3.313c.475-.07.963-.056 1.443.041c.835.17 1.588.687 2.605 1.62c.174.159.158.43 0 .586c-.876.877-.834 2.339.094 3.266c.927.928 2.39.97 3.265.093M19 15L9 5"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
 }
 function TicketFill(props: SVGProps<SVGSVGElement>) {
   return (
@@ -1893,8 +1932,24 @@ function User(props: SVGProps<SVGSVGElement>) {
 
 export function UserSettings(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M11.5 14.012a10.6 10.6 0 0 0-5.922 1.47c-1.415.842-5.125 2.562-2.865 4.715C3.816 21.248 5.045 22 6.59 22H12m3.5-15.5a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0M18 20.714V22m0-1.286a3.36 3.36 0 0 1-2.774-1.43M18 20.713a3.36 3.36 0 0 0 2.774-1.43M18 14.285c1.157 0 2.176.568 2.774 1.43M18 14.287a3.36 3.36 0 0 0-2.774 1.43M18 14.287V13m4 1.929l-1.226.788M14 20.07l1.226-.788M14 14.93l1.226.788M22 20.07l-1.226-.788m0-3.566a3.12 3.12 0 0 1 0 3.566m-5.548-3.566a3.12 3.12 0 0 0 0 3.566" color="currentColor"></path></svg>
-  )
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M11.5 14.012a10.6 10.6 0 0 0-5.922 1.47c-1.415.842-5.125 2.562-2.865 4.715C3.816 21.248 5.045 22 6.59 22H12m3.5-15.5a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0M18 20.714V22m0-1.286a3.36 3.36 0 0 1-2.774-1.43M18 20.713a3.36 3.36 0 0 0 2.774-1.43M18 14.285c1.157 0 2.176.568 2.774 1.43M18 14.287a3.36 3.36 0 0 0-2.774 1.43M18 14.287V13m4 1.929l-1.226.788M14 20.07l1.226-.788M14 14.93l1.226.788M22 20.07l-1.226-.788m0-3.566a3.12 3.12 0 0 1 0 3.566m-5.548-3.566a3.12 3.12 0 0 0 0 3.566"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
 }
 export function VIPIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -1962,6 +2017,7 @@ export const icons = {
   EGuitarFender,
   EGuitarGray,
   Energy,
+  EventStar,
   EyeOpen,
   Fire,
   Fullscreen,

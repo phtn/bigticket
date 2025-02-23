@@ -1,8 +1,7 @@
-import { CursorCtx } from "@/app/ctx/cursor";
 import { cn } from "@/lib/utils";
 import { HyperSpace } from "@/ui/cursor";
 import { HyperList } from "@/ui/list";
-import { use, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { EventCard } from "../../(search)/event-card";
 import { Hero } from "./components/hero";
 import { Collections } from "../sidebar";
@@ -76,7 +75,7 @@ const MainContent = ({ xEvents }: MainContentProps) => {
             keyId="event_id"
             data={xEvents}
             component={EventCard}
-            container="overflow-scroll md:h-fit grid grid-cols-1 gap-4 sm:grid-cols-3 px-4"
+            container="overflow-scroll md:h-fit grid grid-cols-1 gap-4 sm:grid-cols-2 md::grid-cols-2 lg:grid-cols-3  px-4"
             delay={0.1}
           >
             <div

@@ -10,7 +10,7 @@ import { TicketViewer } from "./ticket-viewer";
 import { UserCtx } from "@/app/ctx/user/ctx";
 
 export const Tickets = () => {
-  const { xUser, pending } = use(UserCtx)!
+  const { xUser, pending } = use(UserCtx)!;
 
   const ticketsByEvent = useCallback(
     (arr: UserTicket[] | undefined): Map<string, UserTicket[]> => {
@@ -52,7 +52,7 @@ export const Tickets = () => {
   return (
     <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white pb-10 md:rounded-lg md:px-6">
       <div className="bg-white">
-        {groups.map((group, i) => (
+        {groups.map((group) => (
           <div key={`_${group[0]}`}>
             <HyperList
               data={group[1]}
@@ -63,7 +63,7 @@ export const Tickets = () => {
                 { "z-50": !open },
               )}
             >
-              <div key={i} className="md:rounded-t-md">
+              <div key={"x"} className="md:rounded-t-md">
                 <Header title={String(group[0])}>
                   {xUser ? (
                     <Counter count={group[1].length} />
@@ -78,8 +78,7 @@ export const Tickets = () => {
 
         {groups.length === 0 ? (
           <EmptyList
-            title="My Tickets"
-            count={0}
+            icon="Ticket"
             message={
               pending ? "Getting your tickets..." : "You have no tickets yet."
             }

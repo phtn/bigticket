@@ -3,13 +3,13 @@ import { cn } from "@/lib/utils";
 import { ButtonIcon } from "@/ui/button";
 import NumberFlow, { continuous, NumberFlowGroup } from "@number-flow/react";
 import { useCallback, useMemo, useState } from "react";
-import { type GetTicketButtonProps } from "./d";
+import { type GetTicketProps } from "./d";
 
-export const GetTicketButton = ({ ticket_value, h }: GetTicketButtonProps) => {
+export const GetTickets = ({ ticketPrice, h }: GetTicketProps) => {
   const [ticketCount, setTicketCount] = useState(1);
   const [xScaling, setXScaling] = useState(false);
 
-  const ticketValue = useMemo(() => ticket_value ?? 0, [ticket_value]);
+  const ticketValue = useMemo(() => ticketPrice ?? 0, [ticketPrice]);
 
   const incDecCount = useCallback(
     (value: number) => () => {
@@ -26,10 +26,9 @@ export const GetTicketButton = ({ ticket_value, h }: GetTicketButtonProps) => {
   return (
     <div className={cn("z-1 relative h-full bg-primary")} style={{ height: h }}>
       <PaidButtonX
-        h={h}
+        fn={incDecCount}
         price={ticketValue}
         count={ticketCount}
-        fn={incDecCount}
         xScaling={xScaling}
       />
     </div>
@@ -40,15 +39,11 @@ interface PaidButtonProps {
   price: number;
   count: number;
   fn: (v: number) => () => void;
-  h: string;
   xScaling: boolean;
 }
-const PaidButtonX = ({ price, count, fn, h, xScaling }: PaidButtonProps) => {
+const PaidButtonX = ({ price, count, fn, xScaling }: PaidButtonProps) => {
   return (
-    <div
-      className={cn("z-1 relative flex h-full bg-primary")}
-      style={{ height: h }}
-    >
+    <div className={cn("z-1 relative flex h-full bg-primary")}>
       <div
         className={cn("flex w-full items-center justify-between px-3 md:px-6")}
       >
@@ -76,7 +71,7 @@ const PaidButtonX = ({ price, count, fn, h, xScaling }: PaidButtonProps) => {
               trend={0}
               willChange
               className={cn(
-                "w-20 text-right font-sans font-light tracking-tight text-teal-300",
+                "w-20 text-right font-sans font-medium tracking-tight text-teal-300 md:w-24",
                 { "w-20": count * price > 100000 },
               )}
               value={price * count}

@@ -52,6 +52,7 @@ export const getUserID = async () => {
 export const deleteUserID = async () => {
   const cookieStore = await cookies();
   cookieStore.delete("big-ticket--id");
+  cookieStore.delete("big-ticket--account-id");
 };
 
 ////////////////////

@@ -7,67 +7,46 @@ import {
   useEffect,
   useMemo,
   useState,
-  useTransition,
 } from "react";
-import type {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  TransitionStartFunction,
-} from "react";
+import type { ReactNode } from "react";
 import { ConvexCtx } from ".";
 import { Err } from "@/utils/helpers";
-import { useSession } from "../auth/useSession";
 import { useQuery } from "convex/react";
 import { api } from "@vx/api";
+import { q } from "./utils";
+import { AuthCtx } from "../auth";
 
 interface VxCtxValues {
   vx: SelectUser | null;
   pending: boolean;
   photo_url: string | null;
-  getVxUser: VoidFunction;
 }
 export const VxCtx = createContext<VxCtxValues | null>(null);
 
 export const VxProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = use(AuthCtx)!;
   const [vx, setVx] = useState<SelectUser | null>(null);
   const [photo_url, setPhotoURL] = useState<string | null>(null);
-  const { createvx, files, getUserById } = use(ConvexCtx)!;
-  const { user } = useSession()?.userSessionData;
+  const [pending, setPending] = useState(false);
+  const { createvx, files } = use(ConvexCtx)!;
 
-  const userById = useQuery(api.users.get.byId, { id: user?.id ?? "" });
+  const vxUser = useQuery(api.users.get.byId, { id: q(user?.id) });
   useEffect(() => {
-    if (userById) {
-      setVx(userById);
+    setPending(true);
+    if (user) {
+      if (vxUser) {
+        setVx(vxUser);
+        setPending(false);
+      } else {
+        createvx().catch(Err);
+        setPending(false);
+      }
+
+      setPending(false);
     }
-  }, [userById]);
+  }, [vxUser, user, createvx]);
 
-  const [pending, fn] = useTransition();
-  const setFn = <T,>(
-    tx: TransitionStartFunction,
-    action: () => Promise<T>,
-    set: Dispatch<SetStateAction<T>>,
-  ) => {
-    tx(async () => {
-      set(await action());
-    });
-  };
-
-  const getVx = useCallback(async () => {
-    const getUser = (id: string) => getUserById(id);
-    if (!user?.id) return null;
-    const vxuser = getUser(user.id)
-    if (!vxuser) {
-      await createvx();
-    }
-    return vxuser;
-  }, [user, createvx, getUserById]);
-
-  const getVxUser = useCallback(() => {
-    setFn(fn, getVx, setVx);
-  }, [getVx]);
-
-  const getPhoto = useCallback(async () => {
+  const getPhotoURL = useCallback(async () => {
     if (!vx?.photo_url) return null;
     const url = vx?.photo_url;
     if (url.startsWith("https")) {
@@ -76,14 +55,9 @@ export const VxProvider = ({ children }: { children: ReactNode }) => {
     return await files.get(url);
   }, [files, vx?.photo_url]);
 
-  const getPhotoURL = useCallback(() => {
-    setFn(fn, getPhoto, setPhotoURL);
-  }, [getPhoto]);
-
   useEffect(() => {
-    getVxUser();
-    getPhotoURL();
-  }, [getVxUser, getPhotoURL]);
+    getPhotoURL().then(setPhotoURL).catch(Err);
+  }, [getPhotoURL]);
 
   const setAccountId = useCallback(async (account_id: string | undefined) => {
     if (!account_id) return;
@@ -101,9 +75,8 @@ export const VxProvider = ({ children }: { children: ReactNode }) => {
       vx,
       pending,
       photo_url,
-      getVxUser,
     }),
-    [vx, pending, photo_url, getVxUser],
+    [vx, pending, photo_url],
   );
   return <VxCtx value={value}>{children}</VxCtx>;
 };

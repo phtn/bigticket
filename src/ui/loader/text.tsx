@@ -78,7 +78,7 @@ export const TextLoader = ({
           ref={(ref) => {
             dotsRef.current[i] = ref;
           }}
-          className={cn("leading-none text-white drop-shadow-xl", color)}
+          className={cn("leading-none text-white drop-shadow-md", color)}
           style={{
             position: "absolute",
             transform: "translateY(-50%)",

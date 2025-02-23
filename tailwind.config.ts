@@ -204,6 +204,8 @@ export default {
         "macd-brown": "#AC8E68",
         "macl-gray": "#8E8E93",
         "macd-gray": "#98989D",
+        google: "#464749",
+        ticket: "#34373A",
       },
     },
   },

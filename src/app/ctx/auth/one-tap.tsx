@@ -17,24 +17,24 @@ export const GoogleOneTap = () => {
   const { pending, userSessionData } = useSession();
 
   const generateNonce = useCallback(() => {
-    let hashedNonce = undefined;
     const nonce = btoa(
       String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32))),
     );
     const enc = new TextEncoder();
     const encodedNonce = enc.encode(nonce);
-    crypto.subtle
+    return crypto.subtle
       .digest("SHA-256", encodedNonce)
       .then((hashBuffer) => {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
-        hashedNonce = hashArray
+        const hashedNonce = hashArray
           .map((b) => b.toString(16).padStart(2, "0"))
           .join("");
+        return { nonce, hashedNonce };
       })
-      .catch(Err);
-    if (hashedNonce) {
-      return { nonce, hashedNonce };
-    }
+      .catch((error) => {
+        console.error(error);
+        return null;
+      });
   }, []);
 
   useEffect(() => {
@@ -42,49 +42,39 @@ export const GoogleOneTap = () => {
       updateUser(userSessionData.user);
       return;
     }
-    const n = generateNonce();
 
-    const timeout = setTimeout(() => {
-      // Load Google Identity Services (GSI) script dynamically
+    const initializeGoogleOneTap = async () => {
+      const n = await generateNonce();
+      if (!n) return;
+
       const loadGoogleScript = () => {
         const script = document.createElement("script");
         script.src = "https://accounts.google.com/gsi/client";
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
-        script.onload = initializeGoogleOneTap;
-      };
-
-      // Initialize Google One Tap
-      const initializeGoogleOneTap = () => {
-        if (!window.google) {
-          log(" Google GSI library not found.", window.google);
-          return;
-        }
-
-        if (!n?.hashedNonce) {
-          log("No hashedNonce", n?.hashedNonce);
-        }
-
-        try {
-          window.google.accounts.id.initialize({
-            client_id: env.NEXT_PUBLIC_GOOGLE_CLIENT_ID, // From .env.local
-            callback: handleGoogleCredentialResponse,
-            nonce: n?.hashedNonce,
-            use_fedcm_for_prompt: true,
-            cancel_on_tap_outside: true,
-          });
-        } catch (err) {
-          if (err) {
-            onError("Error");
-            log("onetap init", err);
+        script.onload = () => {
+          if (!window.google) {
+            log("Google GSI library not found.", window.google);
+            return;
           }
-        }
 
-        window.google.accounts.id.prompt();
+          try {
+            window.google.accounts.id.initialize({
+              client_id: env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+              callback: handleGoogleCredentialResponse,
+              nonce: n.hashedNonce,
+              use_fedcm_for_prompt: true,
+              cancel_on_tap_outside: true,
+            });
+            window.google.accounts.id.prompt();
+          } catch (err) {
+            onError("Error initializing Google One Tap");
+            console.error("One Tap init error", err);
+          }
+        };
       };
 
-      // Handle the Google Credential Response
       const handleGoogleCredentialResponse = (response: CredentialResponse) => {
         (async () => {
           log("Response", response.credential.substring(0, 8));
@@ -93,7 +83,7 @@ export const GoogleOneTap = () => {
             const { data, error } = await supabase.signInWithIdToken({
               provider: "google",
               token: response.credential,
-              nonce: n?.nonce,
+              nonce: n.nonce,
             });
 
             if (error) {
@@ -101,7 +91,6 @@ export const GoogleOneTap = () => {
             } else {
               updateUser(data.user);
               await setUserID(data.user.id);
-              log("User authenticated wit", data);
             }
           } catch (err) {
             log("Error authenticating", typeof err === "object" ? err : null);
@@ -110,10 +99,14 @@ export const GoogleOneTap = () => {
       };
 
       if (!user) {
-        log("check user-session, With user session", user);
+        log("No user session, loading Google script", true);
         loadGoogleScript();
       }
-    }, 2000);
+    };
+
+    const timeout = setTimeout(() => {
+      initializeGoogleOneTap().catch(Err);
+    }, 3000);
 
     return () => clearTimeout(timeout);
   }, [supabase, pending, userSessionData, generateNonce, updateUser, user]);

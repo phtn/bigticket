@@ -1,39 +1,36 @@
 import { Icon } from "@/icons";
 import { Shimmer } from "@/ui/text/sparkles";
 import { Button, cn } from "@nextui-org/react";
-import { PrivateNoAccess } from "./private";
+import { PrivateNoAccess, PrivateWithAccess } from "./private";
+import type { ReactNode } from "react";
 
-interface VIPButtonProps {
-  debounced: boolean;
-  count: number | undefined;
-  h: string;
-  is_private: boolean | undefined;
-  ticket_price?: number;
+interface VIPAccesProps {
+  ticketCount?: number;
+  ticketPrice?: number;
   fn: VoidFunction;
 }
-export const VIPButton = ({ count, h, is_private, fn }: VIPButtonProps) => (
-  <div className="z-1 relative bg-primary" style={{ height: h }}>
-    <Button
-      onPress={fn}
-      size="lg"
-      disableRipple
-      color="primary"
-      className="h-full"
-      radius="none"
-      fullWidth
-    >
-      <div
-        className={cn("flex w-full items-center justify-evenly", {
-          "gap-12": is_private,
-        })}
+interface VIPComponentProps {
+  children: ReactNode;
+  fn: VoidFunction;
+}
+const VIPComponent = ({ fn, children }: VIPComponentProps) => {
+  return (
+    <div className="z-1 relative h-full bg-primary">
+      <Button
+        size="lg"
+        radius="none"
+        onPress={fn}
+        color="primary"
+        className="h-full"
+        fullWidth
+        disableRipple
       >
-        <PrivateNoAccess count={count ?? 0} />
-        <VIPTicketLabel />
-      </div>
-    </Button>
-  </div>
-);
-const VIPTicketLabel = () => {
+        {children}
+      </Button>
+    </div>
+  );
+};
+const VIPLabel = () => {
   return (
     <h3 className="flex items-center justify-center gap-1 text-orange-100">
       <Icon name="Sparkle" className="size-3.5" />
@@ -45,3 +42,32 @@ const VIPTicketLabel = () => {
     </h3>
   );
 };
+export const VIPAccess = ({ ticketCount, fn }: VIPAccesProps) => (
+  <VIPComponent fn={fn}>
+    <div className={cn("flex w-full items-center justify-evenly", {})}>
+      <PrivateWithAccess count={ticketCount ?? 0} />
+      <VIPLabel />
+    </div>
+  </VIPComponent>
+);
+
+const PrivateLabel = () => {
+  return (
+    <h3 className="flex items-center justify-center gap-1 text-orange-100">
+      <Icon name="Sparkle" className="size-3.5" />
+      <Shimmer
+        sparklesCount={6}
+        className="font-inter text-[16px]"
+        text="Members Only"
+      />
+    </h3>
+  );
+};
+export const VIPNoAccess = ({ fn }: VIPAccesProps) => (
+  <VIPComponent fn={fn}>
+    <div className={cn("flex w-full items-center justify-evenly", {})}>
+      <PrivateNoAccess />
+      <PrivateLabel />
+    </div>
+  </VIPComponent>
+);

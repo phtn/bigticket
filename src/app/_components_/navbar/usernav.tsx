@@ -4,11 +4,11 @@ import { CursorCtx } from "@/app/ctx/cursor";
 import { SidebarCtx } from "@/app/ctx/sidebar";
 import { UserCtx } from "@/app/ctx/user/ctx";
 import { useScreen } from "@/hooks/useScreen";
-import { useStorage } from "@/hooks/useStorage";
 import { useToggle } from "@/hooks/useToggle";
 import { Icon, type IconName } from "@/icons";
 import { cn } from "@/lib/utils";
 import { ButtonIcon } from "@/ui/button";
+import { Hyper } from "@/ui/button/button";
 import { HyperList } from "@/ui/list";
 import { TextLoader } from "@/ui/loader/text";
 import { opts } from "@/utils/helpers";
@@ -19,8 +19,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
+import chalk from "chalk";
 import { useRouter } from "next/navigation";
-import { type JSX, use, useCallback, useMemo } from "react";
+import {
+  type JSX,
+  use,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 interface NavItem {
   id: string;
@@ -29,8 +37,10 @@ interface NavItem {
 }
 
 export const UserNav = () => {
-  const { item } = useStorage<{ photoUrl: string | null }>("xUser");
-  const photoUrl = item?.photoUrl ?? null;
+  // const { item } = useStorage<{ photoUrl: string | null }>("xUser");
+  const { photoUrl: avatar } = use(UserCtx)!;
+
+  const photoUrl = avatar ?? null;
 
   const navs: NavItem[] = useMemo(
     () => [
@@ -49,18 +59,44 @@ export const UserNav = () => {
   );
 
   const NavOptions = useCallback(() => {
-    const options = opts(<UserLoader />, <NavList data={navs} />);
+    const options = opts(<UserSign />, <NavList data={navs} />);
     return <>{options.get(!photoUrl)}</>;
   }, [photoUrl, navs]);
 
   return <NavOptions />;
 };
 
-const UserLoader = () => (
-  <div className="absolute right-0 flex h-16 w-fit items-center px-4">
-    <TextLoader color="text-primary-500" />
-  </div>
-);
+const UserSign = () => {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setReady(true), 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleSignin = () => {
+    const big = chalk.hex("#59D2CB").bold.bgBlack;
+    const ticket = chalk.hex("#fb923c").bold.bgBlack;
+    const cutout = chalk.gray.bgBlack.bold("●");
+    console.clear();
+    console.log(cutout + big(" BIG ") + ticket("ticket ") + cutout);
+  };
+
+  return (
+    <div className="absolute right-0 flex h-16 w-fit items-center px-4">
+      {ready ? (
+        <Hyper
+          onClick={handleSignin}
+          compact
+          label="Sign in"
+          className="small-ticket bg-ticket/40 text-chalk hover:bg-teal-500 hover:text-white"
+          dim
+        />
+      ) : (
+        <TextLoader color="text-ticket" />
+      )}
+    </div>
+  );
+};
 
 const NavList = ({ data }: { data: NavItem[] }) => {
   return (
@@ -179,7 +215,7 @@ const UserAvatar = (props: { photo_url: string | null }) => {
           className="group flex w-full items-center justify-between gap-12 rounded-lg px-3 py-3"
         >
           <div className="flex items-center">
-            <h2 className="font-inter font-semibold tracking-tighter">
+            <h2 className="font-inter font-semibold tracking-tighter drop-shadow-sm">
               {label}
             </h2>
           </div>
@@ -198,7 +234,7 @@ const UserAvatar = (props: { photo_url: string | null }) => {
         data={menu}
         component={MenuListItem}
         container="w-full space-y-2 py-2"
-        itemStyle="first:bg-primary hover:opacity-90 bg-peach last:bg-secondary transition-colors border-[0.33px] first:border-macl-gray border-gray-300 text-white duration-300 rounded-lg"
+        itemStyle="first:bg-primary hover:opacity-90 bg-peach last:bg-secondary transition-colors border-[0.33px] border-google text-white duration-300 rounded-lg"
       />
     );
   }, [handleRoute, toggle]);
@@ -209,7 +245,7 @@ const UserAvatar = (props: { photo_url: string | null }) => {
         <PopoverTrigger className="cursor-pointer border border-macl-gray">
           <Avatar alt="user-pfp" src={avatar} size={isDesktop ? "md" : "sm"} />
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] border-[0.33px] border-macl-gray bg-[#464749]">
+        <PopoverContent className="w-[200px] border-[0.33px] border-macl-gray bg-google">
           <UserMenu />
         </PopoverContent>
       </Popover>

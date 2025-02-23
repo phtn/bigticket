@@ -1,8 +1,8 @@
-export interface GetTicketButtonProps {
-  ticket_value?: number;
-  is_private?: boolean;
-  is_vip?: boolean;
-  count?: number;
-  h: string;
+export interface GetTicketProps {
+  ticketPrice?: number;
+  isPrivate?: boolean;
+  isVip?: boolean;
+  ticketCount?: number;
+  h?: string;
   fn: VoidFunction;
 }

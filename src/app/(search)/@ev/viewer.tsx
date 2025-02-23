@@ -7,7 +7,6 @@ import { useToggle } from "@/hooks/useToggle";
 import { cn } from "@/lib/utils";
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
-import { opts } from "@/utils/helpers";
 import { Image } from "@nextui-org/react";
 import { type api } from "@vx/api";
 import { usePreloadedQuery, type Preloaded } from "convex/react";
@@ -28,11 +27,19 @@ import {
   EventViewerFooter,
   InfoGrid,
 } from "./components";
-import { ClaimedTicketButton } from "./components/buttons/claimed";
-import { GetTicketButton } from "./components/buttons/paid";
-import { VIPButton } from "./components/buttons/vip";
+import { ViewTicket } from "./components/buttons/claimed";
+import { GetTickets } from "./components/buttons/paid";
+import {
+  ClaimedTicketsGate,
+  HasClaimedTickets,
+  IsPrivateEvent,
+  IsVIP,
+  PrivateEventGate,
+  VIPGate,
+} from "./components/buttons/ticket-gates";
+import { VIPAccess, VIPNoAccess } from "./components/buttons/vip";
 import { useEventInfo } from "./useEventInfo";
-import { type Moments, useEventViewer } from "./useEventViewer";
+import { useEventViewer, type Moments } from "./useEventViewer";
 import { useTicketCart } from "./useTicketCart";
 
 export interface EventViewerProps {
@@ -108,23 +115,30 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
 
   const ticketCart = useTicketCart(xEvent, vx?.email);
 
-  const is_vip = useMemo(() => {
-    if (!xEvent?.vip_list || !vx?.email) return false;
-    return xEvent.vip_list?.findIndex((vip) => vip.email === vx?.email) !== -1;
-  }, [xEvent?.vip_list, vx?.email]);
+  const isVip = useMemo(
+    () => IsVIP(xEvent?.vip_list, vx?.email),
+    [xEvent?.vip_list, vx?.email],
+  );
+  const isPrivate = useMemo(
+    () => IsPrivateEvent(xEvent?.is_private),
+    [xEvent?.is_private],
+  );
+  const hasClaimedTickets = useMemo(
+    () => HasClaimedTickets(isVip, xEvent?.event_id, vx?.tickets),
+    [isVip, xEvent?.event_id, vx?.tickets],
+  );
 
-  const ticket_count = useMemo(
+  const ticketCount = useMemo(
     () => xEvent?.vip_list?.find((t) => t.email === vx?.email)?.ticket_count,
     [xEvent?.vip_list, vx?.email],
   );
 
   const handleGetTickets = useCallback(async () => {
-    if (!vx?.email || !xEvent) return;
-    if (is_vip) {
+    if (isVip) {
       return await ticketCart?.getVIPTicket();
     }
     return await ticketCart?.getBasicTicket();
-  }, [ticketCart, xEvent, is_vip, vx?.email]);
+  }, [ticketCart, isVip]);
 
   const handleViewTickets = useCallback(() => {
     if (!vx?.email) return;
@@ -140,65 +154,137 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
     }, 1000);
     return () => clearTimeout(timer);
   }, [debounced]);
-  // const event_name = normalizeTitle(xEvent?.event_name);
+
   const event_name = xEvent?.event_name ?? null;
 
-  const ClaimedOptions = useCallback(
+  const TicketClaims = useCallback(
     ({ h }: { h: string }) => {
-      const options = opts(
-        <ClaimedTicketButton
-          h={h}
-          is_vip={is_vip}
-          count={ticket_count}
-          is_private={xEvent?.is_private}
-          fn={handleViewTickets}
-        />,
-        <VIPButton
-          debounced={debounced}
-          h={h}
-          count={ticket_count}
-          is_private={xEvent?.is_private}
-          ticket_price={xEvent?.ticket_value}
-          fn={handleGetTickets}
-        />,
+      return (
+        <div style={{ height: h }}>
+          <PrivateEventGate
+            check={isPrivate}
+            fallback={<VIPNoAccess fn={handleGetTickets} />}
+          >
+            <VIPGate
+              check={isVip}
+              fallback={
+                <VIPAccess ticketCount={ticketCount} fn={handleGetTickets} />
+              }
+            >
+              <ClaimedTicketsGate
+                check={hasClaimedTickets}
+                fallback={
+                  <ViewTicket
+                    ticketCount={ticketCount}
+                    fn={handleViewTickets}
+                  />
+                }
+              >
+                <GetTickets fn={handleGetTickets} />
+              </ClaimedTicketsGate>
+            </VIPGate>
+          </PrivateEventGate>
+        </div>
       );
-      return <>{options.get(false)}</>;
     },
     [
-      is_vip,
-      ticket_count,
+      isPrivate,
+      isVip,
+      ticketCount,
       handleGetTickets,
+      hasClaimedTickets,
       handleViewTickets,
-      xEvent?.is_private,
-      xEvent?.ticket_value,
-      debounced,
     ],
   );
 
-  const EventTicketButton = useCallback(
-    (props: { h: string }) => {
-      const options = opts(
-        <ClaimedOptions h={props.h} />,
-        <GetTicketButton
-          h={props.h}
-          is_vip={is_vip}
-          count={ticket_count}
-          is_private={xEvent?.is_private}
-          ticket_value={xEvent?.ticket_value}
-          fn={handleGetTickets}
-        />,
-      );
-      return <>{options.get(false)}</>;
-    },
-    [
-      is_vip,
-      ticket_count,
-      handleGetTickets,
-      xEvent?.is_private,
-      xEvent?.ticket_value,
-      ClaimedOptions,
-    ],
-  );
+  // const AccessOptions = useCallback(
+  //   ({ h }: { h: string }) => {
+  //     const options = opts(
+  //       <ViewTicket
+  //         h={h}
+  //         is_vip={isVip}
+  //         count={ticket_count}
+  //         is_private={isPrivate}
+  //         fn={handleViewTickets}
+  //       />,
+  //       <VIPButton
+  //       h={h}
+  //         debounced={debounced}
+  //         count={ticket_count}
+  //         is_private={isPrivate}
+  //         ticket_price={xEvent?.ticket_value}
+  //         fn={handleGetTickets}
+  //       />,
+  //     );
+  //     return <>{options.get(false)}</>;
+  //   },
+  //   [
+  //     isVip,
+  //     ticket_count,
+  //     handleGetTickets,
+  //     handleViewTickets,
+  //     xEvent?.is_private,
+  //     xEvent?.ticket_value,
+  //     debounced,
+  //   ],
+  // );
+
+  // const ClaimedOptions = useCallback(
+  //   ({ h }: { h: string }) => {
+  //     const options = opts(
+  //       <ClaimedTicketButton
+  //         h={h}
+  //         is_vip={is_vip}
+  //         count={ticket_count}
+  //         is_private={xEvent?.is_private}
+  //         fn={handleViewTickets}
+  //       />,
+  //       <VIPButton
+  //         debounced={debounced}
+  //         h={h}
+  //         count={ticket_count}
+  //         is_private={xEvent?.is_private}
+  //         ticket_price={xEvent?.ticket_value}
+  //         fn={handleGetTickets}
+  //       />,
+  //     );
+  //     return <>{options.get(false)}</>;
+  //   },
+  //   [
+  //     is_vip,
+  //     ticket_count,
+  //     handleGetTickets,
+  //     handleViewTickets,
+  //     xEvent?.is_private,
+  //     xEvent?.ticket_value,
+  //     debounced,
+  //   ],
+  // );
+
+  // const EventTicketButton = useCallback(
+  //   (props: { h: string }) => {
+  //     const options = opts(
+  //       <ClaimedOptions h={props.h} />,
+  //       <GetTicketButton
+  //         h={props.h}
+  //         is_vip={is_vip}
+  //         count={ticket_count}
+  //         is_private={xEvent?.is_private}
+  //         ticket_value={xEvent?.ticket_value}
+  //         fn={handleGetTickets}
+  //       />,
+  //     );
+  //     return <>{options.get(false)}</>;
+  //   },
+  //   [
+  //     is_vip,
+  //     ticket_count,
+  //     handleGetTickets,
+  //     xEvent?.is_private,
+  //     xEvent?.ticket_value,
+  //     ClaimedOptions,
+  //   ],
+  // );
 
   const contentHeight = useMemo(
     () => `${((screen.height - 314) / 7).toFixed(2)}px`,
@@ -226,7 +312,7 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
       />
 
       <div>
-        <EventTicketButton h={contentHeight} />
+        <TicketClaims h={contentHeight} />
         <ActionPanel h={contentHeight} data={panelItems} />
         <EventGroupDetail
           debounced={debounced}

@@ -1,7 +1,7 @@
-import { Icon } from "@/icons";
+import { Icon, type IconName } from "@/icons";
 import { type ReactNode } from "react";
 import { motion } from "motion/react";
-import { Spinner } from "@nextui-org/react";
+import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   children?: ReactNode;
@@ -10,13 +10,13 @@ interface HeaderProps {
 export const Header = ({ title, children }: HeaderProps) => (
   <div className="flex h-16 items-center whitespace-nowrap">
     <motion.div
-      initial={{ opacity: 0, x: 5 }}
+      initial={{ opacity: 0, x: 4 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
       transition={{ duration: 0.3 }}
       className="flex h-16 items-center gap-2"
     >
-      <h1 className="ps-4 font-inter text-lg font-semibold tracking-tighter md:text-xl">
+      <h1 className="ps-4 font-inter text-lg font-semibold capitalize tracking-tighter md:text-xl">
         {title}
       </h1>
       {children}
@@ -37,24 +37,28 @@ export const Count = (props: { count: number | undefined }) => (
 );
 
 interface EmptyListProps {
-  title: string;
-  count: number;
   message: string;
   loading?: boolean;
+  icon: IconName;
 }
 export const EmptyList = ({
-  count,
+  icon,
   message,
-  title,
   loading = false,
 }: EmptyListProps) => {
   return (
-    <div className="space-y-6">
-      <Header title={title}>
-        {loading ? <Spinner size="sm" /> : <Count count={count} />}
-      </Header>
-      <div className="flex items-center justify-center">
-        <div className="flex h-20 min-w-56 animate-enter items-center justify-center font-inter text-sm tracking-tighter opacity-80">
+    <div className="relative flex h-56 items-center justify-center space-y-6 border-t md:h-96">
+      <Icon
+        name={icon}
+        className="pointer-events-none absolute size-40 text-gray-100"
+      />
+      <div
+        className={cn(
+          "z-1 relative flex w-72 items-center justify-center rounded-xl border-[0.33px] border-macl-gray/60 bg-white/10 py-3 backdrop-blur-md transition-all duration-300",
+          { "w-8": loading },
+        )}
+      >
+        <div className="flex animate-enter items-center justify-center font-inter text-sm font-medium tracking-tighter text-gray-600 opacity-80">
           {loading ? <Icon name="SpinnerBall" /> : message}
         </div>
       </div>

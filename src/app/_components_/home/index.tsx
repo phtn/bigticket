@@ -24,7 +24,7 @@ export const Home = (props: HomeProps) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setReady(true);
-    }, 1500);
+    }, 1800);
     return () => clearTimeout(timer);
   }, []);
 

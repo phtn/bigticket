@@ -1,15 +1,10 @@
 import { Button, cn } from "@nextui-org/react";
 import { Icon } from "@/icons";
-import { type GetTicketButtonProps } from "./d";
+import { type GetTicketProps } from "./d";
 
-export const ClaimedTicketButton = ({
-  is_private = false,
-  count = 0,
-  h,
-  fn,
-}: GetTicketButtonProps) => {
+export const ViewTicket = ({ ticketCount = 0, fn }: GetTicketProps) => {
   return (
-    <div className="z-1 relative bg-primary" style={{ height: h }}>
+    <div className="z-1 relative h-full bg-primary">
       <Button
         onPress={fn}
         size="lg"
@@ -19,21 +14,17 @@ export const ClaimedTicketButton = ({
         radius="none"
         fullWidth
       >
-        <div
-          className={cn("flex w-full items-center justify-evenly", {
-            "gap-12": is_private,
-          })}
-        >
+        <div className={cn("flex w-full items-center justify-evenly", {})}>
           <h2 className="flex items-center gap-0.5 text-xl font-black">
             <span className="font-bold italic tracking-tighter text-teal-400">
-              Ticket{count > 1 && "s"}
+              Ticket{ticketCount > 1 && "s"}
             </span>
             Claimed
             <Icon name="Check" className="text-teal-400" />
           </h2>
           <div className="flex items-center gap-1">
             <p className="font-inter text-sm font-semibold capitalize">
-              view ticket{count > 1 && "s"}
+              view ticket{ticketCount > 1 && "s"}
             </p>
           </div>
         </div>

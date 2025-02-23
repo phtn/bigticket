@@ -54,7 +54,7 @@ export interface DConvexCtxValues {
     get: (storageId: string | undefined) => Promise<string | null>;
   };
   createvx: () => Promise<string | null>;
-  getUserById: (id: string) => SelectUser | null;
+  // getUserById: (id: string) => SelectUser | null;
   getEventById: (id: string) => SelectEvent | null;
   getEventsByIds: (ids: string[]) => SelectEvent[] | undefined;
   getAllEvents: () => SelectEvent[] | undefined;

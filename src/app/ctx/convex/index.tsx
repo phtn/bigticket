@@ -1,23 +1,22 @@
 "use client";
 
+import type { SupabaseUserMetadata } from "@/app/ctx/auth/types";
 import { env } from "@/env";
+import type { User } from "@supabase/supabase-js";
 import { api } from "@vx/api";
+import type { InsertEvent, UserTicket, VIP } from "convex/events/d";
 import { ConvexProvider, ConvexReactClient, useMutation } from "convex/react";
 import type { CreateUser, UpdateUser } from "convex/users/d";
 import type { ReactNode } from "react";
 import { createContext, useCallback, useMemo } from "react";
-import type { User } from "@supabase/supabase-js";
-import type { SupabaseUserMetadata } from "@/app/ctx/auth/types";
-import { VxProvider } from "./vx";
-import type { InsertEvent, UserTicket, VIP } from "convex/events/d";
-import {
-  useEventById,
-  useEventsByIds,
-  useEventsByHostId,
-  useEventAll,
-  useUserById,
-} from "./hooks";
 import type { DConvexCtxValues } from "./d";
+import {
+  useEventAll,
+  useEventById,
+  useEventsByHostId,
+  useEventsByIds,
+} from "./hooks";
+import { VxProvider } from "./vx";
 
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 export const ConvexCtx = createContext<DConvexCtxValues | null>(null);
@@ -173,7 +172,6 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
     ],
   );
 
-  const getUserById = useUserById;
   const getAllEvents = useEventAll;
   const getEventById = useEventById;
   const getEventsByIds = useEventsByIds;
@@ -185,7 +183,6 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
       createvx,
       files,
       events,
-      getUserById,
       getAllEvents,
       getEventById,
       getEventsByIds,
@@ -196,7 +193,6 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
       createvx,
       files,
       events,
-      getUserById,
       getAllEvents,
       getEventById,
       getEventsByIds,

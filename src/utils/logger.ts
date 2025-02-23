@@ -29,19 +29,19 @@ export const log = (label: string, data: Classifiable) => {
   const c7 = chalk.hex(kind.isFalsy ? "#ec4899" : "#d9f99d");
 
   const labels =
-    c6(" | ") + c2(label.split(",")?.forEach((str) => str) ?? label);
+    c6(" ➜ ") + c2(label.split(",")?.forEach((str) => str) ?? label);
 
   const ctx =
     c1(`𝒇(𝒙)`) +
-    c6("[ ") +
+    c6("[") +
     c1(fn) +
     labels +
-    c6("] ➜> ") +
-    c6(" <") +
+    c6("●") +
+    c6("") +
     c4(kind.type) +
-    c6("> ") +
-    c6(" ● ") +
-    c7(` ${kind.isFalsy ? "falsy" : "truthy"} `) +
+    c6("") +
+    c6("●") +
+    c7(`${kind.isFalsy ? "falsy" : "truthy"} `) +
     c5;
 
   if (typeof data === "object") {

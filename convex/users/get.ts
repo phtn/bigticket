@@ -6,12 +6,9 @@ export const all = query({
 });
 
 export const byId = query({
-  args: { id: v.optional(v.string()) },
+  args: { id: v.string() },
   handler: async ({ db, auth }, { id }) => {
     if (!id) return null;
-    const tokenIdentity = (await auth.getUserIdentity())?.tokenIdentifier;
-    console.log(tokenIdentity);
-    if (!tokenIdentity) return null;
 
     const user = await db
       .query("users")

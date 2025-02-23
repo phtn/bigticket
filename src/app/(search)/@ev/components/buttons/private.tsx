@@ -1,10 +1,10 @@
-export const PrivateNoAccess = ({ count }: { count: number }) => {
+export const PrivateNoAccess = () => {
   return (
     <h2 className="text-xl font-black">
       <span className="font-bold italic tracking-tighter text-teal-400">
         Diamond
       </span>
-      Ticket{count > 1 && "s"}
+      Ticket
     </h2>
   );
 };

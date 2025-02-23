@@ -72,7 +72,7 @@ export const EventCard = (xEvent: XEvent) => {
   return (
     <Card
       isFooterBlurred
-      className="h-[300px] w-full overflow-hidden rounded-3xl border border-primary-700 bg-primary-700"
+      className="h-[300px] w-full overflow-hidden rounded-3xl border border-primary-700 bg-primary"
     >
       <CardHeader
         className={cn(
@@ -103,7 +103,11 @@ export const EventCard = (xEvent: XEvent) => {
           className="z-0 aspect-auto h-full w-full border-0 object-cover object-top"
           src={cover_src}
         />
-      ) : null}
+      ) : (
+        <div className="flex size-full items-center justify-center">
+          <Icon name="SpinnerBall" className="size-8 text-teal-300" />
+        </div>
+      )}
       <CardFooter className="absolute -bottom-[2px] z-10 border-t-[0.33px] border-primary/40 bg-black/10">
         <div className="flex flex-grow items-center gap-2">
           {/* <Image

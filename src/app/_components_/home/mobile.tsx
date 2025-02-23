@@ -48,14 +48,14 @@ export const MobileView = ({ xEvents }: MobileViewProps) => {
     [handleSelectCategory, selected],
   );
   return (
-    <div className="relative bg-coal">
+    <div className="relative flex w-full flex-col items-center bg-coal">
       <Collections />
       <HyperList
         keyId="event_id"
         data={xEvents}
         component={EventCard}
-        container="space-y-4 h-full"
-        itemStyle=""
+        container="space-y-4 h-full max-w-xl w-full flex flex-col items-center"
+        itemStyle="w-full"
       >
         <div
           key={"hero"}
