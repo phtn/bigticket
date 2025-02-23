@@ -21,11 +21,10 @@ export const Home = (props: HomeProps) => {
   const events = usePreloadedQuery(props.preloadedEvents);
   const { xEvents, loading } = useEvents(events);
 
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setReady(true);
-    }, 1200);
+    }, 1500);
     return () => clearTimeout(timer);
   }, []);
 

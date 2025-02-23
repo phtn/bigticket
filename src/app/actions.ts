@@ -90,7 +90,6 @@ export const fetchAllEvents = async () => {
   return events;
 };
 
-
 export const preloadAllEvents = async () => {
   const preloadedEvents = await preloadQuery(api.events.get.all);
   return preloadedEvents;
@@ -120,7 +119,6 @@ export const fetchId = async () => {
 
 export const preloadUser = async () => {
   const userId = await getUserID();
-  console.log(userId);
   if (!userId) return null;
   const preloadedUser = await preloadQuery(api.users.get.byId, { id: userId });
   const user = preloadedQueryResult(preloadedUser);

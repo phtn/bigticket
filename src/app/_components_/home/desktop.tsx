@@ -15,7 +15,6 @@ interface DesktopViewProps {
 }
 
 export const DesktopView = ({ xEvents }: DesktopViewProps) => {
-  const { isInputHovered } = use(CursorCtx)!;
   return (
     <div
       className={cn(
@@ -24,7 +23,7 @@ export const DesktopView = ({ xEvents }: DesktopViewProps) => {
     >
       <Collections />
       <MainContent xEvents={xEvents} />
-      <HyperSpace isInputHovered={isInputHovered} />
+      <HyperSpace />
     </div>
   );
 };

@@ -29,8 +29,7 @@ interface NavItem {
 }
 
 export const UserNav = () => {
-  const { xUser } = use(UserCtx)!;
-  const { item } = useStorage<{ photoUrl: string | null }>("xUser")
+  const { item } = useStorage<{ photoUrl: string | null }>("xUser");
   const photoUrl = item?.photoUrl ?? null;
 
   const navs: NavItem[] = useMemo(
@@ -177,14 +176,17 @@ const UserAvatar = (props: { photo_url: string | null }) => {
       return (
         <button
           onClick={handleRoute(href, toggle)}
-          className="flex w-full items-center justify-between group gap-12 rounded-lg px-3 py-3"
+          className="group flex w-full items-center justify-between gap-12 rounded-lg px-3 py-3"
         >
           <div className="flex items-center">
             <h2 className="font-inter font-semibold tracking-tighter">
               {label}
             </h2>
           </div>
-          <Icon name={icon} className="text-chalk group-hover:scale-110 size-5 transition-all duration-300 group-hover:text-white" />
+          <Icon
+            name={icon}
+            className="size-5 text-chalk transition-all duration-300 group-hover:scale-110 group-hover:text-white"
+          />
         </button>
       );
     };
@@ -205,11 +207,7 @@ const UserAvatar = (props: { photo_url: string | null }) => {
     <div className="flex w-fit items-center px-4 md:gap-8">
       <Popover isOpen={open} placement="bottom-end" onOpenChange={toggle}>
         <PopoverTrigger className="cursor-pointer border border-macl-gray">
-          <Avatar
-            alt="user-pfp"
-            src={avatar}
-            size={isDesktop ? "md" : "sm"}
-          />
+          <Avatar alt="user-pfp" src={avatar} size={isDesktop ? "md" : "sm"} />
         </PopoverTrigger>
         <PopoverContent className="w-[200px] border-[0.33px] border-macl-gray bg-[#464749]">
           <UserMenu />
