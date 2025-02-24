@@ -1,7 +1,7 @@
 "use client";
 
 import { useToggle } from "@/hooks/useToggle";
-import { type SelectEvent } from "convex/events/d";
+import { type InsertEvent } from "convex/events/d";
 import {
   createContext,
   useMemo,
@@ -11,8 +11,18 @@ import {
   type SetStateAction,
 } from "react";
 export type EventDetailKey = keyof Pick<
-  SelectEvent,
-  "ticket_count" | "event_type" | "category" | "start_date" | "end_date"
+  InsertEvent,
+  | "ticket_count"
+  | "ticket_price"
+  | "event_type"
+  | "category"
+  | "start_date"
+  | "end_date"
+  | "is_private"
+  | "event_email"
+  | "event_phone"
+  | "event_name"
+  | "event_desc"
 >;
 interface EventDetailCtxValues {
   open: boolean;

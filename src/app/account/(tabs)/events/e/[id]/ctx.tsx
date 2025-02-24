@@ -71,10 +71,15 @@ export const EventEditorCtxProvider = ({
   const getXEvent = useCallback(
     (event_id: string | undefined) => {
       setPending(true);
-      if (!event_id) return;
-      const event = x?.find((e) => e.event_id === event_id) ?? null;
-      setXEvent(event);
-      setPending(false);
+      if (!event_id) {
+        setPending(false);
+        return;
+      }
+      const event = x?.find((e) => {
+        setPending(false);
+        return e.event_id === event_id;
+      });
+      setXEvent(event ?? null);
     },
     [x],
   );

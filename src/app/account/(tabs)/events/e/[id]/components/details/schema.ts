@@ -1,9 +1,17 @@
-import type { InsertEvent, VIP } from "convex/events/d";
+import { type InputProps } from "@nextui-org/react";
+import type { InsertEvent } from "convex/events/d";
 import type { HTMLInputTypeAttribute } from "react";
 import { z } from "zod";
+import { type EventDetailKey } from "./ctx";
 
-export interface EventField<T> {
-  name: keyof T;
+export type EventFieldValue = string | number | boolean | undefined;
+export type EventFieldName = keyof Partial<InsertEvent>;
+export type EventField = InputProps & {
+  name: EventDetailKey;
+};
+
+export interface EventF {
+  name: keyof InsertEvent;
   type: HTMLInputTypeAttribute;
   label: string;
   placeholder?: string;
@@ -12,9 +20,9 @@ export interface EventField<T> {
   inputMode?: string;
 }
 
-export const ticket_info: EventField<InsertEvent>[] = [
+export const ticket_info: EventField[] = [
   {
-    name: "ticket_value",
+    name: "ticket_price",
     type: "number",
     label: "Ticket value",
     placeholder: "Value of each ticket.",
@@ -27,16 +35,9 @@ export const ticket_info: EventField<InsertEvent>[] = [
     placeholder: "Number of tickets available.",
     required: false,
   },
-  {
-    name: "ticket_count_limit",
-    type: "number",
-    label: "Ticket count limit",
-    placeholder: "Maximum number of tickets allowed.",
-    required: true,
-  },
 ];
 
-export const guest_info: EventField<InsertEvent>[] = [
+export const access_info: EventField[] = [
   {
     name: "is_private",
     type: "text",
@@ -46,7 +47,7 @@ export const guest_info: EventField<InsertEvent>[] = [
   },
 ];
 
-export const support_info: EventField<InsertEvent>[] = [
+export const support_info: EventField[] = [
   {
     name: "event_email",
     type: "email",
@@ -63,7 +64,7 @@ export const support_info: EventField<InsertEvent>[] = [
   },
 ];
 
-export const event_fields: EventField<InsertEvent>[] = [
+export const event_fields: EventField[] = [
   {
     name: "event_type",
     type: "text",
@@ -71,23 +72,9 @@ export const event_fields: EventField<InsertEvent>[] = [
     placeholder: "",
     required: true,
   },
-  {
-    name: "host_id",
-    type: "text",
-    label: "Host ID",
-    placeholder: "Host ID",
-    required: true,
-  },
-  {
-    name: "host_name",
-    type: "text",
-    label: "Host Name",
-    placeholder: "The name of the host organizing the event.",
-    required: false,
-  },
 ];
 
-export const vip_info: EventField<VIP>[] = [
+export const vip_info: InputProps[] = [
   {
     name: "name",
     type: "text",

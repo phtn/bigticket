@@ -1,12 +1,12 @@
+import type { XEvent } from "@/app/types";
 import { type IconName } from "@/icons";
 import { HyperList } from "@/ui/list";
 import { Input } from "@nextui-org/react";
-import type { InsertEvent } from "convex/events/d";
 import { useMemo } from "react";
 import { inputClassNames } from "../../editor";
+import { EventDetailOption } from "./action-sheet";
 import { BlockHeader } from "./components";
 import type { EventField } from "./schema";
-import type { XEvent } from "@/app/types";
 
 interface BasicContentProps {
   xEvent: XEvent | null;
@@ -14,7 +14,7 @@ interface BasicContentProps {
 }
 
 export const BasicContent = ({ xEvent, pending }: BasicContentProps) => {
-  const basic_info: EventField<InsertEvent>[] = useMemo(
+  const basic_info: EventField[] = useMemo(
     () => [
       {
         name: "event_name",
@@ -34,18 +34,18 @@ export const BasicContent = ({ xEvent, pending }: BasicContentProps) => {
       },
       {
         name: "category",
-        type: "text",
+        type: "radio",
         label: "Event Category",
         placeholder: "Select a category that fits your event.",
         required: false,
         defaultValue: xEvent?.category,
       },
     ],
-    [xEvent?.event_name, xEvent?.event_desc, xEvent?.category],
+    [xEvent],
   );
 
   return (
-    <div className="grid w-full grid-cols-1 gap-6 bg-primary md:grid-cols-2 md:rounded-lg">
+    <div className="grid w-full grid-cols-1 gap-6 bg-ticket md:grid-cols-2 md:rounded-lg">
       <FieldBlock
         data={pending ? [] : basic_info}
         label="Basic Info"
@@ -62,7 +62,7 @@ export const BasicContent = ({ xEvent, pending }: BasicContentProps) => {
 };
 
 interface FieldBlockProps {
-  data: EventField<InsertEvent>[];
+  data: EventField[];
   label: string;
   icon: IconName;
   delay?: number;
@@ -81,13 +81,9 @@ const FieldBlock = ({ data, icon, label, delay = 0 }: FieldBlockProps) => (
   </div>
 );
 
-const FieldItem = (field: EventField<InsertEvent>) => (
-  <Input
-    label={field.label}
-    placeholder={field.placeholder}
-    name={field.name}
-    classNames={inputClassNames}
-    isRequired={field.required}
-    defaultValue={field.defaultValue}
-  />
-);
+const FieldItem = (field: EventField) =>
+  field.type === "radio" ? (
+    <EventDetailOption {...field} />
+  ) : (
+    <Input {...field} classNames={inputClassNames} />
+  );

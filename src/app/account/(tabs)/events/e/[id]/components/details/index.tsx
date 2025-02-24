@@ -1,6 +1,6 @@
 import { Tab, Tabs } from "@nextui-org/react";
-import { SectionTitle } from "./components";
 import { type TabItem } from "../../editor";
+import { SectionTitle } from "./components";
 
 interface EventDetailsProps {
   tabs: TabItem[];

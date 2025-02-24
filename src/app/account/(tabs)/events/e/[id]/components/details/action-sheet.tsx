@@ -2,6 +2,7 @@ import { useToggle } from "@/hooks/useToggle";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { BottomVaul } from "@/ui/vaul";
+import { log } from "@/utils/logger";
 import {
   CalendarDate,
   CalendarDateTime,
@@ -29,27 +30,26 @@ import {
   useMemo,
   useState,
 } from "react";
-import { EventDetailCtx, type EventDetailKey } from "./ctx";
 import {
   category_options,
   event_type_options,
   ticket_count_options,
 } from "../../../../create/static";
+import { EventDetailCtx, type EventDetailKey } from "./ctx";
+import { type EventField } from "./schema";
 
-export interface EventDetailButtonProps {
+export interface EventDetailButtonProps extends EventField {
   name: EventDetailKey;
-  label: string;
-  placeholder?: string;
-  value: string | number | boolean | undefined;
 }
-export const EventDetailButton = ({
+export const EventDetailOption = ({
   name,
   label,
   value,
 }: EventDetailButtonProps) => {
   const { toggle, setSelectedEventDetail } = use(EventDetailCtx)!;
   const handleClick = useCallback(
-    (name: EventDetailKey | null) => (e: MouseEvent) => {
+    (name: EventDetailKey) => (e: MouseEvent) => {
+      log("check", name);
       e.preventDefault();
       setSelectedEventDetail(name);
       toggle();
@@ -77,10 +77,7 @@ export const EventDetailActionSheet = ({
   children: ReactNode;
 }) => {
   const { open, toggle, selectedEventDetail } = use(EventDetailCtx)!;
-  const options: Record<
-    EventDetailKey,
-    { title: string; description?: string }
-  > = {
+  const options: Record<string, { title: string; description?: string }> = {
     ticket_count: {
       title: "Number of Tickets",
       description: "Enter the number of tickets you want to sell.",
@@ -104,17 +101,19 @@ export const EventDetailActionSheet = ({
   };
 
   return (
-    <BottomVaul dismissible open={open} onOpenChange={toggle}>
+    <BottomVaul open={open} onOpenChange={toggle}>
       <div
         className={cn("h-fit w-screen overflow-y-scroll p-6 md:w-[30rem]", {
           "relative max-h-96 pb-14": selectedEventDetail === "category",
         })}
       >
         <h2 className="font-inter text-lg font-bold tracking-tighter">
-          {selectedEventDetail ? options[selectedEventDetail].title : ""}
+          {selectedEventDetail ? options?.[selectedEventDetail]?.title : ""}
         </h2>
         <p className="font-inter text-sm tracking-tight text-macl-gray">
-          {selectedEventDetail ? options[selectedEventDetail].description : ""}
+          {selectedEventDetail
+            ? options?.[selectedEventDetail]?.description
+            : ""}
         </p>
         {children}
         <div
@@ -201,7 +200,7 @@ export const TicketCount = ({
 };
 
 interface EventTypeProps {
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
 }
 
