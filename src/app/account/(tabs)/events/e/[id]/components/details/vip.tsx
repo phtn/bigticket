@@ -1,5 +1,13 @@
-import type { VIP } from "convex/events/d";
+import { ConvexCtx } from "@/app/ctx/convex";
+import { onSuccess } from "@/app/ctx/toast";
+import { type XEvent } from "@/app/types";
 import { type IconName } from "@/icons";
+import { ButtonIcon } from "@/ui/button";
+import { Hyper } from "@/ui/button/button";
+import { HyperList } from "@/ui/list";
+import { Err } from "@/utils/helpers";
+import { Checkbox, Form, Input } from "@nextui-org/react";
+import type { VIP } from "convex/events/d";
 import {
   type ChangeEvent,
   type MouseEvent,
@@ -9,21 +17,13 @@ import {
   useMemo,
   useState,
 } from "react";
-import { ConvexCtx } from "@/app/ctx/convex";
-import { onSuccess } from "@/app/ctx/toast";
-import { Err } from "@/utils/helpers";
-import { Checkbox, Form, Input } from "@nextui-org/react";
-import { Hyper } from "@/ui/button/button";
-import { HyperList } from "@/ui/list";
-import SendInvite from "../email/send-invite";
 import { inputClassNames } from "../../editor";
-import { ButtonIcon } from "@/ui/button";
-import { type EventField, vip_info, VIPZod } from "./schema";
+import SendInvite from "../email/send-invite";
 import { BlockHeader } from "./components";
-import { type XEvent } from "@/app/types";
+import { vip_info, type VIPField, VIPZod } from "./schema";
 
 interface VIPBlockProps {
-  data: EventField<VIP>[];
+  data: VIPField[];
   label: string;
   icon: IconName;
   delay?: number;
@@ -194,7 +194,7 @@ const VIPListItem = (vip: VIP) => {
   );
 };
 
-const VIPItem = (field: EventField<VIP>) => {
+const VIPItem = (field: VIPField) => {
   const [value, setValue] = useState<number>(1);
   const [strValue, setStrValue] = useState<string>("");
 
@@ -231,13 +231,15 @@ const VIPItem = (field: EventField<VIP>) => {
         field.name === "ticket_count" ? (
           <div className="-mb-3 -mr-1.5 flex items-end md:-mr-2.5">
             <ButtonIcon
-              onClick={handlePress(-1)}
               icon="Minus"
+              onClick={handlePress(-1)}
+              bg="text-gray-300"
               className="size-5"
             />
             <ButtonIcon
-              onClick={handlePress(1)}
               icon="Plus"
+              onClick={handlePress(1)}
+              bg="text-gray-300"
               className="size-5"
             />
           </div>

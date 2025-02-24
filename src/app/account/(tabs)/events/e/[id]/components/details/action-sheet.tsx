@@ -61,7 +61,7 @@ export const EventDetailOption = ({
       id={name}
       name={name}
       onClick={handleClick(name)}
-      className="h-14 w-full space-y-2 rounded-xl border border-macl-gray/60 py-2 ps-2.5 text-left font-inter tracking-tight hover:bg-macl-gray/5"
+      className="h-16 w-full space-y-2 rounded-xl bg-white py-2 ps-2.5 text-left font-inter tracking-tight hover:bg-cake"
     >
       <p className="text-xs font-medium leading-none text-macl-gray">{label}</p>
       <p className="overflow-hidden whitespace-nowrap font-semibold capitalize leading-none">
@@ -98,10 +98,14 @@ export const EventDetailActionSheet = ({
       title: "End date & time",
       description: "Select the end date and time of your event.",
     },
+    is_private: {
+      title: "Audience Access",
+      description: "Select the audience access type your event.",
+    },
   };
 
   return (
-    <BottomVaul open={open} onOpenChange={toggle}>
+    <BottomVaul open={open} onOpenChange={toggle} dismissible>
       <div
         className={cn("h-fit w-screen overflow-y-scroll p-6 md:w-[30rem]", {
           "relative max-h-96 pb-14": selectedEventDetail === "category",

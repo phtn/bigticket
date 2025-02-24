@@ -190,7 +190,7 @@ export const TicketCount = ({
 };
 
 interface EventTypeProps {
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
 }
 

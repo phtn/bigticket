@@ -1,7 +1,7 @@
 import { mutation } from "@vx/server";
 import { v } from "convex/values";
 import { checkEvent } from "./create";
-import { VIPSchema } from "./d";
+import { CohostSchema, VIPSchema } from "./d";
 
 export const status = mutation({
   args: { id: v.string(), is_active: v.boolean() },
@@ -106,6 +106,36 @@ export const vip = mutation({
     } else {
       vip_list.push(vip);
       await db.patch(event._id, { vip_list });
+      return "success";
+    }
+  },
+});
+
+export const cohost = mutation({
+  args: { id: v.string(), cohost: CohostSchema },
+  handler: async ({ db }, { id, cohost }) => {
+    const event = await checkEvent(db, id);
+    if (event === null || !cohost) {
+      return null;
+    }
+
+    if (!event?.cohost_list) {
+      await db.patch(event._id, {
+        cohost_list: [cohost],
+        updated_at: Date.now(),
+      });
+      return "success";
+    }
+
+    let cohost_list = event.cohost_list.slice();
+
+    const index = event?.cohost_list.findIndex((v) => v.email === cohost.email);
+    if (index !== -1) {
+      await db.patch(event._id, { cohost_list });
+      return "success";
+    } else {
+      cohost_list.push(cohost);
+      await db.patch(event._id, { cohost_list });
       return "success";
     }
   },

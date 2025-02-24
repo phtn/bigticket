@@ -60,7 +60,7 @@ export const Hyper = ({
         className={cn(
           "font-inter text-xs font-semibold tracking-tighter text-primary transition-all duration-300",
           {
-            "text-chalk group-hover:text-primary": dark,
+            "text-chalk": dark,
             "text-primary group-hover:text-white": dim,
           },
         )}
@@ -75,10 +75,9 @@ export const Hyper = ({
       {...props}
       className={cn(
         props.className,
-        "group flex h-10 w-36 items-center justify-center gap-1 overflow-hidden border-[0.33px] border-transparent bg-white px-5 transition-all duration-300 active:scale-95",
+        "group flex h-10 w-36 items-center justify-center gap-1.5 overflow-hidden border-[0.33px] border-transparent bg-white px-5 transition-all duration-300 active:scale-95",
         {
-          "bg-primary text-chalk hover:border-primary hover:bg-gray-200 hover:text-primary":
-            dark,
+          "bg-primary text-chalk hover:border-primary hover:bg-chalk/5": dark,
           "rounded-lg": rounded,
           "w-full": fullWidth,
           "h-12": lg,
@@ -88,10 +87,20 @@ export const Hyper = ({
         },
       )}
     >
-      {start && <Icon name={start} className="size-5 text-peach" />}
+      {start && (
+        <Icon
+          name={start}
+          className={cn("size-3.5 text-primary", { "text-chalk": dark })}
+        />
+      )}
       <LabelOptions />
       {children}
-      {end && <Icon name={end} className="size-5 text-peach" />}
+      {end && (
+        <Icon
+          name={end}
+          className={cn("size-3.5 text-primary", { "text-chalk": dark })}
+        />
+      )}
     </button>
   );
 };

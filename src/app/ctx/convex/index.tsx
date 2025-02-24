@@ -4,7 +4,7 @@ import type { SupabaseUserMetadata } from "@/app/ctx/auth/types";
 import { env } from "@/env";
 import type { User } from "@supabase/supabase-js";
 import { api } from "@vx/api";
-import type { InsertEvent, UserTicket, VIP } from "convex/events/d";
+import type { Cohost, InsertEvent, UserTicket, VIP } from "convex/events/d";
 import { ConvexProvider, ConvexReactClient, useMutation } from "convex/react";
 import type { CreateUser, UpdateUser } from "convex/users/d";
 import type { ReactNode } from "react";
@@ -143,6 +143,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const updateEventIsCoverLight = useMutation(api.events.update.isCoverLight);
   const updateEventViews = useMutation(api.events.update.views);
   const updateEventVIP = useMutation(api.events.update.vip);
+  const updateEventCohost = useMutation(api.events.update.cohost);
 
   const events = useMemo(
     () => ({
@@ -159,6 +160,8 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
           await updateEventIsCoverLight({ id, is_cover_light }),
         views: async (id: string) => await updateEventViews({ id }),
         vip: async (id: string, vip: VIP) => await updateEventVIP({ id, vip }),
+        coHost: async (id: string, cohost: Cohost) =>
+          await updateEventCohost({ id, cohost }),
       },
     }),
     [
@@ -168,6 +171,7 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
       updatePhotoUrl,
       updateEventViews,
       updateEventVIP,
+      updateEventCohost,
       updateEventIsCoverLight,
     ],
   );

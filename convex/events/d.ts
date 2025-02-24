@@ -37,6 +37,22 @@ export const VIPSchema = v.object({
 });
 
 export type VIP = Infer<typeof VIPSchema>;
+export const CohostClearanceSchema = v.object({
+  scan_code: v.optional(v.boolean()),
+  add_vip: v.optional(v.boolean()),
+  view_guest_list: v.optional(v.boolean()),
+});
+export type CohostClearance = Infer<typeof CohostClearanceSchema>;
+export const CohostSchema = v.object({
+  email: v.string(),
+  name: v.optional(v.string()),
+  created_by: v.optional(v.union(v.string(), v.null())),
+  updated_at: v.optional(v.float64()),
+  clearance: v.optional(CohostClearanceSchema),
+  checked: v.optional(v.boolean()),
+  invitation_sent: v.optional(v.boolean()),
+});
+export type Cohost = Infer<typeof CohostSchema>;
 
 export const UserTicketSchema = v.object({
   event_id: v.string(),
@@ -105,6 +121,7 @@ export const EventSchema = v.object({
   total_attendees: v.optional(v.number()),
   estimated_attendees: v.optional(v.number()),
   vip_list: v.optional(v.array(VIPSchema)),
+  cohost_list: v.optional(v.array(CohostSchema)),
   comp_list: v.optional(v.array(VIPSchema)),
   //INFO
   address_id: v.optional(v.string()),

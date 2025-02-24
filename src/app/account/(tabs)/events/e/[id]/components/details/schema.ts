@@ -1,23 +1,24 @@
 import { type InputProps } from "@nextui-org/react";
-import type { InsertEvent } from "convex/events/d";
-import type { HTMLInputTypeAttribute } from "react";
+import type { Cohost, InsertEvent, VIP } from "convex/events/d";
+import type { ReactNode } from "react";
 import { z } from "zod";
 import { type EventDetailKey } from "./ctx";
 
-export type EventFieldValue = string | number | boolean | undefined;
+export type FieldData = string | number | boolean | undefined;
+export interface EventDetailField {
+  children: ReactNode;
+  render: (option: EventDetailKey | null) => ReactNode;
+  data: FieldData[];
+}
 export type EventFieldName = keyof Partial<InsertEvent>;
 export type EventField = InputProps & {
   name: EventDetailKey;
 };
-
-export interface EventF {
-  name: keyof InsertEvent;
-  type: HTMLInputTypeAttribute;
-  label: string;
-  placeholder?: string;
-  required: boolean;
-  defaultValue?: string;
-  inputMode?: string;
+export interface VIPField extends InputProps {
+  name: keyof VIP;
+}
+export interface CohostField extends InputProps {
+  name: keyof Cohost;
 }
 
 export const ticket_info: EventField[] = [
@@ -74,7 +75,7 @@ export const event_fields: EventField[] = [
   },
 ];
 
-export const vip_info: InputProps[] = [
+export const vip_info: VIPField[] = [
   {
     name: "name",
     type: "text",
@@ -104,4 +105,25 @@ export const VIPZod = z.object({
   name: z.string().max(100),
   email: z.string().email().max(100),
   ticket_count: z.number().max(100),
+});
+
+export const cohost_info: CohostField[] = [
+  {
+    name: "name",
+    type: "text",
+    label: "Name",
+    placeholder: "Name of the co-host",
+    required: false,
+  },
+  {
+    name: "email",
+    type: "email",
+    label: "Email",
+    placeholder: "Email receiving the invitation",
+    required: true,
+  },
+];
+export const CohostZod = z.object({
+  name: z.string().max(100).optional(),
+  email: z.string().email().max(100),
 });

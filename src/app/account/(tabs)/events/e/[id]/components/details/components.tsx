@@ -29,9 +29,11 @@ interface BlockHeaderProps {
 
 export const BlockHeader = ({ icon, label }: BlockHeaderProps) => {
   return (
-    <div className="flex h-8 items-end gap-3 text-sm text-chalk">
+    <div className="flex h-8 items-center gap-3 text-sm capitalize text-chalk">
       <Icon name={icon} className="size-5 opacity-80" />
-      <span className="font-inter font-bold tracking-tighter">{label}</span>
+      <span className="font-inter font-bold tracking-tighter md:text-lg">
+        {label}
+      </span>
     </div>
   );
 };

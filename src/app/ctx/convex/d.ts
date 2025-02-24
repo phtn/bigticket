@@ -1,5 +1,6 @@
 import type { Id } from "@vx/dataModel";
 import type {
+  Cohost,
   InsertEvent,
   SelectEvent,
   UserTicket,
@@ -46,6 +47,7 @@ export interface DConvexCtxValues {
       ) => Promise<string | null>;
       views: (id: string) => Promise<string | null>;
       vip: (id: string, vip: VIP) => Promise<string | null>;
+      coHost: (id: string, cohost: Cohost) => Promise<string | null>;
     };
   };
 

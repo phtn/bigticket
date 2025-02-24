@@ -23,6 +23,8 @@ export type EventDetailKey = keyof Pick<
   | "event_phone"
   | "event_name"
   | "event_desc"
+  | "venue_name"
+  | "venue_address"
 >;
 interface EventDetailCtxValues {
   open: boolean;

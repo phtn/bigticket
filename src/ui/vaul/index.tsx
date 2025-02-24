@@ -44,7 +44,7 @@ const BottomComponent = ({
       dismissible={dismissible}
     >
       <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 bg-gray-100" />
+        <Drawer.Overlay className="fixed inset-0 bg-ticket/20" />
         <Drawer.Content className="fixed bottom-0 right-0 z-[100] flex h-fit w-fit flex-col rounded-t-[2.5rem] border-x border-t-2 border-macl-gray bg-gradient-to-t from-gray-100 to-white pt-4 outline-none">
           <Drawer.Handle />
           <Drawer.Title className="hidden">{title}</Drawer.Title>
