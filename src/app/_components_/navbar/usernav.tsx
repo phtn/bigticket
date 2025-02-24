@@ -37,10 +37,9 @@ interface NavItem {
 }
 
 export const UserNav = () => {
-  // const { item } = useStorage<{ photoUrl: string | null }>("xUser");
   const { photoUrl: avatar } = use(UserCtx)!;
 
-  const photoUrl = avatar ?? null;
+  const photoUrl = useMemo(() => avatar ?? null, [avatar]);
 
   const navs: NavItem[] = useMemo(
     () => [

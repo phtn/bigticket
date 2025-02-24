@@ -1,4 +1,4 @@
-import { UserTicketSchema } from "convex/events/d";
+import { CohostSchema, UserTicketSchema } from "convex/events/d";
 import { type Infer, v } from "convex/values";
 
 export const UserRoleSchema = v.union(
@@ -25,6 +25,7 @@ export const UserSchema = v.object({
   company_name: v.optional(v.string()),
   company_address_id: v.optional(v.string()),
   company_sector: v.optional(v.string()),
+  cohosted_events: v.optional(v.array(CohostSchema)),
   title: v.optional(v.string()),
   photo_lib: v.optional(v.array(v.string())),
   photo_modified: v.optional(v.boolean()),

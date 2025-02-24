@@ -3,6 +3,7 @@
 import type { SelectEvent } from "convex/events/d";
 import { Events } from "./events";
 import { PreloadedUserEventsCtxProvider } from "@/app/ctx/event/user";
+import { UserCtxProvider } from "@/app/ctx/user/ctx";
 
 export interface AccountContentProps {
   events: SelectEvent[];
@@ -11,7 +12,9 @@ export interface AccountContentProps {
 export const Content = (props: AccountContentProps) => {
   return (
     <PreloadedUserEventsCtxProvider {...props}>
-      <Events />
+      <UserCtxProvider>
+        <Events />
+      </UserCtxProvider>
     </PreloadedUserEventsCtxProvider>
   );
 };

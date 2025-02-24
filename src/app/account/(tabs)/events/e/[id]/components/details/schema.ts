@@ -102,7 +102,7 @@ export const vip_info: VIPField[] = [
 ];
 
 export const VIPZod = z.object({
-  name: z.string().max(100),
+  name: z.string().max(100).optional(),
   email: z.string().email().max(100),
   ticket_count: z.number().max(100),
 });

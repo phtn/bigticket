@@ -55,6 +55,19 @@ export const byIds = query({
   },
 });
 
+export const byCohostEmail = query({
+  args: { email: v.array(v.string()) },
+  handler: async ({ db }, { email }) =>
+    (
+      await db
+        .query("events")
+        .filter((q) => q.eq(q.field("cohost_email_list"), email))
+        .collect()
+    )
+      .reverse()
+      .flat(),
+});
+
 export const byCode = mutation({
   args: { event_code: v.string() },
   handler: async ({ db }, { event_code }) =>

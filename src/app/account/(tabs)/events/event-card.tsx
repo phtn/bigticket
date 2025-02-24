@@ -51,9 +51,9 @@ export const EventCardAccount = (xEvent: XEvent) => {
   return (
     <Card
       isFooterBlurred
-      className="h-[280px] w-full rounded-md border border-primary bg-primary"
+      className="h-[300px] w-full rounded-md border border-primary bg-primary"
     >
-      <CardHeader className="absolute z-10 flex w-full items-start justify-between gap-3 rounded-none bg-black/40 ps-4 backdrop-blur-sm">
+      <CardHeader className="absolute z-10 flex w-full items-start justify-between gap-3 rounded-none bg-black/10 ps-4 backdrop-blur-[1px]">
         <section className="w-full overflow-clip text-ellipsis">
           <p className="max-w-[45ch] bg-gradient-to-br from-white/60 via-white/80 to-white/60 bg-clip-text text-tiny font-bold uppercase text-transparent">
             {event_geo ?? event_url}

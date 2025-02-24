@@ -81,6 +81,8 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
         ...defaults,
         ...cohost.data,
         created_by: user_id,
+        event_id: xEvent?.event_id,
+        event_name: xEvent?.event_name,
         updated_at: Date.now(),
         clearance: clearanceValues,
       })
@@ -92,7 +94,14 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
         ...cohost.data,
       };
     },
-    [updateCohostList, user_id, clearanceValues, defaults],
+    [
+      updateCohostList,
+      user_id,
+      clearanceValues,
+      defaults,
+      xEvent?.event_id,
+      xEvent?.event_name,
+    ],
   );
 
   const [, action, pending] = useActionState(addCohost, initialState);
@@ -112,14 +121,14 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
   return (
     <Form action={action}>
       <div className="grid h-full w-full grid-cols-1 md:grid-cols-5 md:gap-0 md:rounded">
-        <section className="col-span-2 h-fit border-b border-vanilla/20 bg-primary md:h-fit md:border">
+        <section className="h-fit border-b border-vanilla/20 bg-primary sm:col-span-3 md:col-span-2 md:h-fit md:border">
           <CohostBlock
             data={cohost_info}
             label="Host Settings"
             icon="UserSettings2"
           />
 
-          <div className="flex h-fit w-full border-t border-vanilla/20 bg-chalk/10 px-6 py-8 md:px-8">
+          <div className="flex h-fit w-full border-t border-vanilla/20 bg-chalk/10 px-6 py-8 lg:px-4 xl:px-6">
             <CheckboxGroup
               onValueChange={handleAccessValuesChange}
               defaultValue={["scan_code"]}
@@ -127,17 +136,20 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
               orientation="horizontal"
               color="primary"
               description="Choose co-host access clearances for this event."
+              className="w-full"
               classNames={{
+                wrapper: "",
+                base: "w-full",
                 label:
-                  "text-white pb-4 font-bold text-lg font-inter tracking-tighter",
+                  "text-white pb-4 font-bold w-full text-lg font-inter tracking-tighter",
                 description: "text-chalk/60 text-xs pt-4",
               }}
             >
               <HyperList
                 data={Object.entries(clearanceValues).map((c) => c)}
                 component={ClearanceItem}
-                container="flex space-x-6"
-                itemStyle="py-1.5 ps-1.5 pe-2 overflow-hidden rounded-xl hover:bg-primary/35 border-1 border-primary/0 hover:border-chalk/20"
+                container="flex flex-col lg:flex-row xl:space-x-5 lg:space-x-2 whitespace-nowrap space-y-2 lg:space-y-0 w-full justify-between xl:justify-start"
+                itemStyle="xl:py-1.5 ps-1.5 pe-2 border-0 lg:w-fit w-full overflow-hidden rounded-xl hover:bg-primary/35 border-1 border-primary/0 hover:border-chalk/20"
               />
             </CheckboxGroup>
           </div>
@@ -199,37 +211,28 @@ const CohostListItem = (cohost: Cohost) => {
     [],
   );
   return (
-    <div className="grid w-full grid-cols-12 overflow-clip border-b border-dotted border-vanilla/20">
-      <div className="col-span-4 flex h-10 w-full items-center rounded-sm hover:bg-gray-300/10">
-        <p className="px-3 font-inter text-xs font-semibold tracking-tight">
+    <div className="grid w-fit grid-cols-12 overflow-auto whitespace-nowrap border-b border-dotted border-vanilla/20 md:w-full md:overflow-clip">
+      <div className="col-span-4 flex h-10 items-center rounded-sm hover:bg-gray-300/10 md:w-full">
+        <p className="px-3 font-inter text-tiny tracking-tighter">
           {cohost.name}
         </p>
       </div>
-      <div className="col-span-5 flex h-10 w-full items-center px-3 hover:bg-gray-300/10">
-        <p className="font-inter text-xs font-semibold tracking-tight">
+      <div className="col-span-4 flex h-10 w-full items-center px-3 hover:bg-gray-300/10">
+        <p className="font-inter text-xs font-medium tracking-tighter text-vanilla">
           {cohost.email}
         </p>
       </div>
       <div className="col-span-2 flex h-10 w-full items-center px-3 hover:bg-gray-300/10">
-        <p className="font-inter text-xs font-semibold tracking-tight">
+        <p className="font-inter text-[10px] tracking-tighter opacity-60">
           {moment(cohost.updated_at).fromNow()}
         </p>
       </div>
-      {/* <div className="col-span-2 flex h-10 w-full items-center px-4 hover:bg-gray-300/10">
-        {cohost.clearance?.map((clearance, i) => (
-          <p
-            key={i}
-            className="w-full text-center font-inter text-xs font-semibold tracking-tight"
-          >
-            {clearance.scan_code ? "OK" : "NOPE"}
-          </p>
-        ))}
-      </div> */}
-      <div className="col-span-1 flex h-10 w-full items-center justify-center hover:bg-gray-300/10">
+      <div className="col-span-2 flex h-10 w-full items-center justify-end hover:bg-gray-300/10">
         <Checkbox
           color="primary"
           className="border-0 bg-transparent"
           classNames={{
+            base: "border",
             icon: "text-teal-500",
             wrapper: "bg-transparent",
           }}
@@ -278,14 +281,17 @@ const CohostBlock = ({ data, icon, label, delay = 0 }: CohostBlockProps) => (
 const ClearanceItem = (props: [string, boolean]) => {
   return (
     <Checkbox
-      className="data-[selected=true]:bg-primary/30"
+      className="flex data-[selected=true]:bg-primary/30"
       classNames={{
-        label: "text-chalk capitalize text-sm tracking-tighter font-medium",
+        base: "flex max-w-lg h-14 md:max-w-none px-3",
+        label:
+          "text-chalk flex w-full capitalize text-sm tracking-tighter font-medium",
         icon: "stroke-2 size-5 text-teal-400",
+        wrapper: "",
       }}
       value={props[0]}
     >
-      {props[0].replaceAll("_", " ")}
+      <div className="flex w-full">{props[0].replaceAll("_", " ")}</div>
     </Checkbox>
   );
 };

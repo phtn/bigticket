@@ -77,6 +77,8 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
       ...vip.data,
       ...defaults,
       created_by: user_id,
+      event_id: xEvent?.event_id,
+      event_name: xEvent?.event_name,
       updated_at: Date.now(),
     })
       .then(() => {
@@ -85,9 +87,6 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
       .catch(Err);
     return {
       ...vip.data,
-      ...defaults,
-      created_by: user_id,
-      updated_at: Date.now(),
     };
   };
   const [, action, pending] = useActionState(addVIP, initialState);

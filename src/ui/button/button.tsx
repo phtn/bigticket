@@ -14,6 +14,8 @@ export interface HyperProps {
   rounded?: boolean;
   fullWidth?: boolean;
   lg?: boolean;
+  sm?: boolean;
+  xs?: boolean;
   destructive?: boolean;
   compact?: boolean;
   dim?: boolean;
@@ -48,6 +50,8 @@ export const Hyper = ({
   rounded = false,
   fullWidth = false,
   lg = false,
+  sm = false,
+  xs = false,
   destructive = false,
   compact = false,
   dim = false,
@@ -58,10 +62,10 @@ export const Hyper = ({
       <Icon name="SpinnerBall" />,
       <span
         className={cn(
-          "font-inter text-xs font-semibold tracking-tighter text-primary transition-all duration-300",
+          "relative z-10 whitespace-nowrap font-inter text-xs font-semibold tracking-tighter text-primary transition-all duration-300",
           {
             "text-chalk": dark,
-            "text-primary group-hover:text-white": dim,
+            "text-primary": dim,
           },
         )}
       >
@@ -75,32 +79,49 @@ export const Hyper = ({
       {...props}
       className={cn(
         props.className,
-        "group flex h-10 w-36 items-center justify-center gap-1.5 overflow-hidden border-[0.33px] border-transparent bg-white px-5 transition-all duration-300 active:scale-95",
+        "group flex h-9 min-w-36 items-center justify-center overflow-hidden border-[0.33px] border-transparent bg-white transition-all duration-300 active:scale-95",
+        "relative",
         {
-          "bg-primary text-chalk hover:border-primary hover:bg-chalk/5": dark,
+          "border-primary": dark,
           "rounded-lg": rounded,
-          "w-full": fullWidth,
           "h-12": lg,
-          "bg-macl-red": destructive,
-          "w-fit": compact,
-          "bg-demigod": dim,
+          "w-full": fullWidth,
+          "w-fit min-w-0": compact,
+          "h-8": sm,
+          "h-7": xs,
         },
       )}
     >
-      {start && (
-        <Icon
-          name={start}
-          className={cn("size-3.5 text-primary", { "text-chalk": dark })}
-        />
-      )}
-      <LabelOptions />
-      {children}
-      {end && (
-        <Icon
-          name={end}
-          className={cn("size-3.5 text-primary", { "text-chalk": dark })}
-        />
-      )}
+      <div className="pointer-events-none absolute z-0 size-full bg-white/20" />
+      <div
+        className={cn(
+          "z-50 flex size-full items-center justify-center px-5",
+          "gap-2",
+          {
+            "bg-primary text-chalk hover:opacity-90": dark,
+            "bg-macl-red": destructive,
+            "bg-demigod hover:bg-teal-500": dim,
+            "px-2": compact,
+          },
+        )}
+      >
+        {start && (
+          <Icon
+            name={start}
+            className={cn("z-1 size-3.5 text-primary", {
+              "text-chalk": dark,
+            })}
+          />
+        )}
+        <LabelOptions />
+        {children}
+        {end && (
+          <Icon
+            name={end}
+            className={cn("size-3.5 text-primary", { "text-chalk": dark })}
+          />
+        )}
+      </div>
     </button>
   );
 };
@@ -115,6 +136,7 @@ export const HyperLink = ({
   rounded = false,
   fullWidth = false,
   lg = false,
+  sm = false,
   destructive = false,
   compact = false,
   dim = false,
@@ -145,6 +167,7 @@ export const HyperLink = ({
           "rounded-lg": rounded,
           "w-full": fullWidth,
           "h-12": lg,
+          "h-8": sm,
           "bg-macl-red": destructive,
           "w-fit": compact,
           "bg-demigod": dim,

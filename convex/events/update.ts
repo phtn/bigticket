@@ -1,7 +1,7 @@
 import { mutation } from "@vx/server";
 import { v } from "convex/values";
 import { checkEvent } from "./create";
-import { CohostSchema, VIPSchema } from "./d";
+import { Cohost, CohostSchema, VIPSchema } from "./d";
 
 export const status = mutation({
   args: { id: v.string(), is_active: v.boolean() },
@@ -119,9 +119,15 @@ export const cohost = mutation({
       return null;
     }
 
+    const cohost_email_list = event.cohost_email_list ?? [cohost.email];
+    if (event.cohost_email_list) {
+      event.cohost_email_list.push(cohost.email);
+    }
+
     if (!event?.cohost_list) {
       await db.patch(event._id, {
         cohost_list: [cohost],
+        cohost_email_list,
         updated_at: Date.now(),
       });
       return "success";
@@ -130,13 +136,27 @@ export const cohost = mutation({
     let cohost_list = event.cohost_list.slice();
 
     const index = event?.cohost_list.findIndex((v) => v.email === cohost.email);
+
     if (index !== -1) {
       await db.patch(event._id, { cohost_list });
-      return "success";
     } else {
       cohost_list.push(cohost);
-      await db.patch(event._id, { cohost_list });
-      return "success";
+      await db.patch(event._id, { cohost_list, cohost_email_list });
     }
+
+    const cohostUser = await db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", cohost.email))
+      .first();
+    if (!cohostUser) {
+      return "user not found.";
+    }
+
+    const cohosted_events = cohostUser.cohosted_events ?? [];
+    if (cohostUser.cohosted_events) {
+      cohosted_events.push(cohost);
+    }
+    await db.patch(cohostUser._id, { cohosted_events });
+    return "success";
   },
 });

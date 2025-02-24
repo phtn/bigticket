@@ -270,7 +270,7 @@ export const CreateEvent = () => {
   return (
     <div className="flex w-full items-center justify-end font-inter xl:space-x-1">
       <button
-        className="group/create flex size-6 items-center justify-center rounded-lg bg-secondary px-0 text-white md:h-8 md:w-fit md:gap-1.5 md:space-x-0.5 md:pe-2.5 md:ps-2"
+        className="group/create flex size-6 items-center justify-center rounded-lg bg-teal-500 px-0 text-white md:h-8 md:w-fit md:gap-1.5 md:space-x-0.5 md:pe-2.5 md:ps-2"
         onClick={toggle}
       >
         <Icon name="Plus" className="size-3.5" />

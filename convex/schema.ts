@@ -16,7 +16,8 @@ export default defineSchema({
     .index("by_event_code", ["event_code"])
     .index("by_category", ["category"])
     .index("by_subcategory", ["subcategory"])
-    .index("by_host_id", ["host_id"]),
+    .index("by_host_id", ["host_id"])
+    .index("by_cohost_email", ["cohost_email_list"]),
   tickets: defineTable(TicketSchema)
     .index("by_ticket_id", ["ticket_id"])
     .index("by_ticket_type", ["ticket_type"])
