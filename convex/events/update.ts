@@ -1,7 +1,7 @@
 import { mutation } from "@vx/server";
 import { v } from "convex/values";
 import { checkEvent } from "./create";
-import { Cohost, CohostSchema, VIPSchema } from "./d";
+import { CohostSchema, EventGallerySchema, VIPSchema } from "./d";
 
 export const status = mutation({
   args: { id: v.string(), is_active: v.boolean() },
@@ -157,6 +157,41 @@ export const cohost = mutation({
       cohosted_events.push(cohost);
     }
     await db.patch(cohostUser._id, { cohosted_events });
+    return "success";
+  },
+});
+
+export const mediaGallery = mutation({
+  args: { id: v.string(), media: EventGallerySchema },
+  handler: async ({ db }, { id, media }) => {
+    const event = await checkEvent(db, id);
+    if (event === null || !media) {
+      return null;
+    }
+
+    let gallery = event.gallery ?? [media];
+    if (event.gallery) {
+      event.gallery.push(media);
+    }
+
+    if (!event?.gallery) {
+      await db.patch(event._id, {
+        gallery,
+        updated_at: Date.now(),
+      });
+      return "success";
+    }
+
+    gallery = event.gallery.slice();
+
+    const index = event?.gallery.findIndex((v) => v.src === media.src);
+
+    if (index !== -1) {
+      await db.patch(event._id, { gallery });
+    } else {
+      gallery.push(media);
+      await db.patch(event._id, { gallery });
+    }
     return "success";
   },
 });

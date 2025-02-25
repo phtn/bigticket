@@ -1,5 +1,5 @@
 import { type InputProps } from "@nextui-org/react";
-import type { Cohost, InsertEvent, VIP } from "convex/events/d";
+import type { Cohost, EventGallery, InsertEvent, VIP } from "convex/events/d";
 import type { ReactNode } from "react";
 import { z } from "zod";
 import { type EventDetailKey } from "./ctx";
@@ -19,6 +19,9 @@ export interface VIPField extends InputProps {
 }
 export interface CohostField extends InputProps {
   name: keyof Cohost;
+}
+export interface MediaField extends InputProps {
+  name: keyof EventGallery;
 }
 
 export const ticket_info: EventField[] = [
@@ -75,6 +78,11 @@ export const event_fields: EventField[] = [
   },
 ];
 
+export const VIPZod = z.object({
+  name: z.string().max(100).optional(),
+  email: z.string().email().max(100),
+  ticket_count: z.number().max(100),
+});
 export const vip_info: VIPField[] = [
   {
     name: "name",
@@ -101,11 +109,42 @@ export const vip_info: VIPField[] = [
   },
 ];
 
-export const VIPZod = z.object({
-  name: z.string().max(100).optional(),
-  email: z.string().email().max(100),
-  ticket_count: z.number().max(100),
+export const MediaZod = z.object({
+  title: z.string().max(100).optional(),
+  description: z.string().max(100).optional(),
+  src: z.string().min(1).max(100).optional(),
+  alt: z.string().min(1).max(100).optional(),
 });
+export const media_fields: MediaField[] = [
+  {
+    name: "title",
+    type: "text",
+    label: "Title",
+    placeholder: "Title of the video or image",
+    required: false,
+  },
+  {
+    name: "description",
+    type: "text",
+    label: "Description",
+    placeholder: "Short description of the video or image",
+    required: false,
+  },
+  {
+    name: "src",
+    type: "text",
+    label: "Media Source or ID",
+    placeholder: "URL or YouTubeID",
+    required: true,
+  },
+  {
+    name: "alt",
+    type: "text",
+    label: "Alt",
+    placeholder: "Alternative text for the media",
+    required: true,
+  },
+];
 
 export const cohost_info: CohostField[] = [
   {

@@ -8,17 +8,16 @@ interface EventDetailsProps {
 
 export const EventDetails = ({ tabs }: EventDetailsProps) => {
   return (
-    <div className="w-full rounded-lg border border-macl-gray bg-white text-xs md:p-4">
+    <div className="w-full rounded-lg border border-macl-gray bg-white text-xs md:px-2">
       <SectionTitle title="Event Details" />
-
-      <div className="h-full py-6">
+      <div className="h-full">
         <Tabs
           variant="solid"
           color="primary"
           size="sm"
           className="w-full"
           classNames={{
-            panel: "w-full px-0 md:px-4",
+            panel: "w-full px-0 md:px-4 pb-8",
             tabList: "px-4",
             tabContent: "font-semibold font-inter tracking-tighter",
           }}
@@ -30,7 +29,9 @@ export const EventDetails = ({ tabs }: EventDetailsProps) => {
           ))}
         </Tabs>
       </div>
-      <div className="h-96 bg-gray-300 py-8"></div>
+      <div className="px-4 pb-6">
+        <div className="h-96 bg-gray-300"></div>
+      </div>
     </div>
   );
 };

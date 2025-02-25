@@ -21,6 +21,7 @@ import { ImageQuery } from "./components/pexels";
 import { TicketPhoto } from "./components/ticket-photo";
 import { Topbar } from "./components/topbar";
 import { EventEditorCtx } from "./ctx";
+import { MediaContent } from "./components/details/media";
 
 export interface TabItem {
   title: string;
@@ -70,6 +71,11 @@ export const EventEditor = ({ id }: EventEditorProps) => {
         title: "Hosting",
         content: <HostSettings xEvent={xEvent} user_id={user_id} />,
       },
+      {
+        value: "media",
+        title: "Media Gallery",
+        content: <MediaContent xEvent={xEvent} user_id={user_id} />,
+      },
     ],
     [user_id, xEvent, pending],
   );
@@ -80,8 +86,8 @@ export const EventEditor = ({ id }: EventEditorProps) => {
       <ImageQuery category={xEvent?.category} />
 
       <div className="space-y-8">
-        <div className="h-fit md:px-4">
-          <Carousel>
+        <div className="md:px-4">
+          <Carousel className="md:max-h-[480px]">
             <div className="grid h-fit w-full grid-cols-1 gap-10 md:min-h-[400px] md:grid-cols-2 md:gap-6 md:px-4">
               <CoverPhoto id={event_id} cover_url={xEvent?.cover_url} />
               <TicketPhoto xEvent={xEvent} />
@@ -89,7 +95,7 @@ export const EventEditor = ({ id }: EventEditorProps) => {
           </Carousel>
         </div>
 
-        <div className="h-fit md:px-8">
+        <div className="h-fit pb-8 md:px-8">
           <EventDetailCtxProvider>
             <EventDetails tabs={tabs} />
           </EventDetailCtxProvider>

@@ -3,6 +3,7 @@ import { Shimmer } from "@/ui/text/sparkles";
 import { Button, cn } from "@nextui-org/react";
 import { PrivateNoAccess, PrivateWithAccess } from "./private";
 import type { ReactNode } from "react";
+import chalk from "chalk";
 
 interface VIPAccesProps {
   ticketCount?: number;
@@ -44,7 +45,12 @@ const VIPLabel = () => {
 };
 export const VIPAccess = ({ ticketCount, fn }: VIPAccesProps) => (
   <VIPComponent fn={fn}>
-    <div className={cn("flex w-full items-center justify-evenly", {})}>
+    <div
+      className={cn(
+        "flex w-full items-center justify-between px-4 md:justify-evenly md:px-0",
+        {},
+      )}
+    >
       <PrivateWithAccess count={ticketCount ?? 0} />
       <VIPLabel />
     </div>
@@ -63,9 +69,22 @@ const PrivateLabel = () => {
     </h3>
   );
 };
-export const VIPNoAccess = ({ fn }: VIPAccesProps) => (
-  <VIPComponent fn={fn}>
-    <div className={cn("flex w-full items-center justify-evenly", {})}>
+
+const handleSignin = () => {
+  const big = chalk.hex("#59D2CB").bold.bgBlack;
+  const ticket = chalk.hex("#fb923c").bold.bgBlack;
+  const cutout = chalk.gray.bgBlack.bold("●");
+  console.clear();
+  console.log(cutout + big(" BIG ") + ticket("ticket ") + cutout);
+};
+export const VIPNoAccess = () => (
+  <VIPComponent fn={handleSignin}>
+    <div
+      className={cn(
+        "flex w-full items-center justify-between px-1 md:justify-evenly md:px-0",
+        {},
+      )}
+    >
       <PrivateNoAccess />
       <PrivateLabel />
     </div>

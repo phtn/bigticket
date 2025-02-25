@@ -156,11 +156,11 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
 
           <div className="flex h-1/6 w-full items-end justify-between bg-primary">
             <div className="flex w-full items-center border-t border-vanilla/20 text-chalk">
-              <div className="flex h-10 w-full items-center gap-3 border-r border-vanilla/20 px-3">
-                <p className="text-sm font-medium text-peach">0</p>
+              <div className="flex h-10 w-full items-center justify-between gap-3 border-r border-vanilla/20 px-3">
                 <p className="font-inter text-xs font-semibold tracking-tight">
                   Confirmed
                 </p>
+                <p className="font-sans text-sm">0</p>
               </div>
               <Hyper
                 disabled={pending}
@@ -177,9 +177,9 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
         <section className="relative border-vanilla/20 bg-primary text-chalk md:col-span-3 md:border-y md:border-r">
           <div className="h-96 w-full overflow-hidden overflow-y-scroll">
             <div className="flex h-11 w-full items-center justify-between border-b border-vanilla/20 px-3 font-inter text-tiny font-bold">
-              <div className="flex items-center gap-4">
+              <div className="flex w-full items-center justify-between gap-6 md:justify-start">
                 <span>Co-host List</span>
-                <span className="font-normal">
+                <span className="font-sans font-normal">
                   {xEvent?.cohost_list?.length ?? cohostList.length}
                 </span>
               </div>
@@ -234,7 +234,7 @@ const CohostListItem = (cohost: Cohost) => {
           classNames={{
             base: "border",
             icon: "text-teal-500",
-            wrapper: "bg-transparent",
+            wrapper: "border border-gray-600",
           }}
           onChange={handleChangeSelected(cohost.email)}
         />
@@ -287,7 +287,7 @@ const ClearanceItem = (props: [string, boolean]) => {
         label:
           "text-chalk flex w-full capitalize text-sm tracking-tighter font-medium",
         icon: "stroke-2 size-5 text-teal-400",
-        wrapper: "",
+        wrapper: "border border-gray-600",
       }}
       value={props[0]}
     >

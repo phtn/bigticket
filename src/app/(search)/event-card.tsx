@@ -76,12 +76,22 @@ export const EventCard = (xEvent: XEvent) => {
     >
       <CardHeader
         className={cn(
-          "absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4 text-white",
+          "absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4 tracking-tight text-white",
           { "text-coal": is_cover_light },
         )}
       >
         <section className="w-full overflow-clip text-ellipsis">
-          <p className="max-w-[35ch] whitespace-nowrap bg-gradient-to-br from-white/60 from-20% via-white/80 via-15% to-white/70 to-40% bg-clip-text text-tiny font-bold uppercase text-transparent">
+          <p
+            className={cn(
+              "max-w-[35ch] whitespace-nowrap text-tiny font-bold uppercase",
+              "bg-gradient-to-br bg-clip-text text-transparent",
+              "from-white/60 from-20% via-white/80 via-15% to-white/70 to-40%",
+              {
+                "from-ticket/80 from-20% via-ticket/80 via-15% to-ticket/90 to-40%":
+                  is_cover_light,
+              },
+            )}
+          >
             {venue_name ?? event_geo}
           </p>
           <h4 className="p-[1px font-inter text-xl font-bold capitalize tracking-tight shadow-coal drop-shadow-sm">

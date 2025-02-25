@@ -34,6 +34,7 @@ interface VIPContentProps {
 }
 
 export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
+  const [vipList, setVIPList] = useState<VIP[]>([]);
   const initialState: VIP = {
     name: "",
     email: "",
@@ -57,6 +58,7 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
   const updateVIPList = useCallback(
     async (data: VIP) => {
       if (!xEvent?.event_id) return;
+      setVIPList((prev) => [...prev, data]);
       return await events.update.vip(xEvent?.event_id, data);
     },
     [xEvent?.event_id, events.update],
@@ -74,8 +76,8 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
       return;
     }
     updateVIPList({
-      ...vip.data,
       ...defaults,
+      ...vip.data,
       created_by: user_id,
       event_id: xEvent?.event_id,
       event_name: xEvent?.event_name,
@@ -91,9 +93,35 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
   };
   const [, action, pending] = useActionState(addVIP, initialState);
 
+  const VIPGuestList = useCallback(() => {
+    return (
+      <section className="relative border-gray-500 bg-primary text-chalk md:border-y md:border-r">
+        <div className="h-full w-full overflow-hidden overflow-y-scroll">
+          <div className="flex h-11 w-full items-center justify-between border-b border-gray-500 px-3 font-inter text-tiny font-bold">
+            <div className="flex w-full items-center justify-between gap-4 md:justify-start">
+              <span>VIP Guest List</span>
+              <span className="font-sans">
+                {xEvent?.vip_list?.length ?? vipList.length}
+              </span>
+            </div>
+          </div>
+          <HyperList
+            data={xEvent?.vip_list ?? vipList}
+            component={VIPListItem}
+            container=""
+            keyId="email"
+          />
+        </div>
+        <div className="absolute bottom-2 right-2">
+          <SendInvite vip_list={xEvent?.vip_list} />
+        </div>
+      </section>
+    );
+  }, [xEvent?.vip_list, vipList]);
+
   return (
     <Form action={action}>
-      <div className="_gap-10 grid h-full w-full grid-cols-1 md:grid-cols-2 md:gap-0 md:rounded">
+      <div className="grid h-full w-full grid-cols-1 overflow-hidden md:grid-cols-2 md:gap-0 md:rounded-lg">
         <section className="h-fit space-y-8 border-b border-gray-500 bg-primary md:h-fit md:border">
           <VIPBlock
             data={vip_info}
@@ -103,49 +131,30 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
 
           <div className="flex h-1/6 w-full items-end justify-between bg-primary">
             <div className="flex w-full items-center border-t border-gray-500 text-chalk">
-              <div className="flex h-10 w-full items-center gap-3 border-r border-gray-500 px-3">
-                <p className="text-sm font-medium text-peach">0</p>
+              <div className="flex h-10 w-full items-center justify-between gap-3 border-r border-gray-500 px-3">
                 <p className="font-inter text-xs font-semibold tracking-tight">
                   Claimed
                 </p>
+                <p className="font-sans text-sm">0</p>
               </div>
-              <div className="flex h-10 w-full items-center gap-3 border-r border-gray-500 px-3">
-                <p className="text-sm font-medium text-peach">
-                  {issued_tickets}
-                </p>
+              <div className="flex h-10 w-full items-center justify-between gap-3 border-r border-gray-500 px-3">
                 <p className="font-inter text-xs font-semibold tracking-tight">
                   Issued
                 </p>
+                <p className="font-sans text-sm">{issued_tickets}</p>
               </div>
               <Hyper
                 disabled={pending}
                 loading={pending}
                 type="submit"
-                label="Save"
+                label="Add"
+                end="Plus"
                 dark
               />
             </div>
           </div>
         </section>
-        <section className="relative border-gray-500 bg-primary text-chalk md:border-y md:border-r">
-          <div className="h-96 w-full overflow-hidden overflow-y-scroll">
-            <div className="flex h-11 w-full items-center justify-between border-b border-gray-500 px-3 font-inter text-tiny font-bold">
-              <div className="flex items-center gap-4">
-                <span>VIP Guests:</span>
-                <span className="font-normal">{xEvent?.vip_list?.length}</span>
-              </div>
-            </div>
-            <HyperList
-              data={xEvent?.vip_list}
-              component={VIPListItem}
-              container=""
-              keyId="email"
-            />
-          </div>
-          <div className="absolute bottom-2 right-2">
-            <SendInvite vip_list={xEvent?.vip_list} />
-          </div>
-        </section>
+        <VIPGuestList />
       </div>
     </Form>
   );
@@ -164,27 +173,24 @@ const VIPListItem = (vip: VIP) => {
   return (
     <div className="grid w-full grid-cols-12 overflow-clip border-b border-dotted border-gray-700">
       <div className="col-span-4 flex h-10 w-full items-center rounded-sm hover:bg-gray-300/10">
-        <p className="px-3 font-inter text-xs font-semibold tracking-tight">
-          {vip.name}
-        </p>
+        <p className="px-3 font-inter text-xs tracking-tighter">{vip.name}</p>
       </div>
       <div className="col-span-5 flex h-10 w-full items-center px-3 hover:bg-gray-300/10">
-        <p className="font-inter text-xs font-semibold tracking-tight">
+        <p className="font-inter text-xs font-medium tracking-tighter text-vanilla">
           {vip.email}
         </p>
       </div>
       <div className="col-span-2 flex h-10 w-full items-center px-4 hover:bg-gray-300/10">
-        <p className="w-full text-center font-inter text-xs font-semibold tracking-tight">
-          {vip.ticket_count}
+        <p className="flex size-6 items-center justify-center rounded-lg bg-gray-300/10 text-center font-sans text-xs font-semibold tracking-tight text-cake">
+          {vip.ticket_count}9
         </p>
       </div>
       <div className="col-span-1 flex h-10 w-full items-center justify-center hover:bg-gray-300/10">
         <Checkbox
           color="primary"
-          className="border-0 bg-transparent"
           classNames={{
-            icon: "text-peach",
-            wrapper: "bg-transparent",
+            icon: "text-teal-500",
+            wrapper: "border border-gray-600",
           }}
           onChange={handleChangeSelected(vip.email)}
         />
@@ -250,10 +256,11 @@ const VIPItem = (field: VIPField) => {
 const VIPBlock = ({ data, icon, label, delay = 0 }: VIPBlockProps) => (
   <div className="h-5/6 w-full space-y-6 border-primary bg-primary p-6 md:border-[0.33px]">
     <BlockHeader label={label} icon={icon} />
-    <section className="h-fit rounded bg-gray-400/10 px-4 py-3 text-justify text-tiny text-gray-100 md:p-4 md:text-sm">
+    <section className="h-fit rounded bg-gray-400/10 px-4 py-3 text-justify text-tiny text-cake md:p-4 md:text-sm">
       Fill out the name, email of the VIP and add the number of tickets. You can
-      add multiple VIPs by clicking the save button. You can reduce the number
-      of tickets given by entering a negative value.
+      add multiple VIPs by clicking the{" "}
+      <strong className="text-vanilla">Add</strong> button. You can reduce the
+      number of tickets given by entering a negative value.
     </section>
     <HyperList
       data={data}

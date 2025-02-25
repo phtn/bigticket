@@ -123,8 +123,8 @@ export const StaticToolbar = ({
   closeFn,
   children,
   title,
-  variant = "demigod",
-  icon = "TicketFill",
+  variant = undefined,
+  icon = undefined,
   className,
 }: StaticToolbarProps) => {
   return (
@@ -139,15 +139,16 @@ export const StaticToolbar = ({
         { "bg-goddess": variant === "goddess" },
         "",
         // DARK
-        "backdrop-blur-[1px]",
         className,
       )}
     >
       <section className="flex h-12 w-full items-center space-x-2">
-        <Icon
-          name={icon}
-          className={cn("size-5", { "text-gray-200/80": variant === "god" })}
-        />
+        {icon ? (
+          <Icon
+            name={icon}
+            className={cn("size-5", { "text-gray-200/80": variant === "god" })}
+          />
+        ) : null}
 
         {title ? <Title title={title} variant={variant} /> : null}
         {children}
@@ -156,8 +157,8 @@ export const StaticToolbar = ({
       <ButtonIcon
         onClick={closeFn}
         icon="Close"
-        bg="opacity-0 group-hover/icon:opacity-0"
-        color="text-gray-200 group-hover/icon:text-white size-6 stroke-0"
+        bg="text-ticket/40 group-hover/icon:text-ticket group-hover/icon:opacity-100"
+        color="text-gray-200 drop-shadow-sm group-hover/icon:scale-110 group-hover/icon:text-white size-4 stroke-0"
       />
     </div>
   );

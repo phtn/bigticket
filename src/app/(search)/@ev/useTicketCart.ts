@@ -3,26 +3,17 @@ import { onSuccess, onWarn } from "@/app/ctx/toast";
 import { type XEvent } from "@/app/types";
 import { guid } from "@/utils/helpers";
 import { type UserTicket } from "convex/events/d";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { updateUserTickets } from "./actions";
 
 export const useTicketCart = (
   xEvent: XEvent | undefined,
   email: string | undefined,
+  ticketCount: number,
 ) => {
-  const [count, setCount] = useState<number>(0);
-
   const getVIPTicket = useCallback(async () => {
     const user_id = await getUserID();
     if (!user_id) return null;
-
-    let ticket_count = 0;
-    const isVip = xEvent?.vip_list?.find((vip) => vip.email === email);
-    if (isVip?.ticket_count && !isVip?.tickets_claimed) {
-      ticket_count = isVip.ticket_count ?? 0;
-    }
-    if (!ticket_count) return null;
-    setCount(ticket_count);
 
     if (xEvent) {
       const {
@@ -37,12 +28,12 @@ export const useTicketCart = (
         onWarn("Ticket is unavailable.");
         return null;
       }
-      const tickets: UserTicket[] = Array.from({ length: ticket_count }).map(
+      const tickets: UserTicket[] = Array.from({ length: ticketCount }).map(
         (_, i) => ({
           event_id: event_id,
           ticket_id: guid(),
           ticket_index: i + 1,
-          ticket_count,
+          ticket_count: ticketCount,
           event_name: event_name!,
           event_url: event_url ?? "",
           event_start: start_date!,
@@ -60,14 +51,11 @@ export const useTicketCart = (
       }
       return response;
     }
-  }, [email, xEvent]);
+  }, [xEvent, ticketCount]);
 
   const getBasicTicket = useCallback(async () => {
     const user_id = await getUserID();
     if (!user_id) return null;
-
-    const ticket_count = 1; // Assuming 1 ticket per user for basic tickets
-    setCount(ticket_count);
 
     if (xEvent) {
       const {
@@ -83,12 +71,12 @@ export const useTicketCart = (
         onWarn("Ticket is unavailable.");
         return null;
       }
-      const tickets: UserTicket[] = Array.from({ length: ticket_count }).map(
+      const tickets: UserTicket[] = Array.from({ length: ticketCount }).map(
         (_, i) => ({
           event_id,
           ticket_id: guid(),
           ticket_index: i + 1,
-          ticket_count,
+          ticket_count: ticketCount,
           event_name: event_name!,
           event_url: event_url ?? "",
           event_start: start_date!,
@@ -106,7 +94,7 @@ export const useTicketCart = (
       }
       return response;
     }
-  }, [xEvent]);
+  }, [xEvent, ticketCount]);
 
-  return { getVIPTicket, getBasicTicket, count };
+  return { getVIPTicket, getBasicTicket };
 };

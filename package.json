@@ -51,6 +51,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.1",
+    "react-youtube": "^10.1.0",
     "react-zoom-pan-pinch": "^3.6.1",
     "server-only": "^0.0.1",
     "superjson": "^2.2.2",

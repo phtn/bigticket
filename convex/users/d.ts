@@ -16,6 +16,16 @@ export const MetadataSchema = v.optional(
 );
 export type Metadata = Infer<typeof MetadataSchema>;
 
+export const UserGallerySchema = v.object({
+  type: v.optional(v.string()),
+  src: v.optional(v.string()),
+  index: v.optional(v.number()),
+  title: v.optional(v.string()),
+  description: v.optional(v.string()),
+  alt: v.optional(v.string()),
+});
+export type UserGallery = Infer<typeof UserGallerySchema>;
+
 export const UserSchema = v.object({
   id: v.string(),
   account_id: v.optional(v.string()),
@@ -27,7 +37,7 @@ export const UserSchema = v.object({
   company_sector: v.optional(v.string()),
   cohosted_events: v.optional(v.array(CohostSchema)),
   title: v.optional(v.string()),
-  photo_lib: v.optional(v.array(v.string())),
+  gallery: v.optional(v.array(UserGallerySchema)),
   photo_modified: v.optional(v.boolean()),
   industry: v.optional(v.string()),
   division: v.optional(v.string()),

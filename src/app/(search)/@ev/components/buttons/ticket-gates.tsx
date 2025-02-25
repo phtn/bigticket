@@ -1,4 +1,4 @@
-import type { UserTicket, VIP } from "convex/events/d";
+import type { VIP } from "convex/events/d";
 import type { ReactElement, ReactNode } from "react";
 
 /// STATE CHECKS
@@ -16,11 +16,11 @@ export const IsPrivateEvent = (isPrivate: boolean | undefined) => {
 };
 export const HasClaimedTickets = (
   isVIP: boolean,
-  event_id: string | undefined,
-  tickets: UserTicket[] | undefined,
+  vipList: VIP[] | undefined,
+  email: string | undefined,
 ) => {
   if (!isVIP) return false;
-  return tickets?.findIndex((ticket) => ticket.event_id === event_id) === 1;
+  return vipList?.find((v) => v.email === email)?.tickets_claimed ?? false;
 };
 
 /// GATES

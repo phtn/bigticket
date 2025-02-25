@@ -60,6 +60,16 @@ export const CohostSchema = v.object({
 });
 export type Cohost = Infer<typeof CohostSchema>;
 
+export const EventGallerySchema = v.object({
+  type: v.optional(v.string()),
+  src: v.optional(v.string()),
+  index: v.optional(v.number()),
+  title: v.optional(v.string()),
+  description: v.optional(v.string()),
+  alt: v.optional(v.string()),
+});
+export type EventGallery = Infer<typeof EventGallerySchema>;
+
 export const UserTicketSchema = v.object({
   event_id: v.string(),
   event_name: v.string(),
@@ -115,6 +125,7 @@ export const EventSchema = v.object({
   thumbnail: v.optional(v.string()),
   cover_url: v.optional(v.string()),
   photo_url: v.optional(v.string()),
+  gallery: v.optional(v.array(EventGallerySchema)),
   is_cover_light: v.optional(v.boolean()),
   //TICKETS
   ticket_count: v.optional(v.number()),
