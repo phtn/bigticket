@@ -21,6 +21,8 @@ const SendInvite = ({ vip_list }: SendInviteProps) => {
         email: vip.email,
         name: vip.name,
         ticket_count: vip.ticket_count,
+        event_id: vip.event_id,
+        event_name: vip.event_name,
       }),
     });
 

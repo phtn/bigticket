@@ -24,6 +24,7 @@ import {
 import { Count, EmptyList, Header } from "../../_components_/common";
 import { CreateEvent } from "./create";
 import { EventCardAccount } from "./event-card";
+import { CohostedEventCard } from "./cohost-card";
 
 export const Events = () => {
   const { x, pending } = use(PreloadedUserEventsCtx)!;
@@ -94,7 +95,7 @@ export const Events = () => {
         {cohostedXEvents.length > 0 && (
           <HyperList
             data={cohostedXEvents}
-            component={EventCardAccount}
+            component={CohostedEventCard}
             container={cn(
               "relative grid grid-cols-1 px-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:px-4",
               { "z-50": !open },

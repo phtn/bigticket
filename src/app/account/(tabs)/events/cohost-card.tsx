@@ -9,9 +9,11 @@ import { ButtonIcon } from "@/ui/button";
 import { opts } from "@/utils/helpers";
 import { Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { type ButtonHTMLAttributes, type ReactNode, useCallback } from "react";
+import { type ButtonHTMLAttributes, use, useCallback } from "react";
+import { type IMenuItem, PopOptions } from "./components";
+import { VxCtx } from "@/app/ctx/convex/vx";
 
-export const EventCardAccount = (xEvent: XEvent) => {
+export const CohostedEventCard = (xEvent: XEvent) => {
   const {
     start_date,
     end_date,
@@ -27,12 +29,14 @@ export const EventCardAccount = (xEvent: XEvent) => {
     end: end_date,
   });
 
+  const { vx } = use(VxCtx)!;
+
   const router = useRouter();
-  const handleEditRoute = useCallback(async () => {
-    const userId = await getUserID();
-    if (!userId) return;
-    router.push(`/account/events/e/${event_id}---${userId}`);
-  }, [router, event_id]);
+  // const handleEditRoute = useCallback(async () => {
+  //   const userId = await getUserID();
+  //   if (!userId) return;
+  //   router.push(`/account/events/e/${event_id}---${userId}`);
+  // }, [router, event_id]);
 
   const handleLiveViewRoute = useCallback(async () => {
     const userId = await getUserID();
@@ -42,11 +46,11 @@ export const EventCardAccount = (xEvent: XEvent) => {
 
   const EventButtonOptions = useCallback(() => {
     const options = opts(
-      <LiveViewButton event_id={event_id} onClick={handleLiveViewRoute} />,
-      <EditButton event_id={event_id} onClick={handleEditRoute} />,
+      <LiveViewScanner event_id={event_id} onClick={handleLiveViewRoute} />,
+      <LiveViewScanner event_id={event_id} onClick={handleLiveViewRoute} />,
     );
     return <>{options.get(is_active ?? false)}</>;
-  }, [event_id, handleEditRoute, handleLiveViewRoute, is_active]);
+  }, [event_id, is_active, handleLiveViewRoute]);
 
   const DateTime = useCallback(
     () => (
@@ -120,15 +124,39 @@ export const EventCardAccount = (xEvent: XEvent) => {
     [event_geo, event_url, event_name],
   );
 
-  return (
-    <Card
-      isFooterBlurred
-      className={cn(
-        "h-[300px] w-full rounded-md border border-primary bg-primary",
-      )}
-    >
-      <CardHeader className="absolute z-10 flex w-full items-start justify-between gap-3 rounded-none bg-black/10 ps-4 backdrop-blur-[1px]">
-        <TitleSection />
+  const MoreOptions = useCallback(() => {
+    const handleAction = async (action: string) => {
+      switch (action) {
+        case "delete":
+          // Handle delete action
+          break;
+        case "scan":
+          // Handle scan action
+          break;
+        default:
+          break;
+      }
+    };
+
+    const menu: IMenuItem[] = [
+      {
+        id: 1,
+        type: "route",
+        label: "Event Settings",
+        value: `/account/events/l/${event_id}---${vx?.id.split("-").pop()}`,
+        icon: "Pen",
+      },
+      {
+        id: 2,
+        type: "route",
+        label: "Ticket Scanner",
+        value: `/account/events/l/${event_id}---${vx?.id.split("-").pop()}`,
+        icon: "QrCode",
+      },
+    ];
+
+    return (
+      <PopOptions menu={menu} onAction={handleAction}>
         <section className="flex size-8 items-center justify-center">
           <ButtonIcon
             icon="Settings"
@@ -136,9 +164,23 @@ export const EventCardAccount = (xEvent: XEvent) => {
             color="text-chalk"
           />
         </section>
+      </PopOptions>
+    );
+  }, [event_id, vx?.id]);
+
+  return (
+    <Card
+      isFooterBlurred
+      className={cn(
+        "h-[300px] w-full rounded-md border border-indigo-600 bg-primary",
+      )}
+    >
+      <CardHeader className="absolute z-10 flex w-full items-start justify-between gap-3 rounded-none bg-black/10 ps-4 backdrop-blur-[1px]">
+        <TitleSection />
+        <MoreOptions />
       </CardHeader>
       <CoverImage />
-      <Footer>
+      <CardFooter className="absolute bottom-0 z-10 w-full rounded-none border-t-1 border-primary bg-primary">
         <div className="flex flex-grow items-center gap-2 bg-primary">
           <div className="space-y-1">
             <div className="flex items-center gap-1 text-tiny">
@@ -149,18 +191,8 @@ export const EventCardAccount = (xEvent: XEvent) => {
           </div>
         </div>
         <EventButtonOptions />
-      </Footer>
+      </CardFooter>
     </Card>
-  );
-};
-
-const Footer = ({ children }: { children: ReactNode }) => {
-  return (
-    <CardFooter className="absolute bottom-0 z-10 w-full rounded-none border-t-1 border-primary bg-primary">
-      <div className="flex flex-grow items-center gap-2 bg-primary">
-        {children}
-      </div>
-    </CardFooter>
   );
 };
 
@@ -168,7 +200,7 @@ interface EventButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   event_id?: string;
 }
 
-const EditButton = (props: EventButtonProps) => {
+export const EditButton = (props: EventButtonProps) => {
   return (
     <button
       className={cn(
@@ -187,11 +219,11 @@ const EditButton = (props: EventButtonProps) => {
   );
 };
 
-const LiveViewButton = (props: EventButtonProps) => {
+const LiveViewScanner = (props: EventButtonProps) => {
   return (
     <ButtonIcon
-      icon="Play"
-      color="text-teal-400 size-5"
+      icon="QrCode"
+      color="text-indigo-400 size-5"
       bg="text-void opacity-100 size-12"
       {...props}
     />

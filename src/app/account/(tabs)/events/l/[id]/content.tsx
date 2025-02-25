@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { LiveViewCtx, LiveViewCtxProvider } from "./ctx";
-import { use, useEffect } from "react";
+import { use, useCallback, useEffect } from "react";
 import { Image } from "@nextui-org/react";
 import { Icon } from "@/icons";
 import { ScanCode } from "./components/scanner";
@@ -17,17 +17,16 @@ export const Content = () => (
 const LiveView = () => {
   const pathname = usePathname();
   const ids = pathname.split("/").pop();
-  const [event_id, user_id] = ids?.split("---") ?? ["", ""];
+  const [event_id] = ids?.split("---") ?? ["", ""];
 
   const {
     getEventId,
-    pending,
+    // pending,
     event,
     cover_url,
-    host_id,
     open,
     toggle,
-    ticket_data,
+    // ticket_data,
     qrcode,
   } = use(LiveViewCtx)!;
 
@@ -43,19 +42,44 @@ const LiveView = () => {
     }
   }, [open, toggle, qrcode]);
 
+  const TitleSection = useCallback(
+    () => (
+      <section className="absolute left-4 top-4 z-50 w-full overflow-clip text-ellipsis bg-ticket/30 backdrop-blur-md">
+        <p className="max-w-[45ch] bg-gradient-to-br from-white/60 via-white/80 to-white/60 bg-clip-text text-tiny font-bold uppercase text-transparent">
+          {event?.venue_name ?? event?.event_geo}
+        </p>
+        <h4 className="p-[1px font-inter text-xl font-bold capitalize tracking-tight text-chalk shadow-coal drop-shadow-sm">
+          {event?.event_name}
+        </h4>
+      </section>
+    ),
+    [event?.event_geo, event?.venue_name, event?.event_name],
+  );
   return (
     <main className="flex h-[calc(100vh-65px)] justify-center overflow-hidden bg-void">
       <div className="container h-full w-full">
         <div className="relative h-3/6 md:h-4/6">
+          <TitleSection />
           <Image
+            radius="none"
             src={cover_url ?? "/icon/logomark_v2.svg"}
             alt={event?.event_name}
-            className={cn(
-              "aspect-square h-lvh w-auto object-cover object-center",
-              { "aspect-video": cover_url },
-            )}
+            className={cn("aspect-square w-auto object-cover object-center", {
+              "aspect-video": cover_url,
+            })}
           />
-          <div className="absolute left-2 top-2 z-10 bg-void/10 p-2 backdrop-blur-md">
+          <div className="grid h-8 w-full grid-cols-3 items-center tracking-tighter">
+            <div className="flex w-full items-center justify-between bg-white px-6">
+              <span>Tickets</span> <span>{event?.ticket_count}</span>
+            </div>
+            <div className="flex w-full items-center justify-between bg-teal-500 px-6">
+              <span>Scanned</span> <span>{event?.ticket_count}</span>
+            </div>
+            <div className="flex w-full items-center justify-between bg-peach px-6">
+              <span>Remaining</span> <span>{event?.ticket_count}</span>
+            </div>
+          </div>
+          {/* <div className="absolute left-2 top-2 z-10 bg-void/10 p-2 backdrop-blur-md">
             <p className="text-chalk">{event?.event_name}</p>
             <p className="text-peach">{cover_url}</p>
             <p className="text-secondary">{event_id}</p>
@@ -72,7 +96,7 @@ const LiveView = () => {
             <p className="text-peach">
               status: {pending ? "Loading..." : "Idle"}
             </p>
-          </div>
+          </div> */}
         </div>
         <div className="h-3/6 md:h-2/6">
           <div className="size-full">

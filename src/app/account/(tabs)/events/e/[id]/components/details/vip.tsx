@@ -95,7 +95,7 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
 
   const VIPGuestList = useCallback(() => {
     return (
-      <section className="relative border-gray-500 bg-primary text-chalk md:border-y md:border-r">
+      <section className="relative min-h-96 border-gray-500 bg-primary text-chalk md:border-y md:border-r">
         <div className="h-full w-full overflow-hidden overflow-y-scroll">
           <div className="flex h-11 w-full items-center justify-between border-b border-gray-500 px-3 font-inter text-tiny font-bold">
             <div className="flex w-full items-center justify-between gap-4 md:justify-start">
@@ -182,7 +182,7 @@ const VIPListItem = (vip: VIP) => {
       </div>
       <div className="col-span-2 flex h-10 w-full items-center px-4 hover:bg-gray-300/10">
         <p className="flex size-6 items-center justify-center rounded-lg bg-gray-300/10 text-center font-sans text-xs font-semibold tracking-tight text-cake">
-          {vip.ticket_count}9
+          {vip.ticket_count}
         </p>
       </div>
       <div className="col-span-1 flex h-10 w-full items-center justify-center hover:bg-gray-300/10">

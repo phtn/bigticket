@@ -17,7 +17,12 @@ import type { VIP } from "convex/events/d";
 
 const baseUrl = `https://bigticket.ph`;
 
-export const BigTicketInvitation = ({ name, email, ticket_count }: VIP) => {
+export const BigTicketInvitation = ({
+  name,
+  email,
+  ticket_count,
+  event_id,
+}: VIP) => {
   const previewText = `You are invited!`;
 
   return (
@@ -44,7 +49,7 @@ export const BigTicketInvitation = ({ name, email, ticket_count }: VIP) => {
                 Hi {name}!,
               </Text>
               <Text className="text-[14px] leading-[24px] text-black">
-                <strong>{"Listen,"}</strong> (
+                <strong>{"Hello, "}</strong> (
                 <Link
                   href={`mailto:${email}`}
                   className="text-blue-600 no-underline"
@@ -59,15 +64,18 @@ export const BigTicketInvitation = ({ name, email, ticket_count }: VIP) => {
             <Section className="mx-auto mb-[32px] mt-[32px] flex items-center px-[24px] text-center">
               <Button
                 className="flex h-8 w-full items-center justify-center rounded-lg bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
-                href={baseUrl}
+                href={baseUrl + `/?x=${event_id}`}
               >
-                Claim your {ticket_count} ticket{ticket_count > 1 ? "s" : ""}
+                Claim {ticket_count} VIP Ticket{ticket_count > 1 ? "s" : ""}
               </Button>
             </Section>
             <Text className="text-[14px] leading-[24px] text-black">
               or copy and paste this URL into your browser:{" "}
-              <Link href={baseUrl} className="text-blue-600 no-underline">
-                {baseUrl}
+              <Link
+                href={baseUrl + `/?x=${event_id}`}
+                className="text-blue-600 no-underline"
+              >
+                {baseUrl + `/?x=${event_id}`}
               </Link>
             </Text>
             <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />

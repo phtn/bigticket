@@ -8,7 +8,7 @@ interface EventDetailsProps {
 
 export const EventDetails = ({ tabs }: EventDetailsProps) => {
   return (
-    <div className="w-full rounded-lg border border-macl-gray bg-white text-xs md:px-2">
+    <div className="w-full border border-x-0 border-macl-gray bg-white text-xs md:rounded-lg md:border-x md:px-2">
       <SectionTitle title="Event Details" />
       <div className="h-full">
         <Tabs
