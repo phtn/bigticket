@@ -23,7 +23,7 @@ interface CarouselProps {
 
 const MultiMediaCarousel: FC<CarouselProps> = ({ data, ref }) => {
   return (
-    <div ref={ref} className="relative h-[250px] w-full bg-tan">
+    <div ref={ref} className="relative h-[250px] w-full bg-black">
       <CarouselContent>
         {data?.map((item, idx) => (
           <CarouselItem
