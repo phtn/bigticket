@@ -63,9 +63,7 @@ export const byCohostEmail = query({
         .query("events")
         .filter((q) => q.eq(q.field("cohost_email_list"), email))
         .collect()
-    )
-      .reverse()
-      .flat(),
+    ).reverse(),
 });
 
 export const byCode = mutation({

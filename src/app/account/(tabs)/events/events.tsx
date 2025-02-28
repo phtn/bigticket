@@ -33,20 +33,20 @@ export const Events = () => {
   const [email, setEmail] = useState<string>();
 
   useEffect(() => {
-    if (xUser) {
+    if (xUser?.email) {
       setEmail(xUser.email);
     }
-  }, [xUser]);
+  }, [xUser?.email]);
 
   const [events, setEvents] = useState<SelectEvent[]>([]);
   const cohosted = useQuery(api.events.get.byCohostEmail, {
     email: qs([email ?? ""]),
   });
   useEffect(() => {
-    if (email && cohosted && cohosted.length > 0) {
+    if (cohosted) {
       setEvents(cohosted);
     }
-  }, [cohosted, email]);
+  }, [cohosted]);
   const { xEvents: cohostedXEvents } = useEvents(events);
 
   const Counter = useCallback(() => {
