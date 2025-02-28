@@ -106,9 +106,14 @@ export const EventEditor = ({ id }: EventEditorProps) => {
 };
 
 export const inputClassNames = {
-  innerWrapper: "border-0 bg-white p-3 shadow-none rounded-xl",
-  inputWrapper: "h-16 p-0 bg-white data-hover:bg-white shadow-none",
-  label: "ps-3 pb-0.5 opacity-60 text-sm tracking-tight",
-  input:
-    "font-bold tracking-tight placeholder:font-semibold shadow-none focus:placeholder:opacity-40 placeholder:text-primary font-inter placeholder:text-sm",
+  innerWrapper: "bg-white p-3 shadow-none rounded-xl",
+  inputWrapper: [
+    " focus-ring focus-ring:macd-blue h-16 p-0 bg-white shadow-none",
+  ],
+  label: "ps-4 pb-0.5 opacity-60 text-sm font-medium tracking-tight",
+  input: [
+    "font-bold tracking-tight shadow-none font-inter bg-white",
+    "placeholder:font-semibold focus:placeholder:opacity-40 placeholder:text-primary placeholder:text-sm",
+    "",
+  ],
 };

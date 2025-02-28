@@ -15,16 +15,15 @@ import {
 } from "@react-email/components";
 import type { VIP } from "convex/events/d";
 
-const baseUrl = `https://bigticket.ph`;
-
 export const BigTicketInvitation = ({
   name,
   email,
   ticket_count,
   event_id,
+  event_name,
 }: VIP) => {
+  const baseUrl = `https://bigticket.ph`;
   const previewText = `You are invited!`;
-
   return (
     <Html>
       <Head />
@@ -46,24 +45,24 @@ export const BigTicketInvitation = ({
             </Heading>
             <Section className="px-10">
               <Text className="text-[14px] leading-[24px] text-black">
-                Hi {name}!,
-              </Text>
-              <Text className="text-[14px] leading-[24px] text-black">
-                <strong>{"Hello, "}</strong> (
+                <strong>{"Hello, "}</strong> {name} - (
                 <Link
                   href={`mailto:${email}`}
                   className="text-blue-600 no-underline"
                 >
                   {email}
                 </Link>
-                ) Your exclusive VIP ticket grants you priority entry, premium
-                seating, and special perks. Scan your QR code at the entrance
-                and enjoy the show!
+                )
+              </Text>
+              <Text className="text-[14px] leading-[24px] text-black">
+                Your <strong>{event_name}</strong> exclusive VIP ticket grants
+                you priority entry, premium seating, and special perks. Scan
+                your QR code at the entrance and enjoy the show!
               </Text>
             </Section>
             <Section className="mx-auto mb-[32px] mt-[32px] flex items-center px-[24px] text-center">
               <Button
-                className="flex h-8 w-full items-center justify-center rounded-lg bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
+                className="flex h-8 w-[300px] items-center justify-center rounded-lg bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
                 href={baseUrl + `/?x=${event_id}`}
               >
                 Claim {ticket_count} VIP Ticket{ticket_count > 1 ? "s" : ""}
@@ -73,7 +72,7 @@ export const BigTicketInvitation = ({
               or copy and paste this URL into your browser:{" "}
               <Link
                 href={baseUrl + `/?x=${event_id}`}
-                className="text-blue-600 no-underline"
+                className="text-[12px] text-blue-600 no-underline"
               >
                 {baseUrl + `/?x=${event_id}`}
               </Link>

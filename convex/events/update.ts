@@ -1,7 +1,7 @@
 import { mutation } from "@vx/server";
 import { v } from "convex/values";
 import { checkEvent } from "./create";
-import { CohostSchema, EventGallerySchema, VIPSchema } from "./d";
+import { CohostSchema, EventGallerySchema, VIP, VIPSchema } from "./d";
 
 export const status = mutation({
   args: { id: v.string(), is_active: v.boolean() },
@@ -96,20 +96,26 @@ export const vip = mutation({
       return "success";
     }
 
-    let vip_list = event.vip_list.slice();
+    const vips = event.vip_list.slice();
+    const vip_list = updateVIP(vips, vip);
 
-    const index = event?.vip_list.findIndex((v) => v.email === vip.email);
-    if (index !== -1) {
-      vip_list[index]!.ticket_count += vip.ticket_count;
-      await db.patch(event._id, { vip_list });
-      return "success";
-    } else {
-      vip_list.push(vip);
-      await db.patch(event._id, { vip_list });
-      return "success";
-    }
+    await db.patch(event._id, { vip_list });
+    return "success";
   },
 });
+
+function updateVIP(vip_list: VIP[], vip: VIP) {
+  const map = new Map();
+  vip_list.forEach((c, index) => map.set(c.email, index));
+
+  const existingIndex = map.get(vip.email);
+  if (existingIndex !== undefined) {
+    vip_list[existingIndex]!.ticket_count = vip.ticket_count;
+  } else {
+    vip_list.push(vip);
+  }
+  return vip_list.filter((vip) => vip.ticket_count !== 0);
+}
 
 export const cohost = mutation({
   args: { id: v.string(), cohost: CohostSchema },

@@ -89,6 +89,7 @@ export const vip_info: VIPField[] = [
     type: "text",
     label: "Name",
     placeholder: "Name of the VIP",
+    defaultValue: "",
     required: false,
   },
   {
@@ -96,6 +97,7 @@ export const vip_info: VIPField[] = [
     type: "email",
     label: "Email",
     placeholder: "Email receiving the invitation",
+    defaultValue: "",
     required: true,
   },
   {

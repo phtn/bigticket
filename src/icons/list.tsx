@@ -148,6 +148,29 @@ function ArrowRightUp(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function ArrowReturnUp(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        color="currentColor"
+      >
+        <path d="M2.5 12c0-4.478 0-6.718 1.391-8.109S7.521 2.5 12 2.5c4.478 0 6.718 0 8.109 1.391S21.5 7.521 21.5 12c0 4.478 0 6.718-1.391 8.109S16.479 21.5 12 21.5c-4.478 0-6.718 0-8.109-1.391S2.5 16.479 2.5 12"></path>
+        <path d="M14.175 11.352c.672-.79 2.038-1.769 1.795-2.233m0 0c.135-.474-1.187-1.41-1.798-2.124m1.798 2.124c-2.755-.057-4.441.259-6.068 1.794c-1.695 1.599-2.01 3.324-1.873 6.092"></path>
+      </g>
+    </svg>
+  );
+}
 function ArrowVertical(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -417,6 +440,27 @@ function Check(props: SVGProps<SVGSVGElement>) {
           d="M21.546 5.111a1.5 1.5 0 0 1 0 2.121L10.303 18.475a1.6 1.6 0 0 1-2.263 0L2.454 12.89a1.5 1.5 0 1 1 2.121-2.121l4.596 4.596L19.424 5.111a1.5 1.5 0 0 1 2.122 0"
         ></path>
       </g>
+    </svg>
+  );
+}
+export function CheckDouble(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M3 13.333S4.5 14 6.5 17c0 0 .285-.48.821-1.247M17 6c-2.291 1.146-4.688 3.552-6.612 5.822M8 13.333S9.5 14 11.5 17c0 0 5.5-8.5 10.5-11"
+        color="currentColor"
+      ></path>
     </svg>
   );
 }
@@ -997,6 +1041,29 @@ function Lock(props: SVGProps<SVGSVGElement>) {
       >
         <path d="M12 16.5v-2m-7.732 4.345c.225 1.67 1.608 2.979 3.292 3.056c1.416.065 2.855.099 4.44.099s3.024-.034 4.44-.1c1.684-.076 3.067-1.385 3.292-3.055c.147-1.09.268-2.207.268-3.345s-.121-2.255-.268-3.345c-.225-1.67-1.608-2.979-3.292-3.056A95 95 0 0 0 12 9c-1.585 0-3.024.034-4.44.1c-1.684.076-3.067 1.385-3.292 3.055C4.12 13.245 4 14.362 4 15.5s.121 2.255.268 3.345"></path>
         <path d="M7.5 9V6.5a4.5 4.5 0 0 1 9 0V9"></path>
+      </g>
+    </svg>
+  );
+}
+function MailSend(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        color="currentColor"
+      >
+        <path d="M22 12.5c0-.491-.005-1.483-.016-1.976c-.065-3.065-.098-4.598-1.229-5.733c-1.131-1.136-2.705-1.175-5.854-1.254a115 115 0 0 0-5.802 0c-3.149.079-4.723.118-5.854 1.254c-1.131 1.135-1.164 2.668-1.23 5.733a69 69 0 0 0 0 2.952c.066 3.065.099 4.598 1.23 5.733c1.131 1.136 2.705 1.175 5.854 1.254q1.204.03 2.401.036"></path>
+        <path d="m7 8.5l2.942 1.74c1.715 1.014 2.4 1.014 4.116 0L17 8.5m5 9h-8m8 0c0-.7-1.994-2.008-2.5-2.5m2.5 2.5c0 .7-1.994 2.009-2.5 2.5"></path>
       </g>
     </svg>
   );
@@ -1788,6 +1855,27 @@ export function Ticket(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+function Ticket2(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M2.464 9.344c-.248 0-.475-.202-.464-.465c.067-1.542.255-2.546.78-3.34a4.7 4.7 0 0 1 1.11-1.174C5.055 3.5 6.7 3.5 9.992 3.5h4.014c3.292 0 4.937 0 6.104.865c.431.32.807.717 1.109 1.174c.525.794.713 1.798.78 3.34c.011.263-.216.465-.465.465c-1.386 0-2.51 1.189-2.51 2.656s1.124 2.656 2.51 2.656c.249 0 .476.202.465.466c-.067 1.541-.255 2.545-.78 3.34a4.7 4.7 0 0 1-1.11 1.173c-1.166.865-2.811.865-6.103.865H9.993c-3.292 0-4.937 0-6.104-.865a4.7 4.7 0 0 1-1.109-1.174c-.525-.794-.713-1.798-.78-3.34c-.011-.263.216-.465.464-.465c1.386 0 2.51-1.189 2.51-2.656S3.85 9.344 2.464 9.344M9 3.5v17"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
 function TicketFill(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -2013,6 +2101,7 @@ export const icons = {
   AlertTriLine,
   ArrowRight,
   ArrowRightUp,
+  ArrowReturnUp,
   ArrowVertical,
   Bell,
   Bookmark,
@@ -2026,6 +2115,7 @@ export const icons = {
   Chats,
   ChartIcon,
   Check,
+  CheckDouble,
   CloudUpload,
   Close,
   Cog,
@@ -2052,6 +2142,7 @@ export const icons = {
   Launch,
   LeftChev,
   Lock,
+  MailSend,
   MapPin,
   Minus,
   MoreHorizontal,
@@ -2087,6 +2178,7 @@ export const icons = {
   Support,
   Tablet,
   Ticket,
+  Ticket2,
   TicketFill,
   TimeSched,
   Toc,

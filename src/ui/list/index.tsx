@@ -15,6 +15,7 @@ interface HyperListProps<T> {
   children?: ReactNode;
   direction?: "up" | "down" | "left" | "right";
   delay?: number;
+  disableAnimation?: boolean;
 }
 
 export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
@@ -30,6 +31,7 @@ export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
     max = 15,
     orderBy = "updated_at",
     reversed = false,
+    disableAnimation = false,
   } = props;
 
   const baseContainerStyle = useMemo(
@@ -85,7 +87,7 @@ export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
       return (
         <motion.li
           key={key}
-          initial={direction}
+          initial={disableAnimation ? false : direction}
           variants={variants}
           animate={{ opacity: 1, ...animate }}
           transition={{ delay: j * 0.04 + delay }}
@@ -95,7 +97,16 @@ export const ListComponent = <T extends object>(props: HyperListProps<T>) => {
         </motion.li>
       );
     },
-    [Item, baseItemStyle, keyId, animate, direction, variants, delay],
+    [
+      Item,
+      baseItemStyle,
+      keyId,
+      animate,
+      direction,
+      variants,
+      delay,
+      disableAnimation,
+    ],
   );
 
   const sortFn = useCallback(

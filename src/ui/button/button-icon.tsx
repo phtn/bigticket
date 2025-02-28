@@ -12,12 +12,12 @@ interface ButtonIconProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const ButtonIcon = (props: ButtonIconProps) => (
   <button
     {...props}
-    className="group/icon flex size-10 items-center justify-center transition-all duration-300 active:scale-90 active:opacity-80"
+    className="group/icon flex size-8 items-center justify-center rounded-xl transition-all duration-300 active:scale-90 active:opacity-80"
   >
     <Icon
       name="Squircle"
       className={cn(
-        "absolute z-0 size-10 text-background opacity-60 transition-all duration-300 group-hover/icon:opacity-0",
+        "absolute z-0 size-10 text-background opacity-60 transition-all duration-300",
         props.bg,
       )}
     />
@@ -32,7 +32,7 @@ export const ButtonIcon = (props: ButtonIconProps) => (
     <Icon
       name={props.icon}
       className={cn(
-        "z-1 absolute size-4 transition-all duration-300 group-hover/icon:scale-125",
+        "z-1 absolute size-4 group-hover/icon:scale-110",
         props.color,
       )}
     />

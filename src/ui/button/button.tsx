@@ -64,7 +64,7 @@ export const Hyper = ({
         className={cn(
           "relative z-10 whitespace-nowrap font-inter text-xs font-semibold tracking-tighter text-primary transition-all duration-300",
           {
-            "text-chalk": dark,
+            "text-chalk": dark || destructive,
             "text-primary": dim,
           },
         )}
@@ -73,16 +73,15 @@ export const Hyper = ({
       </span>,
     );
     return <>{options.get(loading)}</>;
-  }, [dark, label, loading, dim]);
+  }, [dark, label, loading, dim, destructive]);
   return (
     <button
       {...props}
       className={cn(
         props.className,
-        "group flex h-9 min-w-36 items-center justify-center overflow-hidden border-[0.33px] border-transparent bg-white transition-all duration-300 active:scale-95",
+        "group flex h-svh max-h-10 min-w-36 items-center justify-center overflow-hidden bg-white transition-all duration-300 active:scale-95",
         "relative",
         {
-          "border-primary": dark,
           "rounded-lg": rounded,
           "h-12": lg,
           "w-full": fullWidth,
@@ -109,7 +108,7 @@ export const Hyper = ({
           <Icon
             name={start}
             className={cn("z-1 size-3.5 text-primary", {
-              "text-chalk": dark,
+              "text-chalk": dark || destructive,
             })}
           />
         )}
@@ -118,7 +117,9 @@ export const Hyper = ({
         {end && (
           <Icon
             name={end}
-            className={cn("size-3.5 text-primary", { "text-chalk": dark })}
+            className={cn("size-3.5 text-primary", {
+              "text-chalk": dark || destructive,
+            })}
           />
         )}
       </div>
