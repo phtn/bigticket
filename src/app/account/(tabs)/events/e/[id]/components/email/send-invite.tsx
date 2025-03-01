@@ -106,7 +106,7 @@ const SendInvite = ({ vip_list, updateSentStatus }: SendInviteProps) => {
       label={buttonLabel}
       loading={loading}
       fullWidth
-      xl
+      lg
       end="MailSend"
     />
   );

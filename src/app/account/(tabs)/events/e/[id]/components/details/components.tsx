@@ -37,7 +37,7 @@ export const BlockHeader = ({
     <div className="flex h-8 w-full items-center justify-between text-sm capitalize text-chalk">
       <div className="flex w-full items-center gap-3">
         <Icon name={icon} className="size-5 opacity-80" />
-        <span className="font-inter font-bold tracking-tighter md:text-lg">
+        <span className="font-inter text-lg font-bold tracking-tighter">
           {label}
         </span>
       </div>

@@ -264,7 +264,7 @@ const CohostItem = (field: CohostField) => {
   );
 };
 const CohostBlock = ({ data, icon, label, delay = 0 }: CohostBlockProps) => (
-  <div className="mb-8 h-5/6 w-full space-y-6 border-primary p-6 md:border-[0.33px]">
+  <div className="mb-8 h-5/6 w-full space-y-6 p-6">
     <BlockHeader label={label} icon={icon} />
     <section className="h-fit rounded bg-gray-400/10 px-4 py-3 text-justify text-tiny text-cake md:p-4 md:text-sm">
       Fill out the name, email of the Cohost and add access clearances. You can
@@ -285,12 +285,13 @@ const ClearanceItem = (props: [string, boolean]) => {
   return (
     <Checkbox
       className="flex data-[selected=true]:bg-primary/30"
+      color="secondary"
       classNames={{
         base: "flex max-w-lg h-14 md:max-w-none px-3",
         label:
           "text-chalk flex w-full capitalize text-sm tracking-tighter font-medium",
-        icon: "stroke-2 size-5 text-teal-400",
-        wrapper: "border border-gray-600",
+        icon: "stroke-2 size-5 text-primary",
+        wrapper: "",
       }}
       value={props[0]}
     >

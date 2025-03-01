@@ -97,10 +97,10 @@ export const Hyper = ({
       <div className="pointer-events-none absolute z-0 size-full bg-white/20" />
       <div
         className={cn(
-          "z-50 flex size-full items-center justify-center md:px-5",
-          "gap-2",
+          "z-50 flex size-full items-center justify-center",
+          "gap-2 md:px-5",
           {
-            "px-0": fullWidth,
+            "px-4": fullWidth,
             "border-0 bg-primary text-chalk hover:opacity-95": dark,
             "bg-macl-red": destructive,
             "bg-demigod hover:bg-teal-500": dim,

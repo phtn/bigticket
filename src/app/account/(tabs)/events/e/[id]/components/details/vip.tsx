@@ -246,8 +246,8 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
 
     return (
       <Checkbox
-        aria-label={vip.name}
-        checked={vip.checked}
+        // checked={vip.checked}
+        disableAnimation={false}
         color="secondary"
         classNames={{
           base: cn(
@@ -318,6 +318,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     const checkedCount = vipList.filter((vip) => vip.checked).length;
     const options = opts(
       <Hyper
+        lg
         disabled={pending || checkedCount === 0}
         loading={pending}
         type="submit"
@@ -325,7 +326,6 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         end="Minus"
         fullWidth
         destructive
-        xl
         onClick={handleRemoveVIPs}
       />,
       null,
@@ -371,7 +371,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
             keyId="email"
           />
         </div>
-        <div className="absolute bottom-[0.77px] right-[0.77px] flex w-fit min-w-36 overflow-hidden rounded-br-md">
+        <div className="absolute bottom-[0.77px] right-[0.77px] flex w-fit overflow-hidden rounded-br-md md:min-w-36">
           <RemoveOption />
           <SendInvite
             vip_list={vipList.filter((vip) => vip.checked)}
