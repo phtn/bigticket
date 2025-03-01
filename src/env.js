@@ -15,6 +15,10 @@ export const env = createEnv({
     SMTP_USER: z.string(),
     SMTP_PASSWORD: z.string(),
     SMTP_FROM_EMAIL: z.string(),
+
+    //FIREBASE
+    FIREBASE_STORAGE_BUCKET: z.string(),
+    FIREBASE_STORAGE_TOKEN: z.string(),
   },
 
   client: {
@@ -51,6 +55,10 @@ export const env = createEnv({
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
     SMTP_FROM_EMAIL: process.env.SMTP_FROM_EMAIL,
+
+    //FIREBASE
+    FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
+    FIREBASE_STORAGE_TOKEN: process.env.FIREBASE_STORAGE_TOKEN,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

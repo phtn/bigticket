@@ -5,47 +5,98 @@ import { render } from "@react-email/components";
 import { type VIP } from "convex/events/d";
 import { BigTicketInvitation } from "@/app/account/(tabs)/events/e/[id]/components/email/invitation";
 
+export interface SMTPResponse {
+  success: boolean;
+  messageId: string;
+  message: string;
+}
+
+// Verify connection before sending
+const verifyTransporter = async (transporter: nodemailer.Transporter) => {
+  try {
+    const verification = await transporter.verify();
+    console.log("✅ SMTP connection verified:", verification);
+    return true;
+  } catch (error) {
+    console.error("❌ SMTP verification failed:", error);
+    return false;
+  }
+};
+
 const transporter = nodemailer.createTransport({
-  host: env.SMTP_HOST, // GoDaddy SMTP
-  port: Number(env.SMTP_PORT), // Use 465 for SSL or 587 for TLS
-  secure: true, // Set to 'true' for port 465 (SSL), 'false' for port 587 (TLS)
+  host: env.SMTP_HOST,
+  port: Number(env.SMTP_PORT),
+  secure: true,
   auth: {
     user: env.SMTP_USER,
     pass: env.SMTP_PASSWORD,
   },
   tls: {
-    rejectUnauthorized: false, // Fix possible SSL issues
+    rejectUnauthorized: false,
   },
+  logger: true, // Enable logging
+  debug: true, // Include debug info
 });
 
 export async function POST(req: Request) {
   try {
-    const body = (await req.json()) as VIP;
+    // Verify SMTP connection
+    const isConnected = await verifyTransporter(transporter);
+    if (!isConnected) {
+      throw new Error("SMTP connection failed");
+    }
 
+    const body = (await req.json()) as VIP;
+    console.log("📧 Attempting to send email to:", body.email);
+
+    // Validate required fields
     if (!body.email || !body.name || !body.ticket_count) {
+      console.error("❌ Missing required fields:", body);
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 },
       );
     }
+
+    // Render email template
     const invitation = await render(<BigTicketInvitation {...body} />, {
       pretty: true,
     });
-    const options = {
-      from: `"You're invited!" <${env.SMTP_USER}>`,
+
+    // Configure email options
+    const mailOptions = {
+      from: {
+        name: `Big Ticket`,
+        address: env.SMTP_USER,
+      },
       to: body.email,
-      subject: `${body.ticket_count} VIP Tickets!!`,
+      subject: `${body.event_name} VIP`,
       html: invitation,
-      context: body,
+      headers: {
+        "X-Priority": "1",
+        "X-MSMail-Priority": "High",
+        Importance: "high",
+      },
+      text: `You have ${body.ticket_count} VIP tickets!`, // Plain text fallback
     };
 
-    await transporter.sendMail(options);
+    // Send email and await response
+    const info = await transporter.sendMail(mailOptions);
+    console.log("✅ Email sent successfully:", info.messageId);
 
-    return NextResponse.json({ message: "Email sent!" });
+    return NextResponse.json({
+      success: true,
+      messageId: info.messageId,
+      message: "Email sent successfully!",
+    });
   } catch (error) {
     console.error("❌ Error sending email:", error);
+    // Return more detailed error information
     return NextResponse.json(
-      { error: "Failed to send email" },
+      {
+        error: "Failed to send email",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 },
     );
   }

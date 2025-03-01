@@ -17,7 +17,8 @@ import {
   useMemo,
   useState,
   memo,
-  useTransition,
+  useReducer,
+  startTransition,
 } from "react";
 import { inputClassNames } from "../../editor";
 import SendInvite from "../email/send-invite";
@@ -25,6 +26,7 @@ import { BlockHeader } from "./components";
 import { vip_info, type VIPField, VIPZod } from "./schema";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
+import { initialVIPState, vipReducer } from "./vip-reducer";
 
 // First, update the VIP type to include all required fields
 type VIPWithDefaults = VIP & {
@@ -39,7 +41,7 @@ type VIPWithDefaults = VIP & {
 };
 
 // Update the VIP state type
-type VIPWithState = VIP & {
+export type VIPWithState = VIP & {
   checked: boolean;
   // ...other fields...
 };
@@ -57,23 +59,25 @@ interface VIPContentProps {
 }
 
 export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
-  const [isPending, startTransition] = useTransition();
-  const [selectedVIP, setSelectedVIP] = useState<VIPWithState>();
-
-  const [vipList, setVIPList] = useState<VIPWithState[]>(
-    (xEvent?.vip_list ?? []).map((vip) => ({
+  const [state, dispatch] = useReducer(vipReducer, {
+    ...initialVIPState,
+    vipList: (xEvent?.vip_list ?? []).map((vip) => ({
       ...vip,
       checked: false,
     })),
-  );
+  });
+
+  const { vipList, selectedVIP } = state;
+
+  const { events } = use(ConvexCtx)!;
 
   const initialState: VIP = useMemo(
     () => ({
-      name: selectedVIP?.name ?? "",
-      email: selectedVIP?.email ?? "",
-      ticket_count: selectedVIP?.ticket_count ?? 1,
+      name: "",
+      email: "",
+      ticket_count: 1,
     }),
-    [selectedVIP],
+    [],
   );
 
   const defaults = useMemo(
@@ -86,7 +90,6 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
     [],
   );
 
-  const { events } = use(ConvexCtx)!;
   const issued_tickets = useMemo(
     () =>
       xEvent?.vip_list?.reduce((acc, cur) => acc + cur.ticket_count, 0) ?? 0,
@@ -99,10 +102,10 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
 
       startTransition(async () => {
         try {
-          setVIPList((prev) => updateVIP(prev, data));
+          dispatch({ type: "ADD_VIP", payload: data });
           await events.update.vip(xEvent.event_id, data);
         } catch (error) {
-          setVIPList((prev) => prev.filter((vip) => vip.email !== data.email));
+          dispatch({ type: "REMOVE_VIP", payload: [data.email] });
           console.error(error);
         }
       });
@@ -145,20 +148,12 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
 
   const [, action, pending] = useActionState(addVIP, initialState);
 
-  // Modify handleVIPSelection to handle single selection
   const handleVIPSelection = useCallback(
     (email: string, isSelected: boolean) => {
       startTransition(() => {
-        setVIPList((prev) => {
-          const updatedList = prev.map((vip) => ({
-            ...vip,
-            checked: vip.email === email ? isSelected : vip.checked,
-          }));
-
-          const checked = updatedList.filter((vip) => vip.checked);
-          setSelectedVIP(checked.length === 1 ? checked[0] : undefined);
-
-          return updatedList;
+        dispatch({
+          type: "SELECT_VIP",
+          payload: { email, isSelected },
         });
       });
     },
@@ -169,8 +164,12 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
     async (e: MouseEvent) => {
       e.preventDefault();
       const checkedVIPs = vipList.filter((vip) => vip.checked);
-      setVIPList((prev) => prev.filter((vip) => checkedVIPs.includes(vip)));
       if (!checkedVIPs.length || !xEvent?.event_id) return;
+
+      dispatch({
+        type: "REMOVE_VIP",
+        payload: checkedVIPs.map((vip) => vip.email),
+      });
 
       startTransition(async () => {
         const updates = Promise.all(
@@ -185,18 +184,33 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
             success: `Removed ${checkedVIPs.length} VIP${checkedVIPs.length > 1 ? "s" : ""}`,
             error: "Failed to remove VIPs",
           })
-          .catch(Err)
-          .finally(() => {
-            setVIPList(
-              (xEvent?.vip_list ?? []).map((vip) => ({
-                ...vip,
-                checked: false,
-              })),
-            );
+          .catch((err) => {
+            console.error(err);
+            dispatch({ type: "SET_VIP_LIST", payload: vipList });
           });
       });
     },
-    [vipList, xEvent?.event_id, xEvent?.vip_list, events.update],
+    [vipList, xEvent?.event_id, events.update],
+  );
+
+  const updateSentStatus = useCallback(
+    async (email: string, vip: VIP) => {
+      if (!xEvent?.event_id) return;
+      try {
+        dispatch({
+          type: "UPDATE_VIP",
+          payload: { ...vip, invitation_sent: true, checked: true },
+        });
+        await events.update.vip(xEvent.event_id, {
+          ...vip,
+          email,
+          invitation_sent: true,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [xEvent?.event_id, events.update],
   );
 
   const VIPListItem = memo((vip: VIP) => {
@@ -250,14 +264,14 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
             className={cn(
               "flex w-28 items-center justify-end gap-1 text-xs font-medium tracking-tighter text-gray-400/90",
               {
-                "text-teal-400": !vip.invitation_sent,
+                "text-teal-400": vip.invitation_sent,
               },
             )}
           >
-            {!vip.invitation_sent ? "Sent" : "Not Sent"}
+            {vip.invitation_sent ? "Sent" : "Not Sent"}
             <Icon
               name="Check"
-              className={cn("hidden size-3", { flex: !vip.invitation_sent })}
+              className={cn("hidden size-3", { flex: vip.invitation_sent })}
             />
           </div>
         </div>
@@ -302,11 +316,14 @@ export const VIPContent = ({ xEvent, user_id }: VIPContentProps) => {
           />
         </div>
         <div className="absolute bottom-2 right-2">
-          <SendInvite vip_list={vipList.filter((vip) => vip.checked)} />
+          <SendInvite
+            vip_list={vipList.filter((vip) => vip.checked)}
+            updateSentStatus={updateSentStatus}
+          />
         </div>
       </section>
     );
-  }, [vipList, VIPListItem]);
+  }, [vipList, VIPListItem, updateSentStatus]);
 
   const RemoveOption = useCallback(() => {
     const checkedCount = vipList.filter((vip) => vip.checked).length;
@@ -491,16 +508,3 @@ const VIPBlock = ({
     />
   </div>
 );
-
-function updateVIP(vip_list: VIPWithState[], vip: VIPWithState) {
-  const map = new Map();
-  vip_list.forEach((c, index) => map.set(c.email, index));
-
-  const existingIndex = map.get(vip.email) as number;
-  if (existingIndex !== undefined) {
-    vip_list[existingIndex]!.ticket_count = vip.ticket_count;
-  } else {
-    vip_list.push(vip);
-  }
-  return vip_list.filter((vip) => vip.ticket_count !== 0);
-}

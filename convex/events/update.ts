@@ -111,6 +111,7 @@ function updateVIP(vip_list: VIP[], vip: VIP) {
   const existingIndex = map.get(vip.email);
   if (existingIndex !== undefined) {
     vip_list[existingIndex]!.ticket_count = vip.ticket_count;
+    vip_list[existingIndex]!.invitation_sent = vip.invitation_sent;
   } else {
     vip_list.push(vip);
   }
