@@ -31,6 +31,7 @@ import { initialVIPState, vipReducer } from "./vip-reducer";
 import { useQuery } from "convex/react";
 import { api } from "@vx/api";
 import { q } from "@/app/ctx/convex/utils";
+import { Nebula } from ".";
 
 // First, update the VIP type to include all required fields
 type VIPWithDefaults = VIP & {
@@ -250,8 +251,8 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         color="secondary"
         classNames={{
           base: cn(
-            "flex items-center relative min-w-full justify-between py-4 pe-4",
-            "hover:bg-chalk/10 rounded-sm cursor-pointer",
+            "flex items-center relative min-w-full justify-between p-4",
+            "hover:bg-vanilla/5 rounded-sm cursor-pointer",
           ),
           label: "flex items-center tracking-tight w-full max-w-full",
           icon: "text-primary",
@@ -271,29 +272,31 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         <div className="flex w-full items-center justify-between ps-2 md:ps-0">
           <User
             classNames={{
-              name: "whitespace-nowrap font-semibold text-chalk text-xs",
+              name: "whitespace-nowrap font-semibold text-chalk text-xs font-inter",
             }}
             avatarProps={{
               size: "sm",
               fallback: getInitials(vip.name)?.toUpperCase(),
               className:
-                "bg-transparent hidden md:flex border-2 mx-2 bg-vanilla/5 border-gray-500 size-4 text-gray-300/90 font-bold",
+                "bg-transparent hidden md:flex border-2 mx-2 bg-vanilla/5 border-vanilla/20 size-4 text-gray-300/90 font-bold",
             }}
             description={
-              <p className="text-tiny text-vanilla/80">{vip.email}</p>
+              <p className="font-inter text-tiny text-vanilla/80">
+                {vip.email}
+              </p>
             }
             name={vip.name}
           />
         </div>
 
-        <div className="flex items-center justify-end whitespace-nowrap text-chalk md:gap-4">
+        <div className="flex items-center justify-end whitespace-nowrap text-chalk">
           <div className="flex w-12 items-center justify-end gap-1 text-sm font-medium text-vanilla md:w-20">
             <span className="">{vip.ticket_count}</span>
             <Icon name="Ticket" className="opacity-50" />
           </div>
           <div
             className={cn(
-              "flex w-24 items-center justify-end gap-1 text-xs font-medium tracking-tighter text-gray-400/90 md:w-28",
+              "flex w-24 items-center justify-end gap-1 text-xs font-medium tracking-tighter text-vanilla/40 md:w-28",
               {
                 "text-teal-400": vip.invitation_sent,
               },
@@ -311,18 +314,37 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   });
   VIPListItem.displayName = "VIPListItem";
 
+  const RemoveOption = useCallback(() => {
+    const checkedCount = vipList.filter((vip) => vip.checked).length;
+    const options = opts(
+      <Hyper
+        disabled={pending || checkedCount === 0}
+        loading={pending}
+        type="submit"
+        label={`Remove ${checkedCount > 1 ? `(${checkedCount})` : ""}`}
+        end="Minus"
+        fullWidth
+        destructive
+        xl
+        onClick={handleRemoveVIPs}
+      />,
+      null,
+    );
+    return <>{options.get(checkedCount > 0)}</>;
+  }, [vipList, pending, handleRemoveVIPs]);
+
   const VIPGuestList = useCallback(() => {
     return (
-      <section className="relative col-span-3 min-h-96 w-full border-gray-500 bg-primary text-chalk md:border-y md:border-l md:border-r">
+      <section className="relative col-span-3 min-h-96 w-full border-vanilla/20 text-chalk md:border-[0.33px]">
         <div className="h-full w-full overflow-hidden overflow-y-scroll">
-          <div className="flex h-11 w-full items-center justify-between border-b-3 border-gray-500/60 pe-4 font-inter text-tiny font-bold">
+          <div className="flex h-14 w-full items-center justify-between border-b-3 border-vanilla/20 px-4 font-inter text-tiny font-bold md:h-11">
             <div className="flex w-full items-center justify-between font-normal">
               <div className="flex items-center">
                 <div className="w-0"></div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 font-semibold">
                   <span>VIP Guest List</span>
                   <div className="flex size-5 items-center justify-center rounded-full bg-vanilla/10 font-sans">
-                    {vipList?.length ?? 0}
+                    {vipList?.length ? 0 : <Icon name="SpinnerBall" />}
                   </div>
                 </div>
               </div>
@@ -344,12 +366,13 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
             disableAnimation
             data={vipList}
             container="min-w-full overflow-hidden"
-            itemStyle="border-b-[0.33px] border-dotted flex justify-center w-full py-2.5 border-gray-500"
+            itemStyle="border-b-[0.33px] border-dotted flex justify-center w-full py-[8.5px] border-vanilla/30"
             component={VIPListItem}
             keyId="email"
           />
         </div>
-        <div className="absolute bottom-2 right-2">
+        <div className="absolute bottom-[0.77px] right-[0.77px] flex w-fit min-w-36 overflow-hidden rounded-br-md">
+          <RemoveOption />
           <SendInvite
             vip_list={vipList.filter((vip) => vip.checked)}
             updateSentStatus={updateSentStatus}
@@ -357,25 +380,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         </div>
       </section>
     );
-  }, [vipList, VIPListItem, updateSentStatus]);
-
-  const RemoveOption = useCallback(() => {
-    const checkedCount = vipList.filter((vip) => vip.checked).length;
-    const options = opts(
-      <Hyper
-        disabled={pending || checkedCount === 0}
-        loading={pending}
-        type="submit"
-        label={`Remove ${checkedCount > 1 ? `(${checkedCount})` : ""}`}
-        end="Minus"
-        fullWidth
-        destructive
-        onClick={handleRemoveVIPs}
-      />,
-      null,
-    );
-    return <>{options.get(checkedCount > 0)}</>;
-  }, [vipList, pending, handleRemoveVIPs]);
+  }, [vipList, VIPListItem, updateSentStatus, RemoveOption]);
 
   const VIPxBlock = useCallback(() => {
     const fields = [
@@ -410,41 +415,43 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   }, [selectedVIP]);
 
   return (
-    <Form action={action}>
-      <div className="grid h-full w-full grid-cols-1 overflow-hidden md:grid-cols-5 md:gap-0 md:rounded-lg">
-        <section className="col-span-2 h-fit space-y-8 border-b border-gray-500 bg-primary md:h-fit md:border">
-          <VIPxBlock />
+    <Nebula>
+      <Form action={action}>
+        <div className="grid h-full w-full grid-cols-1 overflow-hidden md:grid-cols-5 md:rounded-[8.77px]">
+          <section className="col-span-2 h-fit space-y-6 border-b-[0.33px] border-vanilla/20">
+            <VIPxBlock />
 
-          <div className="flex h-1/6 w-full items-end justify-between bg-primary">
-            <div className="flex w-full items-center border-t border-gray-500 text-chalk">
-              <div className="flex h-10 w-full items-center justify-between gap-3 border-r border-gray-500 px-3">
-                <p className="font-inter text-xs font-semibold tracking-tight">
-                  Claimed
-                </p>
-                <p className="font-sans text-sm">0</p>
+            <div className="flex h-1/6 w-full items-end justify-between border-r-[0.0px] border-vanilla/20">
+              <div className="flex w-full items-center border-t-[0.33px] border-vanilla/20 text-chalk">
+                <div className="flex h-14 w-full items-center justify-between gap-3 border-r border-vanilla/20 px-3">
+                  <p className="font-inter text-xs font-semibold tracking-tight">
+                    Claimed
+                  </p>
+                  <p className="font-sans text-sm">0</p>
+                </div>
+                <div className="flex h-14 w-full items-center justify-between gap-3 border-r border-vanilla/20 px-3">
+                  <p className="font-inter text-xs font-semibold tracking-tight">
+                    Issued
+                  </p>
+                  <p className="font-sans text-sm">{issued_tickets}</p>
+                </div>
+                <Hyper
+                  disabled={pending}
+                  loading={pending}
+                  type="submit"
+                  label={selectedVIP ? "Save" : "Add"}
+                  end={selectedVIP ? "ArrowRightUp" : "Plus"}
+                  fullWidth
+                  xl
+                  dark
+                />
               </div>
-              <div className="flex h-10 w-full items-center justify-between gap-3 border-r border-gray-500 px-3">
-                <p className="font-inter text-xs font-semibold tracking-tight">
-                  Issued
-                </p>
-                <p className="font-sans text-sm">{issued_tickets}</p>
-              </div>
-              <RemoveOption />
-              <Hyper
-                disabled={pending}
-                loading={pending}
-                type="submit"
-                label={selectedVIP ? "Save" : "Add"}
-                end={selectedVIP ? "ArrowRightUp" : "Plus"}
-                fullWidth
-                dark
-              />
             </div>
-          </div>
-        </section>
-        <VIPGuestList />
-      </div>
-    </Form>
+          </section>
+          <VIPGuestList />
+        </div>
+      </Form>
+    </Nebula>
   );
 };
 
@@ -524,7 +531,7 @@ const VIPBlock = ({
   delay = 0,
   editMode = false,
 }: VIPBlockProps) => (
-  <div className="h-5/6 w-full space-y-6 border-primary bg-primary p-6 md:border-[0.33px]">
+  <div className="h-5/6 w-full space-y-8 p-6">
     <BlockHeader label={label} icon={icon} editMode={editMode} />
     <section className="h-fit rounded bg-gray-400/10 px-4 py-3 text-justify text-tiny text-cake md:p-4 md:text-sm">
       Fill out the name, email of the VIP and add the number of tickets. You can

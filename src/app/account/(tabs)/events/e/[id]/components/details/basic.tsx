@@ -10,6 +10,7 @@ import type { EventDetailField, EventField } from "./schema";
 import { EventDetailCtx } from "./ctx";
 import { useMoment } from "@/hooks/useMoment";
 import { EventCategory } from "../../../../create/components";
+import { Nebula } from ".";
 
 interface BasicContentProps {
   xEvent: XEvent | null;
@@ -60,14 +61,16 @@ export const BasicContent = ({ xEvent, pending }: BasicContentProps) => {
   );
 
   return (
-    <div className="grid w-full grid-cols-1 gap-6 bg-ticket md:grid-cols-2 md:rounded-lg">
-      <FieldBlock
-        data={pending ? [] : basic_info}
-        label="Basic Info"
-        icon={pending ? "SpinnerBall" : "ArrowRight"}
-      />
-      <BasicOptions xEvent={xEvent} />
-    </div>
+    <Nebula>
+      <div className="grid w-full grid-cols-1 gap-6 bg-ticket md:grid-cols-2 md:rounded-lg">
+        <FieldBlock
+          data={pending ? [] : basic_info}
+          label="Basic Info"
+          icon={pending ? "SpinnerBall" : "ArrowRight"}
+        />
+        <BasicOptions xEvent={xEvent} />
+      </div>
+    </Nebula>
   );
 };
 
@@ -93,7 +96,7 @@ const FieldBlock = ({ data, icon, label, delay = 0 }: FieldBlockProps) => (
 const FieldItem = (field: EventField | EventField[]) =>
   Array.isArray(field) ? (
     field.map((subfield) => (
-      <div className="flex items-center gap-6 bg-tan" key={subfield.name}>
+      <div className="flex items-center gap-6" key={subfield.name}>
         <EventDetailOption {...subfield} />
       </div>
     ))
@@ -174,7 +177,6 @@ const BasicFields = ({ children, render, data }: EventDetailField) => {
 
   return (
     <div className="w-full space-y-6">
-      {/* <div className="grid w-full grid-cols-2 gap-3 md:px-2"> */}
       <HyperList
         container="grid w-full grid-cols-2 gap-6"
         data={fields.slice(0, 2)}

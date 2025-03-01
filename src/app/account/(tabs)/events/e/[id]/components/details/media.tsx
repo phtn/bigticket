@@ -11,6 +11,7 @@ import { use, useActionState, useCallback, useState } from "react";
 import { inputClassNames } from "../../editor";
 import { BlockHeader } from "./components";
 import { media_fields, type MediaField, MediaZod } from "./schema";
+import { Nebula } from ".";
 
 interface MediaBlockProps {
   data: MediaField[];
@@ -85,58 +86,60 @@ export const MediaContent = ({ xEvent }: MediaContentProps) => {
   // }, [media]);
 
   return (
-    <Form action={action}>
-      <div className="_gap-10 grid h-full w-full grid-cols-1 md:grid-cols-2 md:gap-0 md:rounded">
-        <section className="h-fit space-y-8 border-b border-gray-500 bg-primary md:h-fit md:border">
-          <MediaBlock
-            data={media_fields}
-            label="Add Multimedia Assets"
-            icon="Play"
-          />
+    <Nebula>
+      <Form action={action}>
+        <div className="_gap-10 grid h-full w-full grid-cols-1 md:grid-cols-5 md:gap-0 md:rounded">
+          <section className="col-span-2 h-fit space-y-8 border-b-[0.33px] border-vanilla/20 md:h-fit md:border">
+            <MediaBlock
+              data={media_fields}
+              label="Add Multimedia Assets"
+              icon="Play"
+            />
 
-          <div className="flex h-1/6 w-full items-end justify-between bg-primary">
-            <div className="flex w-full items-center border-t border-gray-500 text-chalk">
-              <div className="flex h-10 w-full items-center justify-between gap-3 border-r border-gray-500 px-3">
-                <p className="font-inter text-xs font-semibold tracking-tight">
-                  Items in Gallery
-                </p>
-                <p className="font-sans text-sm">
-                  {xEvent?.gallery?.length ?? 0}
-                </p>
+            <div className="flex h-1/6 w-full items-end justify-between">
+              <div className="flex w-full items-center border-t-[0.33px] border-vanilla/20 text-chalk">
+                <div className="flex h-10 w-full items-center justify-between gap-3 border-r-[0.33px] border-vanilla/20 px-3">
+                  <p className="font-inter text-xs font-semibold tracking-tight">
+                    Items in Gallery
+                  </p>
+                  <p className="font-sans text-sm">
+                    {xEvent?.gallery?.length ?? 0}
+                  </p>
+                </div>
+                <Hyper
+                  disabled={pending}
+                  loading={pending}
+                  type="submit"
+                  label="Add"
+                  end="Plus"
+                  dark
+                />
               </div>
-              <Hyper
-                disabled={pending}
-                loading={pending}
-                type="submit"
-                label="Add"
-                end="Plus"
-                dark
+            </div>
+          </section>
+          <section className="relative col-span-3 border-vanilla/20 text-chalk md:border-y md:border-r">
+            <div className="h-96 w-full overflow-hidden overflow-y-scroll">
+              <div className="flex h-11 w-full items-center justify-between border-b-3 border-vanilla/20 px-3 font-inter text-tiny font-bold">
+                <div className="flex items-center gap-4">
+                  <span>Media Gallery</span>
+                </div>
+              </div>
+              <HyperList
+                data={xEvent?.gallery ?? mediaList ?? []}
+                component={MediaListItem}
+                container=""
               />
             </div>
-          </div>
-        </section>
-        <section className="relative border-gray-500 bg-primary text-chalk md:border-y md:border-r">
-          <div className="h-96 w-full overflow-hidden overflow-y-scroll">
-            <div className="flex h-11 w-full items-center justify-between border-b border-gray-500 px-3 font-inter text-tiny font-bold">
-              <div className="flex items-center gap-4">
-                <span>Media Gallery</span>
-              </div>
-            </div>
-            <HyperList
-              data={xEvent?.gallery ?? mediaList ?? []}
-              component={MediaListItem}
-              container=""
-            />
-          </div>
-        </section>
-      </div>
-    </Form>
+          </section>
+        </div>
+      </Form>
+    </Nebula>
   );
 };
 
 const MediaListItem = (gallery: EventGallery) => {
   return (
-    <div className="grid w-full grid-cols-12 overflow-clip border-b border-dotted border-gray-700">
+    <div className="grid w-full grid-cols-12 overflow-clip border-b-[0.33px] border-dotted border-vanilla/20">
       <div className="col-span-1 flex h-10 w-full items-center justify-start rounded-sm hover:bg-gray-300/10">
         <p className="px-1 font-inter text-xs tracking-tight opacity-60">
           {gallery.index}
@@ -182,7 +185,7 @@ const MediaItem = (field: MediaField) => {
   );
 };
 const MediaBlock = ({ data, icon, label, delay = 0 }: MediaBlockProps) => (
-  <div className="h-5/6 w-full space-y-6 border-primary bg-primary p-6 md:border-[0.33px]">
+  <div className="h-5/6 w-full space-y-6 p-6">
     <BlockHeader label={label} icon={icon} />
     <section className="h-fit rounded bg-gray-400/10 px-4 py-3 text-justify text-tiny text-vanilla md:p-4 md:text-sm">
       This feature currently works for YouTube videos. You can upload your own

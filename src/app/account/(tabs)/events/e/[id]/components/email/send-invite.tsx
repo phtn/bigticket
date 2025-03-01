@@ -105,7 +105,8 @@ const SendInvite = ({ vip_list, updateSentStatus }: SendInviteProps) => {
       disabled={loading || vip_list.length === 0}
       label={buttonLabel}
       loading={loading}
-      compact
+      fullWidth
+      xl
       end="MailSend"
     />
   );

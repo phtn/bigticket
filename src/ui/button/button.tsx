@@ -13,6 +13,7 @@ export interface HyperProps {
   dark?: boolean;
   rounded?: boolean;
   fullWidth?: boolean;
+  xl?: boolean;
   lg?: boolean;
   sm?: boolean;
   xs?: boolean;
@@ -49,6 +50,7 @@ export const Hyper = ({
   dark = false,
   rounded = false,
   fullWidth = false,
+  xl = false,
   lg = false,
   sm = false,
   xs = false,
@@ -62,7 +64,7 @@ export const Hyper = ({
       <Icon name="SpinnerBall" />,
       <span
         className={cn(
-          "relative z-10 whitespace-nowrap font-inter text-xs font-semibold tracking-tighter text-primary transition-all duration-300",
+          "relative z-10 whitespace-nowrap font-inter text-xs font-semibold tracking-tighter text-primary",
           {
             "text-chalk": dark || destructive,
             "text-primary": dim,
@@ -79,11 +81,12 @@ export const Hyper = ({
       {...props}
       className={cn(
         props.className,
-        "group flex h-svh max-h-10 items-center justify-center overflow-hidden bg-white transition-all duration-300 active:scale-95 md:min-w-36",
-        "relative",
+        "flex h-10 max-h-14 items-center justify-center overflow-hidden bg-white md:min-w-36",
+        "group relative transition-all duration-300 active:scale-95",
         {
           "rounded-lg": rounded,
           "h-12": lg,
+          "h-14": xl,
           "w-full px-0": fullWidth,
           "w-fit min-w-0": compact,
           "h-8": sm,
@@ -98,7 +101,7 @@ export const Hyper = ({
           "gap-2",
           {
             "px-0": fullWidth,
-            "bg-primary text-chalk hover:opacity-90": dark,
+            "border-0 bg-primary text-chalk hover:opacity-95": dark,
             "bg-macl-red": destructive,
             "bg-demigod hover:bg-teal-500": dim,
             "px-2": compact,

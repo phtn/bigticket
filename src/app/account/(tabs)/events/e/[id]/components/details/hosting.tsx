@@ -19,6 +19,7 @@ import {
 import { inputClassNames } from "../../editor";
 import { BlockHeader } from "./components";
 import { cohost_info, type CohostField, CohostZod } from "./schema";
+import { Nebula } from ".";
 
 interface CohostBlockProps {
   data: CohostField[];
@@ -119,84 +120,86 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
   );
 
   return (
-    <Form action={action}>
-      <div className="grid h-full w-full grid-cols-1 md:grid-cols-5 md:gap-0 md:rounded">
-        <section className="h-fit border-b border-vanilla/20 bg-primary sm:col-span-3 md:col-span-2 md:h-fit md:border">
-          <CohostBlock
-            data={cohost_info}
-            label="Host Settings"
-            icon="UserSettings2"
-          />
-
-          <div className="flex h-fit w-full border-t border-vanilla/20 bg-chalk/10 px-6 py-8 lg:px-4 xl:px-6">
-            <CheckboxGroup
-              onValueChange={handleAccessValuesChange}
-              defaultValue={["scan_code"]}
-              label="Select Access clearances"
-              orientation="horizontal"
-              color="primary"
-              description="Choose co-host access clearances for this event."
-              className="w-full"
-              classNames={{
-                wrapper: "",
-                base: "w-full",
-                label:
-                  "text-white pb-4 font-bold w-full text-lg font-inter tracking-tighter",
-                description: "text-chalk/60 text-xs pt-4",
-              }}
-            >
-              <HyperList
-                data={Object.entries(clearanceValues).map((c) => c)}
-                component={ClearanceItem}
-                container="flex flex-col lg:flex-row xl:space-x-5 lg:space-x-2 whitespace-nowrap space-y-2 lg:space-y-0 w-full justify-between xl:justify-start"
-                itemStyle="xl:py-1.5 ps-1.5 pe-2 border-0 lg:w-fit w-full overflow-hidden rounded-xl hover:bg-primary/35 border-1 border-primary/0 hover:border-chalk/20"
-              />
-            </CheckboxGroup>
-          </div>
-
-          <div className="flex h-1/6 w-full items-end justify-between bg-primary">
-            <div className="flex w-full items-center border-t border-vanilla/20 text-chalk">
-              <div className="flex h-10 w-full items-center justify-between gap-3 border-r border-vanilla/20 px-3">
-                <p className="font-inter text-xs font-semibold tracking-tight">
-                  Confirmed
-                </p>
-                <p className="font-sans text-sm">0</p>
-              </div>
-              <Hyper
-                disabled={pending}
-                loading={pending}
-                type="submit"
-                label="Add"
-                end="Plus"
-                dark
-              />
-            </div>
-          </div>
-        </section>
-
-        <section className="relative border-vanilla/20 bg-primary text-chalk md:col-span-3 md:border-y md:border-r">
-          <div className="h-96 w-full overflow-hidden overflow-y-scroll">
-            <div className="flex h-11 w-full items-center justify-between border-b border-vanilla/20 px-3 font-inter text-tiny font-bold">
-              <div className="flex w-full items-center justify-between gap-6 md:justify-start">
-                <span>Co-host List</span>
-                <span className="font-sans font-normal">
-                  {xEvent?.cohost_list?.length ?? cohostList.length}
-                </span>
-              </div>
-            </div>
-            <HyperList
-              data={xEvent?.cohost_list ?? cohostList}
-              component={CohostListItem}
-              container=""
-              keyId="email"
+    <Nebula>
+      <Form action={action}>
+        <div className="grid h-full w-full grid-cols-1 md:grid-cols-5 md:gap-0 md:rounded">
+          <section className="h-fit border-b border-vanilla/20 sm:col-span-3 md:col-span-2 md:h-fit md:border">
+            <CohostBlock
+              data={cohost_info}
+              label="Host Settings"
+              icon="UserSettings2"
             />
-          </div>
-          <div className="absolute bottom-2 right-2">
-            {/* <Hyper cohost_list={xEvent?.cohost_list} /> */}
-          </div>
-        </section>
-      </div>
-    </Form>
+
+            <div className="flex h-fit w-full border-t-[0.33px] border-vanilla/20 bg-chalk/5 px-6 py-8 backdrop-blur-sm lg:px-4 xl:px-6">
+              <CheckboxGroup
+                onValueChange={handleAccessValuesChange}
+                defaultValue={["scan_code"]}
+                label="Select Access clearances"
+                orientation="horizontal"
+                color="primary"
+                description="Choose co-host access clearances for this event."
+                className="w-full"
+                classNames={{
+                  wrapper: "",
+                  base: "w-full",
+                  label:
+                    "text-white pb-4 font-bold w-full text-lg font-inter tracking-tighter",
+                  description: "text-chalk/60 text-xs pt-4",
+                }}
+              >
+                <HyperList
+                  data={Object.entries(clearanceValues).map((c) => c)}
+                  component={ClearanceItem}
+                  container="flex flex-col lg:flex-row xl:space-x-5 lg:space-x-2 whitespace-nowrap space-y-2 lg:space-y-0 w-full justify-between xl:justify-start"
+                  itemStyle="xl:py-1.5 ps-1.5 pe-2 border-0 lg:w-fit w-full overflow-hidden rounded-xl hover:bg-primary/35 border-1 border-primary/0 hover:border-chalk/20"
+                />
+              </CheckboxGroup>
+            </div>
+
+            <div className="flex h-1/6 w-full items-end justify-between">
+              <div className="flex w-full items-center border-t border-vanilla/20 text-chalk">
+                <div className="flex h-10 w-full items-center justify-between gap-3 border-r border-vanilla/20 px-3">
+                  <p className="font-inter text-xs font-semibold tracking-tight">
+                    Confirmed
+                  </p>
+                  <p className="font-sans text-sm">0</p>
+                </div>
+                <Hyper
+                  disabled={pending}
+                  loading={pending}
+                  type="submit"
+                  label="Add"
+                  end="Plus"
+                  dark
+                />
+              </div>
+            </div>
+          </section>
+
+          <section className="relative border-vanilla/20 text-chalk md:col-span-3 md:border-y md:border-r">
+            <div className="h-96 w-full overflow-hidden overflow-y-scroll">
+              <div className="flex h-11 w-full items-center justify-between border-b border-vanilla/20 px-3 font-inter text-tiny font-bold">
+                <div className="flex w-full items-center justify-between gap-6 md:justify-start">
+                  <span>Co-host List</span>
+                  <span className="font-sans font-normal">
+                    {xEvent?.cohost_list?.length ?? cohostList.length}
+                  </span>
+                </div>
+              </div>
+              <HyperList
+                data={xEvent?.cohost_list ?? cohostList}
+                component={CohostListItem}
+                container=""
+                keyId="email"
+              />
+            </div>
+            <div className="absolute bottom-2 right-2">
+              {/* <Hyper cohost_list={xEvent?.cohost_list} /> */}
+            </div>
+          </section>
+        </div>
+      </Form>
+    </Nebula>
   );
 };
 
@@ -261,9 +264,9 @@ const CohostItem = (field: CohostField) => {
   );
 };
 const CohostBlock = ({ data, icon, label, delay = 0 }: CohostBlockProps) => (
-  <div className="mb-8 h-5/6 w-full space-y-6 border-primary bg-primary p-6 md:border-[0.33px]">
+  <div className="mb-8 h-5/6 w-full space-y-6 border-primary p-6 md:border-[0.33px]">
     <BlockHeader label={label} icon={icon} />
-    <section className="h-fit rounded bg-gray-400/10 px-4 py-3 text-justify text-tiny text-vanilla md:p-4 md:text-sm">
+    <section className="h-fit rounded bg-gray-400/10 px-4 py-3 text-justify text-tiny text-cake md:p-4 md:text-sm">
       Fill out the name, email of the Cohost and add access clearances. You can
       add multiple co-hosts for this event.
     </section>
