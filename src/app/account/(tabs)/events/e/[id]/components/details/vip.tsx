@@ -317,8 +317,8 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         <div className="h-full w-full overflow-hidden overflow-y-scroll">
           <div className="flex h-11 w-full items-center justify-between border-b-3 border-gray-500/60 pe-4 font-inter text-tiny font-bold">
             <div className="flex w-full items-center justify-between font-normal">
-              <div className="flex items-center gap-2">
-                <div className="w-4 font-bold">・</div>
+              <div className="flex items-center">
+                <div className="w-0"></div>
                 <div className="flex items-center gap-2">
                   <span>VIP Guest List</span>
                   <div className="flex size-5 items-center justify-center rounded-full bg-vanilla/10 font-sans">
