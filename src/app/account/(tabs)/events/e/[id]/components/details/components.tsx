@@ -43,8 +43,7 @@ export const BlockHeader = ({
       </div>
       {editMode ? (
         <div className="flex items-center whitespace-nowrap text-xs font-semibold tracking-tight text-macd-blue">
-          <div className="flex gap-1 rounded-lg border-2 border-macd-blue bg-macd-blue px-2 py-1.5">
-            <Icon name="Pen" className="size-3.5 text-chalk" />
+          <div className="flex gap-1 rounded-sm border-2 border-macd-blue bg-macd-blue px-1.5 py-1">
             <span className="text-chalk">Edit Mode</span>
           </div>
         </div>

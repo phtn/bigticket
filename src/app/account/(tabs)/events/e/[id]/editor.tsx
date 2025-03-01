@@ -33,7 +33,7 @@ interface EventEditorProps {
   id: string | undefined;
 }
 export const EventEditor = ({ id }: EventEditorProps) => {
-  const [event_id] = id?.split("---") ?? [];
+  const event_id = id?.split("---").shift();
   const { getXEvent, xEvent, pending } = use(EventEditorCtx)!;
   const [user_id, setUserId] = useState<string | null>(null);
 
@@ -64,7 +64,9 @@ export const EventEditor = ({ id }: EventEditorProps) => {
       {
         value: "vips",
         title: "VIPs",
-        content: <VIPContent xEvent={xEvent} user_id={user_id} />,
+        content: (
+          <VIPContent xEvent={xEvent} user_id={user_id} event_id={event_id} />
+        ),
       },
       {
         value: "host",
@@ -77,7 +79,7 @@ export const EventEditor = ({ id }: EventEditorProps) => {
         content: <MediaContent xEvent={xEvent} user_id={user_id} />,
       },
     ],
-    [user_id, xEvent, pending],
+    [user_id, xEvent, pending, event_id],
   );
 
   return (

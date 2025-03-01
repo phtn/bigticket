@@ -79,12 +79,12 @@ export const Hyper = ({
       {...props}
       className={cn(
         props.className,
-        "group flex h-svh max-h-10 min-w-36 items-center justify-center overflow-hidden bg-white transition-all duration-300 active:scale-95",
+        "group flex h-svh max-h-10 items-center justify-center overflow-hidden bg-white transition-all duration-300 active:scale-95 md:min-w-36",
         "relative",
         {
           "rounded-lg": rounded,
           "h-12": lg,
-          "w-full": fullWidth,
+          "w-full px-0": fullWidth,
           "w-fit min-w-0": compact,
           "h-8": sm,
           "h-7": xs,
@@ -94,9 +94,10 @@ export const Hyper = ({
       <div className="pointer-events-none absolute z-0 size-full bg-white/20" />
       <div
         className={cn(
-          "z-50 flex size-full items-center justify-center px-5",
+          "z-50 flex size-full items-center justify-center md:px-5",
           "gap-2",
           {
+            "px-0": fullWidth,
             "bg-primary text-chalk hover:opacity-90": dark,
             "bg-macl-red": destructive,
             "bg-demigod hover:bg-teal-500": dim,

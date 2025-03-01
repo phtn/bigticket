@@ -97,7 +97,7 @@ const SendInvite = ({ vip_list, updateSentStatus }: SendInviteProps) => {
 
   const buttonLabel = loading
     ? `Sending... ${progress}%`
-    : `Send Invitation${vip_list.length > 1 ? "s" : ""} (${vip_list.length})`;
+    : `Send Invitation${vip_list.length > 1 ? "s" : ""}`;
 
   return (
     <Hyper
@@ -105,6 +105,8 @@ const SendInvite = ({ vip_list, updateSentStatus }: SendInviteProps) => {
       disabled={loading || vip_list.length === 0}
       label={buttonLabel}
       loading={loading}
+      compact
+      end="MailSend"
     />
   );
 };
