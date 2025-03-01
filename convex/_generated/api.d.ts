@@ -29,6 +29,7 @@ import type * as users_create from "../users/create.js";
 import type * as users_d from "../users/d.js";
 import type * as users_get from "../users/get.js";
 import type * as users_update from "../users/update.js";
+import type * as utils from "../utils.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -55,6 +56,7 @@ declare const fullApi: ApiFromModules<{
   "users/d": typeof users_d;
   "users/get": typeof users_get;
   "users/update": typeof users_update;
+  utils: typeof utils;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

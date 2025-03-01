@@ -1,44 +1,25 @@
 "use client";
 
-import { createContext, useCallback, useMemo, useState } from "react";
+import { type ReactNode } from "react";
 import Convex from "@/app/ctx/convex";
-import type { ReactNode } from "react";
-import type { User } from "@supabase/supabase-js";
-import type { AuthCtxValues, SupabaseUserMetadata } from "./types";
 import SessionProvider from "./session";
+import { UserCtxProvider } from "../user";
+import { AuthProvider } from "./provider";
 
-export const AuthCtx = createContext<AuthCtxValues | null>(null);
-interface AuthCtxProps {
+interface RootAuthProviderProps {
   children: ReactNode;
 }
-const AuthProvider = ({ children }: AuthCtxProps) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [meta, setMeta] = useState<SupabaseUserMetadata>();
 
-  const updateUser = useCallback(
-    (user: User | null) => {
-      setUser(user);
-      setMeta(user?.user_metadata);
-    },
-    [setUser],
-  );
-
-  const value = useMemo(
-    () => ({
-      updateUser,
-      meta,
-      user,
-    }),
-    [user, meta, updateUser],
-  );
-
+const RootAuthProvider = ({ children }: RootAuthProviderProps) => {
   return (
     <SessionProvider>
-      <AuthCtx value={value}>
-        <Convex user={user}>{children}</Convex>
-      </AuthCtx>
+      <AuthProvider>
+        <Convex>
+          <UserCtxProvider>{children}</UserCtxProvider>
+        </Convex>
+      </AuthProvider>
     </SessionProvider>
   );
 };
 
-export default AuthProvider;
+export default RootAuthProvider;

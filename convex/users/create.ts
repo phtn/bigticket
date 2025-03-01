@@ -16,19 +16,35 @@ const create = mutation({
       return null;
     }
 
+    const {
+      id,
+      email,
+      nickname,
+      phone_number,
+      photo_url,
+      fullname,
+      email_verified,
+      token_identifier,
+      metadata,
+    } = data;
+
     return await db.insert("users", {
-      id: data.id,
-      nickname: data.name,
-      photo_url: data.avatar_url,
-      fullname: data.fullname,
-      phone_number: data.phone,
-      email: data.email,
-      account_id: guid(),
-      updated_at: Date.now(),
-      is_verified: false,
-      is_active: true,
-      role: ["basic"],
+      id,
+      email,
+      metadata,
       score: 0,
+      nickname,
+      fullname,
+      photo_url,
+      phone_number,
+      email_verified,
+      role: ["basic"],
+      is_active: true,
+      token_identifier,
+      account_id: guid(),
+      is_verified: false,
+      updated_at: Date.now(),
+      username: email?.split("@").shift(),
     });
   },
 });

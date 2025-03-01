@@ -1,9 +1,10 @@
 import { mutation } from "@vx/server";
-import { UpdateUserSchema } from "./d";
+import { UpdateUserSchema, UserGallerySchema } from "./d";
 import { checkUser } from "./create";
 import { v } from "convex/values";
 import { checkEvent } from "convex/events/create";
 import { UserTicket, UserTicketSchema } from "convex/events/d";
+import { upsert } from "convex/utils";
 
 export const info = mutation({
   args: UpdateUserSchema,
@@ -318,20 +319,32 @@ export function mapIndexes(items: UserTicket[], ids: string[]): number[] {
   return ids.map((id) => indexMap.get(id) ?? -1);
 }
 
-function createIndexMap(array: UserTicket[]) {
-  return array.reduce(
-    (acc, item, index) => {
-      acc[item.ticket_id] = index;
-      return acc;
-    },
-    {} as Record<string, any>,
-  );
-}
-function mapArrayIndexes<T extends UserTicket, U extends UserTicket>(
-  sourceArray: T[],
-  targetArray: U[],
-): number[] {
-  const targetIndexMap = createIndexMap(targetArray);
+export const privateGallery = mutation({
+  args: {
+    id: v.string(),
+    media: UserGallerySchema,
+  },
+  handler: async ({ db }, { id, media }) => {
+    const user = await checkUser(db, id);
+    if (!user || !media) {
+      return null;
+    }
 
-  return sourceArray.map((item) => targetIndexMap[item.ticket_id] ?? -1);
-}
+    let private_gallery = user.private_gallery ?? [];
+    if (private_gallery.length === 0) {
+      private_gallery.push(media);
+      await db.patch(user._id, { ...user, private_gallery });
+      return "success";
+    }
+
+    private_gallery = upsert(user.private_gallery!, media, "src", [
+      "description",
+      "title",
+      "src",
+      "alt",
+      "index",
+    ]);
+    await db.patch(user._id, { ...user, private_gallery });
+    return "success";
+  },
+});

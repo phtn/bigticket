@@ -1,107 +1,131 @@
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import type { AuthError, Session, User } from "@supabase/supabase-js";
-import {
-  type Dispatch,
-  type SetStateAction,
-  type TransitionStartFunction,
-  useCallback,
-  useEffect,
-  useState,
-  useTransition,
-} from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { setUserID } from "@/app/actions";
 import { log } from "@/utils/logger";
 
-interface UserSessionData {
-  inSession: boolean;
+interface SessionState {
+  isLoading: boolean;
+  error: AuthError | null;
+  session: Session | null;
   user: User | null;
 }
+
+const initialState: SessionState = {
+  isLoading: true,
+  error: null,
+  session: null,
+  user: null,
+};
+
 export const useSession = () => {
   const supabase = useSupabaseClient().auth;
-  const [userSessionData, setUserSessionData] = useState<UserSessionData>({
-    inSession: false,
-    user: null,
-  });
+  const [state, setState] = useState<SessionState>(initialState);
+  const [isPending, startTransition] = useTransition();
 
-  const [session, setSession] = useState<{
-    session: Session | null;
-    error: AuthError | null;
-  }>({ session: null, error: null });
-
-  const [pending, fn] = useTransition();
-
-  const setFn = useCallback(
-    <T>(
-      tx: TransitionStartFunction,
-      action: () => Promise<T>,
-      set: Dispatch<SetStateAction<T>>,
-    ) => {
-      tx(async () => {
-        set(await action());
-      });
-    },
-    [],
-  );
+  const updateState = useCallback((updates: Partial<SessionState>) => {
+    setState((prev) => ({ ...prev, ...updates }));
+  }, []);
 
   const getSession = useCallback(async () => {
     try {
-      const { error: sessionError } = await supabase.getSession();
+      const { data: sessionData, error: sessionError } =
+        await supabase.getSession();
+
       if (sessionError) {
-        return { inSession: false, user: null };
+        throw sessionError;
       }
 
-      const { error: userError, data } = await supabase.getUser();
+      if (!sessionData.session) {
+        return updateState({
+          session: null,
+          user: null,
+          isLoading: false,
+        });
+      }
+
+      const { data: userData, error: userError } = await supabase.getUser();
+
       if (userError) {
-        return { inSession: false, user: null };
+        throw userError;
       }
 
-      await setUserID(data.user.id);
-      return { inSession: true, user: data.user };
-    } catch (err) {
-      log("session x user", err instanceof Error ? { ...err } : null);
-      return { inSession: false, user: null };
-    }
-  }, [supabase]);
+      if (userData.user) {
+        await setUserID(userData.user.id);
+      }
 
-  const getUserSessionData = useCallback(() => {
-    setFn(fn, getSession, setUserSessionData);
-  }, [getSession, setFn]);
+      updateState({
+        session: sessionData.session,
+        user: userData.user,
+        error: null,
+        isLoading: false,
+      });
+    } catch (error) {
+      log("Session error:", error instanceof Error ? error : "Unknown error");
+      updateState({
+        error: error as AuthError,
+        session: null,
+        user: null,
+        isLoading: false,
+      });
+    }
+  }, [supabase, updateState]);
+
+  const refreshSession = useCallback(() => {
+    startTransition(() => {
+      updateState({ isLoading: true });
+      getSession().catch((err) => {
+        updateState({ isLoading: false });
+        console.error(err);
+      });
+    });
+  }, [getSession, updateState]);
 
   useEffect(() => {
-    getUserSessionData();
-  }, [getUserSessionData]);
+    refreshSession();
 
-  const getUserSession = useCallback(async () => {
-    const result = await supabase.getSession();
-    setSession({ ...result.data, error: result.error });
-  }, [supabase]);
+    const {
+      data: { subscription },
+    } = supabase.onAuthStateChange(() => {
+      refreshSession();
+    });
 
-  const getFedCMStatus = useCallback(async () => {
-    if (typeof window !== "undefined")
-      try {
-        // Test if the browser supports the FedCM API
-        const ident =
-          await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-        const res = await fetch(
-          "https://example.com/.well-known/web-identity",
-          {
-            mode: "cors",
-            credentials: "include",
-          },
-        );
-        log("result", res);
-        log("ident", ident);
-        return true;
-      } catch (e) {
-        // NotSupportedError typically indicates FedCM is disabled
-        if (e instanceof Error && e.name === "NotSupportedError") {
-          return false;
-        }
-        // Other errors might mean FedCM is enabled but the request failed for other reasons
-        console.error("Error checking FedCM:", e);
-        return true;
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase, refreshSession]);
+
+  const checkFedCMSupport = useCallback(async () => {
+    if (typeof window === "undefined") return false;
+
+    try {
+      const isSupported =
+        await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+
+      if (!isSupported) return false;
+
+      const response = await fetch(
+        "https://example.com/.well-known/web-identity",
+        {
+          mode: "cors",
+          credentials: "include",
+        },
+      );
+
+      return response.ok;
+    } catch (error) {
+      if (error instanceof Error && error.name === "NotSupportedError") {
+        return false;
       }
+      log("FedCM check error:", error as Error);
+      return false;
+    }
   }, []);
 
-  return { userSessionData, pending, session, getUserSession, getFedCMStatus };
+  return {
+    ...state,
+    isPending,
+    refreshSession,
+    checkFedCMSupport,
+  };
 };

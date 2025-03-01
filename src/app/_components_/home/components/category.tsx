@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { BlurFade } from "@/ui/blur/fade";
 import { useCallback } from "react";
 
 export interface Category {
@@ -44,14 +45,14 @@ export const CategoryButton = ({
       <h2
         className={cn(
           "group mx-auto flex w-fit items-center px-3.5 py-1.5",
-          "rounded-full border border-chalk/20 font-inter text-xs",
+          "rounded-full border border-vanilla/20 font-inter text-xs",
           "bg-gradient-to-tr from-zinc-400/20 via-gray-500/20 to-slate-500/20",
           "cursor-pointer tracking-tight backdrop-blur-md",
+          "hover:opacity-60",
           {
-            "border-coal/80 bg-white text-black opacity-100":
+            "border-coal/80 bg-vanilla text-black opacity-100":
               selected === category.id,
           },
-          "hover:bg-",
         )}
       >
         <span
@@ -66,8 +67,10 @@ export const CategoryButton = ({
     [selected],
   );
   return (
-    <button onClick={fn} className="">
-      <CategoryItem {...category} />
-    </button>
+    <BlurFade>
+      <button onClick={fn} className="">
+        <CategoryItem {...category} />
+      </button>
+    </BlurFade>
   );
 };

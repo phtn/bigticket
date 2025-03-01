@@ -9,7 +9,8 @@ export default defineSchema({
     .index("by_uid", ["id", "nickname"])
     .index("by_email", ["email"])
     .index("by_account_id", ["account_id"])
-    .index("by_role", ["role", "id"]),
+    .index("by_role", ["role", "id"])
+    .index("by_token_id", ["token_identifier", "id"]),
   events: defineTable(EventSchema)
     .index("by_event_id", ["event_id"])
     .index("by_event_type", ["event_type"])

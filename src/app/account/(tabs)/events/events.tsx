@@ -4,7 +4,7 @@ import { useEvents } from "@/app/_components_/home/useEvents";
 import { qs } from "@/app/ctx/convex/utils";
 import { PreloadedUserEventsCtx } from "@/app/ctx/event/user";
 import { SidebarCtx } from "@/app/ctx/sidebar";
-import { UserCtx } from "@/app/ctx/user/ctx";
+import { useUserCtx } from "@/app/ctx/user";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
@@ -29,7 +29,7 @@ import { CohostedEventCard } from "./cohost-card";
 export const Events = () => {
   const { x, pending } = use(PreloadedUserEventsCtx)!;
   const { open } = use(SidebarCtx)!;
-  const { xUser } = use(UserCtx)!;
+  const { xUser } = useUserCtx();
   const [email, setEmail] = useState<string>();
 
   useEffect(() => {
@@ -110,7 +110,11 @@ export const Events = () => {
         )}
 
         {x?.length === 0 ? (
-          <EmptyList icon="EventStar" message="You have no events yet." />
+          <EmptyList
+            className="-top-24"
+            icon="EventStar"
+            message="You have no events yet."
+          />
         ) : null}
       </div>
     </div>

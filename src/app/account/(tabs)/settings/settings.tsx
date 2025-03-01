@@ -45,7 +45,7 @@ export const UserSettings = () => {
   );
 
   return (
-    <div className="min-h-[80vh] w-full justify-center rounded-none pb-10 md:rounded-lg md:px-6">
+    <div className="rounded- min-h-[80vh] w-full justify-center pb-10 md:rounded-lg md:px-6">
       <div className="">
         <Header title="Settings">
           <Icon name="Settings" className="size-4 text-macl-gray" />

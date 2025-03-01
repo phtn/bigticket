@@ -2,7 +2,7 @@
 
 import { CursorCtx } from "@/app/ctx/cursor";
 import { SidebarCtx } from "@/app/ctx/sidebar";
-import { UserCtx } from "@/app/ctx/user/ctx";
+import { useUserCtx } from "@/app/ctx/user";
 import { useScreen } from "@/hooks/useScreen";
 import { useToggle } from "@/hooks/useToggle";
 import { Icon, type IconName } from "@/icons";
@@ -37,7 +37,7 @@ interface NavItem {
 }
 
 export const UserNav = () => {
-  const { photoUrl } = use(UserCtx)!;
+  const { photoUrl } = useUserCtx();
 
   const navs: NavItem[] = useMemo(
     () => [
@@ -142,6 +142,7 @@ const Collection = () => {
   const { toggle } = use(SidebarCtx)!;
   return (
     <ButtonIcon
+      aria-label="bookmarks-list"
       onClick={toggle}
       icon="Bookmark2"
       bg="text-white"
@@ -208,8 +209,9 @@ const UserAvatar = (props: { photo_url: string | null }) => {
     const MenuListItem = ({ href, label, icon }: MenuItem) => {
       return (
         <button
+          name={label}
           onClick={handleRoute(href, toggle)}
-          className="group flex w-full items-center justify-between gap-12 rounded-lg px-3 py-3"
+          className="group flex w-full items-center justify-between gap-12 overflow-hidden rounded-lg px-3 py-3"
         >
           <div className="flex items-center">
             <h2 className="font-inter font-semibold tracking-tighter drop-shadow-sm">
@@ -240,7 +242,12 @@ const UserAvatar = (props: { photo_url: string | null }) => {
     <div className="flex w-fit items-center px-4 md:gap-8">
       <Popover isOpen={open} placement="bottom-end" onOpenChange={toggle}>
         <PopoverTrigger className="cursor-pointer border border-macl-gray">
-          <Avatar alt="user-pfp" src={avatar} size={isDesktop ? "md" : "sm"} />
+          <Avatar
+            alt="user-pfp"
+            name="profile-picture"
+            src={avatar}
+            size={isDesktop ? "md" : "sm"}
+          />
         </PopoverTrigger>
         <PopoverContent className="w-[200px] border-[0.33px] border-macl-gray bg-google">
           <UserMenu />

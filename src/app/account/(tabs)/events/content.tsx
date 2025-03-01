@@ -3,7 +3,7 @@
 import type { SelectEvent } from "convex/events/d";
 import { Events } from "./events";
 import { PreloadedUserEventsCtxProvider } from "@/app/ctx/event/user";
-import { UserCtxProvider } from "@/app/ctx/user/ctx";
+import { UserCtxProvider } from "@/app/ctx/user";
 
 export interface AccountContentProps {
   events: SelectEvent[];

@@ -2,6 +2,7 @@ import { Icon, type IconName } from "@/icons";
 import { type ReactNode } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { type ClassName } from "@/app/types";
 
 interface HeaderProps {
   children?: ReactNode;
@@ -40,14 +41,21 @@ interface EmptyListProps {
   message: string;
   loading?: boolean;
   icon: IconName;
+  className?: ClassName;
 }
 export const EmptyList = ({
   icon,
   message,
   loading = false,
+  className,
 }: EmptyListProps) => {
   return (
-    <div className="relative flex h-56 items-center justify-center space-y-6 border-t md:h-96">
+    <div
+      className={cn(
+        "relative flex h-56 w-full items-center justify-center space-y-6",
+        className,
+      )}
+    >
       <Icon
         name={icon}
         className="pointer-events-none absolute size-40 text-gray-100"

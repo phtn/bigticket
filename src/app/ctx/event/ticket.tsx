@@ -4,16 +4,15 @@ import { guid } from "@/utils/helpers";
 import type { SelectEvent, UserTicket } from "convex/events/d";
 import {
   createContext,
-  use,
   useCallback,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
-import { ConvexCtx } from "../convex";
+import { useConvexCtx } from "../convex";
 import { onSuccess, onWarn } from "../toast";
-import { AuthCtx } from "../auth";
 import { getUserID } from "@/app/actions";
+import { useAuthStore } from "../auth/store";
 
 interface TicketCtxValues {
   getVIPTicket: (event: SelectEvent | null) => Promise<string | null>;
@@ -24,8 +23,8 @@ interface TicketCtxValues {
 export const TicketCtx = createContext<TicketCtxValues | null>(null);
 
 export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
-  const { usr } = use(ConvexCtx)!;
-  const { user } = use(AuthCtx)!;
+  const { usr } = useConvexCtx();
+  const { user } = useAuthStore();
 
   const [count, setCount] = useState<number>(0);
 

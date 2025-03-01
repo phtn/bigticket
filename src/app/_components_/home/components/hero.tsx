@@ -63,9 +63,9 @@ const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(
           <div className="relative z-10 mx-auto max-w-screen-xl gap-12 px-4 py-14 md:px-8 md:py-28">
             <div className="leading-0 mx-auto max-w-3xl space-y-6 text-center md:space-y-5 lg:leading-5">
               <Badge badge={badge} />
-              <h1 className="font-geist mx-auto whitespace-nowrap bg-chalk bg-clip-text text-3xl tracking-tighter text-transparent md:text-6xl dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)]">
+              <h1 className="font-geist mx-auto whitespace-nowrap bg-chalk bg-clip-text text-3xl tracking-tighter text-transparent dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)] md:text-6xl">
                 {headline.regular}
-                <span className="bg-gradient-to-r from-teal-600 to-pink-500 bg-clip-text text-transparent dark:from-teal-300 dark:to-orange-200">
+                <span className="_from-teal-600 _to-pink-500 bg-gradient-to-r from-teal-300 to-orange-200 bg-clip-text text-transparent">
                   {headline.gradient}
                 </span>
               </h1>
@@ -78,7 +78,7 @@ const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(
                   <div className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-white text-xs font-medium backdrop-blur-3xl dark:bg-gray-950">
                     <a
                       href={ctaHref}
-                      className="border-input group inline-flex w-full items-center justify-center rounded-full border-[1px] bg-gradient-to-tr from-zinc-300/20 via-purple-400/30 to-transparent px-10 py-4 text-center text-gray-900 transition-all hover:bg-gradient-to-tr hover:from-zinc-300/30 hover:via-purple-400/40 hover:to-transparent sm:w-auto dark:from-zinc-300/5 dark:via-purple-400/20 dark:text-white dark:hover:from-zinc-300/10 dark:hover:via-purple-400/30"
+                      className="group inline-flex w-full items-center justify-center rounded-full border-[1px] border-input bg-gradient-to-tr from-zinc-300/20 via-purple-400/30 to-transparent px-10 py-4 text-center text-gray-900 transition-all hover:bg-gradient-to-tr hover:from-zinc-300/30 hover:via-purple-400/40 hover:to-transparent dark:from-zinc-300/5 dark:via-purple-400/20 dark:text-white dark:hover:from-zinc-300/10 dark:hover:via-purple-400/30 sm:w-auto"
                     >
                       {ctaText}
                     </a>
@@ -95,9 +95,9 @@ const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(
 HeroSection.displayName = "HeroSection";
 
 const Badge = ({ badge }: { badge: string }) => (
-  <h2 className="font-geist group mx-auto flex w-fit items-center gap-2 rounded-3xl border-[2px] border-black/5 bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent px-5 py-2 text-sm text-gray-600 dark:border-white/5 dark:from-zinc-300/5 dark:via-gray-400/5 dark:text-gray-400">
+  <h2 className="font-geist group mx-auto flex w-fit items-center gap-2 rounded-3xl border border-vanilla/15 bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent px-5 py-2 text-sm text-chalk/80 dark:from-zinc-300/5 dark:via-gray-400/5">
     <Icon
-      name="Sparkles2"
+      name="Sparkle"
       className="inline size-4 stroke-0 duration-300 group-hover:scale-[1.15]"
     />
     <span>{badge}</span>

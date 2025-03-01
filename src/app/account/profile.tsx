@@ -9,22 +9,20 @@ import { PfpEditor } from "./side-pfp";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/icons";
-import { UserCtx, UserCtxProvider } from "../ctx/user/ctx";
+import { UserCtxProvider, useUserCtx } from "../ctx/user";
 import { useStorage } from "@/hooks/useStorage";
+import { useAuthStore } from "../ctx/auth/store";
 
 export const Profile = memo(() => <ProfileContent />);
 Profile.displayName = "Profile";
 
 export const Content = () => {
-  const { fileChange, inputFileRef, browseFile, } =
-    use(AccountCtx)!;
+  const { fileChange, inputFileRef, browseFile } = use(AccountCtx)!;
 
-  const { xUser } = use(UserCtx)!;
-  const { item } = useStorage<{ photoUrl: string | null }>("xUser")
+  const { xUser } = useUserCtx();
+  const { user } = useAuthStore();
+  const { item } = useStorage<{ photoUrl: string | null }>(user?.id ?? "xUser");
   const photoUrl = item?.photoUrl ?? null;
-
-
-
 
   const pathname = usePathname();
 
@@ -45,9 +43,7 @@ export const Content = () => {
   }, [photoUrl]);
 
   return (
-    <div
-      className={cn("relative mb-8 w-full", { hidden: sub?.length === 1 })}
-    >
+    <div className={cn("relative mb-8 w-full", { hidden: sub?.length === 1 })}>
       <section className="relative h-fit w-full bg-gray-200">
         <div
           id="cover-photo"

@@ -28,12 +28,6 @@ export interface DConvexCtxValues {
       following: (id: string, target_id: string) => Promise<string | null>;
       tickets: (id: string, tickets: UserTicket[]) => Promise<string | null>;
     };
-    add: {
-      metadata: (
-        id: string,
-        record: Record<string, number | string | boolean>,
-      ) => Promise<Id<"users"> | null>;
-    };
   };
 
   events: {
@@ -57,7 +51,7 @@ export interface DConvexCtxValues {
     create: (file?: File) => Promise<string | null>;
     get: (storageId: string | undefined) => Promise<string | null>;
   };
-  createvx: () => Promise<string | null>;
+  // createvx: () => Promise<string | null>;
   // getUserById: (id: string) => SelectUser | null;
   getEventById: (id: string) => SelectEvent | null;
   getEventsByIds: (ids: string[]) => SelectEvent[] | undefined;

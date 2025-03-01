@@ -1,20 +1,20 @@
 "use client";
 
-import { use, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Err } from "@/utils/helpers";
 import { type CredentialResponse } from "google-one-tap";
 import { env } from "@/env";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import { AuthCtx } from "@/app/ctx/auth";
 import { onError } from "@/app/ctx/toast";
 import { useSession } from "./useSession";
 import { setUserID } from "@/app/actions";
 import { log } from "@/utils/logger";
+import { useAuthStore } from "./store";
 
 export const GoogleOneTap = () => {
   const supabase = useSupabaseClient().auth;
-  const { user, updateUser } = use(AuthCtx)!;
-  const { pending, userSessionData } = useSession();
+  const { user, updateUser } = useAuthStore();
+  const { isLoading, session } = useSession();
 
   const generateNonce = useCallback(() => {
     const nonce = btoa(
@@ -38,8 +38,8 @@ export const GoogleOneTap = () => {
   }, []);
 
   useEffect(() => {
-    if (!pending && userSessionData.inSession) {
-      updateUser(userSessionData.user);
+    if (!isLoading && session?.user) {
+      updateUser(session.user);
       return;
     }
 
@@ -109,7 +109,7 @@ export const GoogleOneTap = () => {
     }, 3000);
 
     return () => clearTimeout(timeout);
-  }, [supabase, pending, userSessionData, generateNonce, updateUser, user]);
+  }, [supabase, isLoading, session, generateNonce, updateUser, user]);
 
   return (
     <div id="tap-dat-ass" className="hidden">

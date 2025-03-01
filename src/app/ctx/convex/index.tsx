@@ -1,8 +1,6 @@
 "use client";
 
-import type { SupabaseUserMetadata } from "@/app/ctx/auth/types";
 import { env } from "@/env";
-import type { User } from "@supabase/supabase-js";
 import { api } from "@vx/api";
 import type {
   Cohost,
@@ -14,7 +12,7 @@ import type {
 import { ConvexProvider, ConvexReactClient, useMutation } from "convex/react";
 import type { CreateUser, UpdateUser } from "convex/users/d";
 import type { ReactNode } from "react";
-import { createContext, useCallback, useMemo } from "react";
+import { createContext, useCallback, useContext, useMemo } from "react";
 import type { DConvexCtxValues } from "./d";
 import {
   useEventAll,
@@ -24,10 +22,14 @@ import {
 } from "./hooks";
 import { VxProvider } from "./vx";
 
+interface ConvexProviderProps {
+  children: ReactNode;
+}
+
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 export const ConvexCtx = createContext<DConvexCtxValues | null>(null);
 
-const CtxProvider = ({ children, user }: ProviderProps) => {
+const CtxProvider = ({ children }: ConvexProviderProps) => {
   const createUser = useMutation(api.users.create.default);
   const getUserByEmail = useMutation(api.users.get.byEmail);
   const getUserByAccountId = useMutation(api.users.get.byAccountId);
@@ -36,7 +38,6 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const updateStatus = useMutation(api.users.update.status);
   const updateRole = useMutation(api.users.update.role);
   const updateUserPhotoUrl = useMutation(api.users.update.photo_url);
-  const addMetadata = useMutation(api.users.add.metadata);
   const updateUserLikes = useMutation(api.users.update.likes);
   const updateUserBookmarks = useMutation(api.users.update.bookmarks);
   const updateUserFollowers = useMutation(api.users.update.followers);
@@ -71,15 +72,8 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
         tickets: async (id: string, tickets: UserTicket[]) =>
           await updateUserTickets({ id, tickets }),
       },
-      add: {
-        metadata: async (
-          id: string,
-          record: Record<string, string | number | boolean>,
-        ) => await addMetadata({ id, record }),
-      },
     }),
     [
-      addMetadata,
       createUser,
       updateUser,
       getUserByAccountId,
@@ -126,20 +120,20 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
     [createUrl, getFileUrl],
   );
 
-  const createvx = useCallback(async () => {
-    if (!user) return null;
-    const { name, fullname, avatar_url } =
-      user.user_metadata as SupabaseUserMetadata;
-    const userdata: CreateUser = {
-      id: user.id,
-      name: name,
-      email: user.email,
-      phone: user.phone,
-      fullname: fullname,
-      avatar_url: avatar_url,
-    };
-    return await usr.create(userdata);
-  }, [user, usr]);
+  // const createvx = useCallback(async () => {
+  //   if (!user) return null;
+  //   const { name, fullname, avatar_url } =
+  //     user.user_metadata as SupabaseUserMetadata;
+  //   const userdata: CreateUser = {
+  //     id: user.id,
+  //     name: name,
+  //     email: user.email,
+  //     phone: user.phone,
+  //     fullname: fullname,
+  //     avatar_url: avatar_url,
+  //   };
+  //   return await usr.create(userdata);
+  // }, [user, usr]);
 
   const createEvent = useMutation(api.events.create.default);
 
@@ -194,7 +188,6 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   const value = useMemo(
     () => ({
       usr,
-      createvx,
       files,
       events,
       getAllEvents,
@@ -204,7 +197,6 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
     }),
     [
       usr,
-      createvx,
       files,
       events,
       getAllEvents,
@@ -217,15 +209,10 @@ const CtxProvider = ({ children, user }: ProviderProps) => {
   return <ConvexCtx value={value}>{children}</ConvexCtx>;
 };
 
-interface ProviderProps {
-  children: ReactNode;
-  user: User | null;
-}
-
-const Provider = ({ children, user }: ProviderProps) => {
+const Provider = ({ children }: ConvexProviderProps) => {
   return (
     <ConvexProvider client={convex}>
-      <CtxProvider user={user}>
+      <CtxProvider>
         <VxProvider>{children}</VxProvider>
       </CtxProvider>
     </ConvexProvider>
@@ -233,3 +220,11 @@ const Provider = ({ children, user }: ProviderProps) => {
 };
 
 export default Provider;
+
+export const useConvexCtx = () => {
+  const context = useContext(ConvexCtx);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

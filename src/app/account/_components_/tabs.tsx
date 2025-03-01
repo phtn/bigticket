@@ -64,7 +64,7 @@ export const TabComponent = ({ children }: { children: ReactNode }) => {
         )}
         classNames={{
           tabList:
-            "w-fit gap-1 lg:gap-1.5 justfify-start space-x-8 bg-peach sm:space-x-6 md:space-x-5 transition-all duration-300 lg:space-x-8 xl:space-x-12",
+            "w-fit gap-1 lg:gap-1.5 justfify-start space-x-8 bg-gray-300 sm:space-x-6 md:space-x-5 transition-all duration-300 lg:space-x-8 xl:space-x-12",
           tabContent:
             "text-coal/80 data-[selected=true]:text-white font-inter text-xs font-semibold tracking-tighter md:text-sm tracking-tight",
           tab: "px-2 data-[hover-unselected]:opacity-100 hover:bg-gray-300/60",

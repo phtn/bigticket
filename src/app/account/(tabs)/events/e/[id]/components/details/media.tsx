@@ -157,6 +157,7 @@ const MediaListItem = (gallery: EventGallery) => {
       </div>
       <div className="col-span-2 flex h-10 w-full items-center justify-end hover:bg-gray-300/10">
         <Checkbox
+          name={gallery.src}
           color="primary"
           className="border-0 bg-transparent"
           classNames={{
@@ -172,9 +173,11 @@ const MediaListItem = (gallery: EventGallery) => {
 const MediaItem = (field: MediaField) => {
   return (
     <Input
+      id={field.name}
       label={field.label}
       name={field.name}
       type={field.type}
+      autoComplete={field.name}
       classNames={inputClassNames}
       placeholder={field.placeholder}
       isRequired={field.required}

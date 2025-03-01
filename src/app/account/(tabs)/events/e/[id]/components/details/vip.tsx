@@ -246,7 +246,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
 
     return (
       <Checkbox
-        // checked={vip.checked}
+        name={vip.email}
         disableAnimation={false}
         color="secondary"
         classNames={{

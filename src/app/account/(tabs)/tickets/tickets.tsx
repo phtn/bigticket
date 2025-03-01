@@ -3,14 +3,14 @@ import { HyperList } from "@/ui/list";
 import { opts } from "@/utils/helpers";
 import { Spinner } from "@nextui-org/react";
 import { type UserTicket } from "convex/events/d";
-import { use, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Count, EmptyList, Header } from "../../_components_/common";
 import { TicketCard } from "./ticket-card";
 import { TicketViewer } from "./ticket-viewer";
-import { UserCtx } from "@/app/ctx/user/ctx";
+import { useUserCtx } from "@/app/ctx/user";
 
 export const Tickets = () => {
-  const { xUser, pending } = use(UserCtx)!;
+  const { xUser, isPending } = useUserCtx();
 
   const ticketsByEvent = useCallback(
     (arr: UserTicket[] | undefined): Map<string, UserTicket[]> => {
@@ -44,9 +44,9 @@ export const Tickets = () => {
   const Counter = useCallback(
     ({ count }: { count: number }) => {
       const options = opts(<Spinner size="sm" />, <Count count={count} />);
-      return <>{options.get(pending)}</>;
+      return <>{options.get(isPending)}</>;
     },
-    [pending],
+    [isPending],
   );
 
   return (
@@ -80,9 +80,9 @@ export const Tickets = () => {
           <EmptyList
             icon="Ticket"
             message={
-              pending ? "Getting your tickets..." : "You have no tickets yet."
+              isPending ? "Getting your tickets..." : "You have no tickets yet."
             }
-            loading={pending}
+            loading={isPending}
           />
         ) : null}
         <TicketViewer />

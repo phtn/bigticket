@@ -232,6 +232,7 @@ const CohostListItem = (cohost: Cohost) => {
       </div>
       <div className="col-span-2 flex h-10 w-full items-center justify-end hover:bg-gray-300/10">
         <Checkbox
+          name={cohost.email}
           color="primary"
           className="border-0 bg-transparent"
           classNames={{
@@ -251,9 +252,11 @@ const CohostItem = (field: CohostField) => {
     field.value
   ) : (
     <Input
+      id={field.name}
       label={field.label}
       name={field.name}
       type={field.type}
+      autoComplete={field.name}
       classNames={inputClassNames}
       placeholder={field.placeholder}
       isRequired={field.required}
@@ -284,8 +287,9 @@ const CohostBlock = ({ data, icon, label, delay = 0 }: CohostBlockProps) => (
 const ClearanceItem = (props: [string, boolean]) => {
   return (
     <Checkbox
-      className="flex data-[selected=true]:bg-primary/30"
+      name={props[0]}
       color="secondary"
+      className="flex data-[selected=true]:bg-primary/30"
       classNames={{
         base: "flex max-w-lg h-14 md:max-w-none px-3",
         label:
