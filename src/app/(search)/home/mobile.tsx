@@ -1,9 +1,9 @@
 import { HyperList } from "@/ui/list";
-import { EventCard } from "../../(search)/event-card";
+import { EventCard } from "../event-card";
 import { Hero } from "./components/hero";
 import { useCallback, useState } from "react";
-import { Proxima } from "../proxima";
-import { Collections } from "../sidebar";
+import { Proxima } from "../../_components_/proxima";
+import { Collections } from "../../_components_/sidebar";
 import { categories, type Category } from "./components/category";
 import { cn } from "@/lib/utils";
 import { type XEvent } from "@/app/types";

@@ -16,9 +16,8 @@ import {
 } from "@react-email/components";
 import type { VIP } from "convex/events/d";
 
-export const BigTicketInvitation = ({
+export const VIPInvitation = ({
   name,
-  email,
   ticket_count,
   event_id,
   event_name,
@@ -33,8 +32,8 @@ export const BigTicketInvitation = ({
       <Head />
       <Preview>{previewText}</Preview>
       <Tailwind>
-        <Body className="mx-auto my-auto bg-gray-200 py-[4px] font-sans">
-          <Container className="my-[40px] flex w-full max-w-[465px] rounded-lg border-[0.33px] border-[#14141b] bg-white p-[24px] shadow-lg">
+        <Body className="mx-auto my-auto flex w-full max-w-[400px] justify-center rounded-lg bg-gray-200 py-[2px] font-sans">
+          <Container className="flex w-full rounded-lg border-[0.33px] border-[#14141b] bg-white p-[24px] shadow-lg">
             <Section className="mt-[32px]">
               <Img
                 src={imageUrl ?? backupUrl}
@@ -47,30 +46,23 @@ export const BigTicketInvitation = ({
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal tracking-tight text-black">
               You&apos;re invited!
             </Heading>
-            <Section className="px-4">
-              <Text className="text-justify text-[14px] leading-[24px] text-[#14141b]">
-                <strong>Hello, {name}! </strong> &rarr; (
-                <Link
-                  href={`mailto:${email}`}
-                  className="text-sm text-[#007AFE] no-underline"
-                >
-                  {email}
-                </Link>
-                )
+            <Section className="px-2">
+              <Text className="text-left text-[14px] leading-[24px] text-[#14141b]">
+                <strong className="tracking-tighter">Hello, {name} 👋🏽 </strong>
               </Text>
-              <Text className="text-[14px] leading-[24px] text-black">
+              <Text className="text-justify text-[14px] leading-[24px] text-[#14141b]">
                 You are invited to <strong>{event_name}</strong> exclusive
                 event! You&apos;re VIP {tickets} grants you priority entry,
                 premium seating, and special perks. Scan your QR code at the
                 entrance and enjoy the show!
               </Text>
             </Section>
-            <Section className="mb-[32px] mt-[32px] flex w-full items-center justify-center px-[24px] text-center">
+            <Section className="mb-[32px] mt-[32px] flex w-full items-center justify-center px-4 text-center">
               <Button
-                className="flex h-fit w-[360px] items-center justify-center rounded-lg bg-[#14141b] py-1 no-underline"
+                className="flex h-fit w-[270px] items-center justify-center rounded-lg bg-[#14141b] py-1 no-underline"
                 href={baseUrl + `/?x=${event_id}`}
               >
-                <Text className="whitespace-nowrap pl-[110px] text-center text-[16px] font-semibold tracking-tight text-[#F3FCEE]">
+                <Text className="whitespace-nowrap pl-[70px] text-center text-[16px] font-semibold tracking-tight text-[#F3FCEE]">
                   Claim <strong>{ticket_count} VIP</strong> {tickets}
                 </Text>
               </Button>
@@ -85,7 +77,7 @@ export const BigTicketInvitation = ({
               </Link>
             </Text>
             <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
-            <Section className="p-7">
+            <Section className="p-4">
               <Text className="text-justify text-[12px] leading-[24px] text-[#666666]">
                 This invitation was intended for{" "}
                 <span className="text-black">{name}</span>. This invite was sent

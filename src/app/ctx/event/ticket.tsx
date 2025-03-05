@@ -23,10 +23,18 @@ interface TicketCtxValues {
 export const TicketCtx = createContext<TicketCtxValues | null>(null);
 
 export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
-  const { usr } = useConvexCtx();
+  const { vxUsers } = useConvexCtx();
   const { user } = useAuthStore();
 
   const [count, setCount] = useState<number>(0);
+
+  const updateUserTickets = useCallback(
+    async (id: string, tickets: UserTicket[]) =>
+      (await vxUsers.mut.updateUserTickets({ id, tickets })) as Promise<
+        string | null
+      >,
+    [vxUsers.mut],
+  );
 
   const getVIPTicket = useCallback(
     async (e: SelectEvent | null) => {
@@ -71,13 +79,13 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
         }),
       );
 
-      const response = await usr.update.tickets(user_id, tickets);
+      const response = await updateUserTickets(user_id, tickets);
       if (response === "success") {
         onSuccess("Ticket claimed successfully!");
       }
       return response;
     },
-    [usr.update, user?.email],
+    [user?.email, updateUserTickets],
   );
 
   const getBasicTicket = useCallback(
@@ -119,13 +127,13 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
         }),
       );
 
-      const response = await usr.update.tickets(user_id, tickets);
+      const response = await updateUserTickets(user_id, tickets);
       if (response === "success") {
         onSuccess("Ticket claimed successfully!");
       }
       return response;
     },
-    [usr.update],
+    [updateUserTickets],
   );
 
   const value = useMemo(

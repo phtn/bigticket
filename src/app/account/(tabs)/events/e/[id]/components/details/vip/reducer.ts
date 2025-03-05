@@ -1,22 +1,4 @@
-import { type VIPWithState } from "./vip";
-
-export type VIPState = {
-  vipList: VIPWithState[];
-  selectedVIP: VIPWithState | undefined;
-  isPending: boolean;
-  isLoading: boolean;
-};
-
-export type VIPAction =
-  | { type: "SET_VIP_LIST"; payload: VIPWithState[] }
-  | { type: "ADD_VIP"; payload: VIPWithState }
-  | { type: "UPDATE_VIP"; payload: VIPWithState }
-  | { type: "REMOVE_VIP"; payload: string[] } // array of emails
-  | { type: "SELECT_VIP"; payload: { email: string; isSelected: boolean } }
-  | { type: "SET_SELECTED_VIP"; payload: VIPWithState | undefined }
-  | { type: "SET_PENDING"; payload: boolean }
-  | { type: "SET_LOADING"; payload: boolean }
-  | { type: "RESET" };
+import type { VIPWithDefaults, VIPState, VIPAction } from "./types";
 
 export const initialVIPState: VIPState = {
   vipList: [],
@@ -31,19 +13,28 @@ export function vipReducer(state: VIPState, action: VIPAction): VIPState {
       return {
         ...state,
         vipList: action.payload,
+        isLoading: false,
       };
-    case "ADD_VIP":
+    case "ADD_VIP": {
+      const newList = updateVIP([...state.vipList], action.payload);
       return {
         ...state,
-        vipList: updateVIP([...state.vipList], action.payload),
+        vipList: newList,
+        isPending: false,
       };
-    case "UPDATE_VIP":
+    }
+    case "UPDATE_VIP": {
+      const newList = state.vipList.map((vip) =>
+        vip.email === action.payload.email
+          ? { ...vip, ...action.payload, updated_at: Date.now() }
+          : vip
+      );
       return {
         ...state,
-        vipList: state.vipList.map((vip) =>
-          vip.email === action.payload.email ? action.payload : vip,
-        ),
+        vipList: newList,
+        isPending: false,
       };
+    }
     case "REMOVE_VIP":
       return {
         ...state,
@@ -88,15 +79,20 @@ export function vipReducer(state: VIPState, action: VIPAction): VIPState {
   }
 }
 
-function updateVIP(vip_list: VIPWithState[], vip: VIPWithState) {
-  const map = new Map();
-  vip_list.forEach((c, index) => map.set(c.email, index));
+function updateVIP(vip_list: VIPWithDefaults[], vip: VIPWithDefaults) {
+  const existingIndex = vip_list.findIndex((v) => v.email === vip.email);
 
-  const existingIndex = map.get(vip.email) as number;
-  if (existingIndex !== undefined) {
-    vip_list[existingIndex]!.ticket_count = vip.ticket_count;
+  if (existingIndex !== -1) {
+    // Update existing VIP
+    vip_list[existingIndex] = {
+      ...vip_list[existingIndex],
+      ...vip,
+      updated_at: Date.now(),
+    };
   } else {
+    // Add new VIP
     vip_list.push(vip);
   }
+
   return vip_list.filter((vip) => vip.ticket_count !== 0);
 }

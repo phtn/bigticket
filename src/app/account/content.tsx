@@ -2,12 +2,11 @@
 
 import { Icon } from "@/icons";
 import { Card, CardHeader } from "@nextui-org/react";
-import { use } from "react";
-import { VxCtx } from "../ctx/convex/vx";
 import { Header } from "./_components_/common";
+import { useUserCtx } from "../ctx/user";
 
 export const Content = () => {
-  const { vx } = use(VxCtx)!;
+  const { xUser } = useUserCtx();
   return (
     <div className="min-h-[80vh] w-full justify-center rounded-none pb-10 md:rounded-lg md:px-6">
       <div className="">
@@ -24,18 +23,24 @@ export const Content = () => {
                 </h2>
                 <h2 className="font-light">
                   Impressions:{" "}
-                  <span className="font-semibold">{vx?.impressions ?? 0}</span>
+                  <span className="font-semibold">
+                    {xUser?.impressions ?? 0}
+                  </span>
                 </h2>
               </div>
             </CardHeader>
             <div className="flex items-center justify-start border-t-4 p-3">
               <div className="w-full space-y-1">
                 <p className="font-medium">Followers</p>
-                <p className="text-lg font-bold">{vx?.follower_count ?? 0}</p>
+                <p className="text-lg font-bold">
+                  {xUser?.follower_count ?? 0}
+                </p>
               </div>
               <div className="w-full space-y-1">
                 <p className="font-medium">Following</p>
-                <p className="text-lg font-bold">{vx?.following_count ?? 0}</p>
+                <p className="text-lg font-bold">
+                  {xUser?.following_count ?? 0}
+                </p>
               </div>
             </div>
           </Card>

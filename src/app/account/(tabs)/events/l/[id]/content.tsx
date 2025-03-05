@@ -1,6 +1,5 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { LiveViewCtx, LiveViewCtxProvider } from "./ctx";
 import { use, useCallback, useEffect } from "react";
 import { Image } from "@nextui-org/react";
@@ -15,26 +14,7 @@ export const Content = () => (
 );
 
 const LiveView = () => {
-  const pathname = usePathname();
-  const ids = pathname.split("/").pop();
-  const [event_id] = ids?.split("---") ?? ["", ""];
-
-  const {
-    getEventId,
-    // pending,
-    event,
-    cover_url,
-    open,
-    toggle,
-    // ticket_data,
-    qrcode,
-  } = use(LiveViewCtx)!;
-
-  useEffect(() => {
-    if (event_id) {
-      getEventId(event_id);
-    }
-  }, [event_id, getEventId]);
+  const { event, cover_url, open, toggle, qrcode } = use(LiveViewCtx)!;
 
   useEffect(() => {
     if (open && qrcode) {

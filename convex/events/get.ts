@@ -28,12 +28,10 @@ export const byType = mutation({
 export const byHostId = query({
   args: { host_id: v.string() },
   handler: async ({ db }, { host_id }) =>
-    (
-      await db
-        .query("events")
-        .withIndex("by_host_id", (q) => q.eq("host_id", host_id))
-        .collect()
-    ).reverse(),
+    await db
+      .query("events")
+      .withIndex("by_host_id", (q) => q.eq("host_id", host_id))
+      .collect(),
 });
 
 export const byIds = query({

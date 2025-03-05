@@ -59,12 +59,12 @@ export const TabComponent = ({ children }: { children: ReactNode }) => {
         color="primary"
         variant="light"
         className={cn(
-          "relative top-0.5 z-50 flex h-10 md:absolute md:top-[10rem] md:w-fit md:justify-center",
+          "relative top-0.5 z-50 flex h-10 md:absolute md:top-[9.5rem] md:h-12 md:w-fit md:justify-center",
           { hidden: sub?.length === 1 },
         )}
         classNames={{
           tabList:
-            "w-fit gap-1 lg:gap-1.5 justfify-start space-x-8 bg-gray-300 sm:space-x-6 md:space-x-5 transition-all duration-300 lg:space-x-8 xl:space-x-12",
+            "w-fit gap-1 lg:gap-1.5 justfify-start space-x-8 md:bg-gray-300 md:p-2 sm:space-x-6 md:space-x-5 transition-all duration-300 lg:space-x-8 xl:space-x-12",
           tabContent:
             "text-coal/80 data-[selected=true]:text-white font-inter text-xs font-semibold tracking-tighter md:text-sm tracking-tight",
           tab: "px-2 data-[hover-unselected]:opacity-100 hover:bg-gray-300/60",

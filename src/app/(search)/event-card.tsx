@@ -14,7 +14,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { type XEvent } from "../types";
-import { BlurFade } from "@/ui/blur/fade";
 
 export const EventCard = (xEvent: XEvent) => {
   const { event_day, event_time, narrow } = useMoment({
@@ -72,102 +71,100 @@ export const EventCard = (xEvent: XEvent) => {
   );
 
   return (
-    <BlurFade>
-      <Card
-        isFooterBlurred
-        className="h-[300px] w-full overflow-clip rounded-3xl border border-primary-700 bg-primary"
-      >
-        <CardHeader
-          className={cn(
-            "absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4 tracking-tight text-white",
-            { "text-coal": is_cover_light },
-          )}
-        >
-          <section className="w-full overflow-clip text-ellipsis">
-            <h2
-              className={cn(
-                "max-w-[35ch] whitespace-nowrap text-tiny font-bold uppercase",
-                "bg-gradient-to-br bg-clip-text text-transparent",
-                "from-white/60 from-20% via-white/80 via-15% to-white/70 to-40%",
-                {
-                  "from-ticket/80 from-20% via-ticket/80 via-15% to-ticket/90 to-40%":
-                    is_cover_light,
-                },
-              )}
-            >
-              {venue_name ?? event_geo}
-            </h2>
-            <h1 className="font-inter text-xl font-bold capitalize tracking-tight shadow-coal drop-shadow-sm">
-              {event_name}
-            </h1>
-          </section>
-          <section className="relative flex size-8 items-center justify-center">
-            <div className="absolute -right-8 -top-10">
-              <Heart isActive={false} />
-            </div>
-            <BookmarkButton />
-          </section>
-        </CardHeader>
-        {cover_src ? (
-          <Image
-            isBlurred
-            isZoomed
-            removeWrapper
-            radius="none"
-            alt="nightlife"
-            className="z-0 aspect-auto h-full w-full border-0 object-cover object-top"
-            src={cover_src}
-          />
-        ) : (
-          <div className="flex size-full items-center justify-center">
-            <Icon name="SpinnerBall" className="size-8 text-teal-300" />
-          </div>
+    <Card
+      isFooterBlurred
+      className="h-[300px] w-full overflow-clip rounded-3xl border border-primary-700 bg-primary"
+    >
+      <CardHeader
+        className={cn(
+          "absolute top-1 z-10 flex w-full items-start justify-between gap-3 ps-4 tracking-tight text-white",
+          { "text-coal": is_cover_light },
         )}
-        <CardFooter className="absolute -bottom-[2px] z-10 border-t-[0.33px] border-primary/40 bg-black/10">
-          <div className="flex flex-grow items-center gap-2">
-            {/* <Image
+      >
+        <section className="w-full overflow-clip text-ellipsis">
+          <h2
+            className={cn(
+              "max-w-[35ch] whitespace-nowrap text-tiny font-bold uppercase",
+              "bg-gradient-to-br bg-clip-text text-transparent",
+              "from-white/60 from-20% via-white/80 via-15% to-white/70 to-40%",
+              {
+                "from-ticket/80 from-20% via-ticket/80 via-15% to-ticket/90 to-40%":
+                  is_cover_light,
+              },
+            )}
+          >
+            {venue_name ?? event_geo}
+          </h2>
+          <h1 className="font-inter text-xl font-bold capitalize tracking-tight shadow-coal drop-shadow-sm">
+            {event_name}
+          </h1>
+        </section>
+        <section className="relative flex size-8 items-center justify-center">
+          <div className="absolute -right-8 -top-10">
+            <Heart isActive={false} />
+          </div>
+          <BookmarkButton />
+        </section>
+      </CardHeader>
+      {cover_src ? (
+        <Image
+          isBlurred
+          isZoomed
+          removeWrapper
+          radius="none"
+          alt="nightlife"
+          className="z-0 aspect-auto h-full w-full border-0 object-cover object-top"
+          src={cover_src}
+        />
+      ) : (
+        <div className="flex size-full items-center justify-center">
+          <Icon name="SpinnerBall" className="size-8 text-teal-300" />
+        </div>
+      )}
+      <CardFooter className="absolute -bottom-[2px] z-10 border-t-[0.33px] border-primary/40 bg-black/10">
+        <div className="flex flex-grow items-center gap-2">
+          {/* <Image
             alt="Breathing app icon"
             className="h-24 w-full rounded-full"
             src={cover_url}
           /> */}
-            <div className="space-y-0.5">
-              <p className="text-tiny font-semibold text-teal-300 drop-shadow-md">
-                {host_name}
-              </p>
-              <div className="space-x-2 text-tiny font-bold uppercase text-chalk">
-                <span className="drop-shadow-md">{event_day}</span>
-                <span>&middot;</span>
-                <span className="drop-shadow-md">
-                  {/* {event_date.substring(0, event_date.indexOf(","))} */}
-                  {narrow.date}
-                </span>
-                <span>&middot;</span>
-                <span className="drop-shadow-md">{event_time.compact}</span>
-              </div>
+          <div className="space-y-0.5">
+            <p className="text-tiny font-semibold text-teal-300 drop-shadow-md">
+              {host_name}
+            </p>
+            <div className="space-x-2 text-tiny font-bold uppercase text-chalk">
+              <span className="drop-shadow-md">{event_day}</span>
+              <span>&middot;</span>
+              <span className="drop-shadow-md">
+                {/* {event_date.substring(0, event_date.indexOf(","))} */}
+                {narrow.date}
+              </span>
+              <span>&middot;</span>
+              <span className="drop-shadow-md">{event_time.compact}</span>
             </div>
           </div>
-          <button
-            aria-label={`view-${event_name?.replaceAll(" ", "-").toLowerCase()}-event`}
-            onClick={handleSelectEvent}
-            className={cn(
-              "flex size-8 items-center justify-center rounded-full",
-              "bg-teal-500 hover:bg-teal-400",
-              "active:scale-95 active:opacity-90",
-              "group/btn transition-all duration-300",
-            )}
-          >
-            {loading ? (
-              <Spinner size="sm" color="default" />
-            ) : (
-              <Icon
-                name="ArrowRight"
-                className="size-4 text-chalk shadow-coal drop-shadow-sm group-hover/btn:text-white"
-              />
-            )}
-          </button>
-        </CardFooter>
-      </Card>
-    </BlurFade>
+        </div>
+        <button
+          aria-label={`view-${event_name?.replaceAll(" ", "-").toLowerCase()}-event`}
+          onClick={handleSelectEvent}
+          className={cn(
+            "flex size-8 items-center justify-center rounded-full",
+            "bg-teal-500 hover:bg-teal-400",
+            "active:scale-95 active:opacity-90",
+            "group/btn transition-all duration-300",
+          )}
+        >
+          {loading ? (
+            <Spinner size="sm" color="default" />
+          ) : (
+            <Icon
+              name="ArrowRight"
+              className="size-4 text-chalk shadow-coal drop-shadow-sm group-hover/btn:text-white"
+            />
+          )}
+        </button>
+      </CardFooter>
+    </Card>
   );
 };
 

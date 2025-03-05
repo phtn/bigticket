@@ -10,11 +10,12 @@ import { ButtonIcon } from "@/ui/button";
 import { HyperLink } from "@/ui/button/button";
 import { useQuery } from "convex/react";
 import { api } from "@vx/api";
-import { q } from "@/app/ctx/convex/utils";
+import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
 import { getUserID } from "@/app/actions";
 import { Err } from "@/utils/helpers";
 
 export const UserSettings = () => {
+  const { q } = useConvexUtils();
   const [userId, setUserId] = useState<string>();
   const x = useQuery(api.users.get.byId, { id: q(userId) });
   const [xUser, setXUser] = useState<SelectUser | null>(null);
@@ -52,7 +53,7 @@ export const UserSettings = () => {
         </Header>
 
         <div className="space-y-6 px-4 font-inter text-xs">
-          <Card className="w-full rounded-lg p-1 font-medium tracking-tight md:max-w-xl">
+          <Card className="w-full rounded-lg p-1 font-medium tracking-tight md:max-w-sm">
             <CardHeader>
               <div className="flex w-full items-center justify-between">
                 <h2 className="text-[16px] font-medium tracking-tighter">
@@ -69,7 +70,7 @@ export const UserSettings = () => {
             />
           </Card>
 
-          <div className="space-y-4 rounded-xl bg-gray-300 px-4 py-6 md:max-w-xl">
+          <div className="space-y-4 rounded-xl bg-gray-300 px-4 py-6 md:max-w-sm">
             <div className="px-2">
               <HyperLink
                 href={"/signout"}
@@ -127,6 +128,6 @@ const FieldItem = (item: FieldItemProps) => (
       <p className="font-medium opacity-60">{item.label}</p>
       <p className="text-[16px] font-medium">{item.value}</p>
     </div>
-    <ButtonIcon icon="Pen" />
+    <ButtonIcon icon="Pen" bg="text-gray-200" />
   </div>
 );

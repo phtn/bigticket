@@ -1,5 +1,5 @@
 import { EventEditorContent } from "./content";
-import { getAccountID, preloadEventsByHostId } from "@/app/actions";
+import { preloadEventsByHostId } from "@/app/actions";
 
 interface EventEditorPageProps {
   params: Promise<{
@@ -8,8 +8,7 @@ interface EventEditorPageProps {
 }
 const Page = async ({ params }: EventEditorPageProps) => {
   const { id } = await params;
-  const host_id = await getAccountID();
-  const events = await preloadEventsByHostId(host_id);
+  const events = await preloadEventsByHostId();
   return <EventEditorContent id={id} events={events} />;
 };
 export default Page;

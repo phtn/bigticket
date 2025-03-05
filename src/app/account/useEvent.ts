@@ -1,16 +1,16 @@
-import { use, useCallback, useState } from "react";
-import { ConvexCtx } from "../ctx/convex";
+import { useCallback, useState } from "react";
+import { useConvexCtx } from "../ctx/convex";
 import type { InsertEvent } from "convex/events/d";
 import { Err, guid, Ok } from "@/utils/helpers";
 import { useRouter } from "next/navigation";
-import { VxCtx } from "../ctx/convex/vx";
+import { useUserCtx } from "../ctx/user";
 
 export const useEvent = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const { events } = use(ConvexCtx)!;
-  const { vx } = use(VxCtx)!;
+  const { vxEvents } = useConvexCtx();
+  const { xUser } = useUserCtx();
 
   const createEvent = useCallback(
     async (data: InsertEvent) => {
@@ -18,20 +18,20 @@ export const useEvent = () => {
       const args: InsertEvent = {
         ...data,
         event_id,
-        host_id: vx?.account_id,
-        host_name: vx?.nickname,
-        host_email: vx?.email,
+        host_id: xUser?.account_id,
+        host_name: xUser?.nickname,
+        host_email: xUser?.email,
       };
 
-      await events
+      await vxEvents.mut
         .create(args)
         .then(Ok(setLoading, "Event created successfully!"))
         .then(() =>
-          router.push(`/account/events/e/${event_id}---${vx?.account_id}`),
+          router.push(`/account/events/e/${event_id}---${xUser?.account_id}`),
         )
         .catch(Err);
     },
-    [events, router, vx?.email, vx?.nickname, vx?.account_id],
+    [vxEvents.mut, router, xUser?.email, xUser?.nickname, xUser?.account_id],
   );
 
   return { createEvent, loading };

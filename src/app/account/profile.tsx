@@ -50,17 +50,17 @@ export const Content = () => {
           className={cn("h-16 w-full md:h-20", "overflow-hidden")}
         ></div>
         <div className="flex h-12 w-full items-center justify-between bg-gray-200 pe-2 ps-32 md:h-16 md:pe-4 md:ps-36 lg:ps-40">
-          <div className="whitespace-nowrap font-inter leading-none">
+          <div className="whitespace-nowrap font-inter leading-none md:space-y-1">
             <Link
               className="flex items-center"
-              href={`${pathname}/preview?page=${xUser?.account_id}`}
+              href={`/account/profile/?p=${xUser?.account_id}`}
             >
               <h2 className="font-semibold tracking-tighter">
                 {xUser?.nickname}
               </h2>
             </Link>
             <h3 className="text-xs font-light tracking-tighter md:text-sm">
-              {xUser?.email}
+              @{xUser?.username ?? xUser?.email?.split("@").shift()}
             </h3>
           </div>
 

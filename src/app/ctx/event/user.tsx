@@ -6,6 +6,7 @@ import {
   createContext,
   use,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
@@ -30,16 +31,16 @@ export const PreloadedUserEventsCtxProvider = ({
   children,
   events,
 }: PreloadedUserEventsCtxProps) => {
-  const { files } = use(ConvexCtx)!;
+  const { vxFiles } = use(ConvexCtx)!;
   const [x, setXEvents] = useState<XEvent[]>();
   const [pending, setPending] = useState(false);
 
   const getUrl = useCallback(
     async (event: SelectEvent) => ({
       ...event,
-      cover_src: await files.get(event.cover_url),
+      cover_src: await vxFiles.getUrl(event.cover_url),
     }),
-    [files],
+    [vxFiles],
   );
 
   const signEvents = useCallback(async () => {
@@ -67,4 +68,12 @@ export const PreloadedUserEventsCtxProvider = ({
   return (
     <PreloadedUserEventsCtx value={value}>{children}</PreloadedUserEventsCtx>
   );
+};
+
+export const usePreloadedUserEvents = () => {
+  const context = useContext(PreloadedUserEventsCtx);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };

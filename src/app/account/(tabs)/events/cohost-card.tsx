@@ -9,9 +9,9 @@ import { ButtonIcon } from "@/ui/button";
 import { opts } from "@/utils/helpers";
 import { Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { type ButtonHTMLAttributes, use, useCallback } from "react";
+import { type ButtonHTMLAttributes, useCallback } from "react";
 import { type IMenuItem, PopOptions } from "./components";
-import { VxCtx } from "@/app/ctx/convex/vx";
+import { useUserCtx } from "@/app/ctx/user";
 
 export const CohostedEventCard = (xEvent: XEvent) => {
   const {
@@ -29,15 +29,9 @@ export const CohostedEventCard = (xEvent: XEvent) => {
     end: end_date,
   });
 
-  const { vx } = use(VxCtx)!;
+  const { xUser } = useUserCtx();
 
   const router = useRouter();
-  // const handleEditRoute = useCallback(async () => {
-  //   const userId = await getUserID();
-  //   if (!userId) return;
-  //   router.push(`/account/events/e/${event_id}---${userId}`);
-  // }, [router, event_id]);
-
   const handleLiveViewRoute = useCallback(async () => {
     const userId = await getUserID();
     if (!userId) return;
@@ -143,14 +137,14 @@ export const CohostedEventCard = (xEvent: XEvent) => {
         id: 1,
         type: "route",
         label: "Event Settings",
-        value: `/account/events/l/${event_id}---${vx?.id.split("-").pop()}`,
+        value: `/account/events/l/${event_id}---${xUser?.id.split("-").pop()}`,
         icon: "Pen",
       },
       {
         id: 2,
         type: "route",
         label: "Ticket Scanner",
-        value: `/account/events/l/${event_id}---${vx?.id.split("-").pop()}`,
+        value: `/account/events/l/${event_id}---${xUser?.id.split("-").pop()}`,
         icon: "QrCode",
       },
     ];
@@ -166,7 +160,7 @@ export const CohostedEventCard = (xEvent: XEvent) => {
         </section>
       </PopOptions>
     );
-  }, [event_id, vx?.id]);
+  }, [event_id, xUser?.id]);
 
   return (
     <Card

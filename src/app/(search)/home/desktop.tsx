@@ -2,11 +2,11 @@ import { cn } from "@/lib/utils";
 import { HyperSpace } from "@/ui/cursor";
 import { HyperList } from "@/ui/list";
 import { useCallback, useState } from "react";
-import { EventCard } from "../../(search)/event-card";
+import { EventCard } from "../event-card";
 import { Hero } from "./components/hero";
-import { Collections } from "../sidebar";
+import { Collections } from "../../_components_/sidebar";
 import { categories, type Category } from "./components/category";
-import { Proxima } from "../proxima";
+import { Proxima } from "../../_components_/proxima";
 import { type XEvent } from "@/app/types";
 
 interface DesktopViewProps {

@@ -1,4 +1,4 @@
-import { ConvexCtx } from "@/app/ctx/convex";
+import { useConvexCtx } from "@/app/ctx/convex";
 import { onSuccess } from "@/app/ctx/toast";
 import { type XEvent } from "@/app/types";
 import { type IconName } from "@/icons";
@@ -10,7 +10,6 @@ import type { Cohost, CohostClearance } from "convex/events/d";
 import moment from "moment";
 import {
   type ChangeEvent,
-  use,
   useActionState,
   useCallback,
   useMemo,
@@ -20,6 +19,7 @@ import { inputClassNames } from "../../editor";
 import { BlockHeader } from "./components";
 import { cohost_info, type CohostField, CohostZod } from "./schema";
 import { Nebula } from ".";
+import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
 
 interface CohostBlockProps {
   data: CohostField[];
@@ -56,15 +56,19 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
     [],
   );
 
-  const { events } = use(ConvexCtx)!;
+  const { vxEvents } = useConvexCtx();
+  const { q } = useConvexUtils();
 
   const updateCohostList = useCallback(
     async (data: Cohost) => {
       if (!xEvent?.event_id) return;
       setCohostList((prev) => [...prev, data]);
-      return await events.update.coHost(xEvent?.event_id, data);
+      return await vxEvents.mut.updateEventCohost({
+        id: q(xEvent?.event_id),
+        cohost: data,
+      });
     },
-    [xEvent?.event_id, events.update],
+    [xEvent?.event_id, vxEvents.mut, q],
   );
 
   const addCohost = useCallback(
@@ -113,7 +117,7 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
         clearanceValues,
         values ?? [],
       ) as CohostClearance;
-      console.table(updatedClearance);
+      // console.table(updatedClearance);
       setClearanceValues(updatedClearance);
     },
     [clearanceValues],
@@ -123,14 +127,14 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
     <Nebula>
       <Form action={action}>
         <div className="grid h-full w-full grid-cols-1 md:grid-cols-5 md:gap-0 md:rounded">
-          <section className="h-fit border-b border-vanilla/20 sm:col-span-3 md:col-span-2 md:h-fit md:border">
+          <section className="h-fit border-b border-vanilla/20 sm:col-span-3 md:col-span-2 md:h-fit md:border-[0.33px]">
             <CohostBlock
               data={cohost_info}
               label="Host Settings"
               icon="UserSettings2"
             />
 
-            <div className="flex h-fit w-full border-t-[0.33px] border-vanilla/20 bg-chalk/5 px-6 py-8 backdrop-blur-sm lg:px-4 xl:px-6">
+            <div className="flex h-fit w-full border-t-[0.33px] border-vanilla/20 px-6 py-8 backdrop-blur-sm lg:px-4 xl:px-6">
               <CheckboxGroup
                 onValueChange={handleAccessValuesChange}
                 defaultValue={["scan_code"]}
@@ -151,14 +155,14 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
                   data={Object.entries(clearanceValues).map((c) => c)}
                   component={ClearanceItem}
                   container="flex flex-col lg:flex-row xl:space-x-5 lg:space-x-2 whitespace-nowrap space-y-2 lg:space-y-0 w-full justify-between xl:justify-start"
-                  itemStyle="xl:py-1.5 ps-1.5 pe-2 border-0 lg:w-fit w-full overflow-hidden rounded-xl hover:bg-primary/35 border-1 border-primary/0 hover:border-chalk/20"
+                  itemStyle="xl:py-1.5 ps-1.5 pe-2 border-0 lg:w-fit w-full overflow-hidden rounded-xl hover:bg-primary/35 hover:border-chalk/20"
                 />
               </CheckboxGroup>
             </div>
 
             <div className="flex h-1/6 w-full items-end justify-between">
-              <div className="flex w-full items-center border-t border-vanilla/20 text-chalk">
-                <div className="flex h-10 w-full items-center justify-between gap-3 border-r border-vanilla/20 px-3">
+              <div className="flex w-full items-center border-t-[0.33px] border-vanilla/20 text-chalk">
+                <div className="flex h-14 w-full items-center justify-between gap-3 border-r-[0.33px] border-vanilla/20 px-3">
                   <p className="font-inter text-xs font-semibold tracking-tight">
                     Confirmed
                   </p>
@@ -170,7 +174,9 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
                   type="submit"
                   label="Add"
                   end="Plus"
+                  fullWidth
                   dark
+                  xl
                 />
               </div>
             </div>
@@ -178,7 +184,7 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
 
           <section className="relative border-vanilla/20 text-chalk md:col-span-3 md:border-y md:border-r">
             <div className="h-96 w-full overflow-hidden overflow-y-scroll">
-              <div className="flex h-11 w-full items-center justify-between border-b border-vanilla/20 px-3 font-inter text-tiny font-bold">
+              <div className="flex h-11 w-full items-center justify-between border-b-3 border-vanilla/20 px-3 font-inter text-tiny font-bold">
                 <div className="flex w-full items-center justify-between gap-6 md:justify-start">
                   <span>Co-host List</span>
                   <span className="font-sans font-normal">

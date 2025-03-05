@@ -1,8 +1,8 @@
 "use client";
 
-import { useEvents } from "@/app/_components_/home/useEvents";
-import { qs } from "@/app/ctx/convex/utils";
-import { PreloadedUserEventsCtx } from "@/app/ctx/event/user";
+import { useEvents } from "@/app/(search)/home/useEvents";
+import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
+import { usePreloadedUserEvents } from "@/app/ctx/event/user";
 import { SidebarCtx } from "@/app/ctx/sidebar";
 import { useUserCtx } from "@/app/ctx/user";
 import { Icon } from "@/icons";
@@ -27,7 +27,8 @@ import { EventCardAccount } from "./event-card";
 import { CohostedEventCard } from "./cohost-card";
 
 export const Events = () => {
-  const { x, pending } = use(PreloadedUserEventsCtx)!;
+  const { qs } = useConvexUtils();
+  const { x, pending } = usePreloadedUserEvents();
   const { open } = use(SidebarCtx)!;
   const { xUser } = useUserCtx();
   const [email, setEmail] = useState<string>();

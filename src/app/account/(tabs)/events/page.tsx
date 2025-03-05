@@ -1,5 +1,5 @@
 import { Content } from "./content";
-import { getAccountID, preloadEventsByHostId } from "@/app/actions";
+import { preloadEventsByHostId } from "@/app/actions";
 
 export interface PageProps {
   params: Promise<{
@@ -9,8 +9,7 @@ export interface PageProps {
 
 const Page = async ({ params }: PageProps) => {
   const { id } = await params;
-  const host_id = await getAccountID();
-  const events = await preloadEventsByHostId(host_id);
+  const events = await preloadEventsByHostId();
   return <Content id={id} events={events} />;
 };
 export default Page;

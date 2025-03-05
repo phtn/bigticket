@@ -1,15 +1,15 @@
 "use client";
 
 import { getAccountID } from "@/app/actions";
-import { ConvexCtx } from "@/app/ctx/convex";
+import { useConvexCtx } from "@/app/ctx/convex";
 import { onError, onSuccess } from "@/app/ctx/toast";
 import { useToggle } from "@/hooks/useToggle";
 import { Err } from "@/utils/helpers";
 import { type IDetectedBarcode } from "@yudiel/react-qr-scanner";
 import { type SelectEvent } from "convex/events/d";
+import { usePathname } from "next/navigation";
 import {
   createContext,
-  use,
   useCallback,
   useEffect,
   useMemo,
@@ -30,7 +30,6 @@ interface TicketData {
 }
 interface LiveViewCtxValues {
   event: SelectEvent | null;
-  getEventId: (id: string | null) => void;
   pending: boolean;
   cover_url: string | null;
   host_id: string | null;
@@ -44,17 +43,24 @@ export const LiveViewCtx = createContext<LiveViewCtxValues | null>(null);
 
 // const exampleRawValue ="tickets?x=f7f56ca7a091&e=599a72e25917&t=8bf39e059974--96e0--c6e7--f701--7433e03c";
 export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
-  const [event_id, setEventId] = useState<string | null>(null);
   const [host_id, setHostId] = useState<string | null>(null);
   const [cover_url, setCoverUrl] = useState<string | null>(null);
   const [qrcode, setQrcode] = useState<string | null>(null);
   const [ticket_data, setTicketData] = useState<TicketData | null>(null);
+
+  const pathname = usePathname();
+  const ids = pathname.split("/").pop();
+  const [event_id] = ids?.split("---") ?? ["", ""];
+
   const [pending, fn] = useTransition();
   const { open, toggle } = useToggle();
+  const [event, setEvent] = useState<SelectEvent | null>(null);
 
-  const { files, usr, getEventById } = use(ConvexCtx)!;
+  const { vxFiles, vxUsers, vxEvents } = useConvexCtx();
 
-  const event = getEventById(event_id!);
+  const getEventById = vxEvents.qry.getEventById as (
+    id: string,
+  ) => SelectEvent | null;
 
   const setFn = <T,>(
     tx: TransitionStartFunction,
@@ -66,47 +72,42 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  // const getEventById = useCallback(async () => {
-  //   if (event_id) {
-  //     const e = events.get.byId(event_id);
-  //     setEvent(e);
-  //   }
-  //   return null;
-  // }, [event_id, events.get]);
+  useEffect(() => {
+    if (event_id) {
+      setFn(
+        fn,
+        async () => {
+          const event = getEventById(event_id);
+          setEvent(event);
+          return event;
+        },
+        setEvent,
+      );
+    }
+  }, [event_id, getEventById]);
 
-  // useEffect(() => {
-  //   getEventById();
-  // }, [getEventById]);
+  useEffect(() => {
+    if (event?.cover_url) {
+      setFn(
+        fn,
+        async () => {
+          const src = (await vxFiles.getUrl(event?.cover_url)) as string | null;
+          return src;
+        },
+        setCoverUrl,
+      );
+    }
+  }, [event?.cover_url, vxFiles]);
 
-  const getEventId = useCallback((id: string | null) => {
-    setEventId(id);
+  useEffect(() => {
+    setFn(
+      fn,
+      async () => {
+        return await getAccountID();
+      },
+      setHostId,
+    );
   }, []);
-
-  const getImageSrc = useCallback(async () => {
-    const src = await files.get(event?.cover_url);
-    return src;
-  }, [event, files]);
-
-  const getCoverUrl = useCallback(() => {
-    setFn(fn, getImageSrc, setCoverUrl);
-  }, [getImageSrc]);
-
-  useEffect(() => {
-    getCoverUrl();
-  }, [getCoverUrl]);
-
-  const getAccountById = useCallback(
-    async () => (await getAccountID()) ?? null,
-    [],
-  );
-
-  const getHostId = useCallback(() => {
-    setFn(fn, getAccountById, setHostId);
-  }, [getAccountById]);
-
-  useEffect(() => {
-    getHostId();
-  }, [getHostId]);
 
   const getQrcode = useCallback((data: IDetectedBarcode[]) => {
     setQrcode(data?.[0]?.rawValue ?? null);
@@ -133,7 +134,10 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
         try {
           if (!validTicket?.user_id) return;
           validTicket.is_claimed = true;
-          await usr.update.tickets(validTicket.user_id, [validTicket]);
+          await vxUsers.mut.updateUserTickets({
+            id: validTicket.user_id,
+            tickets: [validTicket],
+          });
           onSuccess("Ticket Validated");
         } catch (e) {
           onError("Ticket validation failed");
@@ -145,7 +149,7 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
         return false;
       }
     },
-    [scannable_tickets, event?.tickets, usr.update],
+    [scannable_tickets, event?.tickets, vxUsers.mut],
   );
 
   const processQrcode = useCallback(async () => {
@@ -178,7 +182,6 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(
     () => ({
       event,
-      getEventId,
       pending,
       cover_url,
       host_id,
@@ -191,7 +194,6 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
     [
       event,
       pending,
-      getEventId,
       cover_url,
       host_id,
       open,

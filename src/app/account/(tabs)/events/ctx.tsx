@@ -1,11 +1,10 @@
 "use client";
 
-import { ConvexCtx } from "@/app/ctx/convex";
+import { useConvexCtx } from "@/app/ctx/convex";
 import type { SelectEvent } from "convex/events/d";
 import {
   createContext,
   type TransitionStartFunction,
-  use,
   useCallback,
   useEffect,
   useMemo,
@@ -22,7 +21,7 @@ export const EventCtx = createContext<EventCtxValues | null>(null);
 
 export const EventCtxProvider = ({ children }: { children: ReactNode }) => {
   const [eventList, setEventList] = useState<SelectEvent[]>();
-  const { getAllEvents } = use(ConvexCtx)!;
+  const { vxEvents } = useConvexCtx();
 
   const [pending, fn] = useTransition();
 
@@ -36,8 +35,9 @@ export const EventCtxProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getEvents = useCallback(() => {
-    setEvents(fn, getAllEvents);
-  }, [getAllEvents]);
+    const events = () => vxEvents.qry.getAllEvents as SelectEvent[] | undefined;
+    setEvents(fn, events);
+  }, [vxEvents.qry]);
 
   useEffect(() => {
     getEvents();

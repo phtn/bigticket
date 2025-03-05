@@ -1,4 +1,4 @@
-import { query, mutation } from "@vx/server";
+import { query } from "@vx/server";
 import { v } from "convex/values";
 
 export const all = query({
@@ -7,37 +7,43 @@ export const all = query({
 
 export const byId = query({
   args: { id: v.string() },
-  handler: async ({ db, auth }, { id }) => {
-    if (!id) return null;
-
-    const user = await db
+  handler: async ({ db, auth }, { id }) =>
+    await db
       .query("users")
       .withIndex("by_uid", (q) => q.eq("id", id))
-      .first();
-
-    return user ?? null;
-  },
+      .unique(),
 });
 
-export const byEmail = mutation({
+export const byEmail = query({
   args: { email: v.string() },
   handler: async ({ db }, { email }) =>
     await db
       .query("users")
       .withIndex("by_email", (q) => q.eq("email", email))
-      .first(),
+      .unique(),
 });
 
-export const byAccountId = mutation({
+export const byAccountId = query({
   args: { account_id: v.string() },
   handler: async ({ db }, { account_id }) =>
     await db
       .query("users")
       .withIndex("by_account_id", (q) => q.eq("account_id", account_id))
-      .first(),
+      .unique(),
 });
 
-export const byRole = mutation({
+export const byTokenId = query({
+  args: { tokenIdentifier: v.optional(v.string()) },
+  handler: async ({ db }, { tokenIdentifier }) =>
+    await db
+      .query("users")
+      .withIndex("by_token_id", (q) =>
+        q.eq("token_identifier", tokenIdentifier),
+      )
+      .unique(),
+});
+
+export const byRole = query({
   args: { role: v.array(v.string()) },
   handler: async ({ db }, { role }) =>
     await db

@@ -1,5 +1,4 @@
-import { useEvents } from "@/app/_components_/home/useEvents";
-import { VxCtx } from "@/app/ctx/convex/vx";
+import { useEvents } from "@/app/(search)/home/useEvents";
 import { type XEvent } from "@/app/types";
 import { useDime } from "@/hooks/useDime";
 import { usePops } from "@/hooks/usePops";
@@ -11,7 +10,6 @@ import { type api } from "@vx/api";
 import { usePreloadedQuery, type Preloaded } from "convex/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  use,
   useCallback,
   useEffect,
   useMemo,
@@ -42,6 +40,7 @@ import { useEventViewer, type Moments } from "./useEventViewer";
 import { useTicketCart } from "./useTicketCart";
 import MultiMediaCarousel, { type MediaItem } from "@/ui/carousel/m-card";
 import { Carousel, useCarousel } from "@/ui/carousel";
+import { useUserCtx } from "@/app/ctx/user";
 
 export interface EventViewerProps {
   preloadedEvents: Preloaded<typeof api.events.get.all>;
@@ -99,28 +98,29 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
   const { screen } = useDime(ref);
   const router = useRouter();
   const { xEventInfo, panelItems } = useEventInfo(xEvent);
-  const { vx } = use(VxCtx)!;
+  const { xUser } = useUserCtx();
 
   const isVip = useMemo(
-    () => IsVIP(xEvent?.vip_list, vx?.email),
-    [xEvent?.vip_list, vx?.email],
+    () => IsVIP(xEvent?.vip_list, xUser?.email),
+    [xEvent?.vip_list, xUser?.email],
   );
   const isPrivate = useMemo(
     () => IsPrivateEvent(xEvent?.is_private),
     [xEvent?.is_private],
   );
   const hasClaimed = useMemo(
-    () => HasClaimedTickets(isVip, xEvent?.vip_list, vx?.email),
-    [isVip, xEvent?.vip_list, vx?.email],
+    () => HasClaimedTickets(isVip, xEvent?.vip_list, xUser?.email),
+    [isVip, xEvent?.vip_list, xUser?.email],
   );
 
   const ticketCount = useMemo(
     () =>
-      xEvent?.vip_list?.find((t) => t.email === vx?.email)?.ticket_count ?? 0,
-    [xEvent?.vip_list, vx?.email],
+      xEvent?.vip_list?.find((t) => t.email === xUser?.email)?.ticket_count ??
+      0,
+    [xEvent?.vip_list, xUser?.email],
   );
 
-  const ticketCart = useTicketCart(xEvent, vx?.email, ticketCount);
+  const ticketCart = useTicketCart(xEvent, ticketCount);
 
   const handleGetTickets = useCallback(async () => {
     if (isVip) {
@@ -130,9 +130,8 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
   }, [ticketCart, isVip]);
 
   const handleViewTickets = useCallback(() => {
-    if (!vx?.email) return;
     router.push("/account/tickets");
-  }, [router, vx?.email]);
+  }, [router]);
 
   const [debounced, setDebounced] = useState(false);
   useEffect(() => {

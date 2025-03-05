@@ -1,4 +1,4 @@
-import { ConvexCtx } from "@/app/ctx/convex";
+import { useConvexCtx } from "@/app/ctx/convex";
 import { onSuccess, onWarn } from "@/app/ctx/toast";
 import { type XEvent } from "@/app/types";
 import { type IconName } from "@/icons";
@@ -7,7 +7,7 @@ import { HyperList } from "@/ui/list";
 import { Err } from "@/utils/helpers";
 import { Checkbox, Form, Input } from "@nextui-org/react";
 import type { EventGallery } from "convex/events/d";
-import { use, useActionState, useCallback, useState } from "react";
+import { useActionState, useCallback, useState } from "react";
 import { inputClassNames } from "../../editor";
 import { BlockHeader } from "./components";
 import { media_fields, type MediaField, MediaZod } from "./schema";
@@ -32,7 +32,7 @@ export const MediaContent = ({ xEvent }: MediaContentProps) => {
     alt: "",
   };
 
-  const { events } = use(ConvexCtx)!;
+  const { vxEvents } = useConvexCtx();
 
   const [mediaList, setMediaList] = useState<EventGallery[]>([]);
 
@@ -40,9 +40,12 @@ export const MediaContent = ({ xEvent }: MediaContentProps) => {
     async (data: EventGallery) => {
       if (!xEvent?.event_id) return;
       setMediaList([...mediaList, data]);
-      return await events.update.mediaGallery(xEvent?.event_id, data);
+      return await vxEvents.mut.updateEventGallery({
+        id: xEvent.event_id,
+        media: data,
+      });
     },
-    [xEvent?.event_id, events.update, mediaList],
+    [xEvent?.event_id, vxEvents.mut, mediaList],
   );
   //Above The Neon City
   //12 Hours - 4K Ultra HD 60fps
@@ -89,7 +92,7 @@ export const MediaContent = ({ xEvent }: MediaContentProps) => {
     <Nebula>
       <Form action={action}>
         <div className="_gap-10 grid h-full w-full grid-cols-1 md:grid-cols-5 md:gap-0 md:rounded">
-          <section className="col-span-2 h-fit space-y-8 border-b-[0.33px] border-vanilla/20 md:h-fit md:border">
+          <section className="col-span-2 h-fit space-y-8 border-b-[0.33px] border-vanilla/20 md:h-fit md:border-[0.33px]">
             <MediaBlock
               data={media_fields}
               label="Add Multimedia Assets"
@@ -98,7 +101,7 @@ export const MediaContent = ({ xEvent }: MediaContentProps) => {
 
             <div className="flex h-1/6 w-full items-end justify-between">
               <div className="flex w-full items-center border-t-[0.33px] border-vanilla/20 text-chalk">
-                <div className="flex h-10 w-full items-center justify-between gap-3 border-r-[0.33px] border-vanilla/20 px-3">
+                <div className="flex h-14 w-full items-center justify-between gap-3 border-r-[0.33px] border-vanilla/20 px-3">
                   <p className="font-inter text-xs font-semibold tracking-tight">
                     Items in Gallery
                   </p>
@@ -112,7 +115,9 @@ export const MediaContent = ({ xEvent }: MediaContentProps) => {
                   type="submit"
                   label="Add"
                   end="Plus"
+                  fullWidth
                   dark
+                  xl
                 />
               </div>
             </div>

@@ -1,14 +1,10 @@
 "use client";
 
-import { ConvexCtx } from "@/app/ctx/convex";
-import { VxCtx } from "@/app/ctx/convex/vx";
+import { useConvexCtx } from "@/app/ctx/convex";
 import { onSuccess } from "@/app/ctx/toast";
-import type { SelectUser } from "convex/users/d";
-
 import type { ChangeEvent, ReactNode, RefObject } from "react";
 import {
   createContext,
-  use,
   useCallback,
   useEffect,
   useMemo,
@@ -16,6 +12,7 @@ import {
   useState,
 } from "react";
 import { type ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
+import { useUserCtx } from "../ctx/user";
 
 export interface Point {
   dx: number;
@@ -32,7 +29,6 @@ interface AccountCtxValues {
   inputFileRef: RefObject<HTMLInputElement | null>;
   canvasRef: RefObject<HTMLCanvasElement | null>;
   browseFile: VoidFunction;
-  vx: SelectUser | null;
   pending: boolean;
   photo_url: string | null;
 }
@@ -42,8 +38,8 @@ export const AccountCtx = createContext<AccountCtxValues | null>(null);
 export const AccountContext = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const { files, usr } = use(ConvexCtx)!;
-  const { vx, pending, photo_url } = use(VxCtx)!;
+  const { vxFiles, vxUsers } = useConvexCtx();
+  const { xUser, isPending } = useUserCtx();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -106,16 +102,16 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
   const createUrl = useCallback(async () => {
     if (selectedFile) {
       const file = await convertToWebPFile(selectedFile, canvasRef);
-      return await files.create(file as File);
+      return (await vxFiles.create(file as File)) as string;
     }
-  }, [selectedFile, files]);
+  }, [selectedFile, vxFiles]);
 
   const save = useCallback(async () => {
     setSaving(true);
-    const pfp_url = await createUrl();
+    const photo_url = await createUrl();
 
-    if (vx?.id && pfp_url) {
-      const id = await usr.update.photo_url(vx.id, pfp_url);
+    if (xUser?.id && photo_url) {
+      const id = await vxUsers.mut.updatePhotoUrl({ id: xUser.id, photo_url });
       if (id) {
         onSuccess("Image uploaded!");
         setOpen(false);
@@ -124,14 +120,14 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       setSaving(false);
     }
     setSaving(false);
-  }, [createUrl, usr.update, vx?.id]);
+  }, [createUrl, vxUsers.mut, xUser?.id]);
 
   const value = useMemo(
     () => ({
       open,
       fileChange,
       toggleEditor,
-      pending,
+      pending: isPending,
       save,
       saving,
       inputFileRef,
@@ -139,14 +135,13 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       canvasRef,
       preview,
       transformRef,
-      photo_url,
-      vx,
+      photo_url: xUser?.photo_url ?? null,
     }),
     [
       open,
       fileChange,
       toggleEditor,
-      pending,
+      isPending,
       save,
       saving,
       inputFileRef,
@@ -154,8 +149,7 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       canvasRef,
       preview,
       transformRef,
-      photo_url,
-      vx,
+      xUser?.photo_url,
     ],
   );
 

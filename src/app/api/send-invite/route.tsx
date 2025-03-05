@@ -1,9 +1,9 @@
+import { VIPInvitation } from "@/app/account/(tabs)/events/e/[id]/components/email/vip-invite";
 import { env } from "@/env";
-import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
 import { render } from "@react-email/components";
 import { type VIP } from "convex/events/d";
-import { BigTicketInvitation } from "@/app/account/(tabs)/events/e/[id]/components/email/invitation";
+import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 
 export interface SMTPResponse {
   success: boolean;
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
     }
 
     // Render email template
-    const invitation = await render(<BigTicketInvitation {...body} />, {
+    const invitation = await render(<VIPInvitation {...body} />, {
       pretty: true,
     });
 

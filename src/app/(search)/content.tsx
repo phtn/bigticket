@@ -1,6 +1,6 @@
 "use client";
 
-import { Home } from "@/app/_components_/home";
+import { Home } from "@/app/(search)/home";
 import { GoogleOneTap } from "@/app/ctx/auth/one-tap";
 import { type Preloaded } from "convex/react";
 import { type api } from "@vx/api";

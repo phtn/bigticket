@@ -96,13 +96,13 @@ export const preloadAllEvents = async () => {
   return preloadedEvents;
 };
 
-export const preloadEventsByHostId = async (host_id: string | null) => {
+export const preloadEventsByHostId = async () => {
+  const host_id = await getAccountID();
   if (!host_id) return [];
   const preloadedEvents = await preloadQuery(api.events.get.byHostId, {
     host_id,
   });
-  const events = preloadedQueryResult(preloadedEvents);
-  return events;
+  return preloadedQueryResult(preloadedEvents);
 };
 
 export const fetchUser = async () => {

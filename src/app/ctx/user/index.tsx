@@ -14,12 +14,13 @@ import {
 import { useConvexCtx } from "../convex";
 import { Err } from "@/utils/helpers";
 import { useStorage } from "@/hooks/useStorage";
-import { useQuery } from "convex/react";
-import { api } from "@vx/api";
-import { q } from "../convex/utils";
 import { useAuth } from "../auth/provider";
 import { useAuthStore } from "../auth/store";
 import toast from "react-hot-toast";
+import { useConvexUtils } from "../convex/useConvexUtils";
+import { useQuery } from "convex/react";
+import { api } from "@vx/api";
+import { setAccountID } from "@/app/actions";
 
 interface UserCtxValues {
   xUser: SelectUser | undefined;
@@ -38,15 +39,13 @@ export const UserCtxProvider = ({ children }: { children: ReactNode }) => {
   const { item, setItem } = useStorage<{ photoUrl: string | null }>(
     user ? user.id : "xUser",
   );
-  const { files, usr } = useConvexCtx();
+  const { vxFiles, vxUsers } = useConvexCtx();
+  const { q } = useConvexUtils();
 
   const vxUser = useQuery(api.users.get.byId, { id: q(user?.id) });
-
   const createNewUser = useCallback(
-    async (u: CreateUser) => {
-      await usr.create(u);
-    },
-    [usr],
+    async (u: CreateUser) => await vxUsers.mut.create(u),
+    [vxUsers.mut],
   );
 
   // Update xUser when vxUser changes
@@ -66,37 +65,38 @@ export const UserCtxProvider = ({ children }: { children: ReactNode }) => {
         setXUser(vxUser);
       });
     }
-  }, [vxUser, isAuthed, user, createUser, createNewUser]);
+  }, [isAuthed, user, createUser, createNewUser, vxUser]);
+
+  useEffect(() => {
+    if (vxUser?.account_id) {
+      setAccountID(vxUser.account_id).catch(Err);
+    }
+  }, [vxUser?.account_id]);
 
   const getUserPhoto = useCallback(async () => {
     if (!xUser?.photo_url) return null;
 
-    try {
-      // Check if we have a cached photo URL
-      const cached = item?.photoUrl;
-      if (cached) return cached;
+    // Check if we have a cached photo URL
+    const cached = item?.photoUrl;
+    if (cached) return cached;
 
-      const url = xUser.photo_url;
+    const url = xUser.photo_url;
 
-      // Handle direct HTTPS urls
-      if (url.startsWith("https")) {
-        setItem({ photoUrl: url });
-        return url;
-      }
-
-      // Handle file storage urls
-      const imageUrl = await files.get(url);
-      if (imageUrl) {
-        setItem({ photoUrl: imageUrl });
-        return imageUrl;
-      }
-
-      return null;
-    } catch (error) {
-      console.error(error);
-      return null;
+    // Handle direct HTTPS urls
+    if (url.startsWith("https")) {
+      setItem({ photoUrl: url });
+      return url;
     }
-  }, [files, xUser?.photo_url, item, setItem]);
+
+    // Handle file storage urls
+    const imageUrl = await vxFiles.getUrl(url);
+    if (imageUrl) {
+      setItem({ photoUrl: imageUrl });
+      return imageUrl;
+    }
+
+    return null;
+  }, [vxFiles, xUser?.photo_url, item, setItem]);
 
   // Update photo URL when user changes
   useEffect(() => {

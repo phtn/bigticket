@@ -8,7 +8,6 @@ import { updateUserTickets } from "./actions";
 
 export const useTicketCart = (
   xEvent: XEvent | undefined,
-  email: string | undefined,
   ticketCount: number,
 ) => {
   const getVIPTicket = useCallback(async () => {

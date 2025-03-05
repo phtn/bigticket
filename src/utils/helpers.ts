@@ -521,3 +521,17 @@ export const normalizeTitle = (title: string | undefined) => {
 
   return [firstLine, secondLine];
 };
+
+export const asyncR = async <T extends typeof Function>(
+  promise: Promise<T> | (() => Promise<T> | T) | T[] | T,
+) => {
+  try {
+    const result = Array.isArray(promise)
+      ? await Promise.all(promise)
+      : await Promise.resolve(promise);
+
+    return { data: result, error: null };
+  } catch (error) {
+    return { data: null, error: error as Error };
+  }
+};

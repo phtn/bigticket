@@ -1,6 +1,6 @@
 "use client";
 
-import { ConvexCtx } from "@/app/ctx/convex";
+import { useConvexCtx } from "@/app/ctx/convex";
 import { PreloadedUserEventsCtx } from "@/app/ctx/event/user";
 import { type XEvent } from "@/app/types";
 import { useImage } from "@/hooks/useImage";
@@ -103,22 +103,22 @@ export const EventEditorCtxProvider = ({
     [],
   );
 
-  const { files, events } = use(ConvexCtx)!;
+  const { vxFiles, vxEvents } = useConvexCtx();
 
   const getCoverPhoto = useCallback(
     async (cover_url: string | undefined) => {
       if (!cover_url) return;
-      setCoverSrc(await files.get(cover_url));
+      setCoverSrc((await vxFiles.getUrl(cover_url)) as string);
     },
-    [files],
+    [vxFiles],
   );
 
   const updateTextColor = useCallback(
     async (id: string | undefined, light: boolean) => {
       if (!id) return;
-      await events.update.isCoverLight(id, light);
+      await vxEvents.mut.updateEventIsCoverLight({ id, is_cover_light: light });
     },
-    [events.update],
+    [vxEvents.mut],
   );
 
   const saveFn = useCallback(
@@ -143,22 +143,19 @@ export const EventEditorCtxProvider = ({
         }
       };
 
+      const updateCover = async (id: string, cover_url: string) =>
+        (await vxEvents.mut.updateCoverUrl({ id, cover_url })) as string;
+
       switch (field) {
         case "cover_url":
-          return await updateField(
-            events.update.cover_url,
-            "Cover photo updated!",
-          );
+          return await updateField(updateCover, "Cover photo updated!");
         case "photo_url":
-          return await updateField(
-            events.update.photo_url,
-            "Event photo updated!",
-          );
+          return await updateField(updateCover, "Event photo updated!");
         default:
           return null;
       }
     },
-    [events.update, setLoading],
+    [vxEvents.mut, setLoading],
   );
 
   const uploadFromFile = useCallback(
@@ -169,10 +166,10 @@ export const EventEditorCtxProvider = ({
     ) => {
       setLoading(true);
       const webp = await fromFile(file);
-      const url = await files.create(webp as File);
+      const url = (await vxFiles.create(webp as File)) as string;
       return await saveFn(url, event_id, field);
     },
-    [files, saveFn, fromFile],
+    [vxFiles, saveFn, fromFile],
   );
 
   const uploadFromSource = useCallback(
@@ -184,10 +181,10 @@ export const EventEditorCtxProvider = ({
       setLoading(true);
       if (!src) return null;
       const webp = await fromSource(src);
-      const url = await files.create(webp as File);
+      const url = (await vxFiles.create(webp as File)) as string;
       return await saveFn(url, event_id, field);
     },
-    [files, saveFn, fromSource],
+    [vxFiles, saveFn, fromSource],
   );
 
   const value = useMemo(
