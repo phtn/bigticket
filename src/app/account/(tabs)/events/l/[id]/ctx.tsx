@@ -91,7 +91,7 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
       setFn(
         fn,
         async () => {
-          const src = (await vxFiles.getUrl(event?.cover_url)) as string | null;
+          const src = await vxFiles.getUrl(event?.cover_url);
           return src;
         },
         setCoverUrl,

@@ -108,7 +108,7 @@ export const EventEditorCtxProvider = ({
   const getCoverPhoto = useCallback(
     async (cover_url: string | undefined) => {
       if (!cover_url) return;
-      setCoverSrc((await vxFiles.getUrl(cover_url)) as string);
+      setCoverSrc(await vxFiles.getUrl(cover_url));
     },
     [vxFiles],
   );
