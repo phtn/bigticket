@@ -20,6 +20,7 @@ export interface HyperProps {
   destructive?: boolean;
   compact?: boolean;
   dim?: boolean;
+  active?: boolean;
 }
 
 export interface HyperButtonProps
@@ -57,6 +58,7 @@ export const Hyper = ({
   destructive = false,
   compact = false,
   dim = false,
+  active = false,
   ...props
 }: HyperButtonProps) => {
   const LabelOptions = useCallback(() => {
@@ -64,10 +66,11 @@ export const Hyper = ({
       <Icon name="SpinnerBall" />,
       <span
         className={cn(
-          "relative z-10 whitespace-nowrap font-inter text-xs font-semibold tracking-tighter text-primary",
+          "relative z-10 whitespace-nowrap font-inter text-xs font-semibold tracking-tight text-primary",
           {
-            "text-chalk": dark || destructive,
+            "text-chalk": dark || (destructive && !active),
             "text-primary": dim,
+            "text-macd-blue": active,
           },
         )}
       >
@@ -75,7 +78,7 @@ export const Hyper = ({
       </span>,
     );
     return <>{options.get(loading)}</>;
-  }, [dark, label, loading, dim, destructive]);
+  }, [dark, label, loading, dim, destructive, active]);
   return (
     <button
       {...props}
@@ -101,7 +104,7 @@ export const Hyper = ({
           "gap-2 md:px-5",
           {
             "px-4": fullWidth,
-            "border-0 bg-primary text-chalk hover:opacity-95": dark,
+            "border-0 bg-primary text-chalk hover:bg-coal": dark,
             "bg-macl-red": destructive,
             "bg-demigod hover:bg-teal-500": dim,
             "px-2": compact,
@@ -122,7 +125,8 @@ export const Hyper = ({
           <Icon
             name={end}
             className={cn("size-3.5 text-primary", {
-              "text-chalk": dark || destructive,
+              "text-chalk": dark || (destructive && !active),
+              "text-macd-blue": active,
             })}
           />
         )}
@@ -130,6 +134,7 @@ export const Hyper = ({
     </button>
   );
 };
+
 interface HyperLinkProps extends HyperProps, LinkProps {}
 export const HyperLink = ({
   children,

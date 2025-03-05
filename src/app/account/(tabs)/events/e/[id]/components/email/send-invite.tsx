@@ -7,6 +7,7 @@ import { type VIP } from "convex/events/d";
 import { type MouseEvent, useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import { useEmailStatus } from "./useEmailStatus";
+import { cn } from "@/lib/utils";
 
 export interface SendInviteProps {
   vip_list: VIP[];
@@ -63,12 +64,13 @@ const SendInvite = ({ vip_list, updateSentStatus }: SendInviteProps) => {
 
   const buttonLabel = loading
     ? `Sending...`
-    : `Send Invitation${vip_list.length > 1 ? "s" : ""}`;
+    : `Send Invitation${vip_list.length > 1 ? "s" : ` `}`;
 
   return (
     <Hyper
       onClick={handleSendInvites}
       disabled={loading || vip_list.length === 0}
+      className={cn({ "animate-enter": vip_list.length <= 1 })}
       label={buttonLabel}
       loading={loading}
       end="MailSend"

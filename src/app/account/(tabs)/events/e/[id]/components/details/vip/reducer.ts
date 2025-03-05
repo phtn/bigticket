@@ -12,7 +12,9 @@ export function vipReducer(state: VIPState, action: VIPAction): VIPState {
     case "SET_VIP_LIST":
       return {
         ...state,
-        vipList: action.payload,
+        vipList: action.payload
+          .map((vip, idx) => ({ ...vip, idx: idx + 1 }))
+          .sort((a, b) => (a.idx ?? 0) - (b.idx ?? 1)),
         isLoading: false,
       };
     case "ADD_VIP": {
@@ -27,7 +29,7 @@ export function vipReducer(state: VIPState, action: VIPAction): VIPState {
       const newList = state.vipList.map((vip) =>
         vip.email === action.payload.email
           ? { ...vip, ...action.payload, updated_at: Date.now() }
-          : vip
+          : vip,
       );
       return {
         ...state,

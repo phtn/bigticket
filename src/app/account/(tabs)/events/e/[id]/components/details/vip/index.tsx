@@ -1,66 +1,35 @@
 import { useConvexCtx } from "@/app/ctx/convex";
+import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
 import { onSuccess } from "@/app/ctx/toast";
 import { Icon } from "@/icons";
+import { cn } from "@/lib/utils";
 import { ButtonIcon } from "@/ui/button";
 import { Hyper } from "@/ui/button/button";
 import { HyperList } from "@/ui/list";
 import { Err, getInitials, opts } from "@/utils/helpers";
 import { Checkbox, Form, Input, User } from "@nextui-org/react";
+import { api } from "@vx/api";
 import type { SelectEvent, VIP } from "convex/events/d";
+import { useQuery } from "convex/react";
 import {
   type ChangeEvent,
   type MouseEvent,
+  startTransition,
   useActionState,
   useCallback,
-  useMemo,
-  useState,
-  memo,
-  useReducer,
-  startTransition,
   useEffect,
+  useMemo,
+  useReducer,
+  useState,
 } from "react";
+import toast from "react-hot-toast";
+import { Nebula } from "../";
 import { inputClassNames } from "../../../editor";
 import SendInvite from "../../email/send-invite";
 import { BlockHeader } from "../components";
 import { vip_info, type VIPField, VIPZod } from "../schema";
-import { cn } from "@/lib/utils";
-import toast from "react-hot-toast";
 import { initialVIPState, vipReducer } from "./reducer";
-import { useQuery } from "convex/react";
-import { api } from "@vx/api";
-import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
-import { Nebula } from "../";
 import type { VIPBlockProps, VIPContentProps, VIPWithDefaults } from "./types";
-
-// First, update the VIP type to include all required fields
-// type VIPWithDefaults = VIP & {
-//   checked: boolean;
-//   invitation_sent: boolean;
-//   tickets_claimed: boolean;
-//   tickets_used: number;
-//   created_by: string | null;
-//   event_id?: string;
-//   event_name?: string;
-//   updated_at: number;
-// };
-
-// export type VIPWithState = VIP & {
-//   checked: boolean;
-//   // ...other fields...
-// };
-
-// interface VIPBlockProps {
-//   data: VIPField[];
-//   label: string;
-//   icon: IconName;
-//   delay?: number;
-//   editMode?: boolean;
-// }
-// interface VIPContentProps {
-//   xEvent: XEvent | null;
-//   user_id: string | null;
-//   event_id: string | undefined;
-// }
 
 export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   const [event, setEvent] = useState<SelectEvent | null>();
@@ -73,20 +42,23 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   useEffect(() => {
     if (event_id && queryEvent) {
       setEvent(queryEvent);
-      const l =
-        queryEvent.vip_list?.slice().map((v) => ({
-          ...v,
-          checked: false,
-          name: v.name ?? "",
-          event_id: event_id,
-          event_name: event?.event_name,
-          invitation_sent: !!v.invitation_sent,
-          tickets_claimed: !!v.tickets_claimed,
-          tickets_used: v.tickets_used ?? 0,
-          created_by: user_id,
-          updated_at: v.updated_at ?? Date.now(),
-        })) ?? [];
-      dispatch({ type: "SET_VIP_LIST", payload: l });
+      const payload =
+        queryEvent.vip_list
+          ?.slice()
+          .map((v) => ({
+            ...v,
+            checked: false,
+            name: v.name ?? "",
+            event_id: event_id,
+            event_name: event?.event_name,
+            invitation_sent: !!v.invitation_sent,
+            tickets_claimed: !!v.tickets_claimed,
+            tickets_used: v.tickets_used ?? 0,
+            created_by: user_id,
+            updated_at: v.updated_at ?? Date.now(),
+          }))
+          .reverse() ?? [];
+      dispatch({ type: "SET_VIP_LIST", payload });
     }
   }, [event_id, queryEvent, user_id, event?.event_name]);
 
@@ -96,6 +68,15 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   });
 
   const { vipList, selectedVIP } = state;
+
+  const { checked, count, onEdit } = useMemo(() => {
+    const checked = vipList.filter((v) => v.checked);
+    return {
+      checked,
+      count: checked.length,
+      onEdit: checked.length === 1,
+    };
+  }, [vipList]);
 
   const { vxEvents } = useConvexCtx();
 
@@ -123,31 +104,6 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     [event],
   );
 
-  // Update the updateEventVIP function
-  // const updateEventVIP = useCallback(
-  //   async (id: string, vip: VIP) => {
-  //     // Create a new object with only the required fields
-  //     const vipUpdate = {
-  //       name: vip.name,
-  //       email: vip.email,
-  //       ticket_count: vip.ticket_count,
-  //       invitation_sent: vip.invitation_sent ?? false,
-  //       tickets_claimed: vip.tickets_claimed ?? false,
-  //       tickets_used: vip.tickets_used ?? 0,
-  //       created_by: vip.created_by ?? null,
-  //       event_id: vip.event_id,
-  //       event_name: vip.event_name,
-  //       updated_at: Date.now(),
-  //     };
-
-  //     return await vxEvents.mut.updateEventVIP({
-  //       id,
-  //       vip: vipUpdate,
-  //     });
-  //   },
-  //   [vxEvents.mut],
-  // );
-
   const updateEventVIP = useCallback(
     async (id: string, vip: VIP) => {
       (await vxEvents.mut.updateEventVIP({ id, vip })) as string;
@@ -159,13 +115,9 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     async (data: VIPWithDefaults) => {
       if (!event_id) return;
 
-      const hasOneChecked = vipList.filter((v) => v.checked === true).length;
-
-      console.log(data, event_id, hasOneChecked, hasOneChecked === 1);
-
       startTransition(async () => {
         try {
-          if (hasOneChecked === 1) {
+          if (onEdit) {
             dispatch({ type: "UPDATE_VIP", payload: data });
             return await updateEventVIP(event_id, data);
           }
@@ -177,7 +129,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         }
       });
     },
-    [event_id, vipList, updateEventVIP],
+    [event_id, updateEventVIP, onEdit],
   );
 
   const addVIP = useCallback(
@@ -234,17 +186,16 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   const handleRemoveVIPs = useCallback(
     async (e: MouseEvent) => {
       e.preventDefault();
-      const checkedVIPs = vipList.filter((vip) => vip.checked);
-      if (!checkedVIPs.length || !event_id) return;
+      if (!checked.length || !event_id) return;
 
       dispatch({
         type: "REMOVE_VIP",
-        payload: checkedVIPs.map((vip) => vip.email),
+        payload: checked.map((vip) => vip.email),
       });
 
       startTransition(async () => {
         const updates = Promise.all(
-          checkedVIPs.map((vip) => {
+          checked.map((vip) => {
             const vipUpdate = {
               ...vip,
               ticket_count: 0,
@@ -257,9 +208,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         toast
           .promise(updates, {
             loading: "Removing VIPs...",
-            success: `Removed ${checkedVIPs.length} VIP${
-              checkedVIPs.length > 1 ? "s" : ""
-            }`,
+            success: `Removed ${count} VIP${count > 1 ? "s" : ""}`,
             error: "Failed to remove VIPs",
           })
           .catch((err) => {
@@ -268,7 +217,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
           });
       });
     },
-    [vipList, event_id, updateEventVIP],
+    [vipList, count, event_id, updateEventVIP, checked],
   );
 
   const updateSentStatus = useCallback(
@@ -296,107 +245,113 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     [event_id, updateEventVIP],
   );
 
-  const VIPListItem = memo((vip: VIP) => {
-    const handleChangeSelected = useCallback(
-      (isSelected: boolean) => {
+  const VIPListItem = useCallback(
+    (vip: VIPWithDefaults) => {
+      const handleChangeSelected = (isSelected: boolean) => {
         handleVIPSelection(vip.email, isSelected);
-      },
-      [vip.email],
-    );
+      };
 
-    const index = useMemo(
-      () => vipList.reverse().findIndex((v) => v.email === vip.email) + 1,
-      [vip.email],
-    );
-
-    return (
-      <Checkbox
-        name={vip.email}
-        disableAnimation={false}
-        color="secondary"
-        classNames={{
-          base: cn(
-            "flex items-center relative min-w-full justify-between p-4",
-            "hover:bg-vanilla/5 rounded-sm cursor-pointer",
-          ),
-          label: "flex items-center tracking-tight w-full max-w-full",
-          icon: "text-primary",
-          wrapper: "ml-4",
-        }}
-        isSelected={vip.checked}
-        onValueChange={handleChangeSelected}
-      >
-        <div
-          className={cn(
-            "absolute -left-12 top-0 z-10 font-sans text-[10px] text-vanilla opacity-40",
-            { "text-teal-400 opacity-100": vip.checked },
-          )}
+      return (
+        <Checkbox
+          name={vip.email}
+          disableAnimation={false}
+          color="secondary"
+          classNames={{
+            base: cn(
+              "flex items-center relative min-w-full justify-between p-4",
+              "hover:bg-vanilla/5 rounded-sm cursor-pointer",
+            ),
+            label: "flex items-center tracking-tight w-full max-w-full",
+            icon: "text-primary",
+            wrapper: "ml-4",
+          }}
+          isSelected={vip.checked}
+          onValueChange={handleChangeSelected}
         >
-          {index}
-        </div>
-        <div className="flex w-full items-center justify-between ps-2 md:ps-0">
-          <User
-            classNames={{
-              name: "whitespace-nowrap font-semibold text-chalk text-xs font-inter",
-            }}
-            avatarProps={{
-              size: "sm",
-              fallback: getInitials(vip.name)?.toUpperCase(),
-              className:
-                "bg-transparent hidden md:flex border-2 mx-2 bg-vanilla/5 border-vanilla/20 size-4 text-gray-300/90 font-bold",
-            }}
-            description={
-              <p className="font-inter text-tiny text-vanilla/80">
-                {vip.email}
-              </p>
-            }
-            name={vip.name}
-          />
-        </div>
-
-        <div className="flex items-center justify-end whitespace-nowrap text-chalk">
-          <div className="flex w-12 items-center justify-end gap-1 text-sm font-medium text-vanilla md:w-20">
-            <span className="">{vip.ticket_count}</span>
-            <Icon name="Ticket" className="opacity-50" />
-          </div>
           <div
             className={cn(
-              "flex w-24 items-center justify-end gap-1 text-xs font-medium tracking-tighter text-vanilla/40 md:w-28",
-              {
-                "text-teal-400": vip.invitation_sent,
-              },
+              "absolute -left-12 top-0 z-10 font-sans text-[10px] text-vanilla opacity-40",
+              { "text-teal-400 opacity-100": vip.checked },
             )}
           >
-            {vip.invitation_sent ? "Sent" : "Not Sent"}
-            <Icon
-              name="Check"
-              className={cn("hidden size-3", { flex: vip.invitation_sent })}
+            {vip.idx}
+          </div>
+          <div className="flex w-full items-center justify-between ps-2 md:ps-0">
+            <User
+              classNames={{
+                name: "whitespace-nowrap font-semibold text-chalk text-xs font-inter",
+              }}
+              avatarProps={{
+                size: "sm",
+                fallback: getInitials(vip.name)?.toUpperCase(),
+                className:
+                  "bg-transparent hidden md:flex border-2 mx-2 bg-vanilla/5 border-vanilla/20 size-4 text-gray-300/90 font-bold",
+              }}
+              description={
+                <p className="font-inter text-tiny text-vanilla/80">
+                  {vip.email}
+                </p>
+              }
+              name={vip.name}
             />
           </div>
-        </div>
-      </Checkbox>
-    );
-  });
-  VIPListItem.displayName = "VIPListItem";
 
-  const RemoveOption = useCallback(() => {
-    const checkedCount = vipList.filter((vip) => vip.checked).length;
+          <div className="flex items-center justify-end whitespace-nowrap text-chalk">
+            <div className="flex w-14 items-center justify-center gap-[1.5px] text-sm font-medium text-vanilla md:w-20 md:justify-end">
+              <span className="">{vip.ticket_count}</span>
+              <Icon
+                name="Ticket"
+                className={cn("size-3 opacity-40", {
+                  "text-teal-300 opacity-100": vip.tickets_claimed,
+                })}
+              />
+            </div>
+            <div
+              className={cn(
+                "flex w-14 items-center justify-center gap-[1.5px] text-xs font-semibold tracking-tighter text-vanilla/40 md:w-28 md:justify-end",
+                {
+                  "text-teal-400": vip.invitation_sent,
+                },
+              )}
+            >
+              {vip.invitation_sent ? "Sent" : "Not Sent"}
+              <Icon
+                name="Check"
+                className={cn("hidden size-2.5", { flex: vip.invitation_sent })}
+              />
+            </div>
+          </div>
+        </Checkbox>
+      );
+    },
+    [handleVIPSelection],
+  );
+
+  const ListActions = useCallback(() => {
     const options = opts(
-      <Hyper
-        lg
-        disabled={pending || checkedCount === 0}
-        loading={pending}
-        type="submit"
-        label={`Remove ${checkedCount > 1 ? `(${checkedCount})` : ""}`}
-        end="Minus"
-        fullWidth
-        destructive
-        onClick={handleRemoveVIPs}
-      />,
+      <div className="flex">
+        <Hyper
+          lg
+          fullWidth
+          end="Minus"
+          destructive
+          type="submit"
+          loading={pending}
+          onClick={handleRemoveVIPs}
+          disabled={pending || count === 0}
+          label={`Remove ${count > 1 ? `(${count})` : "(1)"}`}
+          className={cn("delay-100", { "animate-enter": count <= 1 })}
+        />
+        <SendInvite vip_list={checked} updateSentStatus={updateSentStatus} />
+      </div>,
       null,
     );
-    return <>{options.get(checkedCount > 0)}</>;
-  }, [vipList, pending, handleRemoveVIPs]);
+    return (
+      <div className="absolute bottom-[0.77px] right-[0.77px] flex w-fit overflow-hidden rounded-br-md md:min-w-36">
+        {options.get(count > 0)}
+      </div>
+    );
+  }, [count, checked, pending, handleRemoveVIPs, updateSentStatus]);
 
   const VIPGuestList = useCallback(() => {
     return (
@@ -414,11 +369,19 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
                 </div>
               </div>
               <div className="flex items-center text-chalk">
-                <div className="flex w-12 items-center justify-end gap-1 text-xs md:w-20">
-                  <span className="font-bold tracking-tight">Tickets</span>
+                <div className="flex w-14 items-center justify-center gap-1 text-xs md:w-20 md:justify-end">
+                  <span className="hidden font-bold tracking-tight md:flex">
+                    Tickets
+                  </span>
+                  <Icon
+                    name="Ticket"
+                    className="-mt-[1px] size-4 text-vanilla"
+                  />
                 </div>
-                <div className="flex w-24 items-center justify-end gap-1 text-xs md:w-28">
-                  <span className="font-semibold tracking-tight">Invite</span>
+                <div className="flex w-14 items-center justify-center gap-1 text-xs md:w-28 md:justify-end">
+                  <span className="hidden font-semibold tracking-tight md:flex">
+                    Invite
+                  </span>
                   <Icon
                     name="MailSend"
                     className="-mt-[1px] size-4 text-vanilla"
@@ -433,19 +396,13 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
             container="min-w-full overflow-hidden"
             itemStyle="border-b-[0.33px] border-dotted flex justify-center w-full py-[8.5px] border-vanilla/30"
             component={VIPListItem}
-            keyId="email"
+            keyId="idx"
           />
         </div>
-        <div className="absolute bottom-[0.77px] right-[0.77px] flex w-fit overflow-hidden rounded-br-md md:min-w-36">
-          <RemoveOption />
-          <SendInvite
-            vip_list={vipList.filter((vip) => vip.checked)}
-            updateSentStatus={updateSentStatus}
-          />
-        </div>
+        <ListActions />
       </section>
     );
-  }, [vipList, VIPListItem, updateSentStatus, RemoveOption]);
+  }, [vipList, VIPListItem, ListActions]);
 
   const VIPxBlock = useCallback(() => {
     const fields = [
@@ -488,13 +445,13 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
 
             <div className="flex h-1/6 w-full items-end justify-between border-r-[0.0px] border-vanilla/20">
               <div className="flex w-full items-center border-t-[0.33px] border-vanilla/20 text-chalk">
-                <div className="flex h-14 w-full items-center justify-between gap-3 border-r border-vanilla/20 px-3">
+                <div className="flex h-14 w-full items-center justify-between gap-3 border-r-[0.33px] border-vanilla/20 px-3">
                   <p className="font-inter text-xs font-semibold tracking-tight">
                     Claimed
                   </p>
                   <p className="font-sans text-sm">0</p>
                 </div>
-                <div className="flex h-14 w-full items-center justify-between gap-3 border-r border-vanilla/20 px-3">
+                <div className="flex h-14 w-full items-center justify-between gap-3 border-r-[0.33px] border-vanilla/20 px-3">
                   <p className="font-inter text-xs font-semibold tracking-tight">
                     Issued
                   </p>
@@ -502,9 +459,10 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
                 </div>
                 <Hyper
                   end={selectedVIP ? "ArrowRightUp" : "Plus"}
-                  label={selectedVIP ? "Save" : "Add"}
+                  label={selectedVIP ? "Update" : "Add"}
                   disabled={pending}
                   loading={pending}
+                  active={onEdit}
                   type="submit"
                   fullWidth
                   dark

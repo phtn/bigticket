@@ -16,6 +16,7 @@ export interface VIPBase {
 }
 
 export interface VIPWithDefaults extends VIPBase {
+  idx?: number;
   checked?: boolean;
   invitation_sent: boolean;
   tickets_claimed?: boolean;
