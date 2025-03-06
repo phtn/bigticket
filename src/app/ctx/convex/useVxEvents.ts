@@ -15,6 +15,7 @@ export const useVxEvents = () => {
     updateEventCohost: useMutation(api.events.update.cohost),
     updateEventGallery: useMutation(api.events.update.mediaGallery),
     updateEventBasicInfo: useMutation(api.events.update.basicInfo),
+    updateEventTicketInfo: useMutation(api.events.update.ticketInfo),
     updateEventIsCoverLight: useMutation(api.events.update.isCoverLight),
   };
 

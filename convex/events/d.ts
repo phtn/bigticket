@@ -80,7 +80,7 @@ export const UserTicketSchema = v.object({
   event_date: v.float64(),
   ticket_id: v.string(),
   ticket_type: v.string(),
-  ticket_value: v.number(),
+  ticket_price: v.optional(v.number()),
   ticket_count: v.number(),
   ticket_url: v.optional(v.string()),
   user_id: v.optional(v.string()),
@@ -112,6 +112,23 @@ export const BasicInfoSchema = v.object({
 });
 export type BasicInfo = Infer<typeof BasicInfoSchema>;
 
+export const TicketInfoSchema = v.object({
+  ticket_count: v.optional(v.number()),
+  ticket_price: v.optional(v.number()),
+  min_age: v.optional(v.number()),
+  max_age: v.optional(v.number()),
+
+  ticket_sales_open: v.optional(v.float64()),
+  ticket_sales_close: v.optional(v.float64()),
+  ticket_sales_limit: v.optional(v.number()),
+  ticket_sales_estimate: v.optional(v.number()),
+
+  ticket_sales_email: v.optional(v.string()),
+  ticket_sales_phone: v.optional(v.string()),
+});
+
+export type TicketInfo = Infer<typeof TicketInfoSchema>;
+
 export const EventSchema = v.object({
   event_id: v.string(),
   event_name: v.optional(v.string()),
@@ -132,6 +149,7 @@ export const EventSchema = v.object({
   event_geo: v.optional(v.string()),
   event_phone: v.optional(v.string()),
   event_email: v.optional(v.string()),
+  event_status: v.optional(v.string()),
 
   duration: v.optional(v.float64()),
   reviews: v.optional(v.array(ReviewSchema)),
@@ -146,16 +164,29 @@ export const EventSchema = v.object({
   photo_url: v.optional(v.string()),
   gallery: v.optional(v.array(EventGallerySchema)),
   is_cover_light: v.optional(v.boolean()),
+
   //TICKETS
   ticket_count: v.optional(v.number()),
-  ticket_count_limit: v.optional(v.number()),
-  ticket_value: v.optional(v.number()),
   ticket_price: v.optional(v.number()),
+  min_age: v.optional(v.number()),
+  max_age: v.optional(v.number()),
+
+  ticket_sales_open: v.optional(v.float64()),
+  ticket_sales_close: v.optional(v.float64()),
+  ticket_sales_limit: v.optional(v.number()),
+  ticket_sales_estimate: v.optional(v.number()),
+
+  ticket_sales_email: v.optional(v.string()),
+  ticket_sales_phone: v.optional(v.string()),
+
+  ticket_value: v.optional(v.number()),
+  is_paid: v.optional(v.boolean()),
+
   tickets_sold: v.optional(v.number()),
   tickets_refunded: v.optional(v.number()),
   tickets_voided: v.optional(v.number()),
+
   total_attendees: v.optional(v.number()),
-  estimated_attendees: v.optional(v.number()),
   // VIP
   vip_list: v.optional(v.array(VIPSchema)),
   // COHOST
@@ -172,11 +203,8 @@ export const EventSchema = v.object({
   invite_list: v.optional(v.array(v.string())),
   host_name: v.optional(v.string()),
   host_email: v.optional(v.string()),
-  support_email: v.optional(v.string()),
   customer_service: v.optional(v.string()),
-  audience: v.optional(v.string()),
   is_active: v.optional(v.boolean()),
-  is_paid: v.optional(v.boolean()),
 
   is_expired: v.optional(v.boolean()),
   is_soldout: v.optional(v.boolean()),
@@ -186,10 +214,4 @@ export const EventSchema = v.object({
 });
 
 export type SelectEvent = Infer<typeof EventSchema>;
-export const InsertEventSchema = excludeProp(
-  EventSchema,
-  "updated_at",
-  "host_id",
-  "event_code",
-) as VObject<SelectEvent, Record<string, GenericValidator>>;
-export type InsertEvent = Infer<typeof InsertEventSchema>;
+export type InsertEvent = Infer<typeof EventSchema>;

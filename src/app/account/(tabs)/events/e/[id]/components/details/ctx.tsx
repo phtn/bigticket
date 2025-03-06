@@ -13,8 +13,6 @@ import {
 } from "react";
 export type EventDetailKey = keyof Pick<
   InsertEvent,
-  | "ticket_count"
-  | "ticket_price"
   | "event_type"
   | "category"
   | "subcategory"
@@ -29,6 +27,16 @@ export type EventDetailKey = keyof Pick<
   | "event_url"
   | "venue_name"
   | "venue_address"
+  | "ticket_count"
+  | "ticket_price"
+  | "min_age"
+  | "max_age"
+  | "ticket_sales_open"
+  | "ticket_sales_close"
+  | "ticket_sales_limit"
+  | "ticket_sales_estimate"
+  | "ticket_sales_email"
+  | "ticket_sales_phone"
 >;
 interface EventDetailCtxValues {
   open: boolean;

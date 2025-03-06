@@ -1,7 +1,7 @@
 "use client";
 
 import { Carousel } from "@/ui/carousel";
-import { type JSX, useEffect, useMemo } from "react";
+import { type JSX, useMemo } from "react";
 import { CoverPhoto } from "./components/cover-photo";
 import { EventDetails } from "./components/details";
 import { BasicContent } from "./components/details/basic";
@@ -13,6 +13,7 @@ import { ImageQuery } from "./components/pexels";
 import { TicketPhoto } from "./components/ticket-photo";
 import { Topbar } from "./components/topbar";
 import { useEventEditor } from "./ctx";
+import { TicketContent } from "./components/details/ticket";
 
 export interface TabItem {
   title: string;
@@ -22,10 +23,6 @@ export interface TabItem {
 
 export const EventEditor = () => {
   const { xEvent, pending, event_id, user_id } = useEventEditor();
-
-  useEffect(() => {
-    console.log(pending, event_id, xEvent?.event_name);
-  }, [pending, event_id, xEvent?.event_name]);
 
   const tabs: TabItem[] = useMemo(
     () => [
@@ -37,7 +34,7 @@ export const EventEditor = () => {
       {
         value: "tickets",
         title: "Tickets",
-        content: <BasicContent xEvent={xEvent} pending={pending} />,
+        content: <TicketContent xEvent={xEvent} pending={pending} />,
       },
       {
         value: "vips",
@@ -91,7 +88,7 @@ export const inputClassNames = {
   label: "ps-5  opacity-60 tracking-tight text-[15px] leading-5",
   input: [
     "font-bold tracking-tight shadow-none font-inter bg-white",
-    "placeholder:font-semibold focus:placeholder:opacity-40 placeholder:drop-shadow-sm shadow-coal placeholder:text-peach placeholder:text-sm",
+    "placeholder:font-semibold focus:placeholder:opacity-40 placeholder:opacity-100 placeholder:drop-shadow-sm shadow-coal placeholder:text-peach placeholder:text-sm",
     "",
   ],
 };

@@ -11,12 +11,12 @@ import {
   useMemo,
   useRef,
 } from "react";
-import { EventEditorCtx } from "../ctx";
+import { useEventEditor } from "../ctx";
 import { Err } from "@/utils/helpers";
 import { cn } from "@/lib/utils";
 import { ButtonIcon } from "@/ui/button";
 import { SidebarCtx } from "@/app/ctx/sidebar";
-import { getAverageColor, isLightColor } from "@/hooks/useImage";
+import { useImage } from "@/hooks/useImage";
 
 interface CoverPhotoProps {
   id: string | undefined;
@@ -36,7 +36,7 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
     onInputFileChange,
     updateTextColor,
     browseFile,
-  } = use(EventEditorCtx)!;
+  } = useEventEditor();
 
   const { images, loading } = usePexels({ query, locale });
   const { currentIndex } = useCarousel();
@@ -44,6 +44,11 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
+
+  const { colorAnalysis, isLight } = useImage(
+    canvasRef.current,
+    inputFileRef.current,
+  );
 
   useEffect(() => {
     getRefs({ canvasRef, inputFileRef });
@@ -60,36 +65,12 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
 
   const handleImageSelect = useCallback(async () => {
     if (!src) return;
-    const img = document.createElement("img");
-    img.src = src;
-    img.crossOrigin = "Anonymous";
-    let lightText = false;
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        const sampleWidth = 100;
-        const sampleHeight = 400;
-        canvas.width = sampleWidth;
-        canvas.height = sampleHeight;
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          sampleWidth,
-          sampleHeight,
-          0,
-          0,
-          sampleWidth,
-          sampleHeight,
-        );
-        const { r, g, b } = getAverageColor(ctx, sampleWidth, sampleHeight);
-        lightText = isLightColor(r, g, b);
-      }
-    };
-    await updateTextColor(id, lightText);
+    if (colorAnalysis) {
+      console.table(colorAnalysis);
+    }
+    await updateTextColor(id, isLight);
     await uploadFromSource(src, id, "cover_url");
-  }, [src, id, uploadFromSource, updateTextColor]);
+  }, [src, id, uploadFromSource, updateTextColor, colorAnalysis, isLight]);
 
   const onChange = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
@@ -178,3 +159,33 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
     </div>
   );
 };
+
+/*
+const img = document.createElement("img");
+    img.src = src;
+    img.crossOrigin = "Anonymous";
+    let lightText = false;
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        const sampleWidth = 100;
+        const sampleHeight = 400;
+        canvas.width = sampleWidth;
+        canvas.height = sampleHeight;
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          sampleWidth,
+          sampleHeight,
+          0,
+          0,
+          sampleWidth,
+          sampleHeight,
+        );
+        const { r, g, b } = getAverageColor(ctx, sampleWidth, sampleHeight);
+        lightText = isLightColor(r, g, b);
+      }
+    };
+*/

@@ -53,10 +53,10 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
         event_url,
         start_date,
         end_date,
-        ticket_value,
+        ticket_price,
       } = e;
 
-      if (!ticket_value) {
+      if (!ticket_price) {
         onWarn("Ticket is unavailable.");
         return null;
       }
@@ -73,7 +73,7 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
           event_date: start_date!,
           ticket_type: "private",
           ticket_class: "vip",
-          ticket_value: Number(ticket_value),
+          ticket_price: Number(ticket_price),
         }),
       );
 
@@ -100,10 +100,10 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
         event_url,
         start_date,
         end_date,
-        ticket_value,
+        ticket_price,
       } = e;
 
-      if (!ticket_value) {
+      if (!ticket_price) {
         onWarn("Ticket is unavailable.");
         return null;
       }
@@ -121,7 +121,7 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
           event_date: start_date!,
           ticket_type: "public",
           ticket_class: "basic",
-          ticket_value, // Assuming a default value for basic tickets
+          ticket_price, // Assuming a default value for basic tickets
         }),
       );
 

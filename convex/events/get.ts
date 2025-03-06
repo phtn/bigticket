@@ -1,6 +1,6 @@
 import { query, mutation } from "@vx/server";
-import { doc } from "convex/utils";
 import { v } from "convex/values";
+import { checkEvent } from "./create";
 
 export const all = query({
   handler: async ({ db }) => (await db.query("events").take(25)).reverse(),
@@ -8,9 +8,11 @@ export const all = query({
 
 export const byId = query({
   args: { id: v.string() },
-  handler: async ({ db }, { id }) => {
-    return await doc(db, "events", id);
-  },
+  handler: async ({ db }, { id }) =>
+    await db
+      .query("events")
+      .withIndex("by_event_id", (q) => q.eq("event_id", id))
+      .unique(),
 });
 
 export const byType = mutation({
@@ -19,7 +21,7 @@ export const byType = mutation({
     await db
       .query("events")
       .withIndex("by_event_type", (q) => q.eq("event_type", event_type))
-      .first(),
+      .collect(),
 });
 
 export const byHostId = query({
@@ -67,7 +69,7 @@ export const byCode = mutation({
     await db
       .query("events")
       .withIndex("by_event_code", (q) => q.eq("event_code", event_code))
-      .first(),
+      .unique(),
 });
 
 export const byCategory = mutation({

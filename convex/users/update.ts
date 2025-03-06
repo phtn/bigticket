@@ -3,7 +3,7 @@ import { UpdateUserSchema, UserGallerySchema } from "./d";
 import { checkUser } from "./create";
 import { v } from "convex/values";
 import { UserTicket, UserTicketSchema } from "convex/events/d";
-import { doc, upsert } from "convex/utils";
+import { getEvent, upsert } from "convex/utils";
 
 export const info = mutation({
   args: UpdateUserSchema,
@@ -86,21 +86,21 @@ export const photo_url = mutation({
 
 export const likes = mutation({
   args: { id: v.string(), target_id: v.string() },
-  handler: async ({ db }, { id, target_id }) => {
-    const user = await checkUser(db, id);
+  handler: async (ctx, { id, target_id }) => {
+    const user = await checkUser(ctx.db, id);
 
     if (user === null || target_id === "") {
       return null;
     }
 
     const [likes, increment] = updateArray(user?.likes, target_id);
-    await db.patch(user._id, { likes, updated_at: Date.now() });
+    await ctx.db.patch(user._id, { likes, updated_at: Date.now() });
 
-    const event = await doc(db, "events", target_id);
+    const event = await getEvent(ctx, target_id);
     if (event === null || !increment) {
       return null;
     }
-    await db.patch(event._id, {
+    await ctx.db.patch(event._id, {
       likes: event?.likes ? event?.likes + increment : increment,
     });
     return "success";
@@ -109,24 +109,24 @@ export const likes = mutation({
 
 export const bookmarks = mutation({
   args: { id: v.string(), target_id: v.string() },
-  handler: async ({ db }, { id, target_id }) => {
-    const user = await checkUser(db, id);
+  handler: async (ctx, { id, target_id }) => {
+    const user = await checkUser(ctx.db, id);
 
     if (user === null || target_id === "") {
       return null;
     }
 
     const [bookmarks, increment] = updateArray(user?.bookmarks, target_id);
-    await db.patch(user._id, {
+    await ctx.db.patch(user._id, {
       bookmarks,
       updated_at: Date.now(),
     });
 
-    const event = await doc(db, "events", target_id);
+    const event = await getEvent(ctx, target_id);
     if (event === null || !increment) {
       return null;
     }
-    await db.patch(event._id, {
+    await ctx.db.patch(event._id, {
       bookmarks: event?.bookmarks ? event?.bookmarks + increment : increment,
     });
     return "success";
@@ -207,9 +207,9 @@ function updateArray(
 
 export const tickets = mutation({
   args: { id: v.string(), tickets: v.array(UserTicketSchema) },
-  handler: async ({ db }, { id, tickets }) => {
+  handler: async (ctx, { id, tickets }) => {
     // check user
-    const user = await checkUser(db, id);
+    const user = await checkUser(ctx.db, id);
     if (user === null || !tickets || tickets.length === 0) {
       console.log("User not found or no tickets provided");
       return null;
@@ -222,14 +222,14 @@ export const tickets = mutation({
     const [updated_user_tickets] = updateTicketList(user.tickets, tickets, id);
 
     // update user
-    await db.patch(user._id, {
+    await ctx.db.patch(user._id, {
       ...user,
       tickets: updated_user_tickets,
       updated_at: Date.now(),
     });
 
     // check event
-    const target_event = await doc(db, "events", event_id);
+    const target_event = await getEvent(ctx, id);
     if (target_event === null) {
       return null;
     }
@@ -247,7 +247,7 @@ export const tickets = mutation({
       ? vipList.map((vip) => ({ ...vip, tickets_claimed: true }))
       : vipList;
 
-    await db.patch(target_event._id, {
+    await ctx.db.patch(target_event._id, {
       ...target_event,
       vip_list,
       tickets: updated_event_tickets,

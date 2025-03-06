@@ -9,14 +9,14 @@ import {
 } from "react";
 import { EventDetailActionSheet } from "../action-sheet";
 import { BlockHeader } from "../components";
-import { access_info, PrimaryInfoSchema, type EventField } from "../schema";
+import { access_info, BasicInfoSchema, type EventField } from "../schema";
 import { useEventDetail } from "../ctx";
 import { useMoment } from "@/hooks/useMoment";
 import { EventCategory, EventDate } from "../../../../../create/components";
 import { Nebula } from "../";
 import { Hyper } from "@/ui/button/button";
 import { type BasicInfo } from "convex/events/d";
-import { useFormStateEvent } from "./store";
+import { useFormStateBasic } from "./store";
 import {
   EventDetailItem,
   FieldBlock,
@@ -47,7 +47,7 @@ export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
     setStartDate,
     setEndDate,
     xEvent,
-  } = useFormStateEvent();
+  } = useFormStateBasic();
 
   useEffect(() => {
     setXEvent(x);
@@ -102,7 +102,7 @@ export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
   const saveFn = useCallback(
     async (initialValues: BasicInfo | null, fd: FormData) => {
       if (!xEvent?.event_id) return null;
-      const updates = PrimaryInfoSchema.safeParse({
+      const updates = BasicInfoSchema.safeParse({
         event_name: fd.get("event_name") as string,
         event_desc: fd.get("event_desc") as string,
         event_url: fd.get("event_url") as string,
@@ -267,7 +267,7 @@ export const TypeAndCategory = () => {
 };
 
 const CategoryFields = () => {
-  const { category, subcategory } = useFormStateEvent();
+  const { category, subcategory } = useFormStateBasic();
 
   const cat_info: EventField[] = useMemo(
     () => [
@@ -316,7 +316,7 @@ const DateTimeFields = () => {
     setVenueAddress,
     venue_name,
     venue_address,
-  } = useFormStateEvent();
+  } = useFormStateBasic();
   const { start_time, end_time } = useMoment({
     start: start_date,
     end: end_date,
@@ -340,20 +340,20 @@ const DateTimeFields = () => {
   const fields: EventField[] = useMemo(
     () => [
       {
-        label: "Start Time",
+        label: "Start・Date・Time",
         value: `${start_time.date} ・ ${start_time.full}`,
         name: "start_date",
       },
       {
-        label: "End Time",
+        label: "End・Date・Time",
         value: `${end_time.date} ・ ${end_time.full}`,
         name: "end_date",
       },
       {
-        label: "Name of Place ・ Venue",
+        label: "Event Venue",
         defaultValue: venue_name,
         name: "venue_name",
-        placeholder: "Place・Venue Name.",
+        placeholder: "Name of event place.",
         onChange: handleChangeVenueName,
       },
       {

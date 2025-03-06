@@ -246,13 +246,13 @@ interface TitleDisplayProps {
   time: string;
 }
 const TitleDisplay = ({ event_name, narrow, time }: TitleDisplayProps) => (
-  <div className="absolute bottom-0 left-0 z-10 w-fit animate-enter space-y-0.5 rounded-sm bg-void/20 py-3 backdrop-blur-sm md:bottom-2 md:left-2">
-    <p className="w-fit space-x-1.5 rounded-e-xl bg-void/60 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-tighter text-chalk opacity-70 md:text-tiny">
+  <div className="absolute bottom-0 left-0 z-10 w-fit animate-enter space-y-0.5 rounded-sm bg-coal/30 py-3 backdrop-blur-sm md:bottom-2 md:left-2 md:rounded-lg">
+    <p className="w-fit space-x-1.5 rounded-e-xl border-b-[0.25px] border-secondary bg-void/60 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-tighter text-chalk opacity-70 md:text-tiny">
       <span>{narrow.day}</span>
       <span>{narrow.date}</span> <span>{time}</span>
     </p>
     <div className="px-3">
-      <h2 className="block w-screen text-lg font-bold leading-8 tracking-tighter text-white drop-shadow-sm first-line:max-w-[16ch] md:w-fit md:max-w-[18ch] md:text-3xl">
+      <h2 className="block w-screen text-lg font-bold leading-8 tracking-tighter text-white drop-shadow-sm first-line:max-w-[16ch] md:w-fit md:max-w-[16ch] md:text-xl md:font-black md:tracking-tight">
         {event_name}
       </h2>
     </div>

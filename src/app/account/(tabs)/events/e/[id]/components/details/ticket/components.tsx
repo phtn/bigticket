@@ -6,48 +6,49 @@ import { inputClassNames } from "../../../editor";
 import { EventDetailOption } from "../action-sheet";
 import { BlockHeader } from "../components";
 import { type EventField } from "../schema";
-import { useFormStateBasic } from "./store";
+import { useFormStateTicket } from "./store";
 import { type FieldBlockProps } from "./types";
 
-export const FieldBlock = ({ pending }: FieldBlockProps) => {
-  const { event_name, event_desc, event_url } = useFormStateBasic();
-  const basic_info: EventField[] = useMemo(
+export const FieldBlock = ({ pending, children }: FieldBlockProps) => {
+  const { ticket_price, min_age, max_age } = useFormStateTicket();
+  const ticket_info: EventField[] = useMemo(
     () => [
       {
-        name: "event_name",
+        name: "ticket_price",
         type: "text",
-        label: "Event name",
-        placeholder: "The name of the event",
-        required: true,
-        value: event_name,
+        label: "Ticket Sale Price",
+        placeholder: "Ticket Sale Price",
+        required: false,
+        value: ticket_price?.toString(),
       },
       {
-        name: "event_desc",
+        name: "min_age",
         type: "text",
-        label: "A brief description of your event.",
-        placeholder: "What best describes your event?",
+        label: "Minimum Age",
+        placeholder: "Minimum age allowed for entry.",
         required: false,
-        value: event_desc,
+        value: min_age?.toString(),
       },
       {
-        name: "event_url",
+        name: "max_age",
         type: "text",
-        label: "Website URL",
-        placeholder: "Your event's official website.",
+        label: "Maximum Age",
+        placeholder: "Maximum age allowed for entry.",
         required: false,
-        value: event_url,
+        value: max_age?.toString(),
       },
     ],
-    [event_name, event_desc, event_url],
+    [ticket_price, min_age, max_age],
   );
   return (
     <div className="w-full space-y-6 p-6">
       <BlockHeader
-        label={"Primary Info"}
-        icon={pending ? "SpinnerBall" : "ArrowRight"}
+        label={"Ticket Values"}
+        icon={pending ? "SpinnerBall" : "Ticket2"}
       />
+      {children}
       <HyperList
-        data={basic_info}
+        data={ticket_info}
         container="space-y-6"
         component={FieldItem}
         delay={0}
@@ -80,19 +81,11 @@ export const EventDetailItem = (item: EventField) => (
 );
 
 export const SwitchItem = (field: EventField) => {
-  const { setIsOnline, setIsPrivate, is_online, is_private } =
-    useFormStateBasic();
+  const {} = useFormStateTicket();
   const label = field.label as string;
   const [on, off] = label.split("--");
-  const [checked, setChecked] = useState(
-    field.name === "is_online" ? is_online : is_private,
-  );
+  const [checked, setChecked] = useState(false);
   const handleValueChange = (value: boolean) => {
-    if (field.name === "is_online") {
-      setIsOnline(value);
-    } else if (field.name === "is_private") {
-      setIsPrivate(value);
-    }
     setChecked(value);
   };
   return (

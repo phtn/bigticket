@@ -4,7 +4,6 @@ import { useConvexCtx } from "@/app/ctx/convex";
 import { usePreloadedUserEvents } from "@/app/ctx/event/user";
 import { type XEvent } from "@/app/types";
 import { useImage } from "@/hooks/useImage";
-import { Err, Ok } from "@/utils/helpers";
 import { log } from "@/utils/logger";
 import { usePathname } from "next/navigation";
 import {
@@ -30,7 +29,7 @@ interface EventEditorCtxValues {
     file: File | undefined,
     event_id: string | undefined,
     field: "cover_url" | "photo_url",
-  ) => Promise<void>;
+  ) => Promise<string | null>;
   getCoverPhoto: (cover_url: string | undefined) => Promise<void>;
   cover_src: string | null;
   uploading: boolean;
@@ -49,6 +48,7 @@ interface EventEditorCtxValues {
   event_id: string | undefined;
   user_id: string | undefined;
 }
+
 interface ImageRefs {
   canvasRef: RefObject<HTMLCanvasElement | null>;
   inputFileRef: RefObject<HTMLInputElement | null>;
@@ -75,7 +75,6 @@ export const EventEditorCtxProvider = ({
 
   const pathname = usePathname();
   const ids = useMemo(() => pathname.split("/").pop(), [pathname]);
-
   const [event_id, user_id] = useMemo(
     () => (ids ? ids.split("---") : [undefined, undefined]),
     [ids],
@@ -88,7 +87,7 @@ export const EventEditorCtxProvider = ({
         setXEvent(event ?? null);
       });
     }
-  }, [x, event_id]);
+  }, [x, event_id, startTransition]);
 
   const getRefs = useCallback(({ canvasRef, inputFileRef }: ImageRefs) => {
     setCanvas(canvasRef.current);
@@ -108,31 +107,37 @@ export const EventEditorCtxProvider = ({
         log("query-data", [q, l]);
       });
     },
-    [],
+    [startTransition],
   );
 
   const getCoverPhoto = useCallback(
     async (cover_url: string | undefined) => {
       if (!cover_url) return;
-
+      // Use startTransition to update reactively.
       startTransition(async () => {
         const url = await vxFiles.getUrl(cover_url);
         setCoverSrc(url);
       });
     },
-    [vxFiles],
+    [vxFiles, startTransition],
   );
 
   const updateTextColor = useCallback(
     async (id: string | undefined, light: boolean) => {
       if (!id) return;
-
       startTransition(async () => {
         await vxEvents.mut.updateEventIsCoverLight({
           id,
           is_cover_light: light,
         });
       });
+    },
+    [vxEvents.mut, startTransition],
+  );
+
+  const updateCoverUrl = useCallback(
+    async (id: string, cover_url: string) => {
+      return await vxEvents.mut.updateCoverUrl({ id, cover_url });
     },
     [vxEvents.mut],
   );
@@ -144,38 +149,19 @@ export const EventEditorCtxProvider = ({
       field: "cover_url" | "photo_url",
     ) => {
       if (!url || !event_id) return null;
-
-      const updateField = async (
-        updateFn: (id: string, url: string) => Promise<string | null>,
-        successMessage: string,
-      ) => {
-        try {
-          const result = await updateFn(event_id, url);
-          Ok(setLoading, successMessage)();
-          // Update cover source after successful upload
-          if (field === "cover_url") {
-            await getCoverPhoto(url);
-          }
-          return result;
-        } catch (e) {
-          Err(setLoading, "Failed to update photo.")(e as Error);
-          return null;
-        }
-      };
-
-      const updateCover = async (id: string, cover_url: string) =>
-        await vxEvents.mut.updateCoverUrl({ id, cover_url });
-
-      return await updateField(
-        updateCover,
-        `${field === "cover_url" ? "Cover" : "Event"} photo updated!`,
-      );
+      // Update the cover URL in the backend
+      const updated = await updateCoverUrl(event_id, url);
+      // Refresh the reactive cover state if it's a cover update
+      if (field === "cover_url") {
+        await getCoverPhoto(url);
+      }
+      return updated;
     },
-    [vxEvents.mut, getCoverPhoto],
+    [getCoverPhoto, updateCoverUrl],
   );
 
   const createUrl = useCallback(
-    async (file: File) => await vxFiles.create(file),
+    async (file: File | undefined) => await vxFiles.create(file),
     [vxFiles],
   );
 
@@ -186,11 +172,13 @@ export const EventEditorCtxProvider = ({
       field: "cover_url" | "photo_url",
     ) => {
       setLoading(true);
-      startTransition(async () => {
+      try {
         const webp = await fromFile(file);
-        const url = await createUrl(webp as File);
-        await saveFn(url, event_id, field);
-      });
+        const url = await createUrl(webp);
+        return await saveFn(url, event_id, field);
+      } finally {
+        setLoading(false);
+      }
     },
     [createUrl, fromFile, saveFn],
   );
@@ -203,13 +191,13 @@ export const EventEditorCtxProvider = ({
     ) => {
       if (!src) return null;
       setLoading(true);
-
-      startTransition(async () => {
+      try {
         const webp = await fromSource(src);
-        const url = await createUrl(webp as File);
-        await saveFn(url, event_id, field);
-      });
-      return "success";
+        const url = await createUrl(webp);
+        return await saveFn(url, event_id, field);
+      } finally {
+        setLoading(false);
+      }
     },
     [createUrl, fromSource, saveFn],
   );
@@ -253,13 +241,15 @@ export const EventEditorCtxProvider = ({
     ],
   );
 
-  return <EventEditorCtx value={value}>{children}</EventEditorCtx>;
+  return (
+    <EventEditorCtx.Provider value={value}>{children}</EventEditorCtx.Provider>
+  );
 };
 
 export const useEventEditor = () => {
   const ctx = useContext(EventEditorCtx);
   if (!ctx) {
-    throw new Error("useEventEditor must be used within a EventEditorCtx");
+    throw new Error("useEventEditor must be used within an EventEditorCtx");
   }
   return ctx;
 };

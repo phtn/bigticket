@@ -2,7 +2,7 @@ import { type XEvent } from "@/app/types";
 import { type BasicInfo } from "convex/events/d";
 import { create } from "zustand";
 
-interface FormStateEvent {
+interface FormStateBasic {
   xEvent: XEvent | null;
   is_online?: boolean;
   is_private?: boolean;
@@ -30,7 +30,7 @@ interface FormStateEvent {
   reset: (basicInfo: BasicInfo) => void;
 }
 
-export const useFormStateEvent = create<FormStateEvent>((set) => ({
+export const useFormStateBasic = create<FormStateBasic>((set) => ({
   xEvent: null,
   is_online: false,
   is_private: false,

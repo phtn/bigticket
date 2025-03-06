@@ -75,14 +75,17 @@ export const support_info: EventField[] = [
   },
 ];
 
-export const PrimaryInfoSchema = z.object({
+export const BasicInfoSchema = z.object({
   event_name: z.string().min(1).max(100).optional(),
   event_desc: z.string().max(100).optional(),
   event_url: z.string().max(100).optional(),
-  // is_online: z.boolean().optional(),
-  // is_private: z.boolean().optional(),
 });
 
+export const TicketInfoSchema = z.object({
+  ticket_price: z.number().min(1).max(100).optional(),
+  min_age: z.number().max(100).optional(),
+  max_age: z.number().max(100).optional(),
+});
 export const event_fields: EventField[] = [
   {
     name: "event_type",

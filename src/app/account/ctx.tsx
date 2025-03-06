@@ -109,7 +109,7 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
   const updatePhotoUrl = useCallback(
     async (id: string, photo_url: string) =>
       await vxUsers.mut.updatePhotoUrl({ id, photo_url }),
-    [vxFiles],
+    [vxUsers.mut],
   );
 
   const save = useCallback(async () => {
@@ -126,7 +126,7 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       setSaving(false);
     }
     setSaving(false);
-  }, [createUrl, vxUsers.mut, xUser?.id]);
+  }, [createUrl, updatePhotoUrl, xUser?.id]);
 
   const value = useMemo(
     () => ({

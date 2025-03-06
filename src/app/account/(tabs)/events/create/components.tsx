@@ -34,6 +34,7 @@ import {
   event_type_options,
   ticket_count_options,
 } from "./static";
+import type { ClassName } from "@/app/types";
 
 export interface OptionButtonProps {
   name: OptionKey;
@@ -133,17 +134,19 @@ interface TicketCountProps {
   ticketCount: number;
   handleSelectTicketCount: (value: number) => (e: MouseEvent) => void;
   handleCustomTicketCount: (e: ChangeEvent<HTMLInputElement>) => void;
+  className?: ClassName;
 }
 
 export const TicketCount = ({
   ticketCount,
   handleSelectTicketCount,
   handleCustomTicketCount,
+  className,
 }: TicketCountProps) => {
   const isCustomTicketCount = useToggle();
 
   return (
-    <div>
+    <div className={cn(className)}>
       <div className="grid w-full grid-cols-3 gap-1 py-8">
         {ticket_count_options.items.map((item) => (
           <button

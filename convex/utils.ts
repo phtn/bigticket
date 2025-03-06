@@ -1,5 +1,5 @@
-import { TableNames } from "@vx/dataModel";
-import { DatabaseReader } from "@vx/server";
+import { Doc, TableNames } from "@vx/dataModel";
+import { DatabaseReader, QueryCtx } from "@vx/server";
 import { v, Validator } from "convex/values";
 
 export const upsert = <T extends Record<K, any>, K extends keyof T>(
@@ -52,5 +52,15 @@ export async function doc<T extends TableNames>(
   return await db
     .query(tableName)
     .filter((q) => q.eq("event_id", id))
+    .first();
+}
+
+export async function getEvent(
+  ctx: QueryCtx,
+  id: string,
+): Promise<Doc<"events"> | null> {
+  return await ctx.db
+    .query("events")
+    .withIndex("by_event_id", (q) => q.eq("event_id", id))
     .first();
 }

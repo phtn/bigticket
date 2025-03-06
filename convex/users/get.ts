@@ -11,7 +11,7 @@ export const byId = query({
     await db
       .query("users")
       .withIndex("by_uid", (q) => q.eq("id", id))
-      .unique(),
+      .first(),
 });
 
 export const byEmail = query({

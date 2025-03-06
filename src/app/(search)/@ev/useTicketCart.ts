@@ -21,9 +21,9 @@ export const useTicketCart = (
         event_url,
         start_date,
         end_date,
-        ticket_value,
+        ticket_price,
       } = xEvent;
-      if (!ticket_value) {
+      if (!ticket_price) {
         onWarn("Ticket is unavailable.");
         return null;
       }
@@ -40,7 +40,7 @@ export const useTicketCart = (
           event_date: start_date!,
           ticket_type: "private",
           ticket_class: "vip",
-          ticket_value: Number(ticket_value),
+          ticket_price: Number(ticket_price),
         }),
       );
 
@@ -63,10 +63,10 @@ export const useTicketCart = (
         event_url,
         start_date,
         end_date,
-        ticket_value,
+        ticket_price,
       } = xEvent;
 
-      if (!ticket_value) {
+      if (!ticket_price) {
         onWarn("Ticket is unavailable.");
         return null;
       }
@@ -83,7 +83,7 @@ export const useTicketCart = (
           event_date: start_date!,
           ticket_type: "public",
           ticket_class: "basic",
-          ticket_value: Number(ticket_value), // Assuming a default value for basic tickets
+          ticket_price: Number(ticket_price), // Assuming a default value for basic tickets
         }),
       );
 
