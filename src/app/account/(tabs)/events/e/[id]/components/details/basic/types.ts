@@ -6,6 +6,5 @@ export interface BasicContentProps {
 }
 
 export interface FieldBlockProps {
-  xEvent: XEvent | null;
   pending: boolean;
 }

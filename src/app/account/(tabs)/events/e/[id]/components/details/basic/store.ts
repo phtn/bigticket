@@ -1,7 +1,9 @@
+import { type XEvent } from "@/app/types";
 import { type BasicInfo } from "convex/events/d";
 import { create } from "zustand";
 
 interface FormStateEvent {
+  xEvent: XEvent | null;
   is_online?: boolean;
   is_private?: boolean;
   category: string;
@@ -13,6 +15,7 @@ interface FormStateEvent {
   event_url: string;
   venue_name: string;
   venue_address: string;
+  setXEvent: (xEvent: XEvent | null) => void;
   setIsOnline: (is_online: boolean) => void;
   setIsPrivate: (is_private: boolean) => void;
   setCategory: (category: string) => void;
@@ -28,6 +31,7 @@ interface FormStateEvent {
 }
 
 export const useFormStateEvent = create<FormStateEvent>((set) => ({
+  xEvent: null,
   is_online: false,
   is_private: false,
   category: "party",
@@ -39,6 +43,7 @@ export const useFormStateEvent = create<FormStateEvent>((set) => ({
   event_url: "",
   venue_name: "",
   venue_address: "",
+  setXEvent: (xEvent: XEvent | null) => set({ xEvent }),
   setIsOnline: (is_online: boolean) => set({ is_online }),
   setIsPrivate: (is_private: boolean) => set({ is_private }),
   setCategory: (category: string) => set({ category }),

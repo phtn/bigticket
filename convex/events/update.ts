@@ -4,7 +4,7 @@ import {
   BasicInfoSchema,
   CohostSchema,
   EventGallerySchema,
-  VIP,
+  type VIP,
   VIPSchema,
 } from "./d";
 import { doc } from "convex/utils";

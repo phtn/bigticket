@@ -20,18 +20,12 @@ export interface TabItem {
   content: JSX.Element;
 }
 
-interface EventEditorProps {
-  id: string | undefined;
-}
-export const EventEditor = ({ id }: EventEditorProps) => {
-  const [event_id, user_id] = id?.split("---") ?? ["", ""];
-  const { getXEvent, xEvent, pending } = useEventEditor();
+export const EventEditor = () => {
+  const { xEvent, pending, event_id, user_id } = useEventEditor();
 
   useEffect(() => {
-    if (event_id) {
-      getXEvent(event_id);
-    }
-  }, [getXEvent, event_id]);
+    console.log(pending, event_id, xEvent?.event_name);
+  }, [pending, event_id, xEvent?.event_name]);
 
   const tabs: TabItem[] = useMemo(
     () => [

@@ -1,8 +1,6 @@
-import { DatabaseReader, mutation } from "@vx/server";
+import { mutation } from "@vx/server";
 import { EventSchema } from "./d";
 import { guid } from "@/utils/helpers";
-import { type GenericDatabaseWriter } from "convex/server";
-import { TableNames, type DataModel } from "@vx/dataModel";
 import { doc } from "convex/utils";
 
 const create = mutation({

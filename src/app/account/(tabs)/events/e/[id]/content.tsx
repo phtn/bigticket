@@ -13,7 +13,7 @@ export const EventEditorContent = (props: EventEditorContentProps) => {
   return (
     <PreloadedUserEventsCtxProvider {...props}>
       <EventEditorCtxProvider>
-        <EventEditor id={props.id} />
+        <EventEditor />
       </EventEditorCtxProvider>
     </PreloadedUserEventsCtxProvider>
   );

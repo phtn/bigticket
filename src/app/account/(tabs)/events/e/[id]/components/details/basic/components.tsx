@@ -9,7 +9,8 @@ import { type EventField } from "../schema";
 import { useFormStateEvent } from "./store";
 import { type FieldBlockProps } from "./types";
 
-export const FieldBlock = ({ xEvent, pending }: FieldBlockProps) => {
+export const FieldBlock = ({ pending }: FieldBlockProps) => {
+  const { event_name, event_desc, event_url } = useFormStateEvent();
   const basic_info: EventField[] = useMemo(
     () => [
       {
@@ -18,7 +19,7 @@ export const FieldBlock = ({ xEvent, pending }: FieldBlockProps) => {
         label: "Event name",
         placeholder: "The name of the event",
         required: true,
-        defaultValue: xEvent?.event_name,
+        value: event_name,
       },
       {
         name: "event_desc",
@@ -26,7 +27,7 @@ export const FieldBlock = ({ xEvent, pending }: FieldBlockProps) => {
         label: "A brief description of your event.",
         placeholder: "What best describes your event?",
         required: false,
-        defaultValue: xEvent?.event_desc,
+        value: event_desc,
       },
       {
         name: "event_url",
@@ -34,10 +35,10 @@ export const FieldBlock = ({ xEvent, pending }: FieldBlockProps) => {
         label: "Website URL",
         placeholder: "Your event's official website.",
         required: false,
-        defaultValue: xEvent?.event_url,
+        value: event_url,
       },
     ],
-    [xEvent],
+    [event_name, event_desc, event_url],
   );
   return (
     <div className="w-full space-y-6 p-6">
@@ -56,7 +57,16 @@ export const FieldBlock = ({ xEvent, pending }: FieldBlockProps) => {
 };
 
 export const FieldItem = (field: EventField) => (
-  <Input {...field} isRequired={field.required} classNames={inputClassNames} />
+  <Input
+    id={field.name}
+    name={field.name}
+    type={field.type}
+    label={field.label}
+    placeholder={field.value ?? field.placeholder}
+    isRequired={field.required}
+    defaultValue={field.value}
+    classNames={inputClassNames}
+  />
 );
 
 export const EventDetailItem = (item: EventField) => (

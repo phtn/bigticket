@@ -27,7 +27,7 @@ import type { BasicContentProps } from "./types";
 import { useConvexCtx } from "@/app/ctx/convex";
 import { asyncR } from "@/utils/helpers";
 
-export const BasicContent = ({ xEvent, pending }: BasicContentProps) => {
+export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
   const {
     is_online,
     is_private,
@@ -41,26 +41,29 @@ export const BasicContent = ({ xEvent, pending }: BasicContentProps) => {
     venue_name,
     venue_address,
     reset,
+    setXEvent,
     setCategory,
     setSubcategory,
     setStartDate,
     setEndDate,
+    xEvent,
   } = useFormStateEvent();
 
   useEffect(() => {
+    setXEvent(x);
     reset({
       is_online: xEvent?.is_online ?? false,
       is_private: xEvent?.is_private ?? false,
       category: xEvent?.category ?? "party",
       start_date: xEvent?.start_date ?? 0,
       end_date: xEvent?.end_date ?? 0,
-      event_name: xEvent?.event_name ?? "",
-      event_desc: xEvent?.event_desc ?? "",
-      event_url: xEvent?.event_url ?? "",
-      venue_name: xEvent?.venue_name ?? "",
-      venue_address: xEvent?.venue_address ?? "",
+      event_name: xEvent?.event_name ?? "Event name",
+      event_desc: xEvent?.event_desc,
+      event_url: xEvent?.event_url,
+      venue_name: xEvent?.venue_name,
+      venue_address: xEvent?.venue_address,
     });
-  }, [xEvent, reset]);
+  }, [x, setXEvent, xEvent, reset]);
 
   const initialValues: BasicInfo | null = useMemo(() => {
     if (!xEvent?.event_id) return null;
@@ -224,7 +227,7 @@ export const BasicContent = ({ xEvent, pending }: BasicContentProps) => {
     <Nebula>
       <Form action={action}>
         <div className="grid w-full grid-cols-1 gap-0 pb-6 md:grid-cols-2 md:rounded-lg lg:grid-cols-3 xl:gap-6">
-          <FieldBlock xEvent={pending ? null : xEvent} pending={pending} />
+          <FieldBlock pending={pending} />
           <TypeAndCategory />
           <DateTimeVenue />
         </div>
