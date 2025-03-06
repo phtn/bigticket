@@ -4,6 +4,7 @@ import { useToggle } from "@/hooks/useToggle";
 import { type InsertEvent } from "convex/events/d";
 import {
   createContext,
+  useContext,
   useMemo,
   useState,
   type Dispatch,
@@ -16,13 +17,16 @@ export type EventDetailKey = keyof Pick<
   | "ticket_price"
   | "event_type"
   | "category"
+  | "subcategory"
   | "start_date"
   | "end_date"
   | "is_private"
+  | "is_online"
   | "event_email"
   | "event_phone"
   | "event_name"
   | "event_desc"
+  | "event_url"
   | "venue_name"
   | "venue_address"
 >;
@@ -52,4 +56,12 @@ export const EventDetailCtxProvider = ({
     [open, toggle, selectedEventDetail, setSelectedEventDetail],
   );
   return <EventDetailCtx value={value}>{children}</EventDetailCtx>;
+};
+
+export const useEventDetail = () => {
+  const context = useContext(EventDetailCtx);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };

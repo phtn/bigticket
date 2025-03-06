@@ -1,27 +1,18 @@
 "use client";
 
-import { getUserID } from "@/app/actions";
 import { Carousel } from "@/ui/carousel";
-import { Err } from "@/utils/helpers";
-import {
-  type JSX,
-  use,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { type JSX, useEffect, useMemo } from "react";
 import { CoverPhoto } from "./components/cover-photo";
 import { EventDetails } from "./components/details";
 import { BasicContent } from "./components/details/basic";
 import { EventDetailCtxProvider } from "./components/details/ctx";
 import { HostSettings } from "./components/details/hosting";
+import { MediaContent } from "./components/details/media";
 import { VIPContent } from "./components/details/vip";
 import { ImageQuery } from "./components/pexels";
 import { TicketPhoto } from "./components/ticket-photo";
 import { Topbar } from "./components/topbar";
-import { EventEditorCtx } from "./ctx";
-import { MediaContent } from "./components/details/media";
+import { useEventEditor } from "./ctx";
 
 export interface TabItem {
   title: string;
@@ -33,21 +24,14 @@ interface EventEditorProps {
   id: string | undefined;
 }
 export const EventEditor = ({ id }: EventEditorProps) => {
-  const event_id = id?.split("---").shift();
-  const { getXEvent, xEvent, pending } = use(EventEditorCtx)!;
-  const [user_id, setUserId] = useState<string | null>(null);
+  const [event_id, user_id] = id?.split("---") ?? ["", ""];
+  const { getXEvent, xEvent, pending } = useEventEditor();
 
   useEffect(() => {
-    getXEvent(event_id);
+    if (event_id) {
+      getXEvent(event_id);
+    }
   }, [getXEvent, event_id]);
-
-  const getUserId = useCallback(async () => {
-    setUserId(await getUserID());
-  }, []);
-
-  useEffect(() => {
-    getUserId().catch(Err);
-  }, [getUserId]);
 
   const tabs: TabItem[] = useMemo(
     () => [
@@ -108,14 +92,12 @@ export const EventEditor = ({ id }: EventEditorProps) => {
 };
 
 export const inputClassNames = {
-  innerWrapper: "bg-white p-3 shadow-none rounded-xl",
-  inputWrapper: [
-    " focus-ring focus-ring:macd-blue h-16 p-0 bg-white shadow-none",
-  ],
-  label: "ps-4 pb-0.5 opacity-60 text-sm font-medium tracking-tight",
+  innerWrapper: "bg-white pt-4 pb-2.5 ps-4 shadow-none rounded-xl",
+  inputWrapper: [" focus-ring focus-ring:macd-blue h-16 p-0 shadow-none"],
+  label: "ps-5  opacity-60 tracking-tight text-[15px] leading-5",
   input: [
     "font-bold tracking-tight shadow-none font-inter bg-white",
-    "placeholder:font-semibold focus:placeholder:opacity-40 placeholder:text-primary placeholder:text-sm",
+    "placeholder:font-semibold focus:placeholder:opacity-40 placeholder:drop-shadow-sm shadow-coal placeholder:text-peach placeholder:text-sm",
     "",
   ],
 };

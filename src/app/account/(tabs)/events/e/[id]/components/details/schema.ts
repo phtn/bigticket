@@ -6,9 +6,9 @@ import { type EventDetailKey } from "./ctx";
 
 export type FieldData = string | number | boolean | undefined;
 export interface EventDetailField {
-  children: ReactNode;
+  children?: ReactNode;
   render: (option: EventDetailKey | null) => ReactNode;
-  data: FieldData[];
+  data?: FieldData[];
 }
 export type EventFieldName = keyof Partial<InsertEvent>;
 export type EventField = InputProps & {
@@ -43,10 +43,17 @@ export const ticket_info: EventField[] = [
 
 export const access_info: EventField[] = [
   {
+    name: "is_online",
+    type: "checkbox",
+    label: "onsite--online",
+    placeholder: "Access.",
+    required: true,
+  },
+  {
     name: "is_private",
-    type: "text",
-    label: "Access",
-    placeholder: "Access",
+    type: "checkbox",
+    label: "public--private",
+    placeholder: "Audience.",
     required: true,
   },
 ];
@@ -67,6 +74,14 @@ export const support_info: EventField[] = [
     required: false,
   },
 ];
+
+export const PrimaryInfoSchema = z.object({
+  event_name: z.string().min(1).max(100).optional(),
+  event_desc: z.string().max(100).optional(),
+  event_url: z.string().max(100).optional(),
+  // is_online: z.boolean().optional(),
+  // is_private: z.boolean().optional(),
+});
 
 export const event_fields: EventField[] = [
   {

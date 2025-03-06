@@ -2,9 +2,8 @@ import { mutation } from "@vx/server";
 import { UpdateUserSchema, UserGallerySchema } from "./d";
 import { checkUser } from "./create";
 import { v } from "convex/values";
-import { checkEvent } from "convex/events/create";
 import { UserTicket, UserTicketSchema } from "convex/events/d";
-import { upsert } from "convex/utils";
+import { doc, upsert } from "convex/utils";
 
 export const info = mutation({
   args: UpdateUserSchema,
@@ -97,7 +96,7 @@ export const likes = mutation({
     const [likes, increment] = updateArray(user?.likes, target_id);
     await db.patch(user._id, { likes, updated_at: Date.now() });
 
-    const event = await checkEvent(db, target_id);
+    const event = await doc(db, "events", target_id);
     if (event === null || !increment) {
       return null;
     }
@@ -123,7 +122,7 @@ export const bookmarks = mutation({
       updated_at: Date.now(),
     });
 
-    const event = await checkEvent(db, target_id);
+    const event = await doc(db, "events", target_id);
     if (event === null || !increment) {
       return null;
     }
@@ -230,7 +229,7 @@ export const tickets = mutation({
     });
 
     // check event
-    const target_event = await checkEvent(db, event_id);
+    const target_event = await doc(db, "events", event_id);
     if (target_event === null) {
       return null;
     }

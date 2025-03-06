@@ -15,6 +15,7 @@ import {
   useMemo,
   useState,
   type ReactNode,
+  useContext,
 } from "react";
 
 interface EventEditorCtxValues {
@@ -158,6 +159,13 @@ export const EventEditorCtxProvider = ({
     [vxEvents.mut, setLoading],
   );
 
+  const createUrl = useCallback(
+    async (file: File) => {
+      return await vxFiles.create(file);
+    },
+    [vxFiles],
+  );
+
   const uploadFromFile = useCallback(
     async (
       file: File | undefined,
@@ -166,10 +174,11 @@ export const EventEditorCtxProvider = ({
     ) => {
       setLoading(true);
       const webp = await fromFile(file);
-      const url = (await vxFiles.create(webp as File)) as string;
+      const url = await createUrl(webp as File);
+      console.log(webp, url);
       return await saveFn(url, event_id, field);
     },
-    [vxFiles, saveFn, fromFile],
+    [createUrl, fromFile, saveFn],
   );
 
   const uploadFromSource = useCallback(
@@ -181,10 +190,10 @@ export const EventEditorCtxProvider = ({
       setLoading(true);
       if (!src) return null;
       const webp = await fromSource(src);
-      const url = (await vxFiles.create(webp as File)) as string;
+      const url = await createUrl(webp as File);
       return await saveFn(url, event_id, field);
     },
-    [vxFiles, saveFn, fromSource],
+    [createUrl, fromSource, saveFn],
   );
 
   const value = useMemo(
@@ -224,4 +233,10 @@ export const EventEditorCtxProvider = ({
     ],
   );
   return <EventEditorCtx value={value}>{children}</EventEditorCtx>;
+};
+export const useEventEditor = () => {
+  const ctx = useContext(EventEditorCtx);
+  if (!ctx)
+    throw new Error("useEventEditor must be used within a EventEditorCtx");
+  return ctx;
 };

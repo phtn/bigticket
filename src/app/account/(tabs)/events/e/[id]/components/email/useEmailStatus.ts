@@ -31,13 +31,6 @@ export function useEmailStatus<T extends VIP>(endpoint: string) {
         if (done) break;
 
         const text = decoder.decode(value).trim();
-        // const events = text.split("\n\n").filter(Boolean);
-
-        // events.forEach((event) => {
-        //   const data = JSON.parse(event.replace("data: ", "")) as EmailStatus;
-        //   setStatus((prev) => [...prev, data]);
-        // });
-        console.log(text);
         toast.loading(text, { duration: Infinity, id: toastId });
       }
       toast.success(`Sent to ${data.email}`, { id: toastId, duration: 5000 });

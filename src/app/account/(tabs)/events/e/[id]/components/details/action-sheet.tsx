@@ -61,10 +61,10 @@ export const EventDetailOption = ({
       id={name}
       name={name}
       onClick={handleClick(name)}
-      className="h-16 w-full space-y-2 rounded-xl bg-white py-2 ps-2.5 text-left font-inter tracking-tight hover:bg-cake"
+      className="h-16 w-full space-y-1 rounded-xl bg-white py-1 ps-4 text-left font-inter tracking-tight hover:bg-cake"
     >
-      <p className="text-xs font-medium leading-none text-macl-gray">{label}</p>
-      <p className="overflow-hidden whitespace-nowrap font-semibold capitalize leading-none">
+      <p className="text-xs font-medium leading-5 text-primary/60">{label}</p>
+      <p className="overflow-hidden whitespace-nowrap text-sm font-semibold capitalize leading-5">
         {value}
       </p>
     </button>
@@ -90,6 +90,10 @@ export const EventDetailActionSheet = ({
       title: "Event Category",
       description: "Select the category of your event.",
     },
+    subcategory: {
+      title: "Event Subcategory",
+      description: "Select the subcategory of your event.",
+    },
     start_date: {
       title: "Event Start date & time",
       description: "Select the start date and time of your event.",
@@ -108,7 +112,9 @@ export const EventDetailActionSheet = ({
     <BottomVaul open={open} onOpenChange={toggle} dismissible>
       <div
         className={cn("h-fit w-screen overflow-y-scroll p-6 md:w-[30rem]", {
-          "relative max-h-96 pb-14": selectedEventDetail === "category",
+          "relative max-h-[32rem] pb-14":
+            selectedEventDetail === "category" ||
+            selectedEventDetail === "subcategory",
         })}
       >
         <h2 className="font-inter text-lg font-bold tracking-tighter">
@@ -123,7 +129,7 @@ export const EventDetailActionSheet = ({
         <div
           className={cn("flex h-24 w-full items-end", {
             "fixed bottom-0 left-0 items-center border bg-white px-6":
-              selectedEventDetail === "category",
+              selectedEventDetail === "category" || "subcategory",
           })}
         >
           <button

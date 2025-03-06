@@ -1,6 +1,7 @@
 import type { Dispatch, ReactElement, SetStateAction } from "react";
 import { onError, onSuccess, onWarn } from "@/app/ctx/toast";
 import pkg from "../../package.json";
+import toast from "react-hot-toast";
 
 export const getVersion = () => {
   return pkg.version;
@@ -522,13 +523,22 @@ export const normalizeTitle = (title: string | undefined) => {
   return [firstLine, secondLine];
 };
 
-export const asyncR = async <T extends typeof Function>(
+export const asyncR = async <T extends Promise<T>>(
   promise: Promise<T> | (() => Promise<T> | T) | T[] | T,
+  loading?: string,
+  success?: string,
+  error?: string,
 ) => {
   try {
     const result = Array.isArray(promise)
-      ? await Promise.all(promise)
-      : await Promise.resolve(promise);
+      ? Promise.all(promise)
+      : Promise.resolve(promise);
+
+    await toast.promise(async () => await result, {
+      loading: loading ?? "Loading...",
+      success: success ?? "Successful!",
+      error: error ?? "An error occurred",
+    });
 
     return { data: result, error: null };
   } catch (error) {

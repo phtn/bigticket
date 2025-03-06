@@ -1,27 +1,27 @@
 import { api } from "@vx/api";
-import { useConvexUtils } from "./useConvexUtils";
 import { useMutation } from "convex/react";
 
 export const useVxFiles = () => {
-  const { asyncFn } = useConvexUtils();
   const generateUrl = useMutation(api.files.create.url);
   const getUrl = useMutation(api.files.get.url);
 
   const create = async (file?: File) => {
     if (!file) return null;
     const postUrl = await generateUrl();
-    await fetch(postUrl, {
+    const response = await fetch(postUrl, {
       method: "POST",
       body: file,
       headers: {
         "Content-Type": file?.type ?? "image/*",
       },
     });
-    return "success";
+    if (!response.ok) throw new Error("Failed to create file");
+    const data = (await response.json()) as Promise<{ storageId: string }>;
+    return (await data).storageId;
   };
 
   const mut = {
-    create: asyncFn(create),
+    create,
     get: async (storageId: string | undefined) =>
       storageId ? await getUrl({ storageId }) : null,
   };

@@ -23,13 +23,12 @@ import {
   type ChangeEvent,
   type MouseEvent,
   type ReactNode,
-  use,
   useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { OptionCtx, type OptionKey } from "./ctx";
+import { useOption, type OptionKey } from "./ctx";
 import {
   category_options,
   event_type_options,
@@ -43,7 +42,7 @@ export interface OptionButtonProps {
   value: string | number | boolean | undefined;
 }
 export const OptionButton = ({ name, label, value }: OptionButtonProps) => {
-  const { toggle, setSelectedOption } = use(OptionCtx)!;
+  const { toggle, setSelectedOption } = useOption();
   const handleClick = useCallback(
     (name: OptionKey | null) => (e: MouseEvent) => {
       e.preventDefault();
@@ -59,7 +58,9 @@ export const OptionButton = ({ name, label, value }: OptionButtonProps) => {
       onClick={handleClick(name)}
       className="h-14 w-full space-y-2 rounded-xl border border-macl-gray/60 py-2 ps-2.5 text-left font-inter tracking-tight hover:bg-macl-gray/5"
     >
-      <p className="text-xs font-medium leading-none text-macl-gray">{label}</p>
+      <p className="text-xs font-medium leading-none text-primary/60">
+        {label}
+      </p>
       <p className="overflow-hidden whitespace-nowrap font-semibold capitalize leading-none">
         {value}
       </p>
@@ -68,7 +69,7 @@ export const OptionButton = ({ name, label, value }: OptionButtonProps) => {
 };
 
 export const OptionActionSheet = ({ children }: { children: ReactNode }) => {
-  const { open, toggle, selectedOption } = use(OptionCtx)!;
+  const { open, toggle, selectedOption } = useOption();
   const options: Record<OptionKey, { title: string; description?: string }> = {
     ticket_count: {
       title: "Number of Tickets",
@@ -81,6 +82,10 @@ export const OptionActionSheet = ({ children }: { children: ReactNode }) => {
     category: {
       title: "Event Category",
       description: "Select the category of your event.",
+    },
+    subcategory: {
+      title: "Subcategory",
+      description: "Select the subcategory of your event.",
     },
     start_date: {
       title: "Event Start date & time",
@@ -96,7 +101,7 @@ export const OptionActionSheet = ({ children }: { children: ReactNode }) => {
     <BottomVaul dismissible open={open} onOpenChange={toggle}>
       <div
         className={cn("h-fit w-screen overflow-y-scroll p-6 md:w-[30rem]", {
-          "relative max-h-96 pb-14": selectedOption === "category",
+          "relative max-h-[32rem] pb-14": selectedOption === "category",
         })}
       >
         <h2 className="font-inter text-lg font-bold tracking-tighter">
@@ -218,9 +223,13 @@ export const EventType = ({ value, onChange }: EventTypeProps) => {
 };
 
 export const EventCategory = ({ value, onChange }: EventTypeProps) => {
+  const handleChange = (v: string) => {
+    onChange(v);
+  };
+
   return (
-    <div className="py-8">
-      <RadioGroup onValueChange={onChange} defaultValue={value}>
+    <div className="py-10">
+      <RadioGroup onValueChange={handleChange} defaultValue={value}>
         {category_options.items.map((item) => (
           <CustomRadio
             key={item.key}
@@ -355,7 +364,7 @@ export const EventDate = ({ value, onChange, label }: EventDateProps) => {
   }, [dt, dateValue, timeValue, onChange]);
 
   return (
-    <div className="space-y-4 py-6">
+    <div className="h-72 space-y-6 py-6">
       <DatePicker
         popoverProps={{
           placement: "top",
@@ -367,14 +376,16 @@ export const EventDate = ({ value, onChange, label }: EventDateProps) => {
         label={label + " Date"}
         onChange={handleDateChange}
         defaultValue={dateValue}
+        size="md"
         classNames={{
-          innerWrapper: "",
-          label: "h-10 opacity-60 tracking-tight py-2",
-          inputWrapper: "shadow-none bg-white",
-          base: "space-y-2 flex items-center bg-white border border-macd-gray rounded-xl",
-          input: "text-lg",
-          popoverContent: "w-full pointer-events-auto rounded-3xl dark",
-          calendarContent: "bg-gray-700/40 rounded-t-lg",
+          innerWrapper: "text-xl shadow-none h-fit",
+          label: "font-bold text-sm h-10 pb-3 opacity-60 tracking-tight py-4",
+          inputWrapper: "py-4 bg-secondary",
+          base: "space-y-2 flex rounded-xl items-center border border-macd-gray",
+          input: "font-bold h-20 bg-gray-300",
+          popoverContent: "w-full pointer-events-auto rounded-xl dark",
+          calendarContent: " bg-gray-700/40 h-fit rounded-t-lg text-macd-blue",
+          segment: "focus:bg-secondary/20 active:bg-secondary/40",
         }}
       />
       <TimeInput
@@ -388,7 +399,8 @@ export const EventDate = ({ value, onChange, label }: EventDateProps) => {
           innerWrapper: "rounded-none",
           input: "text-lg",
           inputWrapper: "shadow-none rounded-none",
-          segment: "text-lg active:bg-secondary/40 font-semibold px-1.5",
+          segment:
+            "text-lg focus:bg-secondary/40 active:bg-secondary/20 font-semibold rounded-lg px-1.5",
         }}
       />
     </div>

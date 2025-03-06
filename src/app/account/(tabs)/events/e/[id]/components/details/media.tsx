@@ -21,7 +21,7 @@ interface MediaBlockProps {
 }
 interface MediaContentProps {
   xEvent: XEvent | null;
-  user_id: string | null;
+  user_id: string | undefined;
 }
 
 export const MediaContent = ({ xEvent }: MediaContentProps) => {

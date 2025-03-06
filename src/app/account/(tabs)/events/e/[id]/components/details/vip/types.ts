@@ -49,6 +49,6 @@ export interface VIPBlockProps {
 }
 export interface VIPContentProps {
   xEvent: XEvent | null;
-  user_id: string | null;
+  user_id: string | undefined;
   event_id: string | undefined;
 }

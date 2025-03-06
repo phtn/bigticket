@@ -1,4 +1,5 @@
 import { query, mutation } from "@vx/server";
+import { doc } from "convex/utils";
 import { v } from "convex/values";
 
 export const all = query({
@@ -8,11 +9,7 @@ export const all = query({
 export const byId = query({
   args: { id: v.string() },
   handler: async ({ db }, { id }) => {
-    const event = await db
-      .query("events")
-      .withIndex("by_event_id", (q) => q.eq("event_id", id))
-      .first();
-    return event ?? null;
+    return await doc(db, "events", id);
   },
 });
 

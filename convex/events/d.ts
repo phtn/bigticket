@@ -1,3 +1,4 @@
+import { betterV } from "convex/utils";
 import { GenericValidator, type Infer, v, VObject } from "convex/values";
 
 const excludeProp = <T extends object>(o: T, ...keys: string[]) => {
@@ -95,31 +96,49 @@ export const UserTicketSchema = v.object({
 
 export type UserTicket = Infer<typeof UserTicketSchema>;
 
-export const EventSchema = v.object({
-  event_id: v.string(),
-
+export const BasicInfoSchema = v.object({
   event_name: v.optional(v.string()),
   event_desc: v.optional(v.string()),
+  venue_name: v.optional(v.string()),
+  venue_address: v.optional(v.string()),
+  event_url: v.optional(v.string()),
+  event_type: v.optional(v.string()),
+  start_date: v.optional(v.float64()),
+  end_date: v.optional(v.float64()),
+  category: v.optional(v.string()),
+  subcategory: v.optional(v.string()),
+  is_private: v.optional(v.boolean()),
+  is_online: v.optional(v.boolean()),
+});
+export type BasicInfo = Infer<typeof BasicInfoSchema>;
 
+export const EventSchema = v.object({
+  event_id: v.string(),
+  event_name: v.optional(v.string()),
+  event_desc: v.optional(v.string()),
+  venue_name: v.optional(v.string()),
+  venue_address: v.optional(v.string()),
+  event_url: v.optional(v.string()),
+  event_type: v.optional(v.string()),
+  start_date: v.optional(v.float64()),
+  end_date: v.optional(v.float64()),
+  category: v.optional(v.string()),
+  subcategory: v.optional(v.string()),
+  is_private: v.optional(v.boolean()),
+  is_online: v.optional(v.boolean()),
   event_code: v.optional(v.string()),
   event_date: v.optional(v.float64()),
   event_time: v.optional(v.float64()),
   event_geo: v.optional(v.string()),
-  venue_name: v.optional(v.string()),
-  venue_address: v.optional(v.string()),
-  event_url: v.optional(v.string()),
   event_phone: v.optional(v.string()),
   event_email: v.optional(v.string()),
-  event_type: v.optional(v.string()),
-  start_date: v.optional(v.float64()),
-  end_date: v.optional(v.float64()),
+
   duration: v.optional(v.float64()),
   reviews: v.optional(v.array(ReviewSchema)),
   tickets: v.optional(v.array(UserTicketSchema)),
 
   //DETAILS
-  category: v.optional(v.string()),
-  subcategory: v.optional(v.string()),
+
   status: v.optional(v.string()),
   content: v.optional(v.string()),
   thumbnail: v.optional(v.string()),
@@ -158,8 +177,7 @@ export const EventSchema = v.object({
   audience: v.optional(v.string()),
   is_active: v.optional(v.boolean()),
   is_paid: v.optional(v.boolean()),
-  is_private: v.optional(v.boolean()),
-  is_online: v.optional(v.boolean()),
+
   is_expired: v.optional(v.boolean()),
   is_soldout: v.optional(v.boolean()),
   social_media: v.optional(SocialMediaSchema),
@@ -168,7 +186,7 @@ export const EventSchema = v.object({
 });
 
 export type SelectEvent = Infer<typeof EventSchema>;
-const InsertEventSchema = excludeProp(
+export const InsertEventSchema = excludeProp(
   EventSchema,
   "updated_at",
   "host_id",

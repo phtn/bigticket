@@ -90,23 +90,14 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
     if (event?.cover_url) {
       setFn(
         fn,
-        async () => {
-          const src = await vxFiles.getUrl(event?.cover_url);
-          return src;
-        },
+        async () => await vxFiles.getUrl(event?.cover_url),
         setCoverUrl,
       );
     }
   }, [event?.cover_url, vxFiles]);
 
   useEffect(() => {
-    setFn(
-      fn,
-      async () => {
-        return await getAccountID();
-      },
-      setHostId,
-    );
+    setFn(fn, async () => await getAccountID(), setHostId);
   }, []);
 
   const getQrcode = useCallback((data: IDetectedBarcode[]) => {

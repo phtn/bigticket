@@ -29,7 +29,7 @@ interface CohostBlockProps {
 }
 interface CohostContentProps {
   xEvent: XEvent | null;
-  user_id: string | null;
+  user_id: string | undefined;
 }
 
 export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {

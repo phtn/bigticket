@@ -1,12 +1,18 @@
 import { mutation } from "@vx/server";
 import { v } from "convex/values";
-import { checkEvent } from "./create";
-import { CohostSchema, EventGallerySchema, VIP, VIPSchema } from "./d";
+import {
+  BasicInfoSchema,
+  CohostSchema,
+  EventGallerySchema,
+  VIP,
+  VIPSchema,
+} from "./d";
+import { doc } from "convex/utils";
 
 export const status = mutation({
   args: { id: v.string(), is_active: v.boolean() },
   handler: async ({ db }, { id, is_active }) => {
-    const event = await checkEvent(db, id);
+    const event = await doc(db, "events", id);
     if (event === null) {
       return null;
     }
@@ -19,7 +25,7 @@ export const status = mutation({
 export const photo_url = mutation({
   args: { id: v.string(), photo_url: v.string() },
   handler: async ({ db }, { id, photo_url }) => {
-    const event = await checkEvent(db, id);
+    const event = await doc(db, "events", id);
     if (event === null) {
       return null;
     }
@@ -32,7 +38,7 @@ export const photo_url = mutation({
 export const cover_url = mutation({
   args: { id: v.string(), cover_url: v.string() },
   handler: async ({ db }, { id, cover_url }) => {
-    const event = await checkEvent(db, id);
+    const event = await doc(db, "events", id);
     if (event === null) {
       return null;
     }
@@ -45,7 +51,7 @@ export const cover_url = mutation({
 export const isCoverLight = mutation({
   args: { id: v.string(), is_cover_light: v.boolean() },
   handler: async ({ db }, { id, is_cover_light }) => {
-    const event = await checkEvent(db, id);
+    const event = await doc(db, "events", id);
     if (event === null) {
       return null;
     }
@@ -58,7 +64,7 @@ export const isCoverLight = mutation({
 export const views = mutation({
   args: { id: v.string() },
   handler: async ({ db }, { id }) => {
-    const event = await checkEvent(db, id);
+    const event = await doc(db, "events", id);
     if (event === null) {
       return null;
     }
@@ -72,7 +78,7 @@ export const views = mutation({
 export const likes = mutation({
   args: { id: v.string(), increment: v.number() },
   handler: async ({ db }, { id, increment }) => {
-    const event = await checkEvent(db, id);
+    const event = await doc(db, "events", id);
     if (event === null || !increment) {
       return null;
     }
@@ -86,7 +92,7 @@ export const likes = mutation({
 export const vip = mutation({
   args: { id: v.string(), vip: VIPSchema },
   handler: async ({ db }, { id, vip }) => {
-    const event = await checkEvent(db, id);
+    const event = await doc(db, "events", id);
     if (event === null || !vip) {
       return null;
     }
@@ -121,7 +127,7 @@ function updateVIP(vip_list: VIP[], vip: VIP) {
 export const cohost = mutation({
   args: { id: v.string(), cohost: CohostSchema },
   handler: async ({ db }, { id, cohost }) => {
-    const event = await checkEvent(db, id);
+    const event = await doc(db, "events", id);
     if (event === null || !cohost) {
       return null;
     }
@@ -171,7 +177,7 @@ export const cohost = mutation({
 export const mediaGallery = mutation({
   args: { id: v.string(), media: EventGallerySchema },
   handler: async ({ db }, { id, media }) => {
-    const event = await checkEvent(db, id);
+    const event = await doc(db, "events", id);
     if (event === null || !media) {
       return null;
     }
@@ -199,6 +205,47 @@ export const mediaGallery = mutation({
       gallery.push(media);
       await db.patch(event._id, { gallery });
     }
+    return "success";
+  },
+});
+
+export const basicInfo = mutation({
+  args: { id: v.string(), basicInfo: BasicInfoSchema },
+  handler: async ({ db }, { id, basicInfo }) => {
+    const event = await doc(db, "events", id);
+    if (event === null || !event) {
+      return null;
+    }
+
+    const {
+      event_name,
+      event_desc,
+      event_url,
+      is_online,
+      is_private,
+      category,
+      subcategory,
+      start_date,
+      end_date,
+      venue_name,
+      venue_address,
+    } = basicInfo;
+
+    await db.patch(event._id, {
+      event_name,
+      event_desc,
+      event_url,
+      is_online,
+      is_private,
+      category,
+      subcategory,
+      start_date,
+      end_date,
+      venue_name,
+      venue_address,
+      updated_at: Date.now(),
+    });
+
     return "success";
   },
 });

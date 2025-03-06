@@ -62,35 +62,6 @@ export const CreateEvent = () => {
 
   const descRef = useRef<HTMLTextAreaElement | null>(null);
 
-  // const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-  //   switch (e.target.name) {
-  //     case "ticket_count":
-  //       return setTicketCount(+e.target.value);
-  //     case "event_type":
-  //       return setEventType(e.target.value);
-  //     default:
-  //       return;
-  //   }
-  // };
-
-  // const handleDateChange = (value: RangeValue<DateValue> | null) => {
-  //   const dateStr = {
-  //     start: value?.start ?? parseAbsoluteToLocal(new Date().toISOString()),
-  //     end: value?.end ?? parseAbsoluteToLocal(new Date().toISOString()),
-  //   };
-  //   setDateRange(dateStr);
-  //   const startDate = dateStr.start.toDate("GMT");
-  //   setEventStartDate(startDate.getTime());
-  //   const endDate = dateStr.end.toDate("GMT");
-  //   setEventEndDate(endDate.getTime());
-  //   setEventDuration(endDate.getTime() - startDate.getTime());
-
-  //   const compact = moment(dateStr.start).format("LL");
-  //   const day = moment(dateStr.start).format("dddd");
-  //   setEventDate(compact);
-  //   setEventDay(day);
-  // };
-
   const { createEvent } = useEvent();
 
   const initialState: InsertEvent = {
@@ -330,9 +301,10 @@ export const CreateEvent = () => {
                 </div>
 
                 <OptionCtxProvider>
-                  <OptionFields render={renderOptions} data={option_value_data}>
-                    <div></div>
-                  </OptionFields>
+                  <OptionFields
+                    render={renderOptions}
+                    data={option_value_data}
+                  />
                 </OptionCtxProvider>
 
                 <div className="w-full md:px-2">
@@ -380,7 +352,7 @@ const FormContainer = ({ children }: { children: ReactNode }) => (
 );
 
 interface OptionFieldsProps {
-  children: ReactNode;
+  children?: ReactNode;
   render: (option: OptionKey | null) => ReactNode;
   data: (string | number | boolean | undefined)[];
 }
