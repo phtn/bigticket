@@ -37,17 +37,18 @@ export const EventEditor = () => {
         content: <TicketContent xEvent={xEvent} pending={pending} />,
       },
       {
-        value: "vips",
-        title: "VIPs",
-        content: (
-          <VIPContent xEvent={xEvent} user_id={user_id} event_id={event_id} />
-        ),
-      },
-      {
         value: "host",
         title: "Hosting",
         content: <HostSettings xEvent={xEvent} user_id={user_id} />,
       },
+      {
+        value: "vips",
+        title: "Guests",
+        content: (
+          <VIPContent xEvent={xEvent} user_id={user_id} event_id={event_id} />
+        ),
+      },
+
       {
         value: "media",
         title: "Media Gallery",
@@ -85,10 +86,21 @@ export const EventEditor = () => {
 export const inputClassNames = {
   innerWrapper: "bg-white pt-4 pb-2.5 ps-4 shadow-none rounded-xl",
   inputWrapper: [" focus-ring focus-ring:macd-blue h-16 p-0 shadow-none"],
-  label: "ps-5  opacity-60 tracking-tight text-[15px] leading-5",
+  label: "ps-5 opacity-60 tracking-tight text-[15px] leading-5",
   input: [
     "font-bold tracking-tight shadow-none font-inter bg-white",
     "placeholder:font-semibold focus:placeholder:opacity-40 placeholder:opacity-100 placeholder:drop-shadow-sm shadow-coal placeholder:text-peach placeholder:text-sm",
     "",
+  ],
+};
+export const inputClassNamesRight = {
+  innerWrapper: "bg-white pt-4 pb-2.5 px-4 shadow-none rounded-xl",
+  inputWrapper: [" focus-ring focus-ring:macd-blue h-16 p-0 shadow-none"],
+  label: "ps-5 opacity-60 tracking-tight text-[15px] pb-0.5 leading-5",
+  input: [
+    "font-bold tracking-tight shadow-none font-inter bg-white shadow-coal",
+    "placeholder:font-semibold focus:placeholder:opacity-40 placeholder:opacity-100",
+    "placeholder:text-peach placeholder:text-sm placeholder:drop-shadow-sm",
+    "text-right text-xl",
   ],
 };

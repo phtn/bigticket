@@ -3,14 +3,14 @@ import { Form } from "@nextui-org/react";
 import {
   type ChangeEvent,
   type MouseEvent,
-  useActionState,
   useCallback,
   useEffect,
+  useActionState,
   useMemo,
 } from "react";
 import { EventDetailActionSheet } from "../action-sheet";
 import { BlockHeader } from "../components";
-import { access_info, TicketInfoSchema, type EventField } from "../schema";
+import { TicketInfoSchema, type EventField } from "../schema";
 import { useEventDetail } from "../ctx";
 import { useMoment } from "@/hooks/useMoment";
 import { EventDate, TicketCount } from "../../../../../create/components";
@@ -18,12 +18,7 @@ import { Nebula } from "../";
 import { Hyper } from "@/ui/button/button";
 import { type TicketInfo } from "convex/events/d";
 import { useFormStateTicket } from "./store";
-import {
-  EventDetailItem,
-  FieldBlock,
-  FieldItem,
-  SwitchItem,
-} from "./components";
+import { EventDetailItem, FieldBlock, FieldItem } from "./components";
 import type { ContentProps } from "./types";
 import { useConvexCtx } from "@/app/ctx/convex";
 import { asyncR } from "@/utils/helpers";
@@ -51,14 +46,14 @@ export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
   useEffect(() => {
     setXEvent(x);
     reset({
-      ticket_count: xEvent?.ticket_count ?? 0,
-      ticket_price: xEvent?.ticket_price ?? 0,
+      ticket_count: xEvent?.ticket_count ?? 100,
+      ticket_price: xEvent?.ticket_price ?? 100,
       min_age: xEvent?.min_age ?? 18,
       max_age: xEvent?.max_age ?? 42,
-      ticket_sales_open: xEvent?.ticket_sales_open ?? 0,
-      ticket_sales_close: xEvent?.ticket_sales_close ?? 0,
-      ticket_sales_limit: xEvent?.ticket_sales_limit,
-      ticket_sales_estimate: xEvent?.ticket_sales_estimate,
+      ticket_sales_open: xEvent?.ticket_sales_open ?? Date.now(),
+      ticket_sales_close: xEvent?.ticket_sales_close ?? Date.now() + 3600000,
+      ticket_sales_limit: xEvent?.ticket_sales_limit ?? 100,
+      ticket_sales_estimate: xEvent?.ticket_sales_estimate ?? 100,
       ticket_sales_email: xEvent?.ticket_sales_email,
       ticket_sales_phone: xEvent?.ticket_sales_phone,
     });
@@ -104,9 +99,9 @@ export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
     async (initialValues: TicketInfo | null, fd: FormData) => {
       if (!xEvent?.event_id) return null;
       const updates = TicketInfoSchema.safeParse({
-        ticket_price: fd.get("ticket_price") as string,
-        min_age: fd.get("min_age") as string,
-        max_age: fd.get("max_age") as string,
+        ticket_price: fd.get("ticket_price"),
+        min_age: fd.get("min_age"),
+        max_age: fd.get("max_age"),
       });
 
       if (updates.error) {
@@ -117,21 +112,23 @@ export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
         ...updates.data,
       };
       const payload = {
-        ...formData,
         ticket_count,
+        ticket_price: Number(formData.ticket_price),
+        min_age: Number(formData.min_age),
+        max_age: Number(formData.max_age),
         ticket_sales_open,
         ticket_sales_close,
-        ticket_sales_limit,
-        ticket_sales_estimate,
+        ticket_sales_limit: Number(ticket_sales_limit),
+        ticket_sales_estimate: Number(ticket_sales_estimate),
         ticket_sales_email,
         ticket_sales_phone,
       };
+      console.log(payload);
       const promise = updateEventTicketInfo(xEvent.event_id, payload);
-
       await asyncR(promise);
       reset(payload);
 
-      return formData;
+      return payload;
     },
     [
       ticket_count,
@@ -164,13 +161,6 @@ export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
     [setTicketCount],
   );
 
-  // const handleSubcategoryChange = useCallback(
-  //   (value: string) => {
-  //     setSubcategory(value);
-  //   },
-  //   [setSubcategory],
-  // );
-
   const handleOpenDateChange = useCallback(
     (start: number) => {
       setTicketSalesOpen(start);
@@ -191,24 +181,24 @@ export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
       case "ticket_count":
         return (
           <TicketCount
-            className="h-80"
+            className="h-[22rem]"
             ticketCount={ticket_count ?? 100}
             handleSelectTicketCount={handleSelectTicketCount}
             handleCustomTicketCount={handleCustomTicketCount}
           />
         );
-      case "start_date":
+      case "ticket_sales_open":
         return (
           <EventDate
-            label="Start"
+            label="Sales Open"
             value={ticket_sales_open}
             onChange={handleOpenDateChange}
           />
         );
-      case "end_date":
+      case "ticket_sales_close":
         return (
           <EventDate
-            label="End"
+            label="Sales Close"
             value={ticket_sales_close}
             onChange={handleCloseDateChange}
           />
@@ -238,8 +228,8 @@ export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
               value={String(ticket_count)}
             />
           </FieldBlock>
-          <TypeAndCategory />
-          <DateTimeVenue />
+          <TicketSales />
+          <SupportBlock />
         </div>
         <div className="flex h-24 w-full items-center justify-end px-6">
           <div className="w-full max-w-sm rounded-[9px] border border-secondary bg-coal md:max-w-fit">
@@ -260,39 +250,34 @@ export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
   );
 };
 
-export const TypeAndCategory = () => {
+export const SupportBlock = () => {
   return (
     <div className="w-full space-y-6 p-6">
-      <BlockHeader label={"Ticket Sales"} icon={"Ticket"} />
-      <HyperList
-        keyId="name"
-        container="xl:flex w-full xl:space-y-0 space-y-6 xl:space-x-6"
-        itemStyle="w-full"
-        data={access_info}
-        component={SwitchItem}
-      />
-      <CategoryFields />
+      <BlockHeader label={"Support"} icon={"Support"} />
+      <SupportFields />
     </div>
   );
 };
 
-const CategoryFields = () => {
-  const { ticket_sales_open, ticket_sales_close } = useFormStateTicket();
+const SupportFields = () => {
+  const { ticket_sales_email, ticket_sales_phone } = useFormStateTicket();
 
   const sales_info: EventField[] = useMemo(
     () => [
       {
-        name: "ticket_sales_open",
-        label: "Ticket Sales Open",
-        value: String(ticket_sales_open),
+        name: "ticket_sales_email",
+        label: "Ticket Sales Email",
+        value: ticket_sales_email,
+        placeholder: "Sales support email",
       },
       {
-        name: "ticket_sales_close",
-        label: "Ticket Sales Close",
-        value: String(ticket_sales_close),
+        name: "ticket_sales_phone",
+        label: "Ticket Sales Phone",
+        value: ticket_sales_phone,
+        placeholder: "Sales support phone",
       },
     ],
-    [ticket_sales_open, ticket_sales_close],
+    [ticket_sales_email, ticket_sales_phone],
   );
   return (
     <div className="w-full space-y-6">
@@ -300,17 +285,17 @@ const CategoryFields = () => {
         delay={0.1}
         keyId="name"
         data={sales_info}
-        component={EventDetailItem}
+        component={FieldItem}
         container="relative w-full space-y-6"
       />
     </div>
   );
 };
 
-const DateTimeVenue = () => {
+const TicketSales = () => {
   return (
     <div className="w-full space-y-6 p-6">
-      <BlockHeader label={"Support"} icon={"Support"} />
+      <BlockHeader label={"Ticket Sales"} icon={"Ticket"} />
       <div className="w-full gap-6">
         <DateTimeFields />
       </div>
@@ -350,12 +335,12 @@ const DateTimeFields = () => {
   const fields: EventField[] = useMemo(
     () => [
       {
-        label: "Sales Open・Date・Time",
+        label: "Ticket Sales・Open",
         value: `${start_time.date} ・ ${start_time.full}`,
         name: "ticket_sales_open",
       },
       {
-        label: "Sales Close・Date・Time",
+        label: "Ticket Sales・Close",
         value: `${end_time.date} ・ ${end_time.full}`,
         name: "ticket_sales_close",
       },

@@ -82,9 +82,9 @@ export const BasicInfoSchema = z.object({
 });
 
 export const TicketInfoSchema = z.object({
-  ticket_price: z.number().min(1).max(100).optional(),
-  min_age: z.number().max(100).optional(),
-  max_age: z.number().max(100).optional(),
+  ticket_price: z.string().max(100),
+  min_age: z.string().max(100).optional(),
+  max_age: z.string().max(100).optional(),
 });
 export const event_fields: EventField[] = [
   {

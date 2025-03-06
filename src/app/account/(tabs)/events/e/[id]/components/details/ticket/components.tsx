@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { Input, Switch } from "@nextui-org/react";
 import { useMemo, useState } from "react";
-import { inputClassNames } from "../../../editor";
+import { inputClassNames, inputClassNamesRight } from "../../../editor";
 import { EventDetailOption } from "../action-sheet";
 import { BlockHeader } from "../components";
 import { type EventField } from "../schema";
@@ -16,15 +16,15 @@ export const FieldBlock = ({ pending, children }: FieldBlockProps) => {
       {
         name: "ticket_price",
         type: "text",
-        label: "Ticket Sale Price",
-        placeholder: "Ticket Sale Price",
+        label: "Ticket Price",
+        placeholder: "Ticket Price",
         required: false,
         value: ticket_price?.toString(),
       },
       {
         name: "min_age",
         type: "text",
-        label: "Minimum Age",
+        label: "Minimum Age Limit",
         placeholder: "Minimum age allowed for entry.",
         required: false,
         value: min_age?.toString(),
@@ -32,7 +32,7 @@ export const FieldBlock = ({ pending, children }: FieldBlockProps) => {
       {
         name: "max_age",
         type: "text",
-        label: "Maximum Age",
+        label: "Maximum Age Limit",
         placeholder: "Maximum age allowed for entry.",
         required: false,
         value: max_age?.toString(),
@@ -43,13 +43,20 @@ export const FieldBlock = ({ pending, children }: FieldBlockProps) => {
   return (
     <div className="w-full space-y-6 p-6">
       <BlockHeader
-        label={"Ticket Values"}
+        label={"Pricing & Admission"}
         icon={pending ? "SpinnerBall" : "Ticket2"}
       />
       {children}
       <HyperList
-        data={ticket_info}
+        data={ticket_info.slice(0, 1)}
         container="space-y-6"
+        component={NumberFieldItem}
+        delay={0}
+      />
+      <HyperList
+        data={ticket_info.slice(1)}
+        container="flex justify-between gap-6 w-full"
+        itemStyle="w-full"
         component={FieldItem}
         delay={0}
       />
@@ -68,6 +75,20 @@ export const FieldItem = (field: EventField) => (
     defaultValue={field.value}
     value={undefined}
     classNames={inputClassNames}
+  />
+);
+export const NumberFieldItem = (field: EventField) => (
+  <Input
+    id={field.name}
+    name={field.name}
+    type={field.type}
+    label={field.label}
+    placeholder={field.value ?? field.placeholder}
+    isRequired={field.required}
+    defaultValue={field.value}
+    value={undefined}
+    classNames={inputClassNamesRight}
+    startContent={<div className="px-0.5 text-lg font-medium">₱</div>}
   />
 );
 

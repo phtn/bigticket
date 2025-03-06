@@ -7,17 +7,14 @@ interface SectionTitleProps {
 
 export const SectionTitle = ({ title, icon }: SectionTitleProps) => {
   return (
-    <div className="flex h-20 items-end justify-between px-4 pb-4">
+    <div className="flex h-24 items-end justify-between px-4 pb-8">
       <h2 className="flex items-center gap-2">
         {icon && <Icon name={icon} className="size-5 opacity-60" />}
         <span className="font-inter text-lg font-semibold tracking-tighter">
           {title}
         </span>
       </h2>
-      <div className="flex items-center gap-4">
-        {/* <SendInvite /> */}
-        {/* <SendTicket /> */}
-      </div>
+      <div className="flex items-center gap-4"></div>
     </div>
   );
 };

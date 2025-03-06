@@ -15,14 +15,18 @@ export const EventDetails = ({ tabs }: EventDetailsProps) => {
       <SectionTitle title="Event Details" />
       <div className="h-full">
         <Tabs
-          variant="solid"
+          variant="underlined"
           color="primary"
-          size="sm"
+          size="md"
           className="w-full"
           classNames={{
             panel: "w-full px-0 md:px-4 pb-8",
-            tabList: "px-4",
-            tabContent: "font-semibold font-inter tracking-tighter",
+            cursor: "drop-shadow-sm bg-secondary h-[2.75px]",
+
+            tab: "",
+            tabList: "px-4 md:px-6 md:gap-4",
+            tabContent:
+              "text-primary font-semibold font-inter tracking-tighter",
           }}
         >
           {tabs.map((tab) => (

@@ -79,8 +79,9 @@ export const EventDetailActionSheet = ({
   const { open, toggle, selectedEventDetail } = use(EventDetailCtx)!;
   const options: Record<string, { title: string; description?: string }> = {
     ticket_count: {
-      title: "Number of Tickets",
-      description: "Enter the number of tickets you want to sell.",
+      title: "How many tickets for this event?",
+      description:
+        "Select or enter a custom the number of tickets you plan to sell.",
     },
     event_type: {
       title: "Type of Event",
@@ -117,7 +118,7 @@ export const EventDetailActionSheet = ({
             selectedEventDetail === "subcategory",
         })}
       >
-        <h2 className="font-inter text-lg font-bold tracking-tighter">
+        <h2 className="font-inter text-xl font-bold tracking-tighter">
           {selectedEventDetail ? options?.[selectedEventDetail]?.title : ""}
         </h2>
         <p className="font-inter text-sm tracking-tight text-macl-gray">

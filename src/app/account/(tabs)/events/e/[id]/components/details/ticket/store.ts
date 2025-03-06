@@ -5,7 +5,7 @@ import { create } from "zustand";
 interface FormStateTicket {
   xEvent?: XEvent | null;
   ticket_count?: number;
-  ticket_price?: number;
+  ticket_price?: number | undefined;
   min_age?: number;
   max_age?: number;
   ticket_sales_open: number;
@@ -30,14 +30,14 @@ interface FormStateTicket {
 
 export const useFormStateTicket = create<FormStateTicket>((set) => ({
   xEvent: null,
-  ticket_count: 0,
-  ticket_price: 0,
+  ticket_count: 100,
+  ticket_price: 100,
   min_age: 18,
   max_age: 42,
-  ticket_sales_open: 0,
-  ticket_sales_close: 0,
-  ticket_sales_limit: 0,
-  ticket_sales_estimate: 0,
+  ticket_sales_open: Date.now(),
+  ticket_sales_close: Date.now() + 3600000,
+  ticket_sales_limit: 100,
+  ticket_sales_estimate: 100,
   ticket_sales_email: "",
   ticket_sales_phone: "",
   setTicketCount: (ticket_count: number) => set({ ticket_count }),

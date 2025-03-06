@@ -528,7 +528,7 @@ const VIPItem = (field: VIPField) => {
       className="appearance-none"
       endContent={
         field.name === "ticket_count" ? (
-          <div className="-mb-2 -mr-1.5 flex items-end gap-1.5 md:-mr-1.5">
+          <div className="-mb-1 mr-1.5 flex items-end gap-1.5">
             <ButtonIcon
               icon="Minus"
               onClick={handlePress(-1)}

@@ -74,7 +74,7 @@ export const OptionActionSheet = ({ children }: { children: ReactNode }) => {
   const options: Record<OptionKey, { title: string; description?: string }> = {
     ticket_count: {
       title: "Number of Tickets",
-      description: "Enter the number of tickets you want to sell.",
+      description: "Enter the number of tickets you plan to sell.",
     },
     event_type: {
       title: "Type of Event",
@@ -108,7 +108,7 @@ export const OptionActionSheet = ({ children }: { children: ReactNode }) => {
         <h2 className="font-inter text-lg font-bold tracking-tighter">
           {selectedOption ? options[selectedOption].title : ""}
         </h2>
-        <p className="font-inter text-sm tracking-tight text-macl-gray">
+        <p className="font-inter text-sm tracking-tight text-primary/60">
           {selectedOption ? options[selectedOption].description : ""}
         </p>
         {children}
@@ -147,12 +147,12 @@ export const TicketCount = ({
 
   return (
     <div className={cn(className)}>
-      <div className="grid w-full grid-cols-3 gap-1 py-8">
+      <div className="grid w-full grid-cols-3 gap-2 py-8">
         {ticket_count_options.items.map((item) => (
           <button
             key={item.key}
             onClick={handleSelectTicketCount(+item.value)}
-            className="relative flex h-14 items-center justify-center rounded-md bg-primary text-white"
+            className="relative flex h-14 items-center justify-center rounded-xl bg-primary text-white"
           >
             {item.value}
             <Icon
