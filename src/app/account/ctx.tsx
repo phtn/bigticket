@@ -102,16 +102,22 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
   const createUrl = useCallback(async () => {
     if (selectedFile) {
       const file = await convertToWebPFile(selectedFile, canvasRef);
-      return (await vxFiles.create(file as File)) as string;
+      return await vxFiles.create(file as File);
     }
   }, [selectedFile, vxFiles]);
+
+  const updatePhotoUrl = useCallback(
+    async (id: string, photo_url: string) =>
+      await vxUsers.mut.updatePhotoUrl({ id, photo_url }),
+    [vxFiles],
+  );
 
   const save = useCallback(async () => {
     setSaving(true);
     const photo_url = await createUrl();
 
     if (xUser?.id && photo_url) {
-      const id = await vxUsers.mut.updatePhotoUrl({ id: xUser.id, photo_url });
+      const id = await updatePhotoUrl(xUser.id, photo_url);
       if (id) {
         onSuccess("Image uploaded!");
         setOpen(false);

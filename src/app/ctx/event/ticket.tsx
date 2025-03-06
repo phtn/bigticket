@@ -30,9 +30,7 @@ export const TicketCtxProvider = ({ children }: { children: ReactNode }) => {
 
   const updateUserTickets = useCallback(
     async (id: string, tickets: UserTicket[]) =>
-      (await vxUsers.mut.updateUserTickets({ id, tickets })) as Promise<
-        string | null
-      >,
+      await vxUsers.mut.updateUserTickets({ id, tickets }),
     [vxUsers.mut],
   );
 

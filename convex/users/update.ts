@@ -80,7 +80,7 @@ export const photo_url = mutation({
     }
 
     await db.patch(user._id, { photo_url, updated_at: Date.now() });
-    return user._id;
+    return "success";
   },
 });
 

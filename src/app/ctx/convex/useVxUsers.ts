@@ -1,17 +1,16 @@
 import { api } from "@vx/api";
-import { useConvexUtils } from "./useConvexUtils";
+import { useMutation } from "convex/react";
 
 export const useVxUsers = () => {
-  const { useMut } = useConvexUtils();
   const mut = {
-    create: useMut(api.users.create.default),
-    updatePhotoUrl: useMut(api.users.update.photo_url),
-    updateUserLikes: useMut(api.users.update.likes),
-    updateUserBookmarks: useMut(api.users.update.bookmarks),
-    updateUserFollowers: useMut(api.users.update.followers),
-    updateUserFollowing: useMut(api.users.update.following),
-    updateUserTickets: useMut(api.users.update.tickets),
-    updateStatus: useMut(api.users.update.status),
+    create: useMutation(api.users.create.default),
+    updatePhotoUrl: useMutation(api.users.update.photo_url),
+    updateUserLikes: useMutation(api.users.update.likes),
+    updateUserBookmarks: useMutation(api.users.update.bookmarks),
+    updateUserFollowers: useMutation(api.users.update.followers),
+    updateUserFollowing: useMutation(api.users.update.following),
+    updateUserTickets: useMutation(api.users.update.tickets),
+    updateStatus: useMutation(api.users.update.status),
   };
 
   return {
