@@ -371,7 +371,7 @@ const ClearanceItem = (props: [string, boolean]) => {
         base: "flex max-w-lg h-14 md:max-w-none px-3",
         label:
           "text-chalk flex w-full capitalize text-sm tracking-tighter font-medium",
-        icon: "stroke-2 size-5 text-primary",
+        icon: "stroke-2 size-5 text-white",
         wrapper: "",
       }}
       value={props[0]}

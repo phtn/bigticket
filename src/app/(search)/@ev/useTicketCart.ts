@@ -66,6 +66,7 @@ export const useTicketCart = (
         ticket_price,
       } = xEvent;
 
+      console.log(ticket_price);
       if (!ticket_price) {
         onWarn("Ticket is unavailable.");
         return null;

@@ -9,7 +9,7 @@ export const GetTickets = ({ ticketPrice, h }: GetTicketProps) => {
   const [ticketCount, setTicketCount] = useState(1);
   const [xScaling, setXScaling] = useState(false);
 
-  const ticketValue = useMemo(() => ticketPrice ?? 0, [ticketPrice]);
+  const price = useMemo(() => ticketPrice ?? 0, [ticketPrice]);
 
   const incDecCount = useCallback(
     (value: number) => () => {
@@ -27,7 +27,7 @@ export const GetTickets = ({ ticketPrice, h }: GetTicketProps) => {
     <div className={cn("z-1 relative h-full bg-primary")} style={{ height: h }}>
       <PaidButtonX
         fn={incDecCount}
-        price={ticketValue}
+        price={price}
         count={ticketCount}
         xScaling={xScaling}
       />
@@ -83,7 +83,7 @@ const PaidButtonX = ({ price, count, fn, xScaling }: PaidButtonProps) => {
             />
           </div>
         </NumberFlowGroup>
-        <div className="flex gap-1.5">
+        <div className="flex gap-2">
           <ButtonIcon
             onClick={fn(-1)}
             icon="Minus"

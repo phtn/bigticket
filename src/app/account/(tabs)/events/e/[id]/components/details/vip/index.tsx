@@ -192,7 +192,6 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     [],
   );
 
-  // Then update where it's used in handleRemoveVIPs
   const handleRemoveVIPs = useCallback(
     async (e: MouseEvent) => {
       e.preventDefault();

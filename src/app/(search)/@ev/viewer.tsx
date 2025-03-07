@@ -126,6 +126,7 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
     if (isVip) {
       return await ticketCart?.getVIPTicket();
     }
+    console.log("handling basic ticket");
     return await ticketCart?.getBasicTicket();
   }, [ticketCart, isVip]);
 
@@ -156,9 +157,7 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
       })) ?? [];
     return mediaItems as MediaItem[];
   }, [xEvent?.gallery]);
-  useEffect(() => {
-    console.table({ isVip, isPrivate, hasClaimed });
-  }, [isVip, isPrivate, hasClaimed]);
+
   const TicketClaims = useCallback(
     ({ h }: { h: string }) => {
       return (
@@ -173,7 +172,10 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
               check={isVip}
               fallback={
                 <PrivateEventGate check={isPrivate} fallback={<VIPNoAccess />}>
-                  <GetTickets fn={handleGetTickets} />
+                  <GetTickets
+                    ticketPrice={xEvent?.ticket_price}
+                    fn={handleGetTickets}
+                  />
                 </PrivateEventGate>
               }
             >
@@ -190,6 +192,7 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
       hasClaimed,
       isVip,
       isPrivate,
+      xEvent?.ticket_price,
     ],
   );
 
