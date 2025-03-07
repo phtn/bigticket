@@ -95,7 +95,15 @@ export const EventCard = (xEvent: XEvent) => {
           >
             {venue_name ?? event_geo}
           </h2>
-          <h1 className="font-inter text-xl font-bold capitalize tracking-tight shadow-coal drop-shadow-sm">
+          <h1
+            className={cn(
+              "font-inter text-xl font-bold capitalize tracking-tight shadow-coal drop-shadow-sm",
+              {
+                "absolute -left-2 w-fit rounded-e-full bg-white py-0.5 pe-3 ps-6 text-primary opacity-100 shadow-white":
+                  is_cover_light,
+              },
+            )}
+          >
             {event_name}
           </h1>
         </section>

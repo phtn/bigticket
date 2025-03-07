@@ -39,6 +39,13 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     id: q(event_id),
   }) as SelectEvent;
 
+  const [state, dispatch] = useReducer(vipReducer, {
+    ...initialVIPState,
+    vipList: [] as VIPWithDefaults[],
+  });
+
+  const { vipList, selectedVIP } = state;
+
   useEffect(() => {
     if (event_id && queryEvent) {
       setEvent(queryEvent);
@@ -61,13 +68,6 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
       dispatch({ type: "SET_VIP_LIST", payload });
     }
   }, [event_id, queryEvent, user_id, event?.event_name]);
-
-  const [state, dispatch] = useReducer(vipReducer, {
-    ...initialVIPState,
-    vipList: [] as VIPWithDefaults[],
-  });
-
-  const { vipList, selectedVIP } = state;
 
   const { checked, count, onEdit } = useMemo(() => {
     const checked = vipList.filter((v) => v.checked);
@@ -103,6 +103,14 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     () => event?.vip_list?.reduce((acc, cur) => acc + cur.ticket_count, 0) ?? 0,
     [event],
   );
+  const claimed_tickets = useMemo(
+    () =>
+      event?.vip_list?.reduce(
+        (acc, cur) => (cur.tickets_claimed ? acc + cur.ticket_count : acc),
+        0,
+      ) ?? 0,
+    [event],
+  );
 
   const updateEventVIP = useCallback(
     async (id: string, vip: VIP) => {
@@ -119,10 +127,12 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         try {
           if (onEdit) {
             dispatch({ type: "UPDATE_VIP", payload: data });
-            return await updateEventVIP(event_id, data);
+            console.log("update");
+            return await updateEventVIP(event_id, data as VIP);
           }
           dispatch({ type: "ADD_VIP", payload: data });
-          return await updateEventVIP(event_id, data);
+          console.log("add");
+          return await updateEventVIP(event_id, data as VIP);
         } catch (error) {
           dispatch({ type: "REMOVE_VIP", payload: [data.email] });
           console.error(error);
@@ -159,7 +169,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
 
       updateVIPList(newVIP)
         .then(() => {
-          onSuccess("VIP List updated.");
+          onSuccess("Guest List updated.");
         })
         .catch(Err);
 
@@ -285,7 +295,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
                 size: "sm",
                 fallback: getInitials(vip.name)?.toUpperCase(),
                 className:
-                  "bg-transparent hidden md:flex border-2 mx-2 bg-vanilla/5 border-vanilla/20 size-4 text-gray-300/90 font-bold",
+                  "text-[16px] hidden overflow-hidden md:flex ml-2 mr-1 bg-macd-blue/30 rounded-md border-vanilla/20 text-vanilla/90 flex-grow-0 font-semibold",
               }}
               description={
                 <p className="font-inter text-tiny text-vanilla/80">
@@ -297,14 +307,8 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
           </div>
 
           <div className="flex items-center justify-end whitespace-nowrap text-chalk">
-            <div className="flex w-14 items-center justify-center gap-[1.5px] text-sm font-medium text-vanilla md:w-20 md:justify-end">
-              <span className="">{vip.ticket_count}</span>
-              <Icon
-                name="Ticket"
-                className={cn("size-3 opacity-40", {
-                  "text-teal-300 opacity-100": vip.tickets_claimed,
-                })}
-              />
+            <div className="flex w-14 items-center justify-center gap-[1.5px] text-sm font-medium text-vanilla md:w-20">
+              <span className="font-sans">{vip.ticket_count}</span>
             </div>
             <div
               className={cn(
@@ -362,9 +366,12 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
               <div className="flex items-center">
                 <div className="w-0"></div>
                 <div className="flex items-center gap-2 font-semibold">
-                  <span>VIP Guest List</span>
-                  <div className="flex size-5 items-center justify-center rounded-full bg-vanilla/10 font-sans">
-                    {vipList?.length ? 0 : <Icon name="SpinnerBall" />}
+                  <span className="flex items-center gap-2">
+                    <Icon name="VIPIcon2" className="size-4 text-teal-400" />{" "}
+                    Guest List
+                  </span>
+                  <div className="flex size-5 items-center justify-center rounded-full bg-vanilla/5 font-sans text-sm font-semibold text-vanilla">
+                    {vipList ? vipList.length : <Icon name="SpinnerBall" />}
                   </div>
                 </div>
               </div>
@@ -396,6 +403,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
             container="min-w-full overflow-hidden"
             itemStyle="border-b-[0.33px] border-dotted flex justify-center w-full py-[8.5px] border-vanilla/30"
             component={VIPListItem}
+            reversed
             keyId="idx"
           />
         </div>
@@ -429,8 +437,8 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     return (
       <VIPBlock
         data={fields}
-        label="Create VIP Guest List"
-        icon="VIPIcon2"
+        label="Create Guest List"
+        icon="AddUsers"
         editMode={selectedVIP !== undefined}
       />
     );
@@ -449,7 +457,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
                   <p className="font-inter text-xs font-semibold tracking-tight">
                     Claimed
                   </p>
-                  <p className="font-sans text-sm">0</p>
+                  <p className="font-sans text-sm">{claimed_tickets}</p>
                 </div>
                 <div className="flex h-14 w-full items-center justify-between gap-3 border-r-[0.33px] border-vanilla/20 px-3">
                   <p className="font-inter text-xs font-semibold tracking-tight">

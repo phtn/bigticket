@@ -33,7 +33,7 @@ export const VIPInvitation = ({
       <Preview>{previewText}</Preview>
       <Tailwind>
         <Body className="mx-auto my-auto flex w-full max-w-[400px] justify-center rounded-lg bg-gray-200 py-[2px] font-sans">
-          <Container className="flex w-full rounded-lg border-[0.33px] border-[#14141b] bg-white p-[24px] shadow-lg">
+          <Container className="flex w-fit max-w-[465px] rounded-lg border-[0.33px] border-[#14141b] bg-white p-[24px] shadow-lg">
             <Section className="mt-[32px]">
               <Img
                 src={imageUrl ?? backupUrl}
@@ -62,7 +62,7 @@ export const VIPInvitation = ({
                 className="flex h-fit w-[270px] items-center justify-center rounded-lg bg-[#14141b] py-1 no-underline"
                 href={baseUrl + `/?x=${event_id}`}
               >
-                <Text className="whitespace-nowrap pl-[70px] text-center text-[16px] font-semibold tracking-tight text-[#F3FCEE]">
+                <Text className="whitespace-nowrap pl-[24px] text-center text-[16px] font-semibold tracking-tight text-[#F3FCEE]">
                   Claim <strong>{ticket_count} VIP</strong> {tickets}
                 </Text>
               </Button>
@@ -77,7 +77,7 @@ export const VIPInvitation = ({
               </Link>
             </Text>
             <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
-            <Section className="p-4">
+            <Section className="px-4 pb-10 pt-4">
               <Text className="text-justify text-[12px] leading-[24px] text-[#666666]">
                 This invitation was intended for{" "}
                 <span className="text-black">{name}</span>. This invite was sent

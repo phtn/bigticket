@@ -101,7 +101,10 @@ export const vip = mutation({
     }
 
     if (!event?.vip_list) {
-      await db.patch(event._id, { vip_list: [vip], updated_at: Date.now() });
+      await db.patch(event._id, {
+        vip_list: [{ ...vip, idx: 1 }],
+        updated_at: Date.now(),
+      });
       return "success";
     }
 
@@ -124,7 +127,9 @@ function updateVIP(vip_list: VIP[], vip: VIP) {
   } else {
     vip_list.push(vip);
   }
-  return vip_list.filter((vip) => vip.ticket_count !== 0);
+  return vip_list
+    .filter((vip) => vip.ticket_count !== 0)
+    .map((vip, index) => ({ ...vip, idx: index + 1 }));
 }
 
 export const cohost = mutation({

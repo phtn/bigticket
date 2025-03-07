@@ -1,5 +1,4 @@
-import { betterV } from "convex/utils";
-import { GenericValidator, type Infer, v, VObject } from "convex/values";
+import { type Infer, v, VObject } from "convex/values";
 
 const excludeProp = <T extends object>(o: T, ...keys: string[]) => {
   const ex = new Set(keys);
@@ -38,6 +37,7 @@ export const VIPSchema = v.object({
   tickets_used: v.optional(v.number()),
   checked: v.optional(v.boolean()),
   invitation_sent: v.optional(v.boolean()),
+  idx: v.optional(v.number()),
 });
 
 export type VIP = Infer<typeof VIPSchema>;
@@ -57,6 +57,7 @@ export const CohostSchema = v.object({
   updated_at: v.optional(v.float64()),
   clearance: v.optional(CohostClearanceSchema),
   checked: v.optional(v.boolean()),
+  idx: v.optional(v.number()),
   invitation_sent: v.optional(v.boolean()),
 });
 export type Cohost = Infer<typeof CohostSchema>;

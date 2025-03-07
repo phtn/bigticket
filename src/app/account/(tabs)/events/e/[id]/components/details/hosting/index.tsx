@@ -1,51 +1,52 @@
 import { useConvexCtx } from "@/app/ctx/convex";
 import { onSuccess } from "@/app/ctx/toast";
-import { type XEvent } from "@/app/types";
-import { type IconName } from "@/icons";
+import { Icon } from "@/icons";
 import { Hyper } from "@/ui/button/button";
 import { HyperList } from "@/ui/list";
-import { Err } from "@/utils/helpers";
-import { Checkbox, CheckboxGroup, Form, Input } from "@nextui-org/react";
+import { Err, getInitials } from "@/utils/helpers";
+import { Checkbox, CheckboxGroup, Form, Input, User } from "@nextui-org/react";
 import type { Cohost, CohostClearance } from "convex/events/d";
-import moment from "moment";
 import {
-  type ChangeEvent,
+  startTransition,
   useActionState,
   useCallback,
   useMemo,
+  useReducer,
   useState,
 } from "react";
-import { inputClassNames } from "../../editor";
-import { BlockHeader } from "./components";
-import { cohost_info, type CohostField, CohostZod } from "./schema";
-import { Nebula } from ".";
+import { inputClassNames } from "../../../editor";
+import { BlockHeader } from "../components";
+import { type CohostField, CohostZod } from "../schema";
+import { Nebula } from "../";
 import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
-
-interface CohostBlockProps {
-  data: CohostField[];
-  label: string;
-  icon: IconName;
-  delay?: number;
-}
-interface CohostContentProps {
-  xEvent: XEvent | null;
-  user_id: string | undefined;
-}
+import { cn } from "@/lib/utils";
+import { cohostReducer, initialCohostState } from "./reducer";
+import type {
+  CohostBlockProps,
+  CohostContentProps,
+  CohostWithDefaults,
+} from "./types";
 
 export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
+  const [state, dispatch] = useReducer(cohostReducer, {
+    ...initialCohostState,
+    cohostList: [] as CohostWithDefaults[],
+  });
+
+  const { cohostList, selectedCohost } = state;
+
   const [clearanceValues, setClearanceValues] = useState<CohostClearance>({
     scan_code: true,
     add_vip: false,
     view_guest_list: false,
   });
-  const [cohostList, setCohostList] = useState<Cohost[]>([]);
 
   const initialState: Cohost = useMemo(
     () => ({
-      name: "",
-      email: "",
+      name: selectedCohost?.name ?? "",
+      email: selectedCohost?.email ?? "",
     }),
-    [],
+    [selectedCohost],
   );
 
   const defaults = useMemo(
@@ -62,7 +63,7 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
   const updateCohostList = useCallback(
     async (data: Cohost) => {
       if (!xEvent?.event_id) return;
-      setCohostList((prev) => [...prev, data]);
+      dispatch({ type: "UPDATE_COHOST", payload: data });
       return await vxEvents.mut.updateEventCohost({
         id: q(xEvent?.event_id),
         cohost: data,
@@ -121,6 +122,112 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
       setClearanceValues(updatedClearance);
     },
     [clearanceValues],
+  );
+
+  const handleUserSelect = useCallback((email: string, isSelected: boolean) => {
+    startTransition(() => {
+      dispatch({
+        type: "SELECT_COHOST",
+        payload: { email, isSelected },
+      });
+    });
+  }, []);
+
+  const RowItem = useCallback(
+    (cohost: Cohost) => {
+      const handleChangeSelected = (isSelected: boolean) => {
+        handleUserSelect(cohost.email, isSelected);
+      };
+      return (
+        <Checkbox
+          name={cohost.email}
+          disableAnimation={false}
+          color="secondary"
+          classNames={{
+            base: cn(
+              "flex items-center relative min-w-full justify-between p-4",
+              "hover:bg-vanilla/5 rounded-sm cursor-pointer",
+            ),
+            label: "flex items-center tracking-tight w-full max-w-full",
+            icon: "text-primary",
+            wrapper: "ml-4",
+          }}
+          isSelected={cohost.checked}
+          onValueChange={handleChangeSelected}
+        >
+          <div
+            className={cn(
+              "absolute -left-12 top-0 z-10 font-sans text-[10px] text-vanilla opacity-40",
+              { "text-teal-400 opacity-100": cohost.checked },
+            )}
+          >
+            {cohost.idx}
+          </div>
+          <div className="flex w-full items-center justify-between ps-2 md:ps-0">
+            <User
+              classNames={{
+                name: "whitespace-nowrap font-semibold text-chalk text-xs font-inter",
+              }}
+              avatarProps={{
+                size: "sm",
+                fallback: getInitials(cohost.name)?.toUpperCase(),
+                className:
+                  "text-[16px] hidden overflow-hidden md:flex ml-2 mr-1 bg-macd-orange/50 rounded-md border-vanilla/20 text-vanilla/90 flex-grow-0 font-semibold",
+              }}
+              description={
+                <p className="font-inter text-tiny text-vanilla/80">
+                  {cohost.email}
+                </p>
+              }
+              name={cohost.name}
+            />
+          </div>
+
+          <div className="flex items-center justify-end whitespace-nowrap text-chalk">
+            <div className="flex w-14 items-center justify-center gap-[1.5px] text-sm font-medium text-vanilla md:w-20">
+              <span className="font-sans">cleareances...</span>
+            </div>
+            <div
+              className={cn(
+                "flex w-14 items-center justify-center gap-[1.5px] text-xs font-semibold tracking-tighter text-vanilla/40 md:w-28 md:justify-end",
+                {
+                  "text-teal-400": cohost.invitation_sent,
+                },
+              )}
+            >
+              {cohost.invitation_sent ? "Sent" : "Not Sent"}
+              <Icon
+                name="Check"
+                className={cn("hidden size-2.5", {
+                  flex: cohost.invitation_sent,
+                })}
+              />
+            </div>
+          </div>
+        </Checkbox>
+      );
+    },
+    [handleUserSelect],
+  );
+
+  const cohost_info: CohostField[] = useMemo(
+    () => [
+      {
+        name: "name",
+        type: "text",
+        label: "Name",
+        placeholder: "Name of the co-host",
+        required: false,
+      },
+      {
+        name: "email",
+        type: "email",
+        label: "Email",
+        placeholder: "Email receiving the invitation",
+        required: true,
+      },
+    ],
+    [],
   );
 
   return (
@@ -194,7 +301,7 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
               </div>
               <HyperList
                 data={xEvent?.cohost_list ?? cohostList}
-                component={CohostListItem}
+                component={RowItem}
                 container=""
                 keyId="email"
               />
@@ -209,51 +316,7 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
   );
 };
 
-const CohostListItem = (cohost: Cohost) => {
-  const handleChangeSelected = useCallback(
-    (email: string) => (e: ChangeEvent<HTMLInputElement>) => {
-      e.preventDefault();
-      if (e.target.value) {
-        console.log(e.target.value, email);
-      }
-    },
-    [],
-  );
-  return (
-    <div className="grid w-fit grid-cols-12 overflow-auto whitespace-nowrap border-b border-dotted border-vanilla/20 md:w-full md:overflow-clip">
-      <div className="col-span-4 flex h-10 items-center rounded-sm hover:bg-gray-300/10 md:w-full">
-        <p className="px-3 font-inter text-tiny tracking-tighter">
-          {cohost.name}
-        </p>
-      </div>
-      <div className="col-span-4 flex h-10 w-full items-center px-3 hover:bg-gray-300/10">
-        <p className="font-inter text-xs font-medium tracking-tighter text-vanilla">
-          {cohost.email}
-        </p>
-      </div>
-      <div className="col-span-2 flex h-10 w-full items-center px-3 hover:bg-gray-300/10">
-        <p className="font-inter text-[10px] tracking-tighter opacity-60">
-          {moment(cohost.updated_at).fromNow()}
-        </p>
-      </div>
-      <div className="col-span-2 flex h-10 w-full items-center justify-end hover:bg-gray-300/10">
-        <Checkbox
-          name={cohost.email}
-          color="primary"
-          className="border-0 bg-transparent"
-          classNames={{
-            base: "border",
-            icon: "text-teal-500",
-            wrapper: "border border-gray-600",
-          }}
-          onChange={handleChangeSelected(cohost.email)}
-        />
-      </div>
-    </div>
-  );
-};
-
-const CohostItem = (field: CohostField) => {
+const CohostFieldItem = (field: CohostField) => {
   return field.name === "clearance" ? (
     field.value
   ) : (
@@ -275,15 +338,17 @@ const CohostItem = (field: CohostField) => {
 const CohostBlock = ({ data, icon, label, delay = 0 }: CohostBlockProps) => (
   <div className="mb-8 h-5/6 w-full space-y-6 p-6">
     <BlockHeader label={label} icon={icon} />
-    <section className="h-fit rounded bg-gray-400/10 px-4 py-3 text-justify text-tiny text-cake md:p-4 md:text-sm">
-      Fill out the name, email of the Cohost and add access clearances. You can
-      add multiple co-hosts for this event.
+    <section className="-mx-6 h-fit rounded-sm bg-teal-300/20 px-4 py-3 text-justify text-tiny text-vanilla md:p-4 md:text-sm">
+      You can add co-hosts and event marshals to assist you with ticket-scanning
+      and other guest verification during the event. Fill out the name and
+      email, select access clearances, then click add. You can add multiple
+      co-hosts for this event.
     </section>
     <HyperList
       data={data}
-      container="space-y-6"
+      container="space-y-8"
       itemStyle="whitespace-nowrap"
-      component={CohostItem}
+      component={CohostFieldItem}
       delay={delay}
       keyId="name"
     />
@@ -294,7 +359,13 @@ const ClearanceItem = (props: [string, boolean]) => {
   return (
     <Checkbox
       name={props[0]}
-      color="secondary"
+      color={
+        props[0] === "scan_code"
+          ? "secondary"
+          : props[0] === "add_vip"
+            ? "warning"
+            : "danger"
+      }
       className="flex data-[selected=true]:bg-primary/30"
       classNames={{
         base: "flex max-w-lg h-14 md:max-w-none px-3",

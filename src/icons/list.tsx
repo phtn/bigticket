@@ -23,7 +23,27 @@ function Activity(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-
+function AddUsers(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M12 7.5a3.5 3.5 0 1 1-7 0a3.5 3.5 0 0 1 7 0m1.5 3.5a3.5 3.5 0 1 0 0-7m-.357 16H3.857C2.831 20 2 19.233 2 18.286C2 15.919 4.079 14 6.643 14h3.714a4.9 4.9 0 0 1 2.786.857M19 14v6m3-3h-6"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
 function Airplane(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -2096,6 +2116,7 @@ function VIPIcon2(props: SVGProps<SVGSVGElement>) {
 }
 export const icons = {
   Activity,
+  AddUsers,
   Airplane,
   Airplane2,
   AlertTriLine,
