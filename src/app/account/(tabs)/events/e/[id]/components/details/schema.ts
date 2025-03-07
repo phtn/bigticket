@@ -166,22 +166,6 @@ export const media_fields: MediaField[] = [
   },
 ];
 
-export const cohost_info: CohostField[] = [
-  {
-    name: "name",
-    type: "text",
-    label: "Name",
-    placeholder: "Name of the co-host",
-    required: false,
-  },
-  {
-    name: "email",
-    type: "email",
-    label: "Email",
-    placeholder: "Email receiving the invitation",
-    required: true,
-  },
-];
 export const CohostZod = z.object({
   name: z.string().max(100).optional(),
   email: z.string().email().max(100),

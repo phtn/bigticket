@@ -28,12 +28,12 @@ export const TicketStack = ({
     <div className="group relative flex h-fit w-full items-center justify-center">
       <div
         className={cn(
-          "absolute h-[200px] w-[360px] -rotate-3 scale-95 rounded-2xl bg-indigo-300 shadow-lg transition-all duration-700 ease-out group-hover:rotate-[4deg] group-hover:shadow-md",
+          "absolute h-[210px] w-[350px] -rotate-3 scale-95 rounded-2xl bg-indigo-300 shadow-lg transition-all duration-700 ease-out group-hover:rotate-[5deg] group-hover:shadow-md",
           color,
         )}
       />
       <Ticket tickets={tickets} color={color}>
-        <div className="flex h-14 items-center justify-center rounded-xl rounded-b-2xl border-[0.33px] border-macl-gray px-2">
+        <div className="flex h-14 items-center justify-center rounded-xl rounded-b-lg border border-macl-gray bg-chalk px-2">
           <h1
             className={cn(
               "text-[38px] font-extrabold leading-none -tracking-wider",
@@ -45,20 +45,20 @@ export const TicketStack = ({
             {title}
           </h1>
         </div>
-        <div className="h-4"></div>
-        <div className="flex h-28 items-center rounded-xl rounded-t-2xl px-2">
-          <div className="flex h-24 w-[6.25rem] flex-shrink-0 items-center justify-center rounded-s-md border-[0.33px] border-primary">
+        <div className="h-3"></div>
+        <div className="flex h-28 items-end rounded-xl rounded-t-xl">
+          <div className="flex h-[100px] w-[6.25rem] flex-shrink-0 items-center justify-center rounded-s-md border border-macd-gray bg-chalk">
             {title && site && (
               <QrCodeGen url={url} logo="/icon/logomark_v2.svg" />
             )}
           </div>
-          <div className="h-24 w-full rounded-e-md border-[0.33px] border-l-0 border-primary">
+          <div className="h-[100px] w-full rounded-e-md border border-l-0 border-macd-gray bg-chalk">
             <div className="flex h-1/2 w-full items-center border-b border-macl-gray px-2">
               <span className="text-lg font-extrabold -tracking-wider">
                 {site}
               </span>
             </div>
-            <div className="flex h-1/4 items-center justify-between whitespace-nowrap pe-2 ps-0.5">
+            <div className="flex h-1/4 items-center justify-between whitespace-nowrap px-1">
               <span className="place-self-start font-mono text-[8px] italic tracking-tighter">
                 Date|Time:
               </span>
@@ -85,12 +85,16 @@ interface TicketProps {
 }
 const Ticket = ({ children, tickets }: TicketProps) => {
   return (
-    <div className="the-ticket absolute mt-[8px] h-[200px] w-[355px] rotate-2 scale-90 overflow-hidden rounded-2xl border-[0.33px] border-macl-gray bg-[#eee] p-2 transition-all duration-300 group-hover:rotate-0 group-hover:shadow-lg md:group-hover:scale-95">
+    <div className="the-ticket absolute mt-[8px] h-[220px] w-[360px] rotate-2 scale-90 overflow-hidden rounded-2xl border-[0.33px] border-macl-gray bg-[#eee] p-2 shadow-md shadow-primary transition-all duration-500 ease-out group-hover:rotate-0 group-hover:shadow-xl md:group-hover:scale-95">
       <p className="absolute left-6 top-1 rounded-sm bg-[#eee] px-1 font-mono text-[8px] leading-none tracking-widest text-primary">
         authentic &middot; valid &middot; {tickets ? `1/${tickets}` : null}
       </p>
-      <div className="absolute left-4 top-[72px] h-px w-[322] rounded-full border-b-2 border-dashed border-macd-gray/40" />
+      <div className="absolute top-[64px] flex h-fit w-[335] items-center justify-center rounded-full text-macl-gray">
+        {`┄ `.repeat(16)}
+      </div>
+
       {children}
     </div>
   );
 };
+//┅

@@ -2,6 +2,7 @@ import type { Dispatch, ReactElement, SetStateAction } from "react";
 import { onError, onSuccess, onWarn } from "@/app/ctx/toast";
 import pkg from "../../package.json";
 import toast from "react-hot-toast";
+import chalk from "chalk";
 
 export const getVersion = () => {
   return pkg.version;
@@ -544,4 +545,12 @@ export const asyncR = async <T extends Promise<T>>(
   } catch (error) {
     return { data: null, error: error as Error };
   }
+};
+
+export const clearConsole = () => {
+  const big = chalk.hex("#59D2CB").bold.bgBlack;
+  const ticket = chalk.hex("#fb923c").bold.bgBlack;
+  const cutout = chalk.gray.bgBlack.bold("●");
+  console.clear();
+  console.log(cutout + big(" BIG ") + ticket("ticket ") + cutout);
 };

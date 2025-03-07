@@ -59,7 +59,7 @@ export const Tickets = () => {
               component={TicketCard}
               keyId="ticket_id"
               container={cn(
-                "relative grid grid-cols-1 pb-10 px-4 portrait:gap-y-24 gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:px-4",
+                "relative grid grid-cols-1 pb-44 pt-4 px-4 portrait:gap-y-24 gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:px-4",
                 { "z-50": !open },
               )}
             >

@@ -5,6 +5,7 @@ import { type UserTicket } from "convex/events/d";
 import {
   createContext,
   useCallback,
+  useContext,
   useMemo,
   useState,
   type ReactNode,
@@ -40,4 +41,12 @@ export const TicketViewerCtxProvider = ({
     [open, toggle, ticket, getTicket],
   );
   return <TicketViewerCtx value={value}>{children}</TicketViewerCtx>;
+};
+
+export const useTicketViewer = () => {
+  const context = useContext(TicketViewerCtx);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };

@@ -42,6 +42,7 @@ import { useTicketCart } from "./useTicketCart";
 import MultiMediaCarousel, { type MediaItem } from "@/ui/carousel/m-card";
 import { Carousel, useCarousel } from "@/ui/carousel";
 import { useUserCtx } from "@/app/ctx/user";
+import { clearConsole } from "@/utils/helpers";
 
 export interface EventViewerProps {
   preloadedEvents: Preloaded<typeof api.events.get.all>;
@@ -100,6 +101,7 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
   const router = useRouter();
   const { xEventInfo, panelItems } = useEventInfo(xEvent);
   const { xUser } = useUserCtx();
+  const [hasClaimed, setHasClaimed] = useState(false);
 
   const isVip = useMemo(
     () => IsVIP(xEvent?.vip_list, xUser?.email),
@@ -109,10 +111,12 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
     () => IsPrivateEvent(xEvent?.is_private),
     [xEvent?.is_private],
   );
-  const hasClaimed = useMemo(
-    () => HasClaimedTickets(isVip, xEvent?.vip_list, xUser?.email),
-    [isVip, xEvent?.vip_list, xUser?.email],
-  );
+
+  useEffect(() => {
+    startTransition(() => {
+      setHasClaimed(HasClaimedTickets(isVip, xEvent?.vip_list, xUser?.email));
+    });
+  }, [isVip, xEvent?.vip_list, xUser?.email]);
 
   const ticketCount = useMemo(
     () =>
@@ -128,8 +132,8 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
       return await ticketCart?.getVIPTicket();
     }
     console.log("handling basic ticket");
-    return await ticketCart?.getBasicTicket();
-  }, [ticketCart, isVip]);
+    return await ticketCart?.getBasicTicket(xUser?.id);
+  }, [ticketCart, isVip, xUser?.id]);
 
   const handleViewTickets = useCallback(() => {
     router.push("/account/tickets");
@@ -286,8 +290,8 @@ const MediaComponent = ({
   const [src, setSrc] = useState<string>("/icon/wordmark.svg");
 
   useEffect(() => {
+    clearConsole();
     startTransition(() => {
-      console.log(cover_src);
       if (!!cover_src) {
         setSrc(cover_src);
       }

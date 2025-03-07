@@ -3,7 +3,8 @@ import { UpdateUserSchema, UserGallerySchema } from "./d";
 import { checkUser } from "./create";
 import { v } from "convex/values";
 import { UserTicket, UserTicketSchema } from "convex/events/d";
-import { getEvent, upsert } from "convex/utils";
+import { upsert } from "convex/utils";
+import { checkEvent } from "convex/events/create";
 
 export const info = mutation({
   args: UpdateUserSchema,
@@ -86,21 +87,21 @@ export const photo_url = mutation({
 
 export const likes = mutation({
   args: { id: v.string(), target_id: v.string() },
-  handler: async (ctx, { id, target_id }) => {
-    const user = await checkUser(ctx.db, id);
+  handler: async ({ db }, { id, target_id }) => {
+    const user = await checkUser(db, id);
 
     if (user === null || target_id === "") {
       return null;
     }
 
     const [likes, increment] = updateArray(user?.likes, target_id);
-    await ctx.db.patch(user._id, { likes, updated_at: Date.now() });
+    await db.patch(user._id, { likes, updated_at: Date.now() });
 
-    const event = await getEvent(ctx, target_id);
+    const event = await checkEvent(db, target_id);
     if (event === null || !increment) {
       return null;
     }
-    await ctx.db.patch(event._id, {
+    await db.patch(event._id, {
       likes: event?.likes ? event?.likes + increment : increment,
     });
     return "success";
@@ -109,24 +110,24 @@ export const likes = mutation({
 
 export const bookmarks = mutation({
   args: { id: v.string(), target_id: v.string() },
-  handler: async (ctx, { id, target_id }) => {
-    const user = await checkUser(ctx.db, id);
+  handler: async ({ db }, { id, target_id }) => {
+    const user = await checkUser(db, id);
 
     if (user === null || target_id === "") {
       return null;
     }
 
     const [bookmarks, increment] = updateArray(user?.bookmarks, target_id);
-    await ctx.db.patch(user._id, {
+    await db.patch(user._id, {
       bookmarks,
       updated_at: Date.now(),
     });
 
-    const event = await getEvent(ctx, target_id);
+    const event = await checkEvent(db, target_id);
     if (event === null || !increment) {
       return null;
     }
-    await ctx.db.patch(event._id, {
+    await db.patch(event._id, {
       bookmarks: event?.bookmarks ? event?.bookmarks + increment : increment,
     });
     return "success";
@@ -207,9 +208,9 @@ function updateArray(
 
 export const tickets = mutation({
   args: { id: v.string(), tickets: v.array(UserTicketSchema) },
-  handler: async (ctx, { id, tickets }) => {
+  handler: async ({ db }, { id, tickets }) => {
     // check user
-    const user = await checkUser(ctx.db, id);
+    const user = await checkUser(db, id);
     if (user === null || !tickets || tickets.length === 0) {
       console.log("User not found or no tickets provided");
       return null;
@@ -222,14 +223,14 @@ export const tickets = mutation({
     const [updated_user_tickets] = updateTicketList(user.tickets, tickets, id);
 
     // update user
-    await ctx.db.patch(user._id, {
+    await db.patch(user._id, {
       ...user,
       tickets: updated_user_tickets,
       updated_at: Date.now(),
     });
 
     // check event
-    const target_event = await getEvent(ctx, id);
+    const target_event = await checkEvent(db, event_id);
     if (target_event === null) {
       return null;
     }
@@ -242,12 +243,18 @@ export const tickets = mutation({
 
     // check if user is a VIP
     const vipList = target_event.vip_list ?? [];
-    const isVip = vipList.some((vip) => vip.email === user.email);
-    const vip_list = isVip
-      ? vipList.map((vip) => ({ ...vip, tickets_claimed: true }))
-      : vipList;
+    let hasMatch = false;
 
-    await ctx.db.patch(target_event._id, {
+    // Map approach that only creates new objects when needed
+    const vip_list = vipList.map((vip) => {
+      if (vip.email === user.email) {
+        hasMatch = true;
+        return { ...vip, tickets_claimed: true };
+      }
+      return vip;
+    });
+
+    await db.patch(target_event._id, {
       ...target_event,
       vip_list,
       tickets: updated_event_tickets,
@@ -277,7 +284,7 @@ function updateTicketList(
     ticket_status: "active",
     ticket_index: 0,
     is_active: true,
-    is_claimed: false,
+    is_claimed: true,
     is_expired: false,
     is_used: false,
     user_id: id,
