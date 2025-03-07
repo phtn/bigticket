@@ -10,6 +10,7 @@ import { type api } from "@vx/api";
 import { usePreloadedQuery, type Preloaded } from "convex/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
+  startTransition,
   useCallback,
   useEffect,
   useMemo,
@@ -281,33 +282,33 @@ const MediaComponent = ({
   ref,
   gallery,
 }: MediaProps) => {
-  //Su6kidaGW_8
   const { currentIndex } = useCarousel();
+  const [src, setSrc] = useState<string>("/icon/wordmark.svg");
+
+  useEffect(() => {
+    startTransition(() => {
+      console.log(cover_src);
+      if (!!cover_src) {
+        setSrc(cover_src);
+      }
+    });
+  }, [cover_src]);
 
   const data: MediaItem[] = useMemo(
     () => [
       {
         type: "image",
-        title: "cover-for-" + event_name,
-        src: cover_src ?? "/svg/star_v2.svg",
-        alt: `${event_name}-cover`,
+        title: "cover-for-" + event_name?.toLowerCase(),
+        src: src,
+        alt: `${event_name?.toLowerCase()}-cover`,
       },
       ...gallery,
     ],
-    [cover_src, event_name, gallery],
+    [event_name, gallery, src],
   );
 
   return (
     <div className="group/media relative overflow-hidden">
-      {/* <div className="relative h-[250px]" ref={ref}>
-        <Image
-          radius="none"
-          alt={`${event_name}-cover`}
-          src={cover_src ?? "/svg/star_v2.svg"}
-          className="relative z-0 aspect-auto h-auto w-screen md:w-[30rem]"
-        />
-
-      </div> */}
       <MultiMediaCarousel ref={ref} data={data} />
       {visible && currentIndex === 0 && (
         <TitleDisplay event_name={event_name} narrow={narrow} time={time} />
@@ -315,30 +316,3 @@ const MediaComponent = ({
     </div>
   );
 };
-
-/*
-
-<PrivateEventGate
-            check={isPrivate}
-            fallback={
-              <VIPAccess ticketCount={ticketCount} fn={handleGetTickets} />
-            }
-          >
-            <VIPGate
-              check={isVip}
-              fallback={<VIPNoAccess fn={handleGetTickets} />}
-            >
-              <ClaimedTicketsGate
-                check={hasClaimed}
-                fallback={
-                  <ViewTicket
-                    ticketCount={ticketCount}
-                    fn={handleViewTickets}
-                  />
-                }
-              >
-                <GetTickets fn={handleGetTickets} />
-              </ClaimedTicketsGate>
-            </VIPGate>
-          </PrivateEventGate>
-*/

@@ -6,7 +6,7 @@ import {
   CarouselPrevious,
 } from "@/ui/carousel";
 import { Image } from "@nextui-org/react";
-import { type RefObject, type FC } from "react";
+import { type RefObject, type FC, useCallback } from "react";
 
 export interface MediaItem {
   title?: string;
@@ -22,26 +22,32 @@ interface CarouselProps {
 }
 
 const MultiMediaCarousel: FC<CarouselProps> = ({ data, ref }) => {
+  const MediaAssets = useCallback(
+    () =>
+      data?.map((item, idx) => (
+        <CarouselItem
+          key={idx}
+          className="flex aspect-auto size-full items-center justify-center"
+        >
+          {item.type === "image" ? (
+            <Image
+              radius="none"
+              alt={item.alt ?? "carousel image"}
+              src={item.src}
+              className="relative z-0 aspect-auto w-screen flex-shrink-0 grow object-fill md:w-[30rem]"
+            />
+          ) : (
+            <Y src={item.src} ref={ref} idx={idx} />
+          )}
+        </CarouselItem>
+      )),
+    [data, ref],
+  );
+
   return (
     <div ref={ref} className="relative h-[250px] w-full bg-black">
       <CarouselContent>
-        {data?.map((item, idx) => (
-          <CarouselItem
-            key={idx}
-            className="flex aspect-auto size-full items-center justify-center"
-          >
-            {item.type === "image" ? (
-              <Image
-                radius="none"
-                alt={item.alt ?? "carousel image"}
-                src={item.src}
-                className="relative z-0 aspect-auto w-screen flex-shrink-0 grow object-fill md:w-[30rem]"
-              />
-            ) : (
-              <Y src={item.src} ref={ref} idx={idx} />
-            )}
-          </CarouselItem>
-        ))}
+        <MediaAssets />
       </CarouselContent>
       <CarouselPrevious />
       <CarouselNext />
