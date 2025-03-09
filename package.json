@@ -13,7 +13,9 @@
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "test:watch": "bun test --watch"
   },
   "dependencies": {
     "@next/mdx": "^15.1.4",
@@ -27,7 +29,7 @@
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/auth-helpers-react": "^0.5.0",
     "@supabase/supabase-js": "^2.47.14",
-    "@t3-oss/env-nextjs": "^0.11.1",
+    "@t3-oss/env-nextjs": "^0.12.0",
     "@tanstack/react-query": "^5.64.1",
     "@trpc/client": "^11.0.0-rc.700",
     "@trpc/react-query": "^11.0.0-rc.700",
@@ -39,7 +41,7 @@
     "chalk": "^5.4.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "convex": "^1.18.0",
+    "convex": "^1.19.5",
     "dotenv": "^16.4.7",
     "embla-carousel-autoplay": "^8.5.2",
     "embla-carousel-fade": "^8.5.2",
@@ -69,6 +71,8 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
     "@types/animejs": "^3.1.12",
     "@types/eslint": "^9.6.1",
     "@types/google-one-tap": "^1.2.6",
@@ -79,15 +83,27 @@
     "@types/react-dom": "^19.0.3",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
     "@typescript-eslint/parser": "^8.20.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "bun-types": "^1.2.4",
     "eslint": "^9.18.0",
     "eslint-config-next": "^15.1.4",
+    "jsdom": "^26.0.0",
     "postcss": "^8.5.1",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.8"
   },
   "ct3aMetadata": {
     "initVersion": "7.38.1"
+  },
+  "trustedDependencies": [
+    "sharp"
+  ],
+  "bunTest": {
+    "preload": [
+      "./src/test/setup.ts"
+    ]
   }
 }

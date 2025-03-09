@@ -1,24 +1,26 @@
 "use client";
 
 import { ChineBorder } from "@/ui/card/border";
-import { motion } from "motion/react";
+import { motion, time } from "motion/react";
 import { useSignOut } from "./useSignOut";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Err } from "@/utils/helpers";
 import { Bouncy } from "@/ui/loader/bouncy";
 
 export const Content = () => {
   const { cleanUp } = useSignOut();
+  const timer = useCallback(
+    () =>
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 5000),
+    [],
+  );
   useEffect(() => {
-    let timer: NodeJS.Timeout;
     cleanUp()
-      .then(() => {
-        timer = setTimeout(() => {
-          window.location.href = "/";
-        }, 5000);
-      })
+      .then(() => timer())
       .catch(Err);
-    return () => clearTimeout(timer);
+    return () => clearTimeout(timer());
   }, [cleanUp]);
 
   return (

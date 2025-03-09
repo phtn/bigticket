@@ -9,8 +9,8 @@ import type {
 import { type AnyFunctionReference } from "node_modules/convex/dist/esm-types/server/api";
 
 export const useConvexUtils = () => {
-  const q = <T>(arg: T | undefined) => (arg as T) ?? ("skip" as T);
-  const qs = <T>(arg: (T | undefined)[]) => (arg as T[]) ?? ("skip" as T);
+  const q = <T>(arg: T | undefined) => (arg as T) ?? ("skip");
+  const qs = <T>(args: (T | undefined)[]) => (args as T[]) ?? "skip";
 
   const asyncFn =
     <TParams, TReturn>(fn: (params: TParams) => Promise<TReturn>) =>

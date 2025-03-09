@@ -24,9 +24,7 @@ export const useVxEvents = () => {
     getAllEvents: useQry(api.events.get.all, []),
     getEventByIds: useQry(api.events.get.byIds, [{ ids: [] }]),
     getEventByHostId: useQry(api.events.get.byHostId, [{ host_id: "" }]),
-    getEventByCohostEmail: useQry(api.events.get.byCohostEmail, [
-      { email: [""] },
-    ]),
+    // getEventByCohostEmail: (email: string[]) => useQuery(api.events.get.byCohostEmail, {email}),
   };
 
   return {

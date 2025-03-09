@@ -14,6 +14,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { type XEvent } from "../types";
+import { useEventInfo } from "./@ev/useEventInfo";
 
 export const EventCard = (xEvent: XEvent) => {
   const { event_day, event_time, narrow } = useMoment({
@@ -30,17 +31,17 @@ export const EventCard = (xEvent: XEvent) => {
     is_cover_light,
   } = xEvent;
 
-  // const { incrementViews } = use(EventViewerCtx)!;
+  const { isBookmarked, toggleBookmark } = useEventInfo(xEvent)
 
   const router = useRouter();
 
-  // const [bookmarked, setBookmarked] = useState<boolean>(false);
+  const [bookmarked, setBookmarked] = useState<boolean>(isBookmarked);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // const handleBookmarkEvent = useCallback(async () => {
-  //   setBookmarked((prev) => !prev);
-  //   await bookmarkFn();
-  // }, [bookmarkFn]);
+  const handleBookmarkEvent = useCallback(async () => {
+    setBookmarked((prev) => !prev);
+    await toggleBookmark();
+  }, [toggleBookmark]);
 
   const handleSelectEvent = useCallback(async () => {
     setLoading(true);
@@ -60,14 +61,14 @@ export const EventCard = (xEvent: XEvent) => {
     () => (
       <ButtonIcon
         aria-label={`bookmark-${event_name?.replaceAll(" ", "-").toLowerCase()}`}
-        icon={false ? "BookmarkCheck" : "BookmarkPlus"}
-        bg={false ? "text-teal-500 opacity-100" : "opacity-20"}
-        shadow={false ? "text-coal opacity-100" : ""}
-        color={false ? "text-white fill-white" : ""}
-        onClick={() => console.log("bookmark")}
+        icon={bookmarked ? "BookmarkCheck" : "BookmarkPlus"}
+        bg={bookmarked ? "text-teal-500 opacity-100" : "opacity-20"}
+        shadow={bookmarked ? "text-coal opacity-100" : ""}
+        color={bookmarked ? "text-white fill-white" : ""}
+        onClick={handleBookmarkEvent}
       />
     ),
-    [event_name],
+    [event_name, handleBookmarkEvent, bookmarked],
   );
 
   return (

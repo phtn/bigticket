@@ -1,68 +1,41 @@
 "use client";
 
-import { useEvents } from "@/app/(search)/home/useEvents";
-import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
 import { usePreloadedUserEvents } from "@/app/ctx/event/user";
-import { SidebarCtx } from "@/app/ctx/sidebar";
+import { useSidebar } from "@/app/ctx/sidebar";
 import { useUserCtx } from "@/app/ctx/user";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { opts } from "@/utils/helpers";
 import { Spinner } from "@nextui-org/react";
-import { api } from "@vx/api";
-import { type SelectEvent } from "convex/events/d";
-import { useQuery } from "convex/react";
-import {
-  type ButtonHTMLAttributes,
-  use,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type ButtonHTMLAttributes, useCallback, useRef } from "react";
 import { Count, EmptyList, Header } from "../../_components_/common";
 import { CreateEvent } from "./create";
 import { EventCardAccount } from "./event-card";
 import { CohostedEventCard } from "./cohost-card";
+import { useUserEvents } from "./useUserEvents";
 
 export const Events = () => {
-  const { qs } = useConvexUtils();
   const { x, pending } = usePreloadedUserEvents();
-  const { open } = use(SidebarCtx)!;
+  const { open } = useSidebar();
   const { xUser } = useUserCtx();
-  const [email, setEmail] = useState<string>();
-
-  useEffect(() => {
-    if (xUser?.email) {
-      setEmail(xUser.email);
-    }
-  }, [xUser?.email]);
-
-  const [events, setEvents] = useState<SelectEvent[]>([]);
-  const cohosted = useQuery(api.events.get.byCohostEmail, {
-    email: qs([email ?? ""]),
-  });
-  useEffect(() => {
-    if (cohosted) {
-      setEvents(cohosted);
-    }
-  }, [cohosted]);
-  const { xEvents: cohostedXEvents } = useEvents(events);
+  const { cohostedXEvents, loading } = useUserEvents(xUser?.email);
 
   const Counter = useCallback(() => {
     const options = opts(<Spinner size="sm" />, <Count count={x?.length} />);
     return <>{options.get(pending)}</>;
   }, [pending, x?.length]);
+
   const CohostCounter = useCallback(() => {
     const options = opts(
       <Spinner size="sm" />,
       <Count count={cohostedXEvents?.length} />,
     );
-    return <>{options.get(pending)}</>;
-  }, [pending, cohostedXEvents?.length]);
+    return <>{options.get(loading)}</>;
+  }, [loading, cohostedXEvents?.length]);
 
   const cohostedEventListRef = useRef<HTMLDivElement>(null);
+
   const handleScrollToCohosted = useCallback(() => {
     cohostedEventListRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -71,7 +44,7 @@ export const Events = () => {
   }, []);
 
   return (
-    <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white pb-10 md:rounded-lg md:px-6">
+    <div className="min-h-[80vh] w-full justify-center rounded-none border-t border-primary/20 bg-white pb-64 md:rounded-lg md:px-6">
       <div className="bg-white">
         <HyperList
           data={x}
@@ -84,7 +57,7 @@ export const Events = () => {
           <div key={"x"} className="flex items-center gap-4 pe-4 md:py-4">
             <Header title="My Events">
               <Counter />
-              {cohostedXEvents.length > 0 && (
+              {x && x?.length > 0 && (
                 <Cohosted onClick={handleScrollToCohosted} />
               )}
             </Header>
@@ -93,22 +66,18 @@ export const Events = () => {
         </HyperList>
 
         <div className="h-24 bg-white" ref={cohostedEventListRef} />
-        {cohostedXEvents.length > 0 && (
-          <HyperList
-            data={cohostedXEvents}
-            component={CohostedEventCard}
-            container={cn(
-              "relative grid grid-cols-1 px-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:px-4",
-              { "z-50": !open },
-            )}
-          >
-            <div key={"xc"} className="flex items-center gap-4 pe-4 md:py-4">
-              <Header title="Co-hosted Events">
-                <CohostCounter />
-              </Header>
-            </div>
-          </HyperList>
-        )}
+        <HyperList
+          data={cohostedXEvents}
+          component={CohostedEventCard}
+          container={cn(
+            "relative grid grid-cols-1 px-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:px-4",
+            { "z-50": !open },
+          )}
+        >
+          <div key={"xc"} className="flex items-center gap-4 pe-4 md:py-4">
+            <Header title="Co-hosted Events">{<CohostCounter />}</Header>
+          </div>
+        </HyperList>
 
         {x?.length === 0 ? (
           <EmptyList

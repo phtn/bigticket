@@ -1,5 +1,6 @@
 import { bookmarkEvent, likeEvent } from "@/app/account/(tabs)/events/actions";
 import { getUserID } from "@/app/actions";
+import { useUserCtx } from "@/app/ctx/user";
 import { type XEvent } from "@/app/types";
 import { useMoment } from "@/hooks/useMoment";
 import { type IconName } from "@/icons";
@@ -50,6 +51,13 @@ export const useEventInfo = (xEvent: XEvent | undefined) => {
     start: start_date,
     end: end_date,
   });
+
+  const {xUser} = useUserCtx()
+
+  const isBookmarked = useMemo(() => {
+    if (!event_id) return false
+    return xUser?.bookmarks?.includes(event_id) ?? false
+  }, [xUser, event_id])
 
   const xEventInfo: InfoItem[] = useMemo(
     () => [
@@ -151,7 +159,7 @@ export const useEventInfo = (xEvent: XEvent | undefined) => {
     [bookmarkItem, likeItem],
   );
 
-  return { xEventInfo, panelItems };
+  return { xEventInfo, panelItems, toggleBookmark, isBookmarked };
 };
 
 const getDuration = (duration: number | undefined) => {

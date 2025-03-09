@@ -91,16 +91,22 @@ export const fetchAllEvents = async () => {
   return events;
 };
 
-export const preloadAllEvents = async () => {
-  const preloadedEvents = await preloadQuery(api.events.get.all);
-  return preloadedEvents;
-};
+export const preloadAllEvents = async () =>
+  await preloadQuery(api.events.get.all);
 
 export const preloadEventsByHostId = async () => {
   const host_id = await getAccountID();
   if (!host_id) return [];
   const preloadedEvents = await preloadQuery(api.events.get.byHostId, {
     host_id,
+  });
+  return preloadedQueryResult(preloadedEvents);
+};
+
+export const preloadEventsByCohostEmail = async (email: string[]) => {
+  if (email[0] === "undefined") return [];
+  const preloadedEvents = await preloadQuery(api.events.get.byCohostEmail, {
+    email,
   });
   return preloadedQueryResult(preloadedEvents);
 };

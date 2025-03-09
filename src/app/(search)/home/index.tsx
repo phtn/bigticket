@@ -50,7 +50,7 @@ const Loader = () => (
         <Image
           alt="star"
           radius="none"
-          className="size-10"
+          className="size-10 bg-transparent"
           src="/svg/star_v1.svg"
         />
       </motion.div>
