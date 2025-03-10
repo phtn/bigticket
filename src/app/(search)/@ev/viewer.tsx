@@ -26,7 +26,7 @@ import {
   InfoGrid,
 } from "./components";
 import { ViewTicket } from "./components/buttons/claimed";
-import { GetTickets } from "./components/buttons/paid";
+import { Checkout, GetTickets } from "./components/buttons/paid";
 import {
   ClaimedTicketsGate,
   HasClaimedTickets,
@@ -43,6 +43,9 @@ import MultiMediaCarousel, { type MediaItem } from "@/ui/carousel/m-card";
 import { Carousel, useCarousel } from "@/ui/carousel";
 import { useUserCtx } from "@/app/ctx/user";
 import { clearConsole } from "@/utils/helpers";
+import { Spinner } from "@nextui-org/react";
+import { Shimmer } from "@/ui/text/sparkles";
+import { useCheckout } from "./components/buttons/checkout/ctx";
 
 export interface EventViewerProps {
   preloadedEvents: Preloaded<typeof api.events.get.all>;
@@ -103,6 +106,8 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
   const { xUser } = useUserCtx();
   const [hasClaimed, setHasClaimed] = useState(false);
 
+  const { open, toggle } = useCheckout();
+
   const isVip = useMemo(
     () => IsVIP(xEvent?.vip_list, xUser?.email),
     [xEvent?.vip_list, xUser?.email],
@@ -131,7 +136,6 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
     if (isVip) {
       return await ticketCart?.getVIPTicket();
     }
-    console.log("handling basic ticket");
     return await ticketCart?.getBasicTicket(xUser?.id);
   }, [ticketCart, isVip, xUser?.id]);
 
@@ -145,7 +149,7 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
       if (!debounced) {
         setDebounced(true);
       }
-    }, 1000);
+    }, 3000);
     return () => clearTimeout(timer);
   }, [debounced]);
 
@@ -164,8 +168,8 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
   }, [xEvent?.gallery]);
 
   const TicketClaims = useCallback(
-    ({ h }: { h: string }) => {
-      return (
+    ({ h }: { h: string }) =>
+      debounced ? (
         <div style={{ height: h }}>
           <ClaimedTicketsGate
             check={hasClaimed}
@@ -188,8 +192,24 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
             </VIPGate>
           </ClaimedTicketsGate>
         </div>
-      );
-    },
+      ) : (
+        <div
+          style={{ height: h }}
+          className="flex items-center justify-center space-x-6 bg-void"
+        >
+          <Shimmer
+            sparklesCount={6}
+            className="font-inter text-[16px]"
+            text="Getting"
+          />
+          <Spinner size="sm" color="secondary" />
+          <Shimmer
+            sparklesCount={6}
+            className="font-inter text-[16px]"
+            text="Ticket"
+          />
+        </div>
+      ),
     [
       ticketCount,
       handleGetTickets,
@@ -198,6 +218,7 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
       isVip,
       isPrivate,
       xEvent?.ticket_price,
+      debounced,
     ],
   );
 
@@ -210,7 +231,7 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setVisible(true);
-    }, 1000);
+    }, 1500);
 
     return () => clearTimeout(timeout);
   }, []);
@@ -242,6 +263,11 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
           h={contentHeight}
         />
         <InfoGrid data={xEventInfo} h={contentHeight} />
+        <Checkout
+          open={open}
+          toggle={toggle}
+          ticketPrice={xEvent?.ticket_price}
+        />
       </div>
       <EventViewerFooter h={contentHeight} />
     </div>

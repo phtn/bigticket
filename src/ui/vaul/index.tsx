@@ -1,3 +1,5 @@
+import type { ClassName } from "@/app/types";
+import { cn } from "@/lib/utils";
 import type { PropsWithChildren, ReactNode } from "react";
 import { type DialogProps, Drawer } from "vaul";
 
@@ -58,11 +60,18 @@ const BottomComponent = ({
   );
 };
 
-const Handle = ({ close }: { close: VoidFunction }) => (
+interface HandleProps {
+  close: VoidFunction;
+  className?: ClassName;
+}
+
+const Handle = ({ close, className }: HandleProps) => (
   <div
     onClick={close}
-    aria-hidden
-    className="my-1 h-1.5 w-4 flex-shrink-0 cursor-pointer rounded-full bg-amber-600 transition-colors duration-300 ease-in hover:bg-warning"
+    className={cn(
+      "my-1 h-1.5 w-4 flex-shrink-0 cursor-pointer rounded-full bg-amber-600 transition-colors duration-300 ease-in hover:bg-warning",
+      className,
+    )}
   />
 );
 
@@ -77,6 +86,40 @@ const Footer = ({ children }: PropsWithChildren) => (
     <div className="mx-auto flex items-center justify-between">{children}</div>
   </div>
 );
+
+const FloatingComponent = ({
+  children,
+  open,
+  onOpenChange,
+  title,
+  description,
+  ...props
+}: ComponentProps & DialogProps) => {
+  return (
+    <Drawer.Root
+      {...props}
+      modal={false}
+      open={open}
+      dismissible={true}
+      onOpenChange={onOpenChange}
+      direction={"bottom"}
+    >
+      <Drawer.Portal>
+        <Drawer.Content className="fixed bottom-0 right-0 z-[100] flex h-80 w-full flex-col items-center justify-center bg-transparent outline-none md:w-[30rem]">
+          <Handle
+            close={() => !open}
+            className="w-12 border-peach bg-peach text-peach"
+          />
+          <Drawer.Title className="hidden">{title}</Drawer.Title>
+          <Drawer.Description className="hidden">
+            {description}
+          </Drawer.Description>
+          {children}
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
+  );
+};
 
 type TSideVaul = typeof Component & {
   Handle: typeof Handle;
@@ -94,4 +137,9 @@ const BottomVaul: TSideVaul = Object.assign(BottomComponent, {
   Body,
   Footer,
 });
-export { BottomVaul, SideVaul };
+const FloatingVaul: TSideVaul = Object.assign(FloatingComponent, {
+  Handle,
+  Body,
+  Footer,
+});
+export { BottomVaul, FloatingVaul, SideVaul };

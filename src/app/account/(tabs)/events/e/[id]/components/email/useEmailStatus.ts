@@ -31,6 +31,7 @@ export function useEmailStatus<T extends VIP>(endpoint: string) {
         if (done) break;
 
         const text = decoder.decode(value).trim();
+        console.log("STATUS: ", text);
         toast.loading(text, { duration: Infinity, id: toastId });
       }
       toast.success(`Sent to ${data.email}`, { id: toastId, duration: 5000 });

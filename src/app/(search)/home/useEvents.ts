@@ -1,18 +1,17 @@
 import { useConvexCtx } from "@/app/ctx/convex";
 import { type XEvent } from "@/app/types";
-import { Err } from "@/utils/helpers";
 import { type SelectEvent } from "convex/events/d";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo, useRef } from "react";
 import { useLocal, type StorageItem } from "@/hooks/useLocal";
+import { Err } from "@/utils/helpers";
 
 interface CoverCache {
   cover_src: string;
   timestamp: number;
 }
 
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
-
 const isCacheValid = (timestamp: number) => {
+  const CACHE_DURATION = 1000 * 60 * 60 * 12; // 12 hours
   return Date.now() - timestamp < CACHE_DURATION;
 };
 
@@ -21,11 +20,21 @@ export const useEvents = (events: SelectEvent[]) => {
   const [loading, setLoading] = useState(true);
   const { vxFiles } = useConvexCtx();
 
-  // Initialize localStorage items
-  const initialItems: StorageItem<CoverCache>[] = events.map((event) => ({
-    key: `cover_${event.event_id}`,
-    data: { cover_src: "", timestamp: Date.now() },
-  }));
+  // Use ref to keep track of the latest events array without causing re-renders
+  const eventsRef = useRef(events);
+  useEffect(() => {
+    eventsRef.current = events;
+  }, [events]);
+
+  // Memoize initial storage items
+  const initialItems: StorageItem<CoverCache>[] = useMemo(
+    () =>
+      events.map((event) => ({
+        key: `cover_${event.event_id}`,
+        data: { cover_src: "", timestamp: Date.now() },
+      })),
+    [events],
+  );
 
   const { storage, setItem } = useLocal<CoverCache>(initialItems);
 
@@ -61,17 +70,34 @@ export const useEvents = (events: SelectEvent[]) => {
 
   const createSignedEvents = useCallback(async () => {
     setLoading(true);
-    if (!events) return [];
+    const currentEvents = eventsRef.current;
+    if (!currentEvents?.length) {
+      setXEvents([]);
+      setLoading(false);
+      return;
+    }
 
-    const promises = events.map(collectEvent);
-    const resolve = await Promise.all(promises);
-    setXEvents(resolve);
-    setLoading(false);
-  }, [events, collectEvent]);
+    try {
+      const promises = currentEvents.map(collectEvent);
+      const resolve = await Promise.all(promises);
+      setXEvents(resolve);
+    } catch (error) {
+      console.error("Error creating signed events:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [collectEvent]);
 
   useEffect(() => {
-    createSignedEvents().catch(Err(setLoading, "createSignedEvents"));
+    createSignedEvents().catch(Err(setLoading));
   }, [createSignedEvents]);
 
-  return { xEvents, loading };
+  // Memoize the return value to maintain referential equality
+  return useMemo(
+    () => ({
+      xEvents,
+      loading,
+    }),
+    [xEvents, loading],
+  );
 };

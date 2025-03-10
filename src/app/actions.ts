@@ -91,8 +91,7 @@ export const fetchAllEvents = async () => {
   return events;
 };
 
-export const preloadAllEvents = async () =>
-  await preloadQuery(api.events.get.all);
+export const preloadAllEvents = async () => preloadQuery(api.events.get.all);
 
 export const preloadEventsByHostId = async () => {
   const host_id = await getAccountID();

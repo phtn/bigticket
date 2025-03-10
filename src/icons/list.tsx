@@ -108,6 +108,7 @@ function Airplane2(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
 function AlertTriLine(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -117,12 +118,10 @@ function AlertTriLine(props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       {...props}
     >
-      <g fill="none">
-        <path
-          fill={props.fill}
-          d="m13.299 3.148l8.634 14.954a1.5 1.5 0 0 1-1.299 2.25H3.366a1.5 1.5 0 0 1-1.299-2.25l8.634-14.954c.577-1 2.02-1 2.598 0M12 4.898L4.232 18.352h15.536zM12 15a1 1 0 1 1 0 2a1 1 0 0 1 0-2m0-7a1 1 0 0 1 1 1v4a1 1 0 1 1-2 0V9a1 1 0 0 1 1-1"
-        ></path>
-      </g>
+      <path
+        fill="currentColor"
+        d="m21.171 15.398l-5.912-9.854C14.483 4.251 13.296 3.511 12 3.511s-2.483.74-3.259 2.031l-5.912 9.856c-.786 1.309-.872 2.705-.235 3.83C3.23 20.354 4.472 21 6 21h12c1.528 0 2.77-.646 3.406-1.771s.551-2.521-.235-3.831M12 17.549c-.854 0-1.55-.695-1.55-1.549c0-.855.695-1.551 1.55-1.551s1.55.696 1.55 1.551c0 .854-.696 1.549-1.55 1.549m1.633-7.424c-.011.031-1.401 3.468-1.401 3.468c-.038.094-.13.156-.231.156s-.193-.062-.231-.156l-1.391-3.438a1.8 1.8 0 0 1-.129-.655c0-.965.785-1.75 1.75-1.75a1.752 1.752 0 0 1 1.633 2.375"
+      ></path>
     </svg>
   );
 }
@@ -168,6 +167,26 @@ function ArrowRightUp(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function ArrowRightDouble(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="m20.08 11.42l-4.04-5.65c-.34-.48-.89-.77-1.48-.77c-1.49 0-2.35 1.68-1.49 2.89L16 12l-2.93 4.11c-.87 1.21 0 2.89 1.49 2.89c.59 0 1.15-.29 1.49-.77l4.04-5.65c.24-.35.24-.81-.01-1.16"
+      ></path>
+      <path
+        fill="currentColor"
+        d="M13.08 11.42L9.05 5.77C8.7 5.29 8.15 5 7.56 5C6.07 5 5.2 6.68 6.07 7.89L9 12l-2.93 4.11C5.2 17.32 6.07 19 7.56 19c.59 0 1.15-.29 1.49-.77l4.04-5.65c.24-.35.24-.81-.01-1.16"
+      ></path>
+    </svg>
+  );
+}
 function ArrowReturnUp(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1769,6 +1788,44 @@ function SpinnersPulseRing(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+function SpinnerDotScale(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <circle cx="4" cy="12" r="3" fill="currentColor">
+        <animate
+          id="svgSpinners3DotsScale0"
+          attributeName="r"
+          begin="0;svgSpinners3DotsScale1.end-0.25s"
+          dur="0.75s"
+          values="3;.2;3"
+        ></animate>
+      </circle>
+      <circle cx="12" cy="12" r="3" fill="currentColor">
+        <animate
+          attributeName="r"
+          begin="svgSpinners3DotsScale0.end-0.6s"
+          dur="0.75s"
+          values="3;.2;3"
+        ></animate>
+      </circle>
+      <circle cx="20" cy="12" r="3" fill="currentColor">
+        <animate
+          id="svgSpinners3DotsScale1"
+          attributeName="r"
+          begin="svgSpinners3DotsScale0.end-0.45s"
+          dur="0.75s"
+          values="3;.2;3"
+        ></animate>
+      </circle>
+    </svg>
+  );
+}
 function Stats(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -2122,6 +2179,7 @@ export const icons = {
   AlertTriLine,
   ArrowRight,
   ArrowRightUp,
+  ArrowRightDouble,
   ArrowReturnUp,
   ArrowVertical,
   Bell,
@@ -2194,6 +2252,7 @@ export const icons = {
   SpinnerBall,
   SpinnerClock,
   SpinnersPulseRing,
+  SpinnerDotScale,
   Stats,
   Squircle,
   Support,

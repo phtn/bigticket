@@ -1,7 +1,7 @@
 "use client";
 
 import { ChineBorder } from "@/ui/card/border";
-import { motion, time } from "motion/react";
+import { motion } from "motion/react";
 import { useSignOut } from "./useSignOut";
 import { useCallback, useEffect } from "react";
 import { Err } from "@/utils/helpers";
@@ -21,7 +21,7 @@ export const Content = () => {
       .then(() => timer())
       .catch(Err);
     return () => clearTimeout(timer());
-  }, [cleanUp]);
+  }, [cleanUp, timer]);
 
   return (
     <div className="flex h-[calc(100vh-64px)] w-full justify-center bg-void py-8">

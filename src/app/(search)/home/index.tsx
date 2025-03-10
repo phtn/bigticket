@@ -4,7 +4,7 @@ import { useScreen } from "@/hooks/useScreen";
 import { WarpDrive } from "@/ui/loader/warp";
 import { opts } from "@/utils/helpers";
 import { motion } from "motion/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, memo } from "react";
 import { DesktopView } from "./desktop";
 import { MobileView } from "./mobile";
 import { Image } from "@nextui-org/react";
@@ -15,28 +15,6 @@ import { useEvents } from "./useEvents";
 export interface HomeProps {
   preloadedEvents: Preloaded<typeof api.events.get.all>;
 }
-export const Home = (props: HomeProps) => {
-  const [ready, setReady] = useState<boolean>(false);
-  const { isDesktop } = useScreen();
-  const events = usePreloadedQuery(props.preloadedEvents);
-  const { xEvents, loading } = useEvents(events);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setReady(true);
-    }, 1800);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const ViewOptions = useCallback(() => {
-    const options = opts(
-      <DesktopView xEvents={xEvents} />,
-      <MobileView xEvents={xEvents} />,
-    );
-    return <>{options.get(isDesktop)}</>;
-  }, [isDesktop, xEvents]);
-  return ready && !loading ? <ViewOptions /> : <Loader />;
-};
 
 const Loader = () => (
   <WarpDrive className="relative -top-4 flex h-[96vh] w-full items-center justify-center py-32 md:py-48 lg:py-64">
@@ -57,3 +35,31 @@ const Loader = () => (
     </div>
   </WarpDrive>
 );
+
+const MemoizedDesktopView = memo(DesktopView);
+const MemoizedMobileView = memo(MobileView);
+const MemoizedLoader = memo(Loader);
+
+export const Home = (props: HomeProps) => {
+  const [ready, setReady] = useState<boolean>(false);
+  const { isDesktop } = useScreen();
+  const events = usePreloadedQuery(props.preloadedEvents);
+  const { xEvents, loading } = useEvents(events);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReady(true);
+    }, 1800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const ViewOptions = useCallback(() => {
+    const options = opts(
+      <MemoizedDesktopView xEvents={xEvents} />,
+      <MemoizedMobileView xEvents={xEvents} />,
+    );
+    return <>{options.get(isDesktop)}</>;
+  }, [isDesktop, xEvents]);
+
+  return ready && !loading ? <ViewOptions /> : <MemoizedLoader />;
+};

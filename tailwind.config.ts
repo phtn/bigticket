@@ -84,6 +84,11 @@ export default {
   ],
   theme: {
     extend: {
+      transitionDuration: {
+        "3000": "3000ms",
+        "4000": "4000ms",
+        "5000": "5000ms",
+      },
       animation: {
         "background-position-spin":
           "background-position-spin 3000ms infinite alternate",

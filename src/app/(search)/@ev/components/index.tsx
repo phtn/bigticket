@@ -1,7 +1,7 @@
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
-import { Card, Spinner } from "@nextui-org/react";
+import { Card } from "@nextui-org/react";
 import NumberFlow from "@number-flow/react";
 import { useCallback, useMemo } from "react";
 import { type InfoItem, type PanelItem } from "../useEventInfo";
@@ -74,7 +74,7 @@ export const EventGroupDetail = ({
       >
         <span>Organizers</span>
         {!debounced ? (
-          <Spinner size="sm" />
+          <Icon name="SpinnerDotScale" />
         ) : (
           <span className="animate-enter">{host_name}</span>
         )}
@@ -85,7 +85,7 @@ export const EventGroupDetail = ({
       >
         <span>{is_online ? "Website" : "Venue"}</span>
         {!debounced ? (
-          <Spinner size="sm" />
+          <Icon name="SpinnerDotScale" />
         ) : (
           <div className="overflow-x-scroll text-right">
             {is_online ? (

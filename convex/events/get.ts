@@ -1,6 +1,5 @@
 import { query, mutation } from "@vx/server";
 import { v } from "convex/values";
-import { checkEvent } from "./create";
 
 export const all = query({
   handler: async ({ db }) => (await db.query("events").take(25)).reverse(),
