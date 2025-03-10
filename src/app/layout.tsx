@@ -1,17 +1,28 @@
 import "@/styles/globals.css";
 
-import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import {
   Cherry_Bomb_One,
   Inter,
   Luckiest_Guy,
   Poetsen_One,
+  Geist,
+  Geist_Mono,
 } from "next/font/google";
 import { type ReactNode } from "react";
 import { Navbar } from "./_components_/navbar";
 import Providers from "./ctx";
 
+const geist = Geist({
+  variable: "--font-geist",
+  weight: ["400"],
+  subsets: ["latin"],
+});
+const mono = Geist_Mono({
+  variable: "--font-mono",
+  weight: ["400"],
+  subsets: ["latin"],
+});
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -43,7 +54,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${inter.variable} ${cherry.variable} ${lucky.variable} ${poet.variable} antialiased`}
+      className={`${geist.variable} ${mono.variable} ${inter.variable} ${cherry.variable} ${lucky.variable} ${poet.variable} antialiased`}
     >
       <body>
         <Providers>

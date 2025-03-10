@@ -159,7 +159,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+        sans: ["var(--font-geist)", ...fontFamily.sans],
+        mono: ["var(--font-mono)"],
         inter: ["var(--font-inter)"],
         cherry: ["var(--font-cherry)"],
         lucky: ["var(--font-lucky)"],
