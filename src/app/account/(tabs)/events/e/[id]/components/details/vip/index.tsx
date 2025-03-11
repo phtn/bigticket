@@ -1,6 +1,6 @@
 import { useConvexCtx } from "@/app/ctx/convex";
 import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
-import { onSuccess } from "@/app/ctx/toast";
+import { onSuccess, onWarn } from "@/app/ctx/toast";
 import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { ButtonIcon } from "@/ui/button";
@@ -30,6 +30,7 @@ import { BlockHeader } from "../components";
 import { vip_info, type VIPField, VIPZod } from "../schema";
 import { initialVIPState, vipReducer } from "./reducer";
 import type { VIPBlockProps, VIPContentProps, VIPWithDefaults } from "./types";
+import { checkedState } from "../utils";
 
 export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   const [event, setEvent] = useState<SelectEvent | null>();
@@ -69,14 +70,10 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     }
   }, [event_id, queryEvent, user_id, event?.event_name]);
 
-  const { checked, count, onEdit } = useMemo(() => {
-    const checked = vipList.filter((v) => v.checked);
-    return {
-      checked,
-      count: checked.length,
-      onEdit: checked.length === 1,
-    };
-  }, [vipList]);
+  const { checked, count, onEdit } = useMemo(
+    () => checkedState<VIPWithDefaults>(vipList),
+    [vipList],
+  );
 
   const { vxEvents } = useConvexCtx();
 
@@ -151,7 +148,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
       });
 
       if (vip.error) {
-        console.table(vip.error.message);
+        onWarn("Invalid email address.");
         return;
       }
 
@@ -208,7 +205,6 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
             const vipUpdate = {
               ...vip,
               ticket_count: 0,
-              updated_at: Date.now(),
             };
             return updateEventVIP(event_id, vipUpdate);
           }),
@@ -485,7 +481,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   );
 };
 
-const VIPItem = (field: VIPField) => {
+const VIPFieldItem = (field: VIPField) => {
   const [ticketCount, setTicketCount] = useState(
     field.name === "ticket_count" ? Number(field.value ?? 1) : 1,
   );
@@ -574,7 +570,7 @@ const VIPBlock = ({
       disableAnimation
       container="space-y-6 p-1"
       itemStyle="whitespace-nowrap"
-      component={VIPItem}
+      component={VIPFieldItem}
       delay={delay}
       keyId="name"
     />

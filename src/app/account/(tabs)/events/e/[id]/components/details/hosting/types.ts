@@ -31,6 +31,8 @@ export interface CohostWithDefaults extends CohostBase {
   clearance?: CohostClearance;
   checked?: boolean;
   invitation_sent?: boolean;
+  status?: string;
+  confirmed?: boolean;
 }
 export interface CohostBase {
   name?: string;

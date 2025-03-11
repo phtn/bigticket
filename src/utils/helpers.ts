@@ -554,3 +554,14 @@ export const clearConsole = () => {
   console.clear();
   console.log(cutout + big(" BIG ") + ticket("ticket ") + cutout);
 };
+
+export function formatAsMoney(value: number) {
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "PHP",
+    currencyDisplay: "narrowSymbol",
+    minimumFractionDigits: value !== Math.floor(value) ? 2 : 0,
+    maximumFractionDigits: 2,
+  });
+  return formatter.format(value).replace("PHP", "X");
+}

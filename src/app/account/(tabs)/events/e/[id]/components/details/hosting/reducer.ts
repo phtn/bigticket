@@ -100,9 +100,5 @@ function updateCohost(
     cohost_list.push(cohost);
   }
 
-  return cohost_list.filter(
-    (cohost) =>
-      cohost.clearance &&
-      Object.values(cohost.clearance).some((v) => v === true),
-  );
+  return cohost_list.filter((cohost) => cohost.status === "active");
 }

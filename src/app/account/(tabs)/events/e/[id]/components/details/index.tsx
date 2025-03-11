@@ -21,7 +21,7 @@ export const EventDetails = ({ tabs }: EventDetailsProps) => {
           className="w-full"
           classNames={{
             panel: "w-full px-0 md:px-4 pb-8",
-            cursor: "drop-shadow-sm bg-secondary h-[2.75px]",
+            cursor: "drop-shadow-sm bg-ticket h-[2.75px]",
 
             tab: "",
             tabList: "px-4 md:px-6 md:gap-4",

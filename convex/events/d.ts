@@ -52,11 +52,13 @@ export const CohostSchema = v.object({
   name: v.optional(v.string()),
   event_id: v.optional(v.string()),
   event_name: v.optional(v.string()),
+  status: v.optional(v.string()),
   created_by: v.optional(v.union(v.string(), v.null())),
   host_name: v.optional(v.string()),
   updated_at: v.optional(v.float64()),
   clearance: v.optional(CohostClearanceSchema),
   checked: v.optional(v.boolean()),
+  confirmed: v.optional(v.boolean()),
   idx: v.optional(v.number()),
   invitation_sent: v.optional(v.boolean()),
 });
@@ -155,6 +157,7 @@ export const EventSchema = v.object({
   duration: v.optional(v.float64()),
   reviews: v.optional(v.array(ReviewSchema)),
   tickets: v.optional(v.array(UserTicketSchema)),
+  tickets_issued: v.optional(v.number()),
 
   //DETAILS
 

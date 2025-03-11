@@ -2,6 +2,7 @@ import { mutation } from "@vx/server";
 import { v } from "convex/values";
 import {
   BasicInfoSchema,
+  Cohost,
   CohostSchema,
   EventGallerySchema,
   TicketInfoSchema,
@@ -154,16 +155,10 @@ export const cohost = mutation({
       return "success";
     }
 
-    let cohost_list = event.cohost_list.slice();
+    const cohosts = event.cohost_list.slice();
+    const cohost_list = updateCohost(cohosts, cohost);
 
-    const index = event?.cohost_list.findIndex((v) => v.email === cohost.email);
-
-    if (index !== -1) {
-      await db.patch(event._id, { cohost_list });
-    } else {
-      cohost_list.push(cohost);
-      await db.patch(event._id, { cohost_list, cohost_email_list });
-    }
+    await db.patch(event._id, { cohost_list });
 
     const cohostUser = await db
       .query("users")
@@ -182,6 +177,23 @@ export const cohost = mutation({
   },
 });
 
+function updateCohost(cohost_list: Cohost[], cohost: Cohost) {
+  const map = new Map();
+  cohost_list.forEach((c, idx) => map.set(c.email, idx));
+
+  const existingIndex = map.get(cohost.email);
+  if (existingIndex !== undefined) {
+    cohost_list[existingIndex]!.invitation_sent = cohost.invitation_sent;
+    cohost_list[existingIndex]!.clearance = cohost.clearance;
+    cohost_list[existingIndex]!.status = cohost.status;
+    cohost_list[existingIndex]!.confirmed = cohost.confirmed;
+  } else {
+    cohost_list.push(cohost);
+  }
+  return cohost_list
+    .filter((c) => c.status === "active")
+    .map((cohost, index) => ({ ...cohost, idx: index + 1 }));
+}
 export const mediaGallery = mutation({
   args: { id: v.string(), media: EventGallerySchema },
   handler: async ({ db }, { id, media }) => {

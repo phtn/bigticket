@@ -1,13 +1,20 @@
 import { useEvents } from "@/app/(search)/home/useEvents";
+import { useUserCtx } from "@/app/ctx/user";
 import { type XEvent } from "@/app/types";
 import { useDime } from "@/hooks/useDime";
 import { usePops } from "@/hooks/usePops";
 import { useToggle } from "@/hooks/useToggle";
 import { cn } from "@/lib/utils";
+import { Carousel, useCarousel } from "@/ui/carousel";
+import MultiMediaCarousel, { type MediaItem } from "@/ui/carousel/m-card";
+import { Shimmer } from "@/ui/text/sparkles";
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
-import { type api } from "@vx/api";
-import { usePreloadedQuery, type Preloaded } from "convex/react";
+import { clearConsole } from "@/utils/helpers";
+import { Spinner } from "@nextui-org/react";
+import { api } from "@vx/api";
+import { type SelectEvent } from "convex/events/d";
+import { useQuery } from "convex/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   startTransition,
@@ -25,8 +32,11 @@ import {
   EventViewerFooter,
   InfoGrid,
 } from "./components";
+import { Cart } from "./components/buttons/cart";
+import { useCart } from "./components/buttons/cart/ctx";
+import { useCartStore } from "./components/buttons/cart/useCartStore";
 import { ViewTicket } from "./components/buttons/claimed";
-import { Checkout, GetTickets } from "./components/buttons/paid";
+import { GetTickets } from "./components/buttons/paid";
 import {
   ClaimedTicketsGate,
   HasClaimedTickets,
@@ -39,22 +49,20 @@ import { VIPAccess, VIPNoAccess } from "./components/buttons/vip";
 import { useEventInfo } from "./useEventInfo";
 import { useEventViewer, type Moments } from "./useEventViewer";
 import { useTicketCart } from "./useTicketCart";
-import MultiMediaCarousel, { type MediaItem } from "@/ui/carousel/m-card";
-import { Carousel, useCarousel } from "@/ui/carousel";
-import { useUserCtx } from "@/app/ctx/user";
-import { clearConsole } from "@/utils/helpers";
-import { Spinner } from "@nextui-org/react";
-import { Shimmer } from "@/ui/text/sparkles";
-import { useCheckout } from "./components/buttons/checkout/ctx";
 
-export interface EventViewerProps {
-  preloadedEvents: Preloaded<typeof api.events.get.all>;
-}
-export const EventViewer = ({ preloadedEvents }: EventViewerProps) => {
+export const EventViewer = () => {
+  const allEvents = useQuery(api.events.get.all);
+  const [events, setEvents] = useState<SelectEvent[]>();
+
+  useEffect(() => {
+    if (allEvents) {
+      setEvents(allEvents);
+    }
+  }, [allEvents]);
+
   const searchParams = useSearchParams();
   const eventId = searchParams.get("x");
-  const events = usePreloadedQuery(preloadedEvents);
-  const { xEvents } = useEvents(events);
+  const { xEvents } = useEvents(events ?? []);
   const { xEvent, moments } = useEventViewer({ xEvents, eventId });
   const { open, toggle } = useToggle();
   const router = useRouter();
@@ -106,7 +114,7 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
   const { xUser } = useUserCtx();
   const [hasClaimed, setHasClaimed] = useState(false);
 
-  const { open, toggle } = useCheckout();
+  const { open, toggle } = useCart();
 
   const isVip = useMemo(
     () => IsVIP(xEvent?.vip_list, xUser?.email),
@@ -236,6 +244,17 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
     return () => clearTimeout(timeout);
   }, []);
 
+  const { setEventDetails } = useCartStore();
+
+  useEffect(() => {
+    setEventDetails({
+      eventId: xEvent?.event_id,
+      eventName: xEvent?.event_name,
+      eventDate: xEvent?.start_date,
+      eventOrganizer: xEvent?.host_name,
+    });
+  }, [xEvent, setEventDetails]);
+
   return (
     <div className="mx-auto h-[calc(100vh-64px)] w-full max-w-6xl overflow-y-scroll font-inter tracking-tight md:h-full md:w-[30rem]">
       <Carousel className="w-full">
@@ -263,11 +282,7 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
           h={contentHeight}
         />
         <InfoGrid data={xEventInfo} h={contentHeight} />
-        <Checkout
-          open={open}
-          toggle={toggle}
-          ticketPrice={xEvent?.ticket_price}
-        />
+        <Cart open={open} toggle={toggle} ticketPrice={xEvent?.ticket_price} />
       </div>
       <EventViewerFooter h={contentHeight} />
     </div>

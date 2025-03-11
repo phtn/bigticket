@@ -9,6 +9,10 @@
   appearance: none;
 }
 
+body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 .big-ticket {
   --r: 12px; /* cut size */
   width: 12.25rem;

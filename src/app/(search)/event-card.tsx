@@ -14,7 +14,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { type XEvent } from "../types";
-import { useEventInfo } from "./@ev/useEventInfo";
 
 export const EventCard = (xEvent: XEvent) => {
   const { event_day, event_time, narrow } = useMoment({
@@ -31,31 +30,24 @@ export const EventCard = (xEvent: XEvent) => {
     is_cover_light,
   } = xEvent;
 
-  const { isBookmarked, toggleBookmark } = useEventInfo(xEvent)
-
   const router = useRouter();
 
-  const [bookmarked, setBookmarked] = useState<boolean>(isBookmarked);
+  const [bookmarked, setBookmarked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleBookmarkEvent = useCallback(async () => {
-    setBookmarked((prev) => !prev);
-    await toggleBookmark();
-  }, [toggleBookmark]);
+    console.log(event_id);
+    setBookmarked(true);
+  }, [event_id]);
 
   const handleSelectEvent = useCallback(async () => {
     setLoading(true);
     const timer = setTimeout(() => {
       setLoading(false);
     }, 600);
-    // await incrementViews();
     router.push(`/?x=${event_id}`, { scroll: false });
     return () => clearTimeout(timer);
   }, [event_id, router]);
-
-  // useEffect(() => {
-  //   setBookmarked(counter?.bookmarks?.includes(event?.event_id) ?? false);
-  // }, [counter?.bookmarks, event]);
 
   const BookmarkButton = useCallback(
     () => (
@@ -74,6 +66,7 @@ export const EventCard = (xEvent: XEvent) => {
   return (
     <Card
       isFooterBlurred
+      disableAnimation
       className="h-[300px] w-full overflow-clip rounded-3xl border border-primary-700 bg-primary"
     >
       <CardHeader
@@ -85,11 +78,11 @@ export const EventCard = (xEvent: XEvent) => {
         <section className="w-full overflow-clip text-ellipsis">
           <h2
             className={cn(
-              "max-w-[35ch] whitespace-nowrap text-tiny font-bold uppercase",
+              "max-w-[35ch] whitespace-nowrap font-sans text-xs font-semibold uppercase",
               "bg-gradient-to-br bg-clip-text text-transparent",
               "from-white/60 from-20% via-white/80 via-15% to-white/70 to-40%",
               {
-                "from-ticket/80 from-20% via-ticket/80 via-15% to-ticket/90 to-40%":
+                "from-ticket from-20% via-void/80 via-15% to-ticket to-40% font-semibold":
                   is_cover_light,
               },
             )}
@@ -100,7 +93,7 @@ export const EventCard = (xEvent: XEvent) => {
             className={cn(
               "font-inter text-xl font-bold capitalize tracking-tight shadow-coal drop-shadow-sm",
               {
-                "absolute -left-2 w-fit rounded-e-full bg-white py-0.5 pe-3 ps-6 text-primary opacity-100 shadow-white":
+                "absolute -left-2 w-fit rounded-e-full bg-white/20 py-0.5 pe-3 ps-6 text-primary opacity-100 shadow-white backdrop-blur":
                   is_cover_light,
               },
             )}
@@ -118,7 +111,6 @@ export const EventCard = (xEvent: XEvent) => {
       {cover_src ? (
         <Image
           isBlurred
-          isZoomed
           removeWrapper
           radius="none"
           alt="nightlife"
@@ -132,11 +124,6 @@ export const EventCard = (xEvent: XEvent) => {
       )}
       <CardFooter className="absolute -bottom-[2px] z-10 border-t-[0.33px] border-primary/40 bg-black/10">
         <div className="flex flex-grow items-center gap-2">
-          {/* <Image
-            alt="Breathing app icon"
-            className="h-24 w-full rounded-full"
-            src={cover_url}
-          /> */}
           <div className="space-y-0.5">
             <p className="text-tiny font-semibold text-teal-300 drop-shadow-md">
               {host_name}
@@ -144,10 +131,7 @@ export const EventCard = (xEvent: XEvent) => {
             <div className="space-x-2 text-tiny font-bold uppercase text-chalk">
               <span className="drop-shadow-md">{event_day}</span>
               <span>&middot;</span>
-              <span className="drop-shadow-md">
-                {/* {event_date.substring(0, event_date.indexOf(","))} */}
-                {narrow.date}
-              </span>
+              <span className="drop-shadow-md">{narrow.date}</span>
               <span>&middot;</span>
               <span className="drop-shadow-md">{event_time.compact}</span>
             </div>

@@ -19,6 +19,9 @@ export const env = createEnv({
     //FIREBASE
     FIREBASE_STORAGE_BUCKET: z.string(),
     FIREBASE_STORAGE_TOKEN: z.string(),
+
+    PAYMONGO_PK: z.string(),
+    PAYMONGO_SK: z.string(),
   },
 
   client: {
@@ -59,6 +62,10 @@ export const env = createEnv({
     //FIREBASE
     FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
     FIREBASE_STORAGE_TOKEN: process.env.FIREBASE_STORAGE_TOKEN,
+
+    //PAYMONGO
+    PAYMONGO_PK: process.env.PAYMONGO_PK,
+    PAYMONGO_SK: process.env.PAYMONGO_SK,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

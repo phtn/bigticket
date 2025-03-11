@@ -1,7 +1,7 @@
 import { useConvexCtx } from "@/app/ctx/convex";
 import { type XEvent } from "@/app/types";
 import { type SelectEvent } from "convex/events/d";
-import { useCallback, useEffect, useState, useMemo, useRef } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useLocal, type StorageItem } from "@/hooks/useLocal";
 import { Err } from "@/utils/helpers";
 
@@ -19,12 +19,6 @@ export const useEvents = (events: SelectEvent[]) => {
   const [xEvents, setXEvents] = useState<XEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const { vxFiles } = useConvexCtx();
-
-  // Use ref to keep track of the latest events array without causing re-renders
-  const eventsRef = useRef(events);
-  useEffect(() => {
-    eventsRef.current = events;
-  }, [events]);
 
   // Memoize initial storage items
   const initialItems: StorageItem<CoverCache>[] = useMemo(
@@ -70,15 +64,14 @@ export const useEvents = (events: SelectEvent[]) => {
 
   const createSignedEvents = useCallback(async () => {
     setLoading(true);
-    const currentEvents = eventsRef.current;
-    if (!currentEvents?.length) {
+    if (!events?.length) {
       setXEvents([]);
       setLoading(false);
       return;
     }
 
     try {
-      const promises = currentEvents.map(collectEvent);
+      const promises = events?.map(collectEvent);
       const resolve = await Promise.all(promises);
       setXEvents(resolve);
     } catch (error) {
@@ -86,7 +79,7 @@ export const useEvents = (events: SelectEvent[]) => {
     } finally {
       setLoading(false);
     }
-  }, [collectEvent]);
+  }, [collectEvent, events]);
 
   useEffect(() => {
     createSignedEvents().catch(Err(setLoading));

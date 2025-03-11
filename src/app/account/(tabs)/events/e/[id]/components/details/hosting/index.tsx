@@ -1,15 +1,19 @@
 import { useConvexCtx } from "@/app/ctx/convex";
-import { onSuccess } from "@/app/ctx/toast";
+import { onSuccess, onWarn } from "@/app/ctx/toast";
 import { Icon } from "@/icons";
 import { Hyper } from "@/ui/button/button";
 import { HyperList } from "@/ui/list";
-import { Err, getInitials } from "@/utils/helpers";
+import { Err, getInitials, opts } from "@/utils/helpers";
 import { Checkbox, CheckboxGroup, Form, Input, User } from "@nextui-org/react";
 import type { Cohost, CohostClearance } from "convex/events/d";
 import {
+  type ChangeEvent,
+  type MouseEvent,
+  type ReactNode,
   startTransition,
   useActionState,
   useCallback,
+  useEffect,
   useMemo,
   useReducer,
   useState,
@@ -21,19 +25,22 @@ import { Nebula } from "../";
 import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
 import { cn } from "@/lib/utils";
 import { cohostReducer, initialCohostState } from "./reducer";
-import type {
-  CohostBlockProps,
-  CohostContentProps,
-  CohostWithDefaults,
-} from "./types";
+import type { CohostContentProps, CohostWithDefaults } from "./types";
+import { checkedState, getCheckedKeys, updateProps } from "../utils";
+import toast from "react-hot-toast";
 
 export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
   const [state, dispatch] = useReducer(cohostReducer, {
     ...initialCohostState,
-    cohostList: [] as CohostWithDefaults[],
+    cohostList: xEvent?.cohost_list ?? ([] as CohostWithDefaults[]),
   });
 
   const { cohostList, selectedCohost } = state;
+
+  const [formValues, setFormValues] = useState({
+    name: "",
+    email: "",
+  });
 
   const [clearanceValues, setClearanceValues] = useState<CohostClearance>({
     scan_code: true,
@@ -41,35 +48,89 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
     view_guest_list: false,
   });
 
-  const initialState: Cohost = useMemo(
-    () => ({
-      name: selectedCohost?.name ?? "",
-      email: selectedCohost?.email ?? "",
-    }),
-    [selectedCohost],
+  const { checked, count, onEdit } = useMemo(
+    () => checkedState<CohostWithDefaults>(cohostList),
+    [cohostList],
   );
 
-  const defaults = useMemo(
-    () => ({
-      checked: false,
-      invitation_sent: false,
-    }),
-    [],
+  // Update form values when selectedCohost changes
+  useEffect(() => {
+    if (selectedCohost && onEdit) {
+      setFormValues({
+        name: selectedCohost.name ?? "",
+        email: selectedCohost.email ?? "",
+      });
+      if (selectedCohost.clearance) {
+        setClearanceValues(selectedCohost.clearance);
+      }
+    } else {
+      setFormValues({ name: "", email: "" });
+      setClearanceValues({
+        scan_code: false,
+        add_vip: false,
+        view_guest_list: false,
+      });
+    }
+  }, [selectedCohost, onEdit]);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormValues((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const cohost_info: CohostField[] = useMemo(
+    () => [
+      {
+        name: "name",
+        type: "text",
+        label: "Name",
+        placeholder: "Name of the co-host",
+        value: formValues.name,
+        required: false,
+      },
+      {
+        name: "email",
+        type: "email",
+        label: "Email",
+        value: formValues.email,
+        placeholder: "Email receiving the invitation",
+        required: true,
+      },
+    ],
+    [formValues],
   );
 
   const { vxEvents } = useConvexCtx();
+  const updateEventCohost = useCallback(
+    async (id: string, cohost: Cohost) => {
+      await vxEvents.mut.updateEventCohost({ id, cohost });
+    },
+    [vxEvents.mut],
+  );
   const { q } = useConvexUtils();
 
   const updateCohostList = useCallback(
     async (data: Cohost) => {
       if (!xEvent?.event_id) return;
-      dispatch({ type: "UPDATE_COHOST", payload: data });
+      startTransition(async () => {
+        try {
+          if (onEdit) {
+            dispatch({ type: "UPDATE_COHOST", payload: data });
+            return await updateEventCohost(xEvent.event_id, data);
+          }
+          dispatch({ type: "ADD_COHOST", payload: data });
+          return await updateEventCohost(xEvent.event_id, data);
+        } catch (error) {
+          dispatch({ type: "REMOVE_COHOST", payload: [data.email] });
+          console.error(error);
+        }
+      });
       return await vxEvents.mut.updateEventCohost({
         id: q(xEvent?.event_id),
         cohost: data,
       });
     },
-    [xEvent?.event_id, vxEvents.mut, q],
+    [xEvent?.event_id, vxEvents.mut, q, onEdit, updateEventCohost],
   );
 
   const addCohost = useCallback(
@@ -80,17 +141,18 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
       });
 
       if (cohost.error) {
-        console.log(cohost.error);
+        onWarn("Invalid email address.");
         return;
       }
       await updateCohostList({
-        ...defaults,
         ...cohost.data,
         created_by: user_id,
         event_id: xEvent?.event_id,
         event_name: xEvent?.event_name,
         updated_at: Date.now(),
         clearance: clearanceValues,
+        status: "active",
+        confirmed: false,
       })
         .then(() => {
           onSuccess("Added Co-host");
@@ -104,13 +166,15 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
       updateCohostList,
       user_id,
       clearanceValues,
-      defaults,
       xEvent?.event_id,
       xEvent?.event_name,
     ],
   );
 
-  const [, action, pending] = useActionState(addCohost, initialState);
+  const [, action, pending] = useActionState(addCohost, {
+    name: selectedCohost?.name ?? "",
+    email: selectedCohost?.email ?? "",
+  });
 
   const handleAccessValuesChange = useCallback(
     (values: string[]) => {
@@ -118,10 +182,41 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
         clearanceValues,
         values ?? [],
       ) as CohostClearance;
-      // console.table(updatedClearance);
       setClearanceValues(updatedClearance);
     },
     [clearanceValues],
+  );
+
+  const handleRemoveCohost = useCallback(
+    async (e: MouseEvent) => {
+      e.preventDefault();
+      if (!checked.length || !xEvent?.event_id) return;
+
+      dispatch({
+        type: "REMOVE_COHOST",
+        payload: checked.map((c) => c.email),
+      });
+
+      startTransition(async () => {
+        const updates = Promise.all(
+          checked.map((c) =>
+            updateEventCohost(xEvent.event_id, { ...c, status: "inactive" }),
+          ),
+        );
+
+        toast
+          .promise(updates, {
+            loading: `Removing Cohost${checked.length > 1 ? "s" : ""}...`,
+            success: `Removed ${count} Cohost${count > 1 ? "s" : ""}`,
+            error: "Failed to remove Cohosts",
+          })
+          .catch((err) => {
+            console.error(err);
+            dispatch({ type: "SET_COHOST_LIST", payload: checked });
+          });
+      });
+    },
+    [checked, xEvent?.event_id, count, updateEventCohost],
   );
 
   const handleUserSelect = useCallback((email: string, isSelected: boolean) => {
@@ -132,6 +227,13 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
       });
     });
   }, []);
+
+  // Add effect to update clearance values when cohost is selected
+  useEffect(() => {
+    if (selectedCohost?.clearance) {
+      setClearanceValues(selectedCohost.clearance);
+    }
+  }, [selectedCohost]);
 
   const RowItem = useCallback(
     (cohost: Cohost) => {
@@ -210,41 +312,70 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
     [handleUserSelect],
   );
 
-  const cohost_info: CohostField[] = useMemo(
-    () => [
-      {
-        name: "name",
-        type: "text",
-        label: "Name",
-        placeholder: "Name of the co-host",
-        required: false,
-      },
-      {
-        name: "email",
-        type: "email",
-        label: "Email",
-        placeholder: "Email receiving the invitation",
-        required: true,
-      },
-    ],
-    [],
-  );
+  const ListActions = useCallback(() => {
+    const options = opts(
+      <div className="flex">
+        <Hyper
+          lg
+          fullWidth
+          end="Minus"
+          destructive
+          type="submit"
+          loading={pending}
+          onClick={handleRemoveCohost}
+          disabled={pending || count === 0}
+          label={`Remove ${count > 1 ? `(${count})` : "(1)"}`}
+          className={cn("delay-100", { "animate-enter": count <= 1 })}
+        />
+        {/* <SendInvite vip_list={checked} updateSentStatus={updateSentStatus} /> */}
+      </div>,
+      null,
+    );
+    return (
+      <div className="absolute bottom-[0.77px] right-[0.77px] flex w-fit overflow-hidden rounded-br-md md:min-w-36">
+        {options.get(count > 0)}
+      </div>
+    );
+  }, [count, pending, handleRemoveCohost]);
 
   return (
     <Nebula>
       <Form action={action}>
         <div className="grid h-full w-full grid-cols-1 md:grid-cols-5 md:gap-0 md:rounded">
           <section className="h-fit border-b border-vanilla/20 sm:col-span-3 md:col-span-2 md:h-fit md:border-[0.33px]">
-            <CohostBlock
-              data={cohost_info}
-              label="Host Settings"
-              icon="UserSettings2"
-            />
+            <div className="mb-8 h-5/6 w-full space-y-6 p-6">
+              <BlockHeader label="Host Settings" icon="UserSettings2" />
+              <section className="-mx-6 h-fit rounded-sm bg-teal-300/20 px-4 py-3 text-justify text-tiny text-vanilla md:p-4 md:text-sm">
+                You can add co-hosts and event marshals to assist you with
+                ticket-scanning and other guest verification during the event.
+                Fill out the name and email, select access clearances, then
+                click add. You can add multiple co-hosts for this event.
+              </section>
+              <div className="space-y-8">
+                {cohost_info.map((field) => (
+                  <Input
+                    key={field.name}
+                    id={field.name}
+                    label={field.label}
+                    name={field.name}
+                    type={field.type}
+                    onChange={handleInputChange}
+                    classNames={inputClassNames}
+                    placeholder={field.placeholder}
+                    isRequired={field.required}
+                    value={field.value}
+                    validationBehavior="native"
+                    className="appearance-none"
+                    isClearable
+                  />
+                ))}
+              </div>
+            </div>
 
             <div className="flex h-fit w-full border-t-[0.33px] border-vanilla/20 px-6 py-8 backdrop-blur-sm lg:px-4 xl:px-6">
               <CheckboxGroup
                 onValueChange={handleAccessValuesChange}
-                defaultValue={["scan_code"]}
+                value={getCheckedKeys(clearanceValues)}
                 label="Select Access clearances"
                 orientation="horizontal"
                 color="primary"
@@ -278,9 +409,10 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
                 <Hyper
                   disabled={pending}
                   loading={pending}
+                  active={onEdit}
                   type="submit"
-                  label="Add"
-                  end="Plus"
+                  label={onEdit ? "Update" : "Add"}
+                  end={onEdit ? "ArrowRightUp" : "Plus"}
                   fullWidth
                   dark
                   xl
@@ -289,71 +421,44 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
             </div>
           </section>
 
-          <section className="relative border-vanilla/20 text-chalk md:col-span-3 md:border-y md:border-r">
-            <div className="h-96 w-full overflow-hidden overflow-y-scroll">
-              <div className="flex h-11 w-full items-center justify-between border-b-3 border-vanilla/20 px-3 font-inter text-tiny font-bold">
-                <div className="flex w-full items-center justify-between gap-6 md:justify-start">
-                  <span>Co-host List</span>
-                  <span className="font-sans font-normal">
-                    {xEvent?.cohost_list?.length ?? cohostList.length}
-                  </span>
-                </div>
-              </div>
-              <HyperList
-                data={xEvent?.cohost_list ?? cohostList}
-                component={RowItem}
-                container=""
-                keyId="email"
-              />
-            </div>
-            <div className="absolute bottom-2 right-2">
-              {/* <Hyper cohost_list={xEvent?.cohost_list} /> */}
-            </div>
-          </section>
+          <CohostList cohostList={cohostList}>
+            <HyperList
+              data={cohostList}
+              component={RowItem}
+              container=""
+              keyId="email"
+            />
+            <ListActions />
+          </CohostList>
         </div>
       </Form>
     </Nebula>
   );
 };
 
-const CohostFieldItem = (field: CohostField) => {
-  return field.name === "clearance" ? (
-    field.value
-  ) : (
-    <Input
-      id={field.name}
-      label={field.label}
-      name={field.name}
-      type={field.type}
-      autoComplete={field.name}
-      classNames={inputClassNames}
-      placeholder={field.placeholder}
-      isRequired={field.required}
-      defaultValue={field.defaultValue}
-      validationBehavior="native"
-      className="appearance-none"
-    />
+interface CohostListProps {
+  cohostList: CohostWithDefaults[];
+  children: ReactNode;
+}
+
+const CohostList = ({ cohostList, children }: CohostListProps) => {
+  return (
+    <section className="relative border-vanilla/20 text-chalk md:col-span-3 md:border-y md:border-r">
+      <div className="h-96 w-full overflow-hidden overflow-y-scroll">
+        <div className="flex h-11 w-full items-center justify-between border-b-3 border-vanilla/20 px-3 font-inter text-tiny font-bold">
+          <div className="flex w-full items-center justify-between gap-6 md:justify-start">
+            <span>Co-host List</span>
+            <span className="font-sans font-normal">{cohostList.length}</span>
+          </div>
+        </div>
+        {children}
+      </div>
+      <div className="absolute bottom-2 right-2">
+        {/* <Hyper cohost_list={xEvent?.cohost_list} /> */}
+      </div>
+    </section>
   );
 };
-const CohostBlock = ({ data, icon, label, delay = 0 }: CohostBlockProps) => (
-  <div className="mb-8 h-5/6 w-full space-y-6 p-6">
-    <BlockHeader label={label} icon={icon} />
-    <section className="-mx-6 h-fit rounded-sm bg-teal-300/20 px-4 py-3 text-justify text-tiny text-vanilla md:p-4 md:text-sm">
-      You can add co-hosts and event marshals to assist you with ticket-scanning
-      and other guest verification during the event. Fill out the name and
-      email, select access clearances, then click add. You can add multiple
-      co-hosts for this event.
-    </section>
-    <HyperList
-      data={data}
-      container="space-y-8"
-      itemStyle="whitespace-nowrap"
-      component={CohostFieldItem}
-      delay={delay}
-      keyId="name"
-    />
-  </div>
-);
 
 const ClearanceItem = (props: [string, boolean]) => {
   return (
@@ -380,28 +485,3 @@ const ClearanceItem = (props: [string, boolean]) => {
     </Checkbox>
   );
 };
-
-function updateProps<T extends object>(data: T, keys: string[]) {
-  const obj = {} as Record<keyof T, boolean>;
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      obj[key] = keys.includes(key);
-    }
-  }
-  return obj;
-}
-
-export function updateBooleanValues<T extends object>(
-  data: T[],
-  keys: string[],
-) {
-  return data.map((obj) => {
-    const newObj = {} as Record<keyof T, boolean>;
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        newObj[key] = keys.includes(key);
-      }
-    }
-    return newObj;
-  });
-}

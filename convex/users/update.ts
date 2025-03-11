@@ -258,7 +258,7 @@ export const tickets = mutation({
       ...target_event,
       vip_list,
       tickets: updated_event_tickets,
-      ticket_count: updated_event_tickets.length,
+      tickets_issued: updated_event_tickets.length,
       updated_at: Date.now(),
     });
     return "success";
