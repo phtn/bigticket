@@ -1,5 +1,6 @@
 import { createCallerFactory, router } from "@/server/api/trpc";
 import { paymongo } from "./routers/paymongo";
+import { baseRouter } from "./routers/base";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { paymongo } from "./routers/paymongo";
  */
 export const appRouter = router({
   paymongo,
+  base: baseRouter,
 });
 
 export type AppRouter = typeof appRouter;

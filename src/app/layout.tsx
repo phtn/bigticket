@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-
+import "@coinbase/onchainkit/styles.css";
 import { type Metadata } from "next";
 import {
   Cherry_Bomb_One,

@@ -7,21 +7,23 @@ import { Toasts } from "./toast";
 import AuthProvider from "./auth";
 import { CursorProvider } from "./cursor";
 import { SidebarCtxProvider } from "./sidebar";
+import { BaseProvider } from "./base";
 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
-    <NextUIProvider>
-      <AuthProvider>
-        <TRPCProvider>
-          <SidebarCtxProvider>
-            <CursorProvider>{children}</CursorProvider>
-          </SidebarCtxProvider>
-        </TRPCProvider>
-        <Toasts />
-      </AuthProvider>
-    </NextUIProvider>
+    <BaseProvider>
+      <NextUIProvider>
+        <AuthProvider>
+          <TRPCProvider>
+            <SidebarCtxProvider>
+              <CursorProvider>{children}</CursorProvider>
+            </SidebarCtxProvider>
+          </TRPCProvider>
+          <Toasts />
+        </AuthProvider>
+      </NextUIProvider>
+    </BaseProvider>
   );
 };
-
 
 export default Providers;

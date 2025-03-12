@@ -20,8 +20,12 @@ export const env = createEnv({
     FIREBASE_STORAGE_BUCKET: z.string(),
     FIREBASE_STORAGE_TOKEN: z.string(),
 
+    //PAYMONGO
     PAYMONGO_PK: z.string(),
     PAYMONGO_SK: z.string(),
+
+    //BASE
+    CC_API_KEY: z.string(),
   },
 
   client: {
@@ -34,6 +38,9 @@ export const env = createEnv({
     //SUPABASE
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
+
+    //BASE
+    NEXT_PUBLIC_ONCHAINKIT_API_KEY: z.string(),
   },
 
   runtimeEnv: {
@@ -66,6 +73,10 @@ export const env = createEnv({
     //PAYMONGO
     PAYMONGO_PK: process.env.PAYMONGO_PK,
     PAYMONGO_SK: process.env.PAYMONGO_SK,
+
+    //BASE
+    NEXT_PUBLIC_ONCHAINKIT_API_KEY: process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY,
+    CC_API_KEY: process.env.CC_API_KEY,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

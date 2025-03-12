@@ -15,6 +15,12 @@ import type {
   SummaryProps,
 } from "./types";
 import { Icon } from "@/icons";
+import {
+  Checkout,
+  CheckoutButton,
+  CheckoutStatus,
+} from "@coinbase/onchainkit/checkout";
+import { useBase } from "@/hooks/useBase";
 
 export function Summary({
   refNumber,
@@ -125,6 +131,12 @@ const SummaryContent = ({
     [calcSubtotal, shippingCost, tax, voucher, total],
   );
 
+  const { chargeHandler } = useBase({
+    local_price: { amount: 1, currency: "USDC" },
+    pricing_type: "fixed",
+    metadata: {},
+  });
+
   return (
     <div className="p-6 text-xs text-chalk">
       <div className="grid gap-x-4 gap-y-6">
@@ -176,19 +188,30 @@ const SummaryContent = ({
         <Separator />
 
         <div className="">
-          <div className="flex items-center">
-            <Button
-              size="lg"
-              color="primary"
-              isDisabled={state.modified}
-              isLoading={loading}
-              onPress={paymongoCheckout}
-              className="mx-4 w-full border border-secondary bg-secondary"
-            >
-              <p className="font-extrabold tracking-tight text-white drop-shadow-sm">
-                Checkout
-              </p>
-            </Button>
+          <div className="flex w-full items-center justify-evenly gap-8">
+            <div className="w-full">
+              <Checkout chargeHandler={chargeHandler}>
+                <span className="text-xs">
+                  <CheckoutStatus /> Pay with crypto
+                </span>
+
+                <CheckoutButton coinbaseBranded />
+              </Checkout>
+            </div>
+            <div className="w-full">
+              <span className="text-xs">Pay using card or ewallets</span>
+              <Button
+                color="primary"
+                isDisabled={state.modified}
+                isLoading={loading}
+                onPress={paymongoCheckout}
+                className="mt-6 h-11 w-full rounded-[0.5rem] border-2 border-secondary bg-primary"
+              >
+                <p className="text-xs font-medium tracking-tight text-white drop-shadow-sm">
+                  Checkout
+                </p>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -256,7 +279,7 @@ export const CustomerInfo = () => (
 );
 
 const Separator = () => (
-  <div className="my-3 h-px border-b border-dotted border-ticket" />
+  <div className="my-2.5 h-px border-b border-dotted border-ticket" />
 );
 
 const options: Intl.DateTimeFormatOptions = {
