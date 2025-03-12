@@ -16,15 +16,31 @@ export const usePaymongo = () => {
 
   const checkout = useCallback(
     async (params: CheckoutParams) => {
-      const ok = (session: CheckoutResource) => {
+      if (!params) {
+        throw new Error("Checkout parameters are required");
+      }
+
+      setLoading(true);
+      try {
+        const session = await createCheckout(params);
         setCheckoutSession(session);
-        const checkoutUrl = session.attributes.checkout_url;
-        if (checkoutUrl) {
-          router.push(checkoutUrl);
+
+        const url = session.attributes.checkout_url;
+        if (!url) {
+          throw new Error("Invalid checkout URL received from server");
         }
+
+        router.push(url);
+      } catch (error) {
+        if (error instanceof Error) {
+          Err(setLoading)(error);
+        } else {
+          Err(setLoading)(new Error("An unknown error occurred"));
+        }
+        throw error;
+      } finally {
         setLoading(false);
-      };
-      await createCheckout(params).then(ok).catch(Err(setLoading));
+      }
     },
     [router],
   );

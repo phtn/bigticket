@@ -536,6 +536,28 @@ function Close(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+function CloseLight(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M19 5L5 19M5 5l14 14"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
 function Cog(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1003,6 +1025,22 @@ function HotelRoom(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function Info(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M12.3 7.29c.2-.18.44-.29.7-.29c.27 0 .5.11.71.29c.19.21.29.45.29.71c0 .27-.1.5-.29.71c-.21.19-.44.29-.71.29c-.26 0-.5-.1-.7-.29c-.19-.21-.3-.44-.3-.71c0-.26.11-.5.3-.71m-2.5 4.68s2.17-1.72 2.96-1.79c.74-.06.59.79.52 1.23l-.01.06c-.14.53-.31 1.17-.48 1.78c-.38 1.39-.75 2.75-.66 3c.1.34.72-.09 1.17-.39c.06-.04.11-.08.16-.11c0 0 .08-.08.16.03c.02.03.04.06.06.08c.09.14.14.19.02.27l-.04.02c-.22.15-1.16.81-1.54 1.05c-.41.27-1.98 1.17-1.74-.58c.21-1.23.49-2.29.71-3.12c.41-1.5.59-2.18-.33-1.59c-.37.22-.59.36-.72.45c-.11.08-.12.08-.19-.05l-.03-.06l-.05-.08c-.07-.1-.07-.11.03-.2M22 12c0 5.5-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2s10 4.5 10 10m-2 0c0-4.42-3.58-8-8-8s-8 3.58-8 8s3.58 8 8 8s8-3.58 8-8"
+      ></path>
+    </svg>
+  );
+}
 function Launch(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1822,6 +1860,206 @@ function SpinnerDotScale(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+function SpinnerDotMove(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <circle cx="4" cy="12" r="0" fill="currentColor">
+        <animate
+          fill="freeze"
+          attributeName="r"
+          begin="0;svgSpinners3DotsMove1.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="0;3"
+        ></animate>
+        <animate
+          fill="freeze"
+          attributeName="cx"
+          begin="svgSpinners3DotsMove7.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="4;12"
+        ></animate>
+        <animate
+          fill="freeze"
+          attributeName="cx"
+          begin="svgSpinners3DotsMove5.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="12;20"
+        ></animate>
+        <animate
+          id="svgSpinners3DotsMove0"
+          fill="freeze"
+          attributeName="r"
+          begin="svgSpinners3DotsMove3.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="3;0"
+        ></animate>
+        <animate
+          id="svgSpinners3DotsMove1"
+          fill="freeze"
+          attributeName="cx"
+          begin="svgSpinners3DotsMove0.end"
+          dur="0.001s"
+          values="20;4"
+        ></animate>
+      </circle>
+      <circle cx="4" cy="12" r="3" fill="currentColor">
+        <animate
+          fill="freeze"
+          attributeName="cx"
+          begin="0;svgSpinners3DotsMove1.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="4;12"
+        ></animate>
+        <animate
+          fill="freeze"
+          attributeName="cx"
+          begin="svgSpinners3DotsMove7.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="12;20"
+        ></animate>
+        <animate
+          id="svgSpinners3DotsMove2"
+          fill="freeze"
+          attributeName="r"
+          begin="svgSpinners3DotsMove5.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="3;0"
+        ></animate>
+        <animate
+          id="svgSpinners3DotsMove3"
+          fill="freeze"
+          attributeName="cx"
+          begin="svgSpinners3DotsMove2.end"
+          dur="0.001s"
+          values="20;4"
+        ></animate>
+        <animate
+          fill="freeze"
+          attributeName="r"
+          begin="svgSpinners3DotsMove3.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="0;3"
+        ></animate>
+      </circle>
+      <circle cx="12" cy="12" r="3" fill="currentColor">
+        <animate
+          fill="freeze"
+          attributeName="cx"
+          begin="0;svgSpinners3DotsMove1.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="12;20"
+        ></animate>
+        <animate
+          id="svgSpinners3DotsMove4"
+          fill="freeze"
+          attributeName="r"
+          begin="svgSpinners3DotsMove7.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="3;0"
+        ></animate>
+        <animate
+          id="svgSpinners3DotsMove5"
+          fill="freeze"
+          attributeName="cx"
+          begin="svgSpinners3DotsMove4.end"
+          dur="0.001s"
+          values="20;4"
+        ></animate>
+        <animate
+          fill="freeze"
+          attributeName="r"
+          begin="svgSpinners3DotsMove5.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="0;3"
+        ></animate>
+        <animate
+          fill="freeze"
+          attributeName="cx"
+          begin="svgSpinners3DotsMove3.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="4;12"
+        ></animate>
+      </circle>
+      <circle cx="20" cy="12" r="3" fill="currentColor">
+        <animate
+          id="svgSpinners3DotsMove6"
+          fill="freeze"
+          attributeName="r"
+          begin="0;svgSpinners3DotsMove1.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="3;0"
+        ></animate>
+        <animate
+          id="svgSpinners3DotsMove7"
+          fill="freeze"
+          attributeName="cx"
+          begin="svgSpinners3DotsMove6.end"
+          dur="0.001s"
+          values="20;4"
+        ></animate>
+        <animate
+          fill="freeze"
+          attributeName="r"
+          begin="svgSpinners3DotsMove7.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="0;3"
+        ></animate>
+        <animate
+          fill="freeze"
+          attributeName="cx"
+          begin="svgSpinners3DotsMove5.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="4;12"
+        ></animate>
+        <animate
+          fill="freeze"
+          attributeName="cx"
+          begin="svgSpinners3DotsMove3.end"
+          calcMode="spline"
+          dur="0.5s"
+          keySplines=".36,.6,.31,1"
+          values="12;20"
+        ></animate>
+      </circle>
+    </svg>
+  );
+}
 function Stats(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -2029,6 +2267,25 @@ function Tv(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+function Undo(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        strokeWidth={0}
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M7.53 3.47a.75.75 0 0 1 0 1.06L5.81 6.25H15a5.75 5.75 0 0 1 0 11.5H8a.75.75 0 0 1 0-1.5h7a4.25 4.25 0 0 0 0-8.5H5.81l1.72 1.72a.75.75 0 1 1-1.06 1.06l-3-3a.75.75 0 0 1 0-1.06l3-3a.75.75 0 0 1 1.06 0"
+        clipRule="evenodd"
+      ></path>
+    </svg>
+  );
+}
 function Upcoming(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -2193,6 +2450,7 @@ export const icons = {
   CheckDouble,
   CloudUpload,
   Close,
+  CloseLight,
   Cog,
   Cocktail,
   CollectionIcon,
@@ -2214,6 +2472,7 @@ export const icons = {
   HeartFill,
   HeartCheck,
   HotelRoom,
+  Info,
   Launch,
   LeftChev,
   Lock,
@@ -2249,6 +2508,7 @@ export const icons = {
   SpinnerClock,
   SpinnersPulseRing,
   SpinnerDotScale,
+  SpinnerDotMove,
   Stats,
   Squircle,
   Support,
@@ -2259,6 +2519,7 @@ export const icons = {
   TimeSched,
   Toc,
   Tv,
+  Undo,
   Upcoming,
   Upload,
   User,

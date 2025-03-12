@@ -27,7 +27,7 @@ export const barToast = () => (
 export const onSuccess = (msg: string) => toast.success(msg);
 export const onInfo = (msg: string) =>
   toast(msg, {
-    icon: <Icon name="InfoLine" className="size-5 text-sky-300" />,
+    icon: <Icon name="Info" className="size-5 text-sky-300" />,
     style: {
       padding: "8px 12px",
       backgroundColor: "#191818",

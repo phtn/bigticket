@@ -142,18 +142,16 @@ export const OrderContent = () => {
         <Button
           size="sm"
           isIconOnly
-          color="secondary"
-          className="group rounded-full border-[0.33px] border-gray-400 bg-default/80"
+          className="group rounded-full border-[0.33px] border-primary/60 bg-white"
           onPress={fn.undoFn}
         >
-          <Icon name="ArrowRight" className="text-gray-800" />
+          <Icon name="Undo" className="size-4" />
         </Button>
         <Button
           size="sm"
-          color="warning"
           isDisabled={loading}
           onPress={fn.cancelFn}
-          className="rounded-full border-[0.33px] border-gray-400 bg-default/80 tracking-tight text-gray-800"
+          className="rounded-full border-[0.33px] border-primary/60 bg-white tracking-tight"
         >
           Cancel
         </Button>
@@ -184,7 +182,7 @@ export const OrderContent = () => {
           <ModActions />
         </div>
         <HyperList
-          container="h-fit w-full overflow-y-scroll scroll-auto rounded-2xl border-2 border-secondary bg-white px-4 md:h-[calc(100vh-20rem)]"
+          container="h-fit w-full overflow-y-scroll scroll-auto rounded-2xl border-[0.33px] border-primary/60 bg-white md:h-[calc(100vh-20rem)]"
           data={items}
           component={Item}
           disableAnimation={items.length === 1}
@@ -237,8 +235,8 @@ const Item = (props: ListItemProps) => {
     <div
       className={cn(
         "font-ibm group flex h-28 cursor-pointer items-center justify-between transition-all ease-out",
-        "border-b border-dotted border-primary/20 px-0",
-        { "bg-default/40 px-6 grayscale": quantity === 0 },
+        "border-b border-dotted border-primary/20 px-4",
+        { "bg-default/40 px-8 opacity-80 grayscale": quantity === 0 },
       )}
     >
       <div className="flex w-[200px] items-center space-x-6">
@@ -278,7 +276,7 @@ const Item = (props: ListItemProps) => {
             icon="Minus"
             disabled={quantity === 0}
           />
-          <ModButton fn={handleDelete} icon="ArrowRightDouble" />
+          <ModButton fn={handleDelete} icon="CloseLight" />
         </div>
       </div>
     </div>

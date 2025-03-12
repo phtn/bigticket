@@ -7,7 +7,7 @@ import {
   CardFooter,
   Button,
 } from "@nextui-org/react";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import type {
   Calc,
   ItemProps,
@@ -23,12 +23,17 @@ export function Summary({
   checkoutFn,
   loading,
 }: SummaryProps) {
-  const event = useMemo(
-    () => new Date().toLocaleDateString("en-US", options),
-    [],
-  );
-  const lastUpdate = useMemo(() => {
-    if (updated) return new Date(updated).toLocaleTimeString("en-US", options);
+  const [formattedDate, setFormattedDate] = useState<string>("");
+  const [formattedTime, setFormattedTime] = useState<string>("");
+
+  useEffect(() => {
+    setFormattedDate(new Date().toLocaleDateString("en-US", options));
+  }, []);
+
+  useEffect(() => {
+    if (updated) {
+      setFormattedTime(new Date(updated).toLocaleTimeString("en-US", options));
+    }
   }, [updated]);
 
   return (
@@ -56,9 +61,11 @@ export function Summary({
 
           <div className="flex items-center justify-between text-xs tracking-tight">
             <p className="font-medium tracking-normal">Date</p>
-            <p>
-              <span className="font-light opacity-60">{event}</span>
-            </p>
+            <div className="flex items-center font-light opacity-60">
+              {formattedDate ?? (
+                <Icon name="SpinnerDotMove" className="text-teal-300" />
+              )}
+            </div>
           </div>
         </div>
       </CardHeader>
@@ -72,7 +79,7 @@ export function Summary({
           <span>Last Updated</span>{" "}
           <span className="font-light">
             {updated ? (
-              lastUpdate
+              formattedTime || "Loading..."
             ) : (
               <Spinner className="size-2.5 shrink-0 animate-spin" />
             )}
@@ -168,7 +175,7 @@ const SummaryContent = ({
 
         <Separator />
 
-        <div className="grid gap-4">
+        <div className="">
           <div className="flex items-center">
             <Button
               size="lg"
@@ -249,7 +256,7 @@ export const CustomerInfo = () => (
 );
 
 const Separator = () => (
-  <div className="my-3 h-[2px] border-b border-dotted border-ticket" />
+  <div className="my-3 h-px border-b border-dotted border-ticket" />
 );
 
 const options: Intl.DateTimeFormatOptions = {

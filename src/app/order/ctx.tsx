@@ -177,11 +177,22 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
         throw new Error("Cart is empty");
       }
 
-      // Update checkout params
-      setOrderParams(setParams, lineItems, orderNumber, descriptor);
+      // Create checkout parameters
+      const checkoutParams: CheckoutParams = {
+        data: {
+          attributes: {
+            ...attributes,
+            line_items: paymongoReady(lineItems),
+            reference_number: orderNumber,
+            statement_descriptor: descriptor,
+            description: `bigticket.ph`,
+          },
+        },
+      };
 
-      // Create PayMongo checkout session and redirect
-      await checkout(params);
+      // Update state and proceed with checkout
+      setParams(checkoutParams);
+      await checkout(checkoutParams);
 
       // Only clear cart after successful checkout
       dispatch({ type: "SAVE" });
@@ -193,7 +204,7 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
     } finally {
       setLoading(false);
     }
-  }, [state.list, descriptor, setCount, checkout, params, orderNumber]);
+  }, [state.list, descriptor, setCount, checkout, orderNumber, dispatch]);
 
   const value = useMemo(
     () => ({
