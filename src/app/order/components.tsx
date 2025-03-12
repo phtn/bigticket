@@ -59,7 +59,7 @@ export const ProductImage = ({ alt, src, quantity }: ProductImageProps) => {
 export const Wrapper = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
-      "grid w-full grid-cols-1 px-6 md:grid-cols-10 md:gap-x-6 lg:gap-x-8 lg:px-10 xl:gap-x-12 xl:px-24",
+      "grid w-full grid-cols-1 gap-y-8 px-2 md:grid-cols-10 md:gap-x-6 md:gap-y-0 lg:gap-x-8 lg:px-10 xl:gap-x-12 xl:px-24",
       "from-stone-50/50 via-zinc-50/50 to-default-50/50",
     )}
   >
@@ -72,7 +72,7 @@ export function Header({ itemCount, amount }: HeaderProps) {
     <div className="rounded-2xl border-2 border-secondary bg-white shadow-md shadow-default/40">
       <div className="flex items-center justify-start space-x-0 md:justify-between md:space-x-4">
         <PageHeader />
-        <div className="flex items-center space-x-3 md:space-x-14">
+        <div className="flex w-full items-center justify-between space-x-3 md:space-x-14">
           <Stat label="Items" value={itemCount} />
           <Stat label="Subtotal" value={amount} dark />
         </div>
@@ -83,7 +83,7 @@ export function Header({ itemCount, amount }: HeaderProps) {
 
 const PageHeader = () => {
   return (
-    <div className="group flex h-[50px] min-h-24 cursor-pointer flex-col items-center justify-start overflow-clip p-4">
+    <div className="group flex h-[50px] min-h-24 w-full cursor-pointer flex-col items-start justify-start overflow-clip p-4">
       <p className="font-inter font-extrabold tracking-tight">Order Details</p>
     </div>
   );
@@ -98,7 +98,7 @@ export const Stat = ({
   return (
     <div
       className={cn(
-        "flex min-h-24 min-w-6 cursor-pointer flex-col items-end space-y-3 whitespace-nowrap p-4 text-sm text-gray-800 transition-all duration-300 ease-out md:min-w-12 lg:min-w-16 xl:min-w-24",
+        "flex min-h-24 min-w-6 cursor-pointer flex-col items-end justify-center space-y-2.5 whitespace-nowrap p-4 text-sm text-gray-800 transition-all duration-300 ease-out md:min-w-12 lg:min-w-16 xl:min-w-24",
         {
           "min-w-16 bg-default/0 p-4 text-gray-800 md:min-w-20 lg:min-w-32 xl:min-w-40":
             dark,

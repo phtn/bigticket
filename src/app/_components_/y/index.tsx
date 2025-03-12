@@ -52,7 +52,7 @@ export const Y = ({ src, ref, idx }: YProps) => {
       <Player />
       <div
         className={cn(
-          "absolute top-0 z-50 flex size-full items-center justify-center bg-black opacity-100 transition-all delay-[5s] duration-1000",
+          "delay-5000 absolute top-0 z-50 flex size-full items-center justify-center bg-black opacity-100 transition-all duration-1000",
           {
             "opacity-0": autoplay === 1,
           },

@@ -80,10 +80,10 @@ export function Summary({
         paymongoCheckout={checkoutFn}
         loading={loading}
       />
-      <CardFooter className="flex items-center rounded-none border-t-[0.33px] border-default/20 bg-chalk/70 px-6 py-3 text-primary">
+      <CardFooter className="flex items-center rounded-none border-t-[0.33px] border-default/20 bg-chalk/70 px-3 py-3 text-primary">
         <div className="flex w-full items-center justify-between space-x-2 text-xs">
-          <span>Last Updated</span>{" "}
-          <span className="font-light">
+          <span className="tracking-tight">Last Updated</span>{" "}
+          <span className="font-normal tracking-tight">
             {updated ? (
               formattedTime || "Loading..."
             ) : (
@@ -199,7 +199,7 @@ const SummaryContent = ({
               </Checkout>
             </div>
             <div className="w-full">
-              <span className="text-xs">Pay using card or ewallets</span>
+              <span className="text-xs">Pay with card or ewallets</span>
               <Button
                 color="primary"
                 isDisabled={state.modified}

@@ -177,8 +177,8 @@ export const OrderContent = () => {
   const LineItems = useCallback(() => {
     return (
       <div className="w-full py-5">
-        <div className="mb-4 flex h-8 items-start justify-between px-2">
-          <p className="text-xs font-semibold text-ticket">Items</p>
+        <div className="mb-4 flex h-8 items-center justify-between px-2">
+          <p className="text-xs font-semibold text-ticket">Line Items</p>
           <ModActions />
         </div>
         <HyperList
@@ -263,11 +263,11 @@ const Item = (props: ListItemProps) => {
           </div>
         </div>
       </div>
-      <div className="flex cursor-pointer items-start justify-end md:space-x-1 xl:space-x-4">
+      <div className="-mb-3 flex cursor-pointer items-end justify-end md:items-start md:space-x-1 xl:space-x-4">
         <div
           className={cn(
-            "invisible flex h-fit items-center rounded-full border-x-[12px] border-white bg-white p-2 opacity-100 group-hover:visible md:space-x-3 xl:space-x-4",
-            { "border-x-10 space-x-6": quantity === 0 },
+            "invisible -mb-2 flex h-fit items-center space-x-3 rounded-full border-x-[12px] border-white bg-white p-1 opacity-100 group-hover:visible xl:space-x-4",
+            { "border-x-10 md:space-x-6": quantity === 0 },
           )}
         >
           <ModButton fn={handleIncrement} icon="Plus" />
