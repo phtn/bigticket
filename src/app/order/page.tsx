@@ -1,9 +1,3 @@
 import { Content } from "./content";
-import { OrderProvider } from "./ctx";
-
-const Page = async () => (
-  <OrderProvider>
-    <Content />
-  </OrderProvider>
-);
+const Page = async () => <Content />;
 export default Page;

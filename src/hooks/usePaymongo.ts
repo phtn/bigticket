@@ -19,7 +19,9 @@ export const usePaymongo = () => {
       const ok = (session: CheckoutResource) => {
         setCheckoutSession(session);
         const checkoutUrl = session.attributes.checkout_url;
-        router.push(checkoutUrl);
+        if (checkoutUrl) {
+          router.push(checkoutUrl);
+        }
         setLoading(false);
       };
       await createCheckout(params).then(ok).catch(Err(setLoading));

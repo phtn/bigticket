@@ -1,33 +1,14 @@
-import { type PropsWithChildren, type ReactElement } from "react";
+import { type PropsWithChildren } from "react";
 import { Badge, Button, Image } from "@nextui-org/react";
-import { type ItemProps } from "./ctx";
 import { Icon, type IconName } from "@/icons";
 import { cn } from "@/lib/utils";
+import type { HeaderProps, ProductImageProps, StatProps } from "./types";
 
 export const Description = ({ children }: PropsWithChildren) => (
   <p className="font-sarabun max-w-[40ch] overflow-x-scroll text-ellipsis whitespace-nowrap text-xs text-default-500 xl:max-w-[72ch]">
     {children}
   </p>
 );
-
-interface Fn {
-  deleteFn: (name: string) => void;
-  cancelFn: VoidFunction;
-  incrFn: (name: string) => void;
-  decrFn: (name: string) => void;
-  saveFn: () => Promise<void>;
-  undoFn: VoidFunction;
-}
-export interface ListItemProps {
-  fn: Fn;
-  loading: boolean;
-  render: (item: ItemProps) => ReactElement;
-}
-
-export interface ListItem {
-  itemProps: ItemProps;
-  fn: Fn;
-}
 
 export const ModButton = (props: {
   fn: VoidFunction;
@@ -51,73 +32,105 @@ export const ModButton = (props: {
   </Button>
 );
 
-interface ProductImageProps {
-  alt: string | null;
-  src: string | null;
-  quantity: number | null;
-}
-export const ProductImage = ({ alt, src, quantity }: ProductImageProps) => (
-  <Badge
-    content={quantity}
-    shape="rectangle"
-    color="primary"
-    size="lg"
-    placement="bottom-right"
-    className={cn("font-arc bg-gray-800", { "opacity-40": quantity === 0 })}
-  >
-    <Image
-      alt={alt ?? "product image"}
-      src={src ?? ""}
-      className={cn("h-20 w-auto rounded-xl border-default-400/60 bg-white", {
-        "opacity-40": quantity === 0,
-      })}
-    />
-  </Badge>
-);
+export const ProductImage = ({ alt, src, quantity }: ProductImageProps) => {
+  return (
+    <Badge
+      content={quantity}
+      shape="rectangle"
+      color="primary"
+      size="lg"
+      placement="bottom-right"
+      className={cn("font-arc bg-gray-800", { "opacity-40": quantity === 0 })}
+    >
+      <Image
+        alt={alt ?? "product image"}
+        src={src ?? "/icon/logomark_v2.svg"}
+        className={cn(
+          "aspect-auto h-20 w-24 rounded-xl border-default-400/60 bg-white",
+          {
+            "opacity-40": quantity === 0,
+          },
+        )}
+      />
+    </Badge>
+  );
+};
 
 export const Wrapper = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
-      "grid w-full grid-cols-1 px-6 lg:grid-cols-10 lg:gap-x-6 lg:px-10 xl:gap-x-10 xl:px-24",
-      "_bg-[conic-gradient(at_top_center,_var(--tw-gradient-stops))]",
+      "grid w-full grid-cols-1 px-6 md:grid-cols-10 md:gap-x-6 lg:gap-x-8 lg:px-10 xl:gap-x-12 xl:px-24",
       "from-stone-50/50 via-zinc-50/50 to-default-50/50",
-      // "from-yellow-100/80 via-slate-50/80 to-teal-50/40 backdrop-blur-lg",
-      "_border border-primary",
-      "bg-white",
     )}
   >
     {children}
   </div>
 );
 
-interface HeaderProps {
-  itemCount: number | null;
-  amount: string;
-  categories: (string | undefined)[];
-  list: ItemProps[] | undefined;
-  subtotal: number;
-}
-
-export function Header({
-  itemCount,
-  amount,
-  categories,
-  list,
-  subtotal,
-}: HeaderProps) {
-  const findCat = (item: ItemProps) =>
-    item.description?.split("--")[1]?.split("|>")[6];
-
-  function getUniqueSet<T>(arr: T[]): T[] {
-    return Array.from(new Set(arr));
-  }
-
+export function Header({ itemCount, amount }: HeaderProps) {
   return (
-    <div className="border-[0.33px] border-gray-400/80 shadow-md shadow-default/40">
+    <div className="rounded-2xl border-2 border-secondary bg-white shadow-md shadow-default/40">
       <div className="flex items-center justify-start space-x-0 md:justify-between md:space-x-4">
         <PageHeader />
-        <div className="flex items-center space-x-0 md:space-x-4">
-          <div className="flex items-center justify-start">
+        <div className="flex items-center space-x-3 md:space-x-14">
+          <Stat label="Items" value={itemCount} />
+          <Stat label="Subtotal" value={amount} dark />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const PageHeader = () => {
+  return (
+    <div className="group flex h-[50px] min-h-24 cursor-pointer flex-col items-center justify-start overflow-clip p-4">
+      <p className="font-inter font-extrabold tracking-tight">Order Details</p>
+    </div>
+  );
+};
+
+export const Stat = ({
+  label,
+  value,
+  special = false,
+  dark = false,
+}: StatProps) => {
+  return (
+    <div
+      className={cn(
+        "flex min-h-24 min-w-6 cursor-pointer flex-col items-end space-y-3 whitespace-nowrap p-4 text-sm text-gray-800 transition-all duration-300 ease-out md:min-w-12 lg:min-w-16 xl:min-w-24",
+        {
+          "min-w-16 bg-default/0 p-4 text-gray-800 md:min-w-20 lg:min-w-32 xl:min-w-40":
+            dark,
+        },
+      )}
+    >
+      <Label>{label}</Label>
+      <div
+        className={cn(
+          "font-sans text-lg font-semibold tracking-wide lg:text-2xl",
+          {
+            "font-light text-gray-800": !dark,
+          },
+          { "font-medium": dark },
+          { "text-teal-500": special },
+          { "text-amber-500": special && Number(value) >= 50 },
+          { "text-sky-500": special && Number(value) <= 10 },
+        )}
+      >
+        {value}
+        <span className="text-lg">{special ? `%` : ``}</span>
+      </div>
+    </div>
+  );
+};
+
+export const Label = ({ children }: PropsWithChildren) => (
+  <p className="text-xs capitalize tracking-tight">{children}</p>
+);
+
+/*
+<div className="flex items-center justify-start">
             {getUniqueSet(categories)?.map((cat, i) => (
               <Stat
                 special
@@ -134,66 +147,4 @@ export function Header({
               />
             ))}
           </div>
-          <Stat label="Items" value={itemCount} />
-          <Stat label="Subtotal" value={amount} dark />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const PageHeader = () => {
-  return (
-    <div className="group flex size-[64px] min-h-24 cursor-pointer flex-col items-center justify-start space-y-1 overflow-clip bg-white pt-3 md:min-w-16 lg:min-w-24 portrait:hidden">
-      <Label>Order Details</Label>
-    </div>
-  );
-};
-
-interface StatProps {
-  label: string;
-  value: number | string | null;
-  dark?: boolean;
-  special?: boolean;
-}
-export const Stat = ({
-  label,
-  value,
-  special = false,
-  dark = false,
-}: StatProps) => {
-  return (
-    <div
-      className={cn(
-        "flex min-h-24 min-w-6 cursor-pointer flex-col items-start space-y-1 whitespace-nowrap p-4 text-sm text-gray-800 transition-all duration-300 ease-out md:min-w-10 lg:min-w-14 xl:min-w-24",
-        {
-          "min-w-16 bg-default/0 p-4 text-gray-800 md:min-w-20 lg:min-w-32 xl:min-w-40":
-            dark,
-        },
-      )}
-    >
-      <Label>{label}</Label>
-      <div
-        className={cn(
-          "font-arc text-lg font-medium tracking-tighter lg:text-2xl",
-          {
-            "font-light text-gray-800": !dark,
-          },
-          { "font-ibm font-medium": dark },
-          { "text-teal-500": special },
-          { "text-amber-500": special && Number(value) >= 50 },
-          { "text-sky-500": special && Number(value) <= 10 },
-        )}
-      >
-        {value}
-        <span className="text-lg">{special ? `%` : ``}</span>
-      </div>
-    </div>
-  );
-};
-
-export const Label = ({ children }: PropsWithChildren) => (
-  <p className="font-ibm text-xs capitalize tracking-tight text-slate-700">
-    {children}
-  </p>
-);
+*/
