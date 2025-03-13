@@ -32,27 +32,27 @@ export const reducer = (
       };
 
     case "INCREMENT":
-      const incrList = state.list.map((item) =>
+      const inc = state.list.map((item) =>
         item.id === action.payload.id
           ? { ...item, quantity: item.quantity + 1 }
           : item,
       );
       return {
         ...state,
-        list: incrList,
+        list: inc,
         modified: true,
         history: addToHistory(state),
       };
 
     case "DECREMENT":
-      const decrList = state.list.map((item) =>
+      const dec = state.list.map((item) =>
         item.id === action.payload.id && item.quantity > 0
           ? { ...item, quantity: item.quantity - 1 }
           : item,
       );
       return {
         ...state,
-        list: decrList,
+        list: dec,
         modified: true,
         history: addToHistory(state),
       };

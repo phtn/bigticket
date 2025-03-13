@@ -15,6 +15,8 @@ interface EventDetails {
   eventId: string | undefined;
   eventName: string | undefined;
   eventDate: number | undefined;
+  eventVenue: string | undefined;
+  eventAddress: string | undefined;
   eventOrganizer: string | undefined;
 }
 
@@ -44,6 +46,8 @@ export const useCartStore = create<CartStore>((set) => ({
   eventId: "",
   eventName: "",
   eventDate: 0,
+  eventVenue: "",
+  eventAddress: "",
   eventOrganizer: "",
   setCount: (count: number) => set({ count }),
   setPrice: (price: number) => set({ price }),

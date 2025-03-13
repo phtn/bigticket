@@ -55,6 +55,7 @@ export const EventViewer = () => {
   const [events, setEvents] = useState<SelectEvent[]>();
 
   useEffect(() => {
+    localStorage.removeItem("bigticket_cart");
     if (allEvents) {
       setEvents(allEvents);
     }
@@ -251,6 +252,8 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
       eventId: xEvent?.event_id,
       eventName: xEvent?.event_name,
       eventDate: xEvent?.start_date,
+      eventVenue: xEvent?.venue_name ?? xEvent?.event_geo ?? "Not set",
+      eventAddress: xEvent?.venue_address ?? "",
       eventOrganizer: xEvent?.host_name,
     });
   }, [xEvent, setEventDetails]);

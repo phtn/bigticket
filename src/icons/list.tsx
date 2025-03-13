@@ -381,6 +381,7 @@ function BurgerRight(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
 function Calendar(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -390,16 +391,18 @@ function Calendar(props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       {...props}
     >
-      <g fill="none" fillRule="evenodd">
-        <path
-          fill={props.fill}
-          d="M16 3a1 1 0 0 1 1 1v1h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2V4a1 1 0 0 1 2 0v1h6V4a1 1 0 0 1 1-1M8.01 16H8a1 1 0 0 0-.117 1.993L8.01 18a1 1 0 1 0 0-2m4 0H12a1 1 0 0 0-.117 1.993l.127.007a1 1 0 1 0 0-2m4 0H16a1 1 0 0 0-.117 1.993l.127.007a1 1 0 1 0 0-2m-8-4H8a1 1 0 0 0-.117 1.993L8.01 14a1 1 0 1 0 0-2m4 0H12a1 1 0 0 0-.117 1.993l.127.007a1 1 0 1 0 0-2m4 0H16a1 1 0 0 0-.117 1.993l.127.007a1 1 0 1 0 0-2M19 7H5v2h14z"
-        ></path>
-      </g>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M18 2v2M6 2v2m5.996 9h.008m-.008 4h.008m3.987-4H16m-8 0h.009M8 17h.009M3.5 8h17m-18 4.243c0-4.357 0-6.536 1.252-7.89C5.004 3 7.02 3 11.05 3h1.9c4.03 0 6.046 0 7.298 1.354C21.5 5.707 21.5 7.886 21.5 12.244v.513c0 4.357 0 6.536-1.252 7.89C18.996 22 16.98 22 12.95 22h-1.9c-4.03 0-6.046 0-7.298-1.354C2.5 19.293 2.5 17.114 2.5 12.756zM3 8h18"
+        color="currentColor"
+      ></path>
     </svg>
   );
 }
-
 function CarDashboard(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1163,6 +1166,30 @@ function MapPin(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+function MapPin2(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        color="currentColor"
+      >
+        <path d="M13.618 21.367A2.37 2.37 0 0 1 12 22a2.37 2.37 0 0 1-1.617-.633C6.412 17.626 1.09 13.447 3.685 7.38C5.09 4.1 8.458 2 12.001 2s6.912 2.1 8.315 5.38c2.592 6.06-2.717 10.259-6.698 13.987"></path>
+        <path d="M15.5 11a3.5 3.5 0 1 1-7 0a3.5 3.5 0 0 1 7 0"></path>
+      </g>
+    </svg>
+  );
+}
 function Minus(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -1565,20 +1592,19 @@ function Share(props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       {...props}
     >
-      <g
+      <path
         fill="none"
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="1.5"
+        d="M19.192 9.441L17.227 7.47c-1.417-1.421-1.972-2.185-2.738-1.915c-.957.337-.642 2.463-.642 3.18c-1.486 0-3.032-.131-4.497.144C4.513 9.787 3 13.715 3 18c1.37-.97 2.737-2.003 4.382-2.452c2.054-.562 4.348-.294 6.465-.294c0 .718-.314 2.844.642 3.181c.868.306 1.321-.494 2.738-1.915l1.965-1.972C20.397 13.338 21 12.733 21 11.995c0-.74-.603-1.344-1.808-2.554"
         color="currentColor"
-      >
-        <path d="m20.393 8.032l-1.747-1.517c-1.259-1.093-1.752-1.681-2.434-1.474c-.85.26-.57 1.895-.57 2.447c-1.321 0-2.695-.101-3.998.11c-4.3.7-5.644 3.759-5.644 7.055c1.217-.747 2.433-1.578 3.895-1.924c1.826-.432 3.865-.226 5.747-.226c0 .552-.28 2.188.57 2.447c.772.236 1.175-.38 2.434-1.473l1.747-1.517C21.464 11.03 22 10.564 22 9.996s-.536-1.034-1.607-1.964"></path>
-        <path d="M10.568 3c-3.86.007-5.882.102-7.174 1.39C2 5.783 2 8.022 2 12.5s0 6.717 1.394 8.109C4.788 22 7.032 22 11.52 22s6.73 0 8.125-1.391C20.615 19.64 20.91 18.26 21 16"></path>
-      </g>
+      ></path>
     </svg>
   );
 }
+
 function ShieldCheck(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -2478,6 +2504,7 @@ export const icons = {
   Lock,
   MailSend,
   MapPin,
+  MapPin2,
   Minus,
   MoreHorizontal,
   MoreVertical,

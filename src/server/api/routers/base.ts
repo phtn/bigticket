@@ -1,9 +1,27 @@
-import { CreateChargeParamsSchema } from "@/lib/base/schema/charge";
-import { router, proc } from "../trpc";
+import {
+  CreateChargeParamsSchema,
+  GetChargeParamsSchema,
+} from "@/lib/base/schema/charges";
+import { router, proc, mergeRouters } from "../trpc";
 import { asyncR } from "@/lib/paymongo/utils";
-import { base } from "@/lib/base/request/charge";
+import { charges, checkout } from "@/lib/base/request";
+import {
+  CreateCheckoutParamsSchema,
+  GetCheckoutParamsSchema,
+} from "@/lib/base/schema/checkout";
 
-const createCharge = proc.input(CreateChargeParamsSchema);
-export const baseRouter = router({
-  createCharge: createCharge.mutation(asyncR(base.charge.create)),
+const chargesRouter = router({
+  createCharge: proc
+    .input(CreateChargeParamsSchema)
+    .mutation(asyncR(charges.create)),
+  getCharge: proc.input(GetChargeParamsSchema).query(asyncR(charges.get)),
 });
+
+const checkoutRouter = router({
+  createCheckout: proc
+    .input(CreateCheckoutParamsSchema)
+    .mutation(asyncR(checkout.create)),
+  getCheckout: proc.input(GetCheckoutParamsSchema).query(asyncR(checkout.get)),
+});
+
+export const base = mergeRouters(chargesRouter, checkoutRouter);

@@ -28,6 +28,7 @@ export function Summary({
   updated,
   checkoutFn,
   loading,
+  userDetails,
 }: SummaryProps) {
   const [formattedDate, setFormattedDate] = useState<string>("");
   const [formattedTime, setFormattedTime] = useState<string>("");
@@ -77,8 +78,10 @@ export function Summary({
       </CardHeader>
       <SummaryContent
         state={state}
+        refNumber={refNumber}
         paymongoCheckout={checkoutFn}
         loading={loading}
+        userDetails={userDetails}
       />
       <CardFooter className="flex items-center rounded-none border-t-[0.33px] border-default/20 bg-chalk/70 px-3 py-3 text-primary">
         <div className="flex w-full items-center justify-between space-x-2 text-xs">
@@ -98,8 +101,10 @@ export function Summary({
 
 const SummaryContent = ({
   state,
+  refNumber,
   paymongoCheckout,
   loading,
+  userDetails,
 }: SummaryContentProps) => {
   const subtotal = useMemo(
     () => state.list?.reduce((acc, cur) => (acc += cur.amount), 0),
@@ -111,30 +116,35 @@ const SummaryContent = ({
   );
 
   const calcSubtotal = newSubtotal ?? subtotal;
-  const shippingCost = -100;
-  const voucher = -200;
+  // const shippingCost = -100;
+  const voucher = 0;
   const taxPct = 12;
   const tax = (calcSubtotal * taxPct) / 100;
-  const total = calcSubtotal + shippingCost + tax;
+  const total = calcSubtotal + tax;
 
   const calc: Calc[] = useMemo(
     () => [
       { label: "Subtotal", value: calcSubtotal },
-      {
-        label: "Shipping " + (shippingCost <= 0 ? `discount` : ``),
-        value: shippingCost,
-      },
-      { label: "Voucher discount", value: voucher },
+      // {
+      //   label: "Shipping " + (shippingCost <= 0 ? `discount` : ``),
+      //   value: shippingCost,
+      // },
+      { label: "Discount voucher", value: voucher },
       { label: "Tax (12%)", value: tax },
       { label: "Total", value: total },
     ],
-    [calcSubtotal, shippingCost, tax, voucher, total],
+    [calcSubtotal, tax, voucher, total],
   );
 
-  const { chargeHandler } = useBase({
-    local_price: { amount: 1, currency: "USDC" },
-    pricing_type: "fixed",
-    metadata: {},
+  const { chargeHandler, statusHandler } = useBase({
+    local_price: { amount: String(total / 55), currency: "USDC" },
+    pricing_type: "fixed_price",
+    metadata: {
+      refNumber: refNumber ?? "",
+      name: userDetails.userName ?? "",
+      email: userDetails.userEmail ?? "",
+      phone: userDetails.userPhone ?? "",
+    },
   });
 
   return (
@@ -189,23 +199,26 @@ const SummaryContent = ({
 
         <div className="">
           <div className="flex w-full items-center justify-evenly gap-8">
-            <div className="w-full">
-              <Checkout chargeHandler={chargeHandler}>
-                <span className="text-xs">
-                  <CheckoutStatus /> Pay with crypto
-                </span>
-
+            <div className="h-24 max-h-24 w-full overflow-visible">
+              <div className="flex h-fit w-full justify-start leading-none">
+                Pay with crypto
+              </div>
+              <Checkout chargeHandler={chargeHandler} onStatus={statusHandler}>
                 <CheckoutButton coinbaseBranded />
+                <CheckoutStatus />
               </Checkout>
             </div>
-            <div className="w-full">
-              <span className="text-xs">Pay with card or ewallets</span>
+
+            <div className="h-24 w-full space-y-3">
+              <div className="flex w-full justify-start whitespace-nowrap">
+                Pay with card or ewallets
+              </div>
               <Button
                 color="primary"
                 isDisabled={state.modified}
                 isLoading={loading}
                 onPress={paymongoCheckout}
-                className="mt-6 h-11 w-full rounded-[0.5rem] border-2 border-secondary bg-primary"
+                className="h-11 w-full rounded-[0.5rem] border-2 border-secondary bg-primary"
               >
                 <p className="text-xs font-medium tracking-tight text-white drop-shadow-sm">
                   Checkout

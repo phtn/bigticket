@@ -1,7 +1,7 @@
 import { env } from "@/env";
 import axios, { type AxiosRequestConfig } from "axios";
 
-export const createBaseAxiosInstance = (config?: AxiosRequestConfig) =>
+export const createChargeAxiosInstance = (config?: AxiosRequestConfig) =>
   axios.create({
     ...config,
     headers: {

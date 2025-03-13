@@ -9,16 +9,28 @@ export interface ItemProps {
 }
 
 export interface Fn {
-  deleteFn: (name: string) => void;
+  deleteFn: (id: string) => void;
   cancelFn: VoidFunction;
-  incrementFn: (name: string) => void;
-  decrementFn: (name: string) => void;
+  incrementFn: (id: string) => void;
+  decrementFn: (id: string) => void;
   saveFn: () => Promise<void>;
   undoFn: VoidFunction;
 }
 
 export interface ListItemProps extends ItemProps {
   fn: Fn;
+}
+
+export interface CartItemProps {
+  item: ItemProps | undefined;
+  quantity: number;
+  fn: Fn;
+}
+
+export interface TicketDetail {
+  venue: string | undefined;
+  date: string | undefined;
+  org: string | undefined;
 }
 
 export interface ProductImageProps {
@@ -44,13 +56,18 @@ export interface ReducerState {
   modified: boolean;
   history: ReducerState[];
 }
-
+interface UserDetails {
+  userName: string | undefined;
+  userEmail: string | undefined;
+  userPhone: string | undefined;
+}
 export interface SummaryProps {
   refNumber: string | null;
   state: ReducerState;
   updated: number | undefined;
   checkoutFn: VoidFunction;
   loading: boolean;
+  userDetails: UserDetails;
 }
 
 export interface Calc {
@@ -60,6 +77,8 @@ export interface Calc {
 
 export interface SummaryContentProps {
   state: ReducerState;
+  refNumber: string | null;
   paymongoCheckout: VoidFunction;
   loading: boolean;
+  userDetails: UserDetails;
 }

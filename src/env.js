@@ -26,6 +26,7 @@ export const env = createEnv({
 
     //BASE
     CC_API_KEY: z.string(),
+    WC_PROJECT_ID: z.string(),
   },
 
   client: {
@@ -77,6 +78,9 @@ export const env = createEnv({
     //BASE
     NEXT_PUBLIC_ONCHAINKIT_API_KEY: process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY,
     CC_API_KEY: process.env.CC_API_KEY,
+
+    //WALLETCONNECT
+    WC_PROJECT_ID: process.env.WC_PROJECT_ID,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
