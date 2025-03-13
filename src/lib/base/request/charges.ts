@@ -1,16 +1,18 @@
 import type { AxiosRequestConfig, AxiosInstance } from "axios";
 import { createChargeAxiosInstance } from "./axios-instance";
-import type { CreateChargeParams, GetChargeParams } from "../schema/charges";
+import type {
+  Charge,
+  CreateChargeParams,
+  GetChargeParams,
+} from "../schema/charges";
 
 export const createCharge = async (
   data: CreateChargeParams,
   axiosInstance: AxiosInstance,
   config?: AxiosRequestConfig,
 ) => {
-  const res = await axiosInstance.post<{ id: string }>("/", data, config);
-
-  const { id } = res.data as { id: string };
-  return id;
+  const res = await axiosInstance.post<{ data: Charge }>("/", data, config);
+  return res.data;
 };
 
 export const getCharge = async (

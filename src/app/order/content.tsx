@@ -204,7 +204,7 @@ export const OrderContent = () => {
   }, [ModActions, fn, itemCount, state.list]);
 
   return (
-    <div className="flex border-t-[0.33px] border-primary/40 bg-gray-100 py-8">
+    <div className="flex border-t-[0.33px] border-primary/40 bg-gray-100 pb-16 pt-3 md:py-8">
       <Wrapper>
         <div className="col-span-6 h-fit md:col-span-5 md:h-full lg:col-span-6">
           <Header

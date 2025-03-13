@@ -15,11 +15,11 @@ import type {
   SummaryProps,
 } from "./types";
 import { Icon } from "@/icons";
-import {
-  Checkout,
-  CheckoutButton,
-  CheckoutStatus,
-} from "@coinbase/onchainkit/checkout";
+// import {
+//   Checkout,
+//   CheckoutButton,
+//   CheckoutStatus,
+// } from "@coinbase/onchainkit/checkout";
 import { useBase } from "@/hooks/useBase";
 
 export function Summary({
@@ -46,7 +46,7 @@ export function Summary({
   return (
     <Card className="overflow-hidden border-[0.33px] border-primary bg-primary text-chalk shadow-md shadow-default">
       <CardHeader className="flex h-[96px] w-full rounded-none border-b-[0.33px] border-chalk/20">
-        <div className="grid h-[56px] w-full gap-1.5 px-2">
+        <div className="grid h-[56px] w-full gap-1.5 px-0.5 md:px-2">
           <div className="flex w-full items-start whitespace-nowrap">
             <div className="flex w-full items-start justify-between text-chalk">
               <p className="font-inter font-extrabold tracking-tight">
@@ -116,7 +116,6 @@ const SummaryContent = ({
   );
 
   const calcSubtotal = newSubtotal ?? subtotal;
-  // const shippingCost = -100;
   const voucher = 0;
   const taxPct = 12;
   const tax = (calcSubtotal * taxPct) / 100;
@@ -125,10 +124,6 @@ const SummaryContent = ({
   const calc: Calc[] = useMemo(
     () => [
       { label: "Subtotal", value: calcSubtotal },
-      // {
-      //   label: "Shipping " + (shippingCost <= 0 ? `discount` : ``),
-      //   value: shippingCost,
-      // },
       { label: "Discount voucher", value: voucher },
       { label: "Tax (12%)", value: tax },
       { label: "Total", value: total },
@@ -136,8 +131,8 @@ const SummaryContent = ({
     [calcSubtotal, tax, voucher, total],
   );
 
-  const { chargeHandler, statusHandler } = useBase({
-    local_price: { amount: String(total / 55), currency: "USDC" },
+  const { chargeHandler, loading: isLoading } = useBase({
+    local_price: { amount: (total / 55).toFixed(2), currency: "USDC" },
     pricing_type: "fixed_price",
     metadata: {
       refNumber: refNumber ?? "",
@@ -147,8 +142,16 @@ const SummaryContent = ({
     },
   });
 
+  const handleCryptoCheckout = async () => {
+    try {
+      await chargeHandler();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <div className="p-6 text-xs text-chalk">
+    <div className="px-4 pb-4 pt-6 text-xs text-chalk md:p-6">
       <div className="grid gap-x-4 gap-y-6">
         <div className="text-xs font-semibold tracking-tight">Items</div>
         {state.list?.length > 3 ? (
@@ -166,8 +169,8 @@ const SummaryContent = ({
         <HyperList
           container="grid gap-2"
           itemStyle=" font-inter font-light"
-          data={calc}
           component={Calculation}
+          data={calc}
         />
 
         <Separator />
@@ -198,18 +201,30 @@ const SummaryContent = ({
         <Separator />
 
         <div className="">
-          <div className="flex w-full items-center justify-evenly gap-8">
-            <div className="h-24 max-h-24 w-full overflow-visible">
-              <div className="flex h-fit w-full justify-start leading-none">
+          <div className="flex w-full items-center justify-evenly gap-4">
+            <div className="h-24 w-full space-y-4 overflow-visible">
+              <div className="flex h-fit w-full justify-start">
                 Pay with crypto
               </div>
-              <Checkout chargeHandler={chargeHandler} onStatus={statusHandler}>
+              <Button
+                color="primary"
+                isLoading={isLoading}
+                isDisabled={state.modified}
+                onPress={handleCryptoCheckout}
+                className="flex h-11 w-full gap-3 rounded-[0.5rem] border-2 border-[#0052FF] bg-[#0052FF]"
+              >
+                <Icon name="CryptoCoinbase" className="size-3" />
+                <p className="text-xs font-medium tracking-tight text-white drop-shadow-sm">
+                  Pay
+                </p>
+              </Button>
+              {/* <Checkout chargeHandler={chargeHandler} onStatus={statusHandler}>
                 <CheckoutButton coinbaseBranded />
                 <CheckoutStatus />
-              </Checkout>
+              </Checkout> */}
             </div>
 
-            <div className="h-24 w-full space-y-3">
+            <div className="h-24 w-full space-y-4">
               <div className="flex w-full justify-start whitespace-nowrap">
                 Pay with card or ewallets
               </div>
@@ -218,9 +233,10 @@ const SummaryContent = ({
                 isDisabled={state.modified}
                 isLoading={loading}
                 onPress={paymongoCheckout}
-                className="h-11 w-full rounded-[0.5rem] border-2 border-secondary bg-primary"
+                className="flex h-11 w-full gap-2 rounded-[0.5rem] border-2 border-white bg-white"
               >
-                <p className="text-xs font-medium tracking-tight text-white drop-shadow-sm">
+                <Icon name="PayMongo" className="size-4" />
+                <p className="text-xs font-medium tracking-tight text-[#22B47E] drop-shadow-sm">
                   Checkout
                 </p>
               </Button>
@@ -234,13 +250,11 @@ const SummaryContent = ({
 
 const GroupedLine = ({ items }: { items: ItemProps[] }) => (
   <li className="flex items-center justify-between">
-    <span className="">
-      {items?.[0]?.name}
-      <span className="font-arc px-1 text-xs font-light opacity-80">
-        x
-      </span>{" "}
+    <div className="">
+      <span>{items?.[0]?.name}</span>
+      <Icon name="CloseLight" className="size-2 text-orange-100" />
       <span>{items?.length}</span>
-    </span>
+    </div>
     <span className="font-inter tracking-widest">
       {formatAsMoney((items?.length ?? 1) * (items?.[0]?.price ?? 1))}
     </span>
@@ -249,12 +263,13 @@ const GroupedLine = ({ items }: { items: ItemProps[] }) => (
 
 const Line = (item: ItemProps) => (
   <div className="flex items-center justify-between">
-    <span className="">
-      {item.name}{" "}
-      <span className="font-arc px-1 text-xs font-light opacity-80">x</span>{" "}
+    <div className="flex items-center space-x-3">
+      <span>{item.name}</span>
+
+      <Icon name="CloseLight" className="size-2 text-orange-400" />
       <span>{item.quantity}</span>
-    </span>
-    <span className="font-arc tracking-wider">
+    </div>
+    <span className="tracking-wider">
       {formatAsMoney(item.quantity * item.price)}
     </span>
   </div>

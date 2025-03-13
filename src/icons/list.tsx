@@ -502,6 +502,27 @@ export function CheckDouble(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+function ChevronDown(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M18 9s-4.419 6-6 6s-6-6-6-6"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
 function CloudUpload(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -715,7 +736,7 @@ export function Energy(props: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
       height="1em"
-      viewBox="0 0 24 24"
+      viewBox="0 0 32 32"
       {...props}
     >
       <path
@@ -727,6 +748,44 @@ export function Energy(props: SVGProps<SVGSVGElement>) {
         d="m6.194 11.397l5.998-8.085c.47-.632 1.348-.239 1.348.603v6.258c0 .505.345.913.77.913h2.918c.663 0 1.016.927.578 1.518l-5.998 8.084c-.47.632-1.348.239-1.348-.603v-6.258c0-.505-.345-.913-.77-.913H6.771c-.663 0-1.016-.927-.578-1.517"
         color="currentColor"
       ></path>
+    </svg>
+  );
+}
+function CryptoCoinbase(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      aria-label="Coinbase logo"
+      height="32"
+      role="img"
+      viewBox="0 0 48 48"
+      width="32"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <title>Coinbase logo</title>
+      <path
+        d="M24,36c-6.63,0-12-5.37-12-12s5.37-12,12-12c5.94,0,10.87,4.33,11.82,10h12.09C46.89,9.68,36.58,0,24,0 C10.75,0,0,10.75,0,24s10.75,24,24,24c12.58,0,22.89-9.68,23.91-22H35.82C34.87,31.67,29.94,36,24,36z"
+        fill="currentColor"
+      ></path>
+    </svg>
+  );
+}
+function CryptoUSDC(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 32 32"
+      {...props}
+    >
+      <g fill="none">
+        <circle cx="16" cy="16" r="16" fill="#3E73C4"></circle>
+        <g fill="#FFF">
+          <path d="M20.022 18.124c0-2.124-1.28-2.852-3.84-3.156c-1.828-.243-2.193-.728-2.193-1.578s.61-1.396 1.828-1.396c1.097 0 1.707.364 2.011 1.275a.46.46 0 0 0 .427.303h.975a.416.416 0 0 0 .427-.425v-.06a3.04 3.04 0 0 0-2.743-2.489V9.142c0-.243-.183-.425-.487-.486h-.915c-.243 0-.426.182-.487.486v1.396c-1.829.242-2.986 1.456-2.986 2.974c0 2.002 1.218 2.791 3.778 3.095c1.707.303 2.255.668 2.255 1.639c0 .97-.853 1.638-2.011 1.638c-1.585 0-2.133-.667-2.316-1.578c-.06-.242-.244-.364-.427-.364h-1.036a.416.416 0 0 0-.426.425v.06c.243 1.518 1.219 2.61 3.23 2.914v1.457c0 .242.183.425.487.485h.915c.243 0 .426-.182.487-.485V21.34c1.829-.303 3.047-1.578 3.047-3.217z"></path>
+          <path d="M12.892 24.497c-4.754-1.7-7.192-6.98-5.424-11.653c.914-2.55 2.925-4.491 5.424-5.402c.244-.121.365-.303.365-.607v-.85c0-.242-.121-.424-.365-.485c-.061 0-.183 0-.244.06a10.895 10.895 0 0 0-7.13 13.717c1.096 3.4 3.717 6.01 7.13 7.102c.244.121.488 0 .548-.243c.061-.06.061-.122.061-.243v-.85c0-.182-.182-.424-.365-.546m6.46-18.936c-.244-.122-.488 0-.548.242c-.061.061-.061.122-.061.243v.85c0 .243.182.485.365.607c4.754 1.7 7.192 6.98 5.424 11.653c-.914 2.55-2.925 4.491-5.424 5.402c-.244.121-.365.303-.365.607v.85c0 .242.121.424.365.485c.061 0 .183 0 .244-.06a10.895 10.895 0 0 0 7.13-13.717c-1.096-3.46-3.778-6.07-7.13-7.162"></path>
+        </g>
+      </g>
     </svg>
   );
 }
@@ -1268,8 +1327,24 @@ function NumberList(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-
-export function Pen(props: SVGProps<SVGSVGElement>) {
+function PayMongo(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 32 32"
+      {...props}
+    >
+      <path
+        d="M30 15a15 15 0 01-13.83 15A24.25 24.25 0 0115 22.53v-3.74a9.36 9.36 0 003.75 7.49 15 15 0 004.54-5C26.92 14.86 20.61 5.92 15 1.87c-5.61 4-11.93 13-8.3 19.43a15 15 0 007 6.37L13.32 30A15 15 0 1130 15z"
+        fillRule="evenodd"
+        fill="#22B47E"
+      ></path>
+    </svg>
+  );
+}
+function Pen(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -2474,6 +2549,7 @@ export const icons = {
   ChartIcon,
   Check,
   CheckDouble,
+  ChevronDown,
   CloudUpload,
   Close,
   CloseLight,
@@ -2481,6 +2557,8 @@ export const icons = {
   Cocktail,
   CollectionIcon,
   Copy,
+  CryptoCoinbase,
+  CryptoUSDC,
   DotSm,
   ImageIcon,
   ImageGen,
@@ -2510,6 +2588,7 @@ export const icons = {
   MoreVertical,
   Mul,
   NumberList,
+  PayMongo,
   Pen,
   PencilEdit,
   Play,

@@ -85,7 +85,7 @@ export const ProductImage = memo(
 ProductImage.displayName = "ProductImage";
 
 export const Wrapper = memo(({ children }: PropsWithChildren) => (
-  <div className="grid w-full grid-cols-1 gap-y-8 px-8 md:grid-cols-10 md:gap-x-6 md:gap-y-0 md:px-12 lg:gap-x-8 lg:px-24 xl:gap-x-12 portrait:px-2">
+  <div className="grid w-full grid-cols-1 gap-y-10 px-8 md:grid-cols-10 md:gap-x-6 md:gap-y-0 md:px-12 lg:gap-x-8 lg:px-24 xl:gap-x-12 portrait:px-2">
     {children}
   </div>
 ));
@@ -176,7 +176,7 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
     <div
       className={cn(
         "group flex h-40 flex-col items-start justify-between rounded-2xl bg-white md:h-64",
-        "cursor-pointer border-2 border-secondary px-4 py-2.5 portrait:px-2",
+        "cursor-pointer border-2 border-secondary p-2.5 portrait:px-2",
         { [`bg-default/40 px-4 ${opacity} ${grayscale} md:px-8`]: isDisabled },
       )}
     >
@@ -212,7 +212,7 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
         </div>
       </div>
 
-      <div className="flex h-full w-full cursor-pointer items-end justify-between ps-1 md:mb-2 md:items-start md:space-x-1 xl:space-x-4">
+      <div className="flex h-full w-full cursor-pointer items-end justify-between md:mb-2 md:items-start md:space-x-1 xl:space-x-4">
         <div className="flex items-center space-x-2 font-inter">
           <p className="text-lg">{ticketPrice}</p>
           <span className="text-sm tracking-tighter opacity-80">
@@ -221,7 +221,7 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
         </div>
         <div
           className={cn(
-            "flex h-fit items-end space-x-3 rounded-full border-[0.33px] border-primary/10 bg-gray-100/60 p-1 opacity-100 md:h-fit md:items-center xl:space-x-4",
+            "flex h-fit items-end space-x-4 rounded-full border-[0.33px] border-primary/10 bg-gray-100/60 p-1 opacity-100 md:h-fit md:items-center xl:space-x-4",
             { "space-x-0": isDisabled },
           )}
         >
