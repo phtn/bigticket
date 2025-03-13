@@ -16,8 +16,6 @@ export const GetChargeParamsSchema = z.object({
 
 export type GetChargeParams = z.infer<typeof GetChargeParamsSchema>;
 
-// create an interface for this block below
-//
 export interface Charge {
   brand_color: string;
   brand_logo_url: string;

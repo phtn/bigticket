@@ -104,7 +104,7 @@ const FloatingComponent = ({
       direction={"bottom"}
     >
       <Drawer.Portal>
-        <Drawer.Content className="fixed bottom-0 right-0 z-[100] flex h-80 flex-col items-center justify-center bg-white/10 px-8 outline-none backdrop-blur md:w-[30rem] xl:w-[30rem] portrait:w-full">
+        <Drawer.Content className="fixed bottom-0 right-0 z-[100] flex h-72 flex-col items-center justify-center bg-white/10 outline-none md:w-[30rem] xl:w-[30rem] portrait:w-full">
           <Handle
             close={() => !open}
             className="w-12 border-peach bg-peach text-peach"
