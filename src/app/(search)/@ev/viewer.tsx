@@ -25,6 +25,7 @@ import {
   useState,
   type ReactNode,
   type RefObject,
+  memo,
 } from "react";
 import {
   ActionPanel,
@@ -49,6 +50,7 @@ import { VIPAccess, VIPNoAccess } from "./components/buttons/vip";
 import { useEventInfo } from "./useEventInfo";
 import { useEventViewer, type Moments } from "./useEventViewer";
 import { useTicketCart } from "./useTicketCart";
+import { SelectUser } from "convex/users/d";
 
 export const EventViewer = () => {
   const allEvents = useQuery(api.events.get.all);
@@ -107,30 +109,22 @@ interface MediaContainerProps {
   moments: Moments;
 }
 
-const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const { screen } = useDime(ref);
-  const router = useRouter();
-  const { xEventInfo, panelItems } = useEventInfo(xEvent);
-  const { xUser } = useUserCtx();
+// Custom hook for ticket management
+const useTicketManagement = (
+  xEvent: XEvent | undefined,
+  xUser: SelectUser | undefined,
+) => {
   const [hasClaimed, setHasClaimed] = useState(false);
-
-  const { open, toggle } = useCart();
 
   const isVip = useMemo(
     () => IsVIP(xEvent?.vip_list, xUser?.email),
     [xEvent?.vip_list, xUser?.email],
   );
+
   const isPrivate = useMemo(
     () => IsPrivateEvent(xEvent?.is_private),
     [xEvent?.is_private],
   );
-
-  useEffect(() => {
-    startTransition(() => {
-      setHasClaimed(HasClaimedTickets(isVip, xEvent?.vip_list, xUser?.email));
-    });
-  }, [isVip, xEvent?.vip_list, xUser?.email]);
 
   const ticketCount = useMemo(
     () =>
@@ -139,6 +133,28 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
     [xEvent?.vip_list, xUser?.email],
   );
 
+  useEffect(() => {
+    startTransition(() => {
+      setHasClaimed(HasClaimedTickets(isVip, xEvent?.vip_list, xUser?.email));
+    });
+  }, [isVip, xEvent?.vip_list, xUser?.email]);
+
+  return { hasClaimed, isVip, isPrivate, ticketCount };
+};
+
+// Optimize MediaContainer
+const MediaContainer = memo(({ xEvent, moments }: MediaContainerProps) => {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const { screen } = useDime(ref);
+  const router = useRouter();
+  const { xEventInfo, panelItems } = useEventInfo(xEvent);
+  const { xUser } = useUserCtx();
+  const { open, toggle } = useCart();
+
+  const { hasClaimed, isVip, isPrivate, ticketCount } = useTicketManagement(
+    xEvent,
+    xUser,
+  );
   const ticketCart = useTicketCart(xEvent, ticketCount);
 
   const handleGetTickets = useCallback(async () => {
@@ -290,14 +306,16 @@ const MediaContainer = ({ xEvent, moments }: MediaContainerProps) => {
       <EventViewerFooter h={contentHeight} />
     </div>
   );
-};
+});
+
+MediaContainer.displayName = "MediaContainer";
 
 interface TitleDisplayProps {
   event_name: string | null;
   narrow: { day: string; date: string };
   time: string;
 }
-const TitleDisplay = ({ event_name, narrow, time }: TitleDisplayProps) => (
+const TitleDisplay = memo(({ event_name, narrow, time }: TitleDisplayProps) => (
   <div className="absolute bottom-0 left-0 z-10 w-fit animate-enter space-y-0.5 rounded-sm bg-coal/30 py-3 backdrop-blur-sm md:bottom-2 md:left-2 md:rounded-lg">
     <p className="w-fit space-x-1.5 rounded-e-xl border-b-[0.25px] border-secondary bg-void/60 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-tighter text-chalk opacity-70 md:text-tiny">
       <span>{narrow.day}</span>
@@ -309,7 +327,9 @@ const TitleDisplay = ({ event_name, narrow, time }: TitleDisplayProps) => (
       </h2>
     </div>
   </div>
-);
+));
+
+TitleDisplay.displayName = "TitleDisplay";
 
 interface MediaProps {
   cover_src: string | null;
