@@ -51,7 +51,7 @@ export const ModButton = memo(
       disabled={props.disabled}
       onPress={props.fn}
     >
-      <Iconx name={props.icon} className="size-4 stroke-1" />
+      <Iconx name={props.icon} className="size-4" />
     </Button>
   ),
 );
@@ -176,8 +176,8 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
   return (
     <div
       className={cn(
-        "group flex h-40 flex-col items-start justify-between rounded-2xl bg-white md:h-[15rem]",
-        "cursor-pointer border-[0.33px] border-primary bg-white px-4 py-3 shadow-md shadow-default/40",
+        "group flex h-44 flex-col items-start justify-between rounded-2xl bg-white md:h-[15rem]",
+        "cursor-pointer border-[0.33px] border-primary/60 bg-white px-4 pb-3.5 pt-5 shadow-md shadow-default/40 md:py-3",
         { [`bg-default/40 px-4 ${opacity} ${grayscale} md:px-8`]: isDisabled },
       )}
     >
@@ -198,8 +198,11 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
               {item?.name}
             </p>
           </div>
-          <div className="flex items-center text-sm">
-            <Iconx name="location-01" className="mr-2.5 md:mr-3 md:size-4" />
+          <div className="flex items-center space-y-0.5 text-sm">
+            <Iconx
+              name="location-01"
+              className="mr-2.5 size-3.5 md:mr-3 md:size-4"
+            />
             <p className="font-semibold capitalize leading-none tracking-tight md:text-sm lg:text-[16px]">
               {detail.venue}
             </p>
@@ -207,7 +210,7 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
           <div className="flex items-center text-xs">
             <Iconx
               name="calendar-setting-01"
-              className="mr-2.5 md:mr-3 md:size-4"
+              className="mr-2.5 size-3.5 md:mr-3 md:size-4"
             />
             <p className="tracking-tight md:text-sm lg:text-[16px]">
               {detail.date}
@@ -242,106 +245,3 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
   );
 });
 CartItem.displayName = "CartItem";
-
-/*
-<div className="flex items-center justify-start">
-            {getUniqueSet(categories)?.map((cat, i) => (
-              <Stat
-                special
-                key={`${cat}_${i}_`}
-                label={cat ?? "cat"}
-                value={`${Math.round(
-                  ((Number(list?.find((item) => findCat(item) === cat)?.price) *
-                    Number(
-                      list?.find((item) => findCat(item) === cat)?.quantity,
-                    )) /
-                    subtotal) *
-                    100,
-                ).toFixed(0)}`}
-              />
-            ))}
-          </div>
-*/
-
-/*
-const Item = (props: ListItemProps) => {
-  const { name, image, description, quantity, price, id, fn } = props;
-
-  const handleDelete = useCallback(() => {
-    if (id) fn.deleteFn(id);
-  }, [id, fn]);
-
-  const handleIncrement = useCallback(() => {
-    if (id) fn.incrementFn(id);
-  }, [id, fn]);
-
-  const handleDecrement = useCallback(() => {
-    if (id) fn.decrementFn(id);
-  }, [id, fn]);
-
-  return (
-    <div
-      className={cn(
-        "font-ibm group flex h-28 cursor-pointer items-center justify-between transition-all ease-out",
-        "border-b border-dotted border-primary/20 px-4",
-        { "bg-default/40 px-8 opacity-80 grayscale": quantity === 0 },
-      )}
-    >
-      <div className="flex w-[200px] items-center space-x-6">
-        <ProductImage
-          alt={`${description}_${name}`}
-          src={image}
-          quantity={quantity}
-        />
-        <div
-          className={cn("flex w-[240px] flex-col space-y-2 leading-none", {
-            "opacity-40": quantity === 0,
-          })}
-        >
-          <div className={cn("h-12 whitespace-nowrap")}>
-            <p className="font-inter font-semibold tracking-tight">{name}</p>
-            <p className="font-inter text-sm text-gray-600">
-              {formatAsMoney(price)}
-            </p>
-          </div>
-          <div className="flex items-center space-x-4 leading-none">
-            <p className="font-arc text-[10px] font-light opacity-60">
-              Ticket number: {id?.split("-").pop()}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="-mb-3 flex cursor-pointer items-end justify-end md:items-start md:space-x-1 xl:space-x-4">
-        <div
-          className={cn(
-            "invisible -mb-2 flex h-fit items-center space-x-3 rounded-full border-x-[12px] border-white bg-white p-1 opacity-100 group-hover:visible xl:space-x-4",
-            { "border-x-10 md:space-x-6": quantity === 0 },
-          )}
-        >
-          <ModButton fn={handleIncrement} icon="Plus" />
-          <ModButton
-            fn={handleDecrement}
-            icon="Minus"
-            disabled={quantity === 0}
-          />
-          <ModButton fn={handleDelete} icon="CloseLight" />
-        </div>
-      </div>
-    </div>
-  );
-};
-*/
-
-// const Line = (item: ItemProps) => (
-//   <div className="flex items-center justify-between">
-//     <div className="flex items-center space-x-3">
-//       <span>{item.name}</span>
-
-//       <Iconx name="close" className="size-2 text-orange-400" />
-//       <span>{item.quantity}</span>
-//     </div>
-//     <span className="tracking-wider">
-//       {formatAsMoney(item.quantity * item.price)}
-//     </span>
-//   </div>
-// );

@@ -165,7 +165,7 @@ export const OrderContent = () => {
           className="group rounded-full border-[0.33px] border-primary/60 bg-white"
           onPress={fn.undoFn}
         >
-          <Iconx name="arrow-turn-up" className="size-4 -rotate-45" />{" "}
+          <Iconx name="arrow-turn-up" className="size-4 -rotate-90" />{" "}
         </Button>
         <Button
           size="sm"

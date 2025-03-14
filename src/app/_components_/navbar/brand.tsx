@@ -16,7 +16,7 @@ export const Brand = ({ className, children }: BrandProps) => {
   return (
     <div
       className={cn(
-        "_md:w-[370px] hidden h-full w-1/3 items-center justify-between ps-1 md:flex",
+        "hidden h-full w-1/3 items-center justify-between ps-1 md:flex",
         { flex: pathname },
         className,
       )}

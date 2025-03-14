@@ -331,7 +331,7 @@ const MediaComponent = ({
   gallery,
 }: MediaProps) => {
   const { currentIndex } = useCarousel();
-  const [src, setSrc] = useState<string>("/icon/wordmark.svg");
+  const [src, setSrc] = useState<string>("/png/wordmark.png");
 
   useEffect(() => {
     clearConsole();
