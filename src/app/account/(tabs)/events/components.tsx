@@ -1,5 +1,6 @@
 import { useToggle } from "@/hooks/useToggle";
-import { Icon, type IconName } from "@/icons";
+import { Iconx } from "@/icons/icon";
+import { type IconName } from "@/icons/types";
 import { HyperList } from "@/ui/list";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
@@ -42,7 +43,7 @@ export const PopOptions = ({ menu, children, onAction }: PopOptionsProps) => {
         onClick={() => handleMenuItem(item)}
         className="flex w-full items-center gap-2 rounded-lg px-4 py-2.5 text-sm hover:bg-default-100"
       >
-        <Icon name={item.icon} className="size-4" />
+        <Iconx name={item.icon} className="size-4" />
         <span>{item.label}</span>
       </button>
     ),

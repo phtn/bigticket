@@ -5,10 +5,11 @@ import { SidebarCtx } from "@/app/ctx/sidebar";
 import { useUserCtx } from "@/app/ctx/user";
 import { useScreen } from "@/hooks/useScreen";
 import { useToggle } from "@/hooks/useToggle";
-import { Icon, type IconName } from "@/icons";
+import { Iconx } from "@/icons/icon";
+import { type IconName } from "@/icons/types";
 import { cn } from "@/lib/utils";
-import { ButtonIcon } from "@/ui/button";
 import { Hyper } from "@/ui/button/button";
+import { BtnIcon } from "@/ui/button/button-icon";
 import { HyperList } from "@/ui/list";
 import { TextLoader } from "@/ui/loader/text";
 import { opts } from "@/utils/helpers";
@@ -128,8 +129,8 @@ export const Searchbar = () => {
           innerWrapper: "border-0",
         }}
         startContent={
-          <Icon
-            name="Search"
+          <Iconx
+            name="search"
             className="pointer-events-none size-4 stroke-gray-500 stroke-1 text-gray-500"
           />
         }
@@ -141,12 +142,12 @@ export const Searchbar = () => {
 const Collection = () => {
   const { toggle } = use(SidebarCtx)!;
   return (
-    <ButtonIcon
+    <BtnIcon
       aria-label="bookmarks-list"
       onClick={toggle}
-      icon="Bookmark2"
+      icon="bookmark-list"
       bg="text-white"
-      color="text-macl-gray"
+      color="text-primary"
     />
   );
 };
@@ -190,19 +191,19 @@ const UserAvatar = (props: { photo_url: string | null }) => {
         id: 1,
         label: "Profile",
         href: "/account",
-        icon: "UserSettings",
+        icon: "user-settings",
       },
       {
         id: 2,
         label: "Tickets",
         href: "/account/tickets",
-        icon: "Ticket",
+        icon: "ticket-tilted",
       },
       {
         id: 3,
         label: "Events",
         href: "/account/events",
-        icon: "ChartIcon",
+        icon: "event",
       },
     ];
 
@@ -211,17 +212,14 @@ const UserAvatar = (props: { photo_url: string | null }) => {
         <button
           name={label}
           onClick={handleRoute(href, toggle)}
-          className="group flex w-full items-center justify-between gap-12 overflow-hidden rounded-lg px-3 py-3"
+          className="flex w-full items-center justify-between gap-12 overflow-hidden rounded-lg border-1 border-transparent px-3 py-3 md:hover:border-chalk/60"
         >
           <div className="flex items-center">
             <h2 className="font-inter font-semibold tracking-tighter drop-shadow-sm">
               {label}
             </h2>
           </div>
-          <Icon
-            name={icon}
-            className="size-5 text-chalk transition-all duration-300 group-hover:scale-110 group-hover:text-white"
-          />
+          <Iconx name={icon} className="size-5 text-white" />
         </button>
       );
     };

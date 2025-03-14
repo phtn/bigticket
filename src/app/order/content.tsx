@@ -2,7 +2,6 @@
 
 import { useMoment } from "@/hooks/useMoment";
 import { usePaymongo } from "@/hooks/usePaymongo";
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { formatAsMoney, guid } from "@/utils/helpers";
 import { Button } from "@nextui-org/react";
@@ -13,6 +12,7 @@ import { CartItem, Header, Wrapper } from "./components";
 import { OrderProvider, useOrder } from "./ctx";
 import { Summary } from "./summary";
 import type { ItemProps } from "./types";
+import { Iconx } from "@/icons/icon";
 
 export const Content = () => (
   <Suspense>
@@ -165,7 +165,7 @@ export const OrderContent = () => {
           className="group rounded-full border-[0.33px] border-primary/60 bg-white"
           onPress={fn.undoFn}
         >
-          <Icon name="Undo" className="size-4" />
+          <Iconx name="arrow-turn-up" className="size-4 -rotate-45" />{" "}
         </Button>
         <Button
           size="sm"

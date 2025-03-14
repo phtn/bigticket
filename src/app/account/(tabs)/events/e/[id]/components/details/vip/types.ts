@@ -1,5 +1,5 @@
 import type { XEvent } from "@/app/types";
-import type { IconName } from "@/icons";
+import type { IconName } from "@/icons/types";
 import type { VIPField } from "../schema";
 
 export type VIPState = {

@@ -1,10 +1,10 @@
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { Card } from "@nextui-org/react";
 import NumberFlow from "@number-flow/react";
 import { useCallback, useMemo } from "react";
 import { type InfoItem, type PanelItem } from "../useEventInfo";
+import { Iconx } from "@/icons/icon";
 
 interface ActionPanelProps {
   h: string;
@@ -25,7 +25,7 @@ export const ActionPanel = ({ h, data }: ActionPanelProps) => {
           )}
           style={{ height: h }}
         >
-          <Icon name={action.icon} className="size-5" />
+          <Iconx name={action.icon} className="size-5" />
         </button>
       );
     },
@@ -74,7 +74,7 @@ export const EventGroupDetail = ({
       >
         <span>Organizers</span>
         {!debounced ? (
-          <Icon name="SpinnerDotScale" />
+          <Iconx name="spinners-bouncing-ball" />
         ) : (
           <span className="animate-enter">{host_name}</span>
         )}
@@ -85,7 +85,7 @@ export const EventGroupDetail = ({
       >
         <span>{is_online ? "Website" : "Venue"}</span>
         {!debounced ? (
-          <Icon name="SpinnerDotScale" />
+          <Iconx name="spinners-3-dots-move" />
         ) : (
           <div className="overflow-x-scroll text-right">
             {is_online ? (
@@ -145,6 +145,7 @@ export const EventViewerFooter = ({ h }: { h: string }) => (
     className="flex h-[36px] w-full items-center justify-end bg-peach px-2 text-xs font-light md:h-[36px]"
     style={{ height: h }}
   >
-    Big Ticket &copy;{new Date().getFullYear()}
+    <span>&copy;&nbsp;{new Date().getFullYear()}</span>
+    <span>&nbsp;&nbsp;Big Ticket </span>
   </div>
 );

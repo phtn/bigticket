@@ -2,7 +2,7 @@ import { Toaster, ToastBar } from "react-hot-toast";
 
 import { toast } from "react-hot-toast";
 import { Button } from "@nextui-org/react";
-import { Icon } from "@/icons";
+import { Iconx } from "@/icons/icon";
 
 export const barToast = () => (
   <Toaster>
@@ -10,7 +10,7 @@ export const barToast = () => (
       <ToastBar toast={t}>
         {() => (
           <>
-            <Icon name="Fire" className="text-red-500" />
+            <Iconx name="energy" className="text-red-500" />
             <p>Butt fuck yea!</p>
             {t.type !== "loading" && (
               <Button variant="shadow" color="primary">
@@ -27,7 +27,7 @@ export const barToast = () => (
 export const onSuccess = (msg: string) => toast.success(msg);
 export const onInfo = (msg: string) =>
   toast(msg, {
-    icon: <Icon name="Info" className="size-5 text-sky-300" />,
+    icon: <Iconx name="information-circle" className="size-5 text-sky-300" />,
     style: {
       padding: "8px 12px",
       backgroundColor: "#191818",
@@ -38,7 +38,7 @@ export const onInfo = (msg: string) =>
   });
 export const onWarn = (msg: string) =>
   toast(msg, {
-    icon: <Icon name="AlertTriLine" className="size-5 text-orange-400" />,
+    icon: <Iconx name="alert-02" className="size-5 text-orange-400" />,
     style: {
       padding: "8px 12px",
       backgroundColor: "#191818",

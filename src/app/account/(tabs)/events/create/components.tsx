@@ -1,5 +1,4 @@
 import { useToggle } from "@/hooks/useToggle";
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { BottomVaul } from "@/ui/vaul";
 import {
@@ -35,6 +34,7 @@ import {
   ticket_count_options,
 } from "./static";
 import type { ClassName } from "@/app/types";
+import { Iconx } from "@/icons/icon";
 
 export interface OptionButtonProps {
   name: OptionKey;
@@ -155,8 +155,8 @@ export const TicketCount = ({
             className="relative flex h-14 items-center justify-center rounded-xl bg-primary text-white"
           >
             {item.value}
-            <Icon
-              name="Check"
+            <Iconx
+              name="check"
               className={cn(
                 "absolute right-3 top-3 hidden animate-enter text-secondary",
                 { flex: ticketCount === +item.value },

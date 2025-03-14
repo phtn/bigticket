@@ -1,18 +1,18 @@
 "use client";
 
 import { Header } from "@/app/account/_components_/common";
-import { Icon } from "@/icons";
 import { Accordion, AccordionItem, Card, CardHeader } from "@nextui-org/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { type SelectUser } from "convex/users/d";
 import { HyperList } from "@/ui/list";
-import { ButtonIcon } from "@/ui/button";
 import { HyperLink } from "@/ui/button/button";
 import { useQuery } from "convex/react";
 import { api } from "@vx/api";
 import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
 import { getUserID } from "@/app/actions";
 import { Err } from "@/utils/helpers";
+import { BtnIcon } from "@/ui/button/button-icon";
+import { Iconx } from "@/icons/icon";
 
 export const UserSettings = () => {
   const { q } = useConvexUtils();
@@ -49,7 +49,7 @@ export const UserSettings = () => {
     <div className="rounded- min-h-[80vh] w-full justify-center pb-10 md:rounded-lg md:px-6">
       <div className="">
         <Header title="Settings">
-          <Icon name="Settings" className="size-4 text-macl-gray" />
+          <Iconx name="settings-01" className="size-4 text-macl-gray" />
         </Header>
 
         <div className="space-y-6 px-4 font-inter text-xs">
@@ -83,7 +83,7 @@ export const UserSettings = () => {
             </div>
             <Accordion variant="splitted">
               <AccordionItem
-                indicator={<Icon name="Plus" className="size-4" />}
+                indicator={<Iconx name="plus-sign" className="size-4" />}
                 title="Additional Settings"
                 classNames={{
                   base: "bg-primary/40 rounded-lg h-fit",
@@ -128,6 +128,6 @@ const FieldItem = (item: FieldItemProps) => (
       <p className="font-medium opacity-60">{item.label}</p>
       <p className="text-[16px] font-medium">{item.value}</p>
     </div>
-    <ButtonIcon icon="Pen" bg="text-gray-200" />
+    <BtnIcon icon="pencil-edit-01" bg="text-gray-200" />
   </div>
 );

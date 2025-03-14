@@ -10,7 +10,7 @@ export const EventsList = () => {
         keyId: "upcoming",
         label: "upcoming",
         href: "",
-        icon: "Upcoming",
+        icon: "event",
         count: 1,
         color: "bg- text-slate-800",
       },
@@ -19,7 +19,7 @@ export const EventsList = () => {
         keyId: "nightlife",
         label: "Nightlife",
         href: "",
-        icon: "Cocktail",
+        icon: "event",
         count: 29,
         color: "bg-macl-indigo text-slate-800",
       },
@@ -28,7 +28,7 @@ export const EventsList = () => {
         keyId: "concerts",
         label: "Concerts",
         href: "",
-        icon: "EGuitarFender",
+        icon: "energy",
         count: 1,
         color: "bg-macl-mint text-slate-800",
       },
@@ -41,27 +41,28 @@ export const EventsList = () => {
 };
 
 export const GetAwaysList = () => {
-  const getaways: CategoryItem[] = useMemo(
-    () => [
-      {
-        id: 0,
-        keyId: "flights",
-        label: "Flights",
-        href: "",
-        icon: "Airplane2",
-        count: 0,
-        color: "bg-amber-300/80 text-slate-800",
-      },
-      {
-        id: 1,
-        keyId: "hotels",
-        label: "Hotels",
-        href: "",
-        icon: "HotelRoom",
-        count: 1,
-        color: "bg-macl-blue/10 text-slate-800",
-      },
-    ],
+  const getaways = useMemo(
+    () =>
+      [
+        {
+          id: 0,
+          keyId: "flights",
+          label: "Flights",
+          href: "",
+          icon: "event",
+          count: 0,
+          color: "bg-amber-300/80 text-slate-800",
+        },
+        {
+          id: 1,
+          keyId: "hotels",
+          label: "Hotels",
+          href: "",
+          icon: "event",
+          count: 1,
+          color: "bg-macl-blue/10 text-slate-800",
+        },
+      ] as CategoryItem[],
     [],
   );
   return (
@@ -74,45 +75,46 @@ export const GetAwaysList = () => {
 };
 
 export const ShopsList = () => {
-  const shops: CategoryItem[] = useMemo(
-    () => [
-      {
-        id: 0,
-        keyId: "shopping",
-        label: "Shopping",
-        href: "",
-        icon: "Fire",
-        count: 0,
-        color: "bg-macl-blue/10 text-macl-blue",
-      },
-      {
-        id: 1,
-        keyId: "restaurants",
-        label: "Restaurants",
-        href: "",
-        icon: "InfoLine",
-        count: 1,
-        color: "bg-macl-blue/10 text-macl-pink",
-      },
-      {
-        id: 2,
-        keyId: "wellness",
-        label: "Wellness",
-        href: "",
-        icon: "InfoLine",
-        count: 1,
-        color: "bg-macl-blue/10 text-macl-pink",
-      },
-      {
-        id: 3,
-        keyId: "vouchers",
-        label: "Vouchers",
-        href: "",
-        icon: "InfoLine",
-        count: 1,
-        color: "bg-macl-blue/10 text-macl-pink",
-      },
-    ],
+  const shops = useMemo(
+    () =>
+      [
+        {
+          id: 0,
+          keyId: "shopping",
+          label: "Shopping",
+          href: "",
+          icon: "event",
+          count: 0,
+          color: "bg-macl-blue/10 text-macl-blue",
+        },
+        {
+          id: 1,
+          keyId: "restaurants",
+          label: "Restaurants",
+          href: "",
+          icon: "information-circle",
+          count: 1,
+          color: "bg-macl-blue/10 text-macl-pink",
+        },
+        {
+          id: 2,
+          keyId: "wellness",
+          label: "Wellness",
+          href: "",
+          icon: "information-circle",
+          count: 1,
+          color: "bg-macl-blue/10 text-macl-pink",
+        },
+        {
+          id: 3,
+          keyId: "vouchers",
+          label: "Vouchers",
+          href: "",
+          icon: "information-circle",
+          count: 1,
+          color: "bg-macl-blue/10 text-macl-pink",
+        },
+      ] as CategoryItem[],
     [],
   );
   return <SidebarList title="shops" data={shops} component={SidebarListItem} />;

@@ -22,7 +22,7 @@ export const TicketViewer = () => {
     >
       <FlatWindow
         closeFn={toggle}
-        icon="QrCode"
+        icon="qr-code"
         title={`Ticket Number: ${ticket?.ticket_id.split("-")[0]}`}
         variant="god"
         className="absolute z-50 w-full rounded-none border-0 bg-transparent text-primary"

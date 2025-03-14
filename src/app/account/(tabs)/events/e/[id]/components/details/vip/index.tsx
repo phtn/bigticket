@@ -1,9 +1,7 @@
 import { useConvexCtx } from "@/app/ctx/convex";
 import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
 import { onSuccess, onWarn } from "@/app/ctx/toast";
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
-import { ButtonIcon } from "@/ui/button";
 import { Hyper } from "@/ui/button/button";
 import { HyperList } from "@/ui/list";
 import { Err, getInitials, opts } from "@/utils/helpers";
@@ -31,6 +29,8 @@ import { vip_info, type VIPField, VIPZod } from "../schema";
 import { initialVIPState, vipReducer } from "./reducer";
 import type { VIPBlockProps, VIPContentProps, VIPWithDefaults } from "./types";
 import { checkedState } from "../utils";
+import { Iconx } from "@/icons/icon";
+import { BtnIcon } from "@/ui/button";
 
 export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   const [event, setEvent] = useState<SelectEvent | null>();
@@ -314,8 +314,8 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
               )}
             >
               {vip.invitation_sent ? "Sent" : "Not Sent"}
-              <Icon
-                name="Check"
+              <Iconx
+                name="check"
                 className={cn("hidden size-2.5", { flex: vip.invitation_sent })}
               />
             </div>
@@ -332,7 +332,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         <Hyper
           lg
           fullWidth
-          end="Minus"
+          end="minus-sign"
           destructive
           type="submit"
           loading={pending}
@@ -362,11 +362,15 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
                 <div className="w-0"></div>
                 <div className="flex items-center gap-2 font-semibold">
                   <span className="flex items-center gap-2">
-                    <Icon name="VIPIcon2" className="size-4 text-teal-400" />{" "}
+                    <Iconx name="energy" className="size-4 text-orange-400" />{" "}
                     Guest List
                   </span>
                   <div className="flex size-5 items-center justify-center rounded-full bg-vanilla/5 font-sans text-sm font-semibold text-vanilla">
-                    {vipList ? vipList.length : <Icon name="SpinnerBall" />}
+                    {vipList ? (
+                      vipList.length
+                    ) : (
+                      <Iconx name="spinners-bouncing-ball" />
+                    )}
                   </div>
                 </div>
               </div>
@@ -375,8 +379,8 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
                   <span className="hidden font-bold tracking-tight md:flex">
                     Tickets
                   </span>
-                  <Icon
-                    name="Ticket"
+                  <Iconx
+                    name="ticket-horizontal"
                     className="-mt-[1px] size-4 text-vanilla"
                   />
                 </div>
@@ -384,8 +388,8 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
                   <span className="hidden font-semibold tracking-tight md:flex">
                     Invite
                   </span>
-                  <Icon
-                    name="MailSend"
+                  <Iconx
+                    name="mail-send"
                     className="-mt-[1px] size-4 text-vanilla"
                   />
                 </div>
@@ -433,7 +437,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
       <VIPBlock
         data={fields}
         label="Create Guest List"
-        icon="AddUsers"
+        icon="user-add"
         editMode={selectedVIP !== undefined}
       />
     );
@@ -461,7 +465,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
                   <p className="font-sans text-sm">{issued_tickets}</p>
                 </div>
                 <Hyper
-                  end={selectedVIP ? "ArrowRightUp" : "Plus"}
+                  end={selectedVIP ? "square-arrow-up-right" : "plus-sign"}
                   label={selectedVIP ? "Update" : "Add"}
                   disabled={pending}
                   loading={pending}
@@ -532,14 +536,14 @@ const VIPFieldItem = (field: VIPField) => {
       endContent={
         field.name === "ticket_count" ? (
           <div className="-mb-1 mr-1.5 flex items-end gap-1.5">
-            <ButtonIcon
-              icon="Minus"
+            <BtnIcon
+              icon="minus-sign"
               onClick={handlePress(-1)}
               bg="text-gray-200 group-hover/icon:text-gray-300 group-hover/icon:opacity-60"
               disabled={Number(field.value) === 0}
             />
-            <ButtonIcon
-              icon="Plus"
+            <BtnIcon
+              icon="plus-sign"
               onClick={handlePress(1)}
               shadow="hidden"
               bg="text-gray-200 group-hover/icon:text-gray-300 group-hover/icon:opacity-60"

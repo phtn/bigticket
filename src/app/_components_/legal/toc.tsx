@@ -1,10 +1,10 @@
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
-import { ButtonIcon } from "@/ui/button";
 import { HyperList } from "@/ui/list";
 import Link from "next/link";
 import { Brand, BrandName, TicketsMono, TitleMono } from "../navbar/brand";
 import type { TocProps, Section, FooterProps } from "./types";
+import { Iconx } from "@/icons/icon";
+import { BtnIcon } from "@/ui/button/button-icon";
 
 export const Toc = ({ sections, isOpen, toggleFn, footer }: TocProps) => {
   return (
@@ -26,8 +26,8 @@ export const Toc = ({ sections, isOpen, toggleFn, footer }: TocProps) => {
             <TitleMono />
           </BrandName>
         </div>
-        <ButtonIcon
-          icon="LeftChev"
+        <BtnIcon
+          icon="arrow-left-01"
           onClick={toggleFn}
           bg="text-transparent"
           color="text-slate-400"
@@ -57,7 +57,7 @@ const SectionItem = (section: Section) => (
     className="flex space-x-2 rounded-xl p-2 text-xs text-primary-300 transition-colors duration-300 hover:bg-indigo-100/5"
   >
     <div className="relative flex size-8 items-center justify-center">
-      <Icon name="Squircle" className="absolute size-7 text-army opacity-15" />
+      <Iconx name="squircle" className="absolute size-7 text-army opacity-15" />
       <p className="absolute text-sm font-semibold text-chalk">
         {section.keyId + 1}
       </p>
@@ -70,16 +70,18 @@ const SectionItem = (section: Section) => (
 
 const TocFooter = ({ label, href, company }: FooterProps) => (
   <div className="flex h-12 w-full items-center justify-between gap-2 border-t-[0.33px] border-gray-600 px-4 text-xs capitalize tracking-tight text-primary-400">
-    <div className="flex gap-2 font-bold">
-      <Link href={"/"}>{company}</Link>
-      <span className="font-light">&copy;{new Date().getFullYear()}</span>
+    <div className="flex gap-2">
+      <Link href={"/"}>
+        <span>&copy;&nbsp;{new Date().getFullYear()}</span>
+        <span className="font-medium">&nbsp;&nbsp;{company}</span>
+      </Link>
     </div>
     <Link
       href={href}
       className="flex items-center gap-2 text-indigo-300 hover:underline"
     >
       {label}
-      <Icon name="ArrowRightUp" className="size-4" />
+      <Iconx name="square-arrow-up-right" className="size-4" />
     </Link>
   </div>
 );

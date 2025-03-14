@@ -1,5 +1,5 @@
 import type { ClassName } from "@/app/types";
-import type { IconName } from "@/icons";
+import type { IconName } from "@/icons/types";
 import type { FC, ReactNode } from "react";
 
 export interface SidebarProps {

@@ -236,7 +236,7 @@ export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
             <Hyper
               label="Save"
               type="submit"
-              end="ArrowRightUp"
+              end="square-arrow-up-right"
               fullWidth
               rounded
               dark
@@ -253,7 +253,7 @@ export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
 export const SupportBlock = () => {
   return (
     <div className="w-full space-y-6 p-6">
-      <BlockHeader label={"Support"} icon={"Support"} />
+      <BlockHeader label={"Support"} icon={"customer-support"} />
       <SupportFields />
     </div>
   );
@@ -295,7 +295,7 @@ const SupportFields = () => {
 const TicketSales = () => {
   return (
     <div className="w-full space-y-6 p-6">
-      <BlockHeader label={"Ticket Sales"} icon={"Ticket"} />
+      <BlockHeader label={"Ticket Sales"} icon={"ticket-horizontal"} />
       <div className="w-full gap-6">
         <DateTimeFields />
       </div>

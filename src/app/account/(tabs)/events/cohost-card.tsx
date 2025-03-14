@@ -3,15 +3,15 @@
 import { getUserID } from "@/app/actions";
 import { type XEvent } from "@/app/types";
 import { useMoment } from "@/hooks/useMoment";
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
-import { ButtonIcon } from "@/ui/button";
 import { opts } from "@/utils/helpers";
 import { Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { type ButtonHTMLAttributes, useCallback } from "react";
 import { type IMenuItem, PopOptions } from "./components";
 import { useUserCtx } from "@/app/ctx/user";
+import { Iconx } from "@/icons/icon";
+import { BtnIcon } from "@/ui/button";
 
 export const CohostedEventCard = (xEvent: XEvent) => {
   const {
@@ -67,11 +67,10 @@ export const CohostedEventCard = (xEvent: XEvent) => {
     () =>
       is_active && (
         <div className="relative flex size-5 items-center justify-center">
-          <Icon
-            name="SpinnersPulseRing"
+          <Iconx
+            name="spinners-pulse-rings-multiple"
             className="absolute size-5 text-teal-400"
           />
-          <Icon name="DotSm" className="absolute size-4 text-teal-400" />
         </div>
       ),
     [is_active],
@@ -132,28 +131,28 @@ export const CohostedEventCard = (xEvent: XEvent) => {
       }
     };
 
-    const menu: IMenuItem[] = [
+    const menu = [
       {
         id: 1,
         type: "route",
         label: "Event Settings",
         value: `/account/events/l/${event_id}---${xUser?.id.split("-").pop()}`,
-        icon: "Pen",
+        icon: "pencil-edit-01",
       },
       {
         id: 2,
         type: "route",
         label: "Ticket Scanner",
         value: `/account/events/l/${event_id}---${xUser?.id.split("-").pop()}`,
-        icon: "QrCode",
+        icon: "qr-code",
       },
-    ];
+    ] as IMenuItem[];
 
     return (
       <PopOptions menu={menu} onAction={handleAction}>
         <section className="flex size-8 items-center justify-center">
-          <ButtonIcon
-            icon="Settings"
+          <BtnIcon
+            icon="settings-01"
             bg="text-chalk opacity-0"
             color="text-chalk"
           />
@@ -163,12 +162,7 @@ export const CohostedEventCard = (xEvent: XEvent) => {
   }, [event_id, xUser?.id]);
 
   return (
-    <Card
-      isFooterBlurred
-      className={cn(
-        "h-[300px] w-full rounded-md border border-indigo-600 bg-primary",
-      )}
-    >
+    <Card isFooterBlurred className={cn("h-[300px] w-full")}>
       <CardHeader className="absolute z-10 flex w-full items-start justify-between gap-3 rounded-none bg-black/10 ps-4 backdrop-blur-[1px]">
         <TitleSection />
         <MoreOptions />
@@ -205,8 +199,8 @@ export const EditButton = (props: EventButtonProps) => {
       )}
       {...props}
     >
-      <Icon
-        name={"Pen"}
+      <Iconx
+        name={"pencil-edit-01"}
         className="size-5 text-chalk shadow-coal drop-shadow-sm group-hover/btn:text-white"
       />
     </button>
@@ -215,8 +209,8 @@ export const EditButton = (props: EventButtonProps) => {
 
 const LiveViewScanner = (props: EventButtonProps) => {
   return (
-    <ButtonIcon
-      icon="QrCode"
+    <BtnIcon
+      icon="qr-code"
       color="text-indigo-400 size-5"
       bg="text-void opacity-100 size-12"
       {...props}

@@ -1,10 +1,10 @@
 import { useMoment } from "@/hooks/useMoment";
-import { Icon } from "@/icons";
 import type { UserTicket } from "convex/events/d";
 import { useCallback, useRef } from "react";
 import { useTicketViewer } from "./ctx";
 import { TicketStack } from "@/ui/card/ticket";
 import { motion, useInView } from "motion/react";
+import { Iconx } from "@/icons/icon";
 
 export const TicketCard = (ticket: UserTicket) => {
   const { event_time, compact, event_day } = useMoment({
@@ -108,7 +108,7 @@ export const TicketCard = (ticket: UserTicket) => {
           ease: isInView ? "easeOut" : "easeIn", // Different easing for entry/exit
         }}
       >
-        <Icon name="QrCode" className="size-5" />
+        <Iconx name="qr-code" className="size-5" />
       </motion.button>
     </motion.div>
   );

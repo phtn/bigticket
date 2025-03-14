@@ -14,13 +14,8 @@ import type {
   SummaryContentProps,
   SummaryProps,
 } from "./types";
-import { Icon } from "@/icons";
-// import {
-//   Checkout,
-//   CheckoutButton,
-//   CheckoutStatus,
-// } from "@coinbase/onchainkit/checkout";
 import { useBase } from "@/hooks/useBase";
+import { Iconx } from "@/icons/icon";
 
 export function Summary({
   refNumber,
@@ -70,7 +65,7 @@ export function Summary({
             <p className="font-medium tracking-normal">Date</p>
             <div className="flex items-center font-light opacity-60">
               {formattedDate ?? (
-                <Icon name="SpinnerDotMove" className="text-teal-300" />
+                <Iconx name="spinners-3-dots-move" className="text-teal-300" />
               )}
             </div>
           </div>
@@ -154,16 +149,7 @@ const SummaryContent = ({
     <div className="px-4 pb-4 pt-6 text-xs text-chalk md:p-6">
       <div className="grid gap-x-4 gap-y-6">
         <div className="text-xs font-semibold tracking-tight">Items</div>
-        {state.list?.length > 3 ? (
-          <GroupedLine items={state.list} />
-        ) : (
-          <HyperList
-            container="grid gap-2"
-            data={state.list}
-            component={Line}
-          />
-        )}
-
+        <GroupedLine items={state.list} />
         <Separator />
 
         <HyperList
@@ -179,16 +165,16 @@ const SummaryContent = ({
           <div className="grid gap-3">
             <div className="font-semibold">Billing Address</div>
             <address className="grid gap-0.5 not-italic opacity-60">
-              <span>Liam Johnson</span>
-              <span>1234 Main St.</span>
-              <span>Anytown, CA 12345</span>
+              <span>{userDetails.userName}</span>
+              <span>Not set</span>
+              <span></span>
             </address>
           </div>
           <div className="grid auto-rows-max gap-3 text-right">
             <div className="flex w-full items-center justify-end font-semibold text-vanilla">
               <button className="flex items-center gap-1 rounded bg-ticket px-1.5 py-0.5">
-                <Icon name="Plus" className="" />
-                <span>Add new</span>
+                <Iconx name="pencil-edit-01" className="size-3" />
+                <span>Edit</span>
               </button>
             </div>
             <address className="not-italic opacity-60">
@@ -202,7 +188,7 @@ const SummaryContent = ({
 
         <div className="">
           <div className="flex w-full items-center justify-evenly gap-4">
-            <div className="h-24 w-full space-y-4 overflow-visible">
+            <div className="h-20 w-full space-y-4 overflow-visible">
               <div className="flex h-fit w-full justify-start">
                 Pay with crypto
               </div>
@@ -213,18 +199,18 @@ const SummaryContent = ({
                 onPress={handleCryptoCheckout}
                 className="flex h-11 w-full gap-3 rounded-[0.5rem] border-2 border-[#0052FF] bg-[#0052FF]"
               >
-                <Icon name="CryptoCoinbase" className="size-3" />
+                <Iconx
+                  name="coinbase"
+                  className="size-3"
+                  viewBox={`0 0 48 48`}
+                />
                 <p className="text-xs font-medium tracking-tight text-white drop-shadow-sm">
                   Pay
                 </p>
               </Button>
-              {/* <Checkout chargeHandler={chargeHandler} onStatus={statusHandler}>
-                <CheckoutButton coinbaseBranded />
-                <CheckoutStatus />
-              </Checkout> */}
             </div>
 
-            <div className="h-24 w-full space-y-4">
+            <div className="h-20 w-full space-y-4">
               <div className="flex w-full justify-start whitespace-nowrap">
                 Pay with card or ewallets
               </div>
@@ -235,7 +221,7 @@ const SummaryContent = ({
                 onPress={paymongoCheckout}
                 className="flex h-11 w-full gap-2 rounded-[0.5rem] border-2 border-white bg-white"
               >
-                <Icon name="PayMongo" className="size-4" />
+                <Iconx name="paymongo" className="size-4" viewBox="0 0 32 32" />
                 <p className="text-xs font-medium tracking-tight text-[#22B47E] drop-shadow-sm">
                   Checkout
                 </p>
@@ -250,29 +236,15 @@ const SummaryContent = ({
 
 const GroupedLine = ({ items }: { items: ItemProps[] }) => (
   <li className="flex items-center justify-between">
-    <div className="">
+    <div className="flex items-center space-x-2.5">
       <span>{items?.[0]?.name}</span>
-      <Icon name="CloseLight" className="size-2 text-orange-100" />
+      <Iconx name="close" className="size-3 text-orange-300" />
       <span>{items?.length}</span>
     </div>
     <span className="font-inter tracking-widest">
       {formatAsMoney((items?.length ?? 1) * (items?.[0]?.price ?? 1))}
     </span>
   </li>
-);
-
-const Line = (item: ItemProps) => (
-  <div className="flex items-center justify-between">
-    <div className="flex items-center space-x-3">
-      <span>{item.name}</span>
-
-      <Icon name="CloseLight" className="size-2 text-orange-400" />
-      <span>{item.quantity}</span>
-    </div>
-    <span className="tracking-wider">
-      {formatAsMoney(item.quantity * item.price)}
-    </span>
-  </div>
 );
 
 const Calculation = (calc: Calc) => (

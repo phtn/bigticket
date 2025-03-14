@@ -1,10 +1,11 @@
-import { Icon, type IconName } from "@/icons";
+import type { IconName } from "@/icons/types";
 import { cn } from "@/lib/utils";
 import { Button, type ButtonProps } from "@nextui-org/react";
 import { type ChangeEvent, memo } from "react";
 import { type WindowVariant } from ".";
-import { ButtonIcon } from "../button";
 import type { StaticToolbarProps, ToolbarProps } from "./types";
+import { Iconx } from "@/icons/icon";
+import { BtnIcon } from "../button";
 
 const ToolbarComponent = <T,>({
   children,
@@ -12,7 +13,7 @@ const ToolbarComponent = <T,>({
   title,
   variant = "demigod",
   loading = false,
-  icon = "Screen",
+  icon = "maximize-screen",
   action = () => null,
   size = "sm",
 }: ToolbarProps<T>) => {
@@ -72,7 +73,7 @@ const Indicator = (props: ButtonProps & { name: IconName }) => {
       size="sm"
       {...props}
     >
-      <Icon name={props.name} className="size-4 stroke-0 text-primary/80" />
+      <Iconx name={props.name} className="size-4 stroke-0 text-primary/80" />
     </Button>
   );
 };
@@ -80,8 +81,8 @@ const Indicator = (props: ButtonProps & { name: IconName }) => {
 const CloseButton = (props: ButtonProps) => {
   return (
     <Button size="sm" variant="light" {...props} isIconOnly>
-      <Icon
-        name="Close"
+      <Iconx
+        name="close"
         className={cn("size-4 stroke-0 text-primary/80", {})}
       />
     </Button>
@@ -109,8 +110,8 @@ export const ToolbarSearch = (props: ToolbarSearchProps) => {
         onChange={searchFn}
         autoFocus
       />
-      <Icon
-        name="Search"
+      <Iconx
+        name="search"
         className="dark:text-dark-icon text-icon absolute left-2 top-2 z-[30] size-3.5 stroke-[3px]"
       />
     </div>
@@ -144,7 +145,7 @@ export const StaticToolbar = ({
     >
       <section className="flex h-12 w-full items-center space-x-2">
         {icon ? (
-          <Icon
+          <Iconx
             name={icon}
             className={cn("size-5", { "text-gray-200/80": variant === "god" })}
           />
@@ -154,9 +155,9 @@ export const StaticToolbar = ({
         {children}
       </section>
 
-      <ButtonIcon
+      <BtnIcon
         onClick={closeFn}
-        icon="Close"
+        icon="close"
         bg="text-ticket/40 group-hover/icon:text-ticket group-hover/icon:opacity-100"
         color="text-gray-200 drop-shadow-sm group-hover/icon:scale-110 group-hover/icon:text-white size-4 stroke-0"
       />

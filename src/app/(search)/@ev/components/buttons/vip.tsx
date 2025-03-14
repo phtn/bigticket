@@ -1,9 +1,9 @@
-import { Icon } from "@/icons";
 import { Shimmer } from "@/ui/text/sparkles";
 import { Button, cn } from "@nextui-org/react";
 import { PrivateNoAccess, PrivateWithAccess } from "./private";
 import type { ReactNode } from "react";
 import chalk from "chalk";
+import { Iconx } from "@/icons/icon";
 
 interface VIPAccesProps {
   ticketCount?: number;
@@ -34,7 +34,7 @@ const VIPComponent = ({ fn, children }: VIPComponentProps) => {
 const VIPLabel = () => {
   return (
     <h3 className="flex items-center justify-center gap-1 text-orange-100">
-      <Icon name="Sparkle" className="size-3.5" />
+      <Iconx name="sparkle" className="size-3.5" />
       <Shimmer
         sparklesCount={6}
         className="font-inter text-[16px]"
@@ -60,7 +60,7 @@ export const VIPAccess = ({ ticketCount, fn }: VIPAccesProps) => (
 const PrivateLabel = () => {
   return (
     <h3 className="flex items-center justify-center gap-1 text-orange-100">
-      <Icon name="Sparkle" className="size-3.5" />
+      <Iconx name="sparkle" className="size-3.5" />
       <Shimmer
         sparklesCount={6}
         className="font-inter text-[16px]"

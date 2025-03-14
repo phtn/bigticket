@@ -3,7 +3,7 @@
 import { useDime } from "@/hooks/useDime";
 import { useMoment } from "@/hooks/useMoment";
 import { useToggle } from "@/hooks/useToggle";
-import { Icon } from "@/icons";
+
 import { cn } from "@/lib/utils";
 import { TicketStack } from "@/ui/card/ticket";
 import { SideVaul } from "@/ui/vaul";
@@ -35,6 +35,7 @@ import {
   type OptionButtonProps,
 } from "./components";
 import { OptionCtx, OptionCtxProvider, type OptionKey } from "./ctx";
+import { Iconx } from "@/icons/icon";
 
 export const CreateEvent = () => {
   const { open, toggle } = useToggle();
@@ -244,7 +245,7 @@ export const CreateEvent = () => {
         className="group/create flex size-6 items-center justify-center rounded-lg bg-teal-500 px-0 text-white md:h-8 md:w-fit md:gap-1.5 md:space-x-0.5 md:pe-2.5 md:ps-2"
         onClick={toggle}
       >
-        <Icon name="Plus" className="size-3.5" />
+        <Iconx name="plus-sign" className="size-3.5" />
         <span
           className={cn(
             "hidden font-inter text-sm font-medium capitalize tracking-tighter md:flex",
@@ -265,7 +266,7 @@ export const CreateEvent = () => {
         <FlatWindow
           variant="god"
           closeFn={toggle}
-          icon="Sparkles2"
+          icon="sparkles"
           title="Create New Event"
           className="w-full border-0 border-macd-gray bg-void text-chalk"
           wrapperStyle="border-macd-gray h-full border-[0.33px]"

@@ -44,7 +44,7 @@ export const FieldBlock = ({ pending, children }: FieldBlockProps) => {
     <div className="w-full space-y-6 p-6">
       <BlockHeader
         label={"Pricing & Admission"}
-        icon={pending ? "SpinnerBall" : "Ticket2"}
+        icon={pending ? "spinners-3-dots-move" : "ticket-tilted"}
       />
       {children}
       <HyperList

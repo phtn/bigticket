@@ -1,7 +1,7 @@
 "use client";
 
 import type { ClassName } from "@/app/types";
-import { Icon } from "@/icons";
+import { Iconx } from "@/icons/icon";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,12 +35,12 @@ export const BrandName = ({ children }: BrandNameProps) => (
 
 export const Tickets = () => (
   <div className="relative left-4 z-0 flex size-6 items-center justify-center">
-    <Icon
-      name="TicketFill"
+    <Iconx
+      name="ticket-fill"
       className="absolute -bottom-[2px] -left-1 size-7 -rotate-[155deg] stroke-white text-macl-mint opacity-80"
     />
-    <Icon
-      name="TicketFill"
+    <Iconx
+      name="ticket-fill"
       className="absolute bottom-[2px] left-[3px] size-7 -rotate-[110deg] stroke-chalk text-peach"
     />
   </div>
@@ -66,12 +66,12 @@ export const Title = () => (
 
 export const TicketsMono = () => (
   <div className="relative left-6 z-0 flex size-6 items-center justify-center">
-    <Icon
-      name="ShieldCheck"
+    <Iconx
+      name="mobile-protection"
       className="absolute -bottom-[2px] -left-1 hidden size-7 -rotate-[155deg] stroke-white text-macl-mint opacity-80 grayscale"
     />
-    <Icon
-      name="ShieldCheck"
+    <Iconx
+      name="mobile-protection"
       className="absolute -left-3 bottom-[2px] size-7 stroke-chalk stroke-0 text-indigo-400"
     />
   </div>

@@ -1,7 +1,12 @@
-import { Icon } from "@/icons";
+import { SidebarCtx } from "@/app/ctx/sidebar";
+import { useImage } from "@/hooks/useImage";
+import { Iconx } from "@/icons/icon";
 import { usePexels } from "@/lib/pexels";
+import { cn } from "@/lib/utils";
+import { BtnIcon } from "@/ui/button";
 import { useCarousel } from "@/ui/carousel";
 import { CardCarousel } from "@/ui/carousel/card";
+import { Err } from "@/utils/helpers";
 import { Spinner } from "@nextui-org/react";
 import {
   type ChangeEvent,
@@ -12,11 +17,6 @@ import {
   useRef,
 } from "react";
 import { useEventEditor } from "../ctx";
-import { Err } from "@/utils/helpers";
-import { cn } from "@/lib/utils";
-import { ButtonIcon } from "@/ui/button";
-import { SidebarCtx } from "@/app/ctx/sidebar";
-import { useImage } from "@/hooks/useImage";
 
 interface CoverPhotoProps {
   id: string | undefined;
@@ -110,8 +110,8 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
             {uploading ? (
               <Spinner size="sm" color="default" />
             ) : (
-              <Icon
-                name="Check"
+              <Iconx
+                name="check"
                 className={cn(
                   "size-3.5 text-white group-hover/check:text-macl-mint",
                   { "text-secondary": isCurrentCover },
@@ -131,22 +131,22 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
           </p>
         </div>
         <div className="relative flex max-w-40 items-center gap-1.5 overflow-hidden">
-          <ButtonIcon
+          <BtnIcon
             onClick={toggle}
-            icon="Sparkle"
+            icon="sparkle"
             bg="opacity-50 text-primary group-hover/icon:opacity-100"
             color="text-chalk"
           />
 
-          <ButtonIcon
+          <BtnIcon
             onClick={browseFile}
-            icon="ImageUpload"
+            icon="image-upload"
             bg="opacity-50 text-primary group-hover/icon:opacity-100"
             color="text-chalk"
           >
             Upload
-            <Icon name="Upload" className="size-4" />
-          </ButtonIcon>
+            <Iconx name="image-upload" className="size-4" />
+          </BtnIcon>
           <input
             type="file"
             ref={inputFileRef}
@@ -159,33 +159,3 @@ export const CoverPhoto = ({ id, cover_url }: CoverPhotoProps) => {
     </div>
   );
 };
-
-/*
-const img = document.createElement("img");
-    img.src = src;
-    img.crossOrigin = "Anonymous";
-    let lightText = false;
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        const sampleWidth = 100;
-        const sampleHeight = 400;
-        canvas.width = sampleWidth;
-        canvas.height = sampleHeight;
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          sampleWidth,
-          sampleHeight,
-          0,
-          0,
-          sampleWidth,
-          sampleHeight,
-        );
-        const { r, g, b } = getAverageColor(ctx, sampleWidth, sampleHeight);
-        lightText = isLightColor(r, g, b);
-      }
-    };
-*/

@@ -3,9 +3,9 @@
 import { getUserID } from "@/app/actions";
 import { type XEvent } from "@/app/types";
 import { useMoment } from "@/hooks/useMoment";
-import { Icon } from "@/icons";
+import { Iconx } from "@/icons/icon";
 import { cn } from "@/lib/utils";
-import { ButtonIcon } from "@/ui/button";
+import { BtnIcon } from "@/ui/button";
 import { opts } from "@/utils/helpers";
 import { Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
@@ -69,11 +69,10 @@ export const EventCardAccount = (xEvent: XEvent) => {
     () =>
       is_active && (
         <div className="relative flex size-5 items-center justify-center">
-          <Icon
-            name="SpinnersPulseRing"
+          <Iconx
+            name="spinners-pulse-rings-multiple"
             className="absolute size-5 text-teal-400"
           />
-          <Icon name="DotSm" className="absolute size-4 text-teal-400" />
         </div>
       ),
     [is_active],
@@ -121,20 +120,18 @@ export const EventCardAccount = (xEvent: XEvent) => {
   );
 
   return (
-    <Card
-      isFooterBlurred
-      className={cn(
-        "h-[300px] w-full rounded-md border border-primary bg-primary",
-      )}
-    >
-      <CardHeader className="absolute z-10 flex w-full items-start justify-between gap-3 rounded-none bg-black/10 ps-4 backdrop-blur-[1px]">
+    <Card isFooterBlurred className={cn("h-[300px] w-full shadow-none")}>
+      <CardHeader className="absolute z-10 flex w-full items-start justify-between gap-3 rounded-none bg-black/10 ps-4">
         <TitleSection />
         <section className="flex size-8 items-center justify-center">
-          <ButtonIcon
+          <button className="flex items-center gap-1">
+            <Iconx name="settings-01" className="size-6 shrink-0 text-coal" />
+          </button>
+          {/* <ButtonIcon
             icon="Settings"
             bg="text-chalk opacity-0"
             color="text-chalk"
-          />
+          /> */}
         </section>
       </CardHeader>
       <CoverImage />
@@ -179,8 +176,8 @@ const EditButton = (props: EventButtonProps) => {
       )}
       {...props}
     >
-      <Icon
-        name={"Pen"}
+      <Iconx
+        name={"pencil-edit-01"}
         className="size-5 text-chalk shadow-coal drop-shadow-sm group-hover/btn:text-white"
       />
     </button>
@@ -189,8 +186,8 @@ const EditButton = (props: EventButtonProps) => {
 
 const LiveViewButton = (props: EventButtonProps) => {
   return (
-    <ButtonIcon
-      icon="Play"
+    <BtnIcon
+      icon="play"
       color="text-teal-400 size-5"
       bg="text-void opacity-100 size-12"
       {...props}

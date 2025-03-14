@@ -3,7 +3,6 @@
 import { usePreloadedUserEvents } from "@/app/ctx/event/user";
 import { useSidebar } from "@/app/ctx/sidebar";
 import { useUserCtx } from "@/app/ctx/user";
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { opts } from "@/utils/helpers";
@@ -14,6 +13,7 @@ import { CreateEvent } from "./create";
 import { EventCardAccount } from "./event-card";
 import { CohostedEventCard } from "./cohost-card";
 import { useUserEvents } from "./useUserEvents";
+import { Iconx } from "@/icons/icon";
 
 export const Events = () => {
   const { x, pending } = usePreloadedUserEvents();
@@ -82,7 +82,7 @@ export const Events = () => {
         {x?.length === 0 ? (
           <EmptyList
             className="-top-24"
-            icon="EventStar"
+            icon="event"
             message="You have no events yet."
           />
         ) : null}
@@ -99,11 +99,10 @@ const Cohosted = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
         className="group/cohost flex size-6 h-7 w-fit items-center justify-center rounded-lg bg-gray-200/50 px-0 pe-2 text-primary hover:bg-gray-200/70 md:h-8 md:gap-1 md:ps-2"
       >
         <div className="relative flex size-5 items-center justify-center">
-          <Icon
-            name="SpinnersPulseRing"
+          <Iconx
+            name="spinners-pulse-rings-multiple"
             className="absolute size-5 text-indigo-500"
           />
-          <Icon name="DotSm" className="absolute size-4 text-indigo-400" />
         </div>
         <span
           className={cn(

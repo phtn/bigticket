@@ -1,9 +1,7 @@
 "use client";
 
 import { useMoment } from "@/hooks/useMoment";
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
-import { ButtonIcon } from "@/ui/button";
 import {
   Card,
   CardFooter,
@@ -14,6 +12,8 @@ import {
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { type XEvent } from "../types";
+import { Iconx } from "@/icons/icon";
+import { BtnIcon } from "@/ui/button/button-icon";
 
 export const EventCard = (xEvent: XEvent) => {
   const { event_day, event_time, narrow } = useMoment({
@@ -51,9 +51,9 @@ export const EventCard = (xEvent: XEvent) => {
 
   const BookmarkButton = useCallback(
     () => (
-      <ButtonIcon
+      <BtnIcon
         aria-label={`bookmark-${event_name?.replaceAll(" ", "-").toLowerCase()}`}
-        icon={bookmarked ? "BookmarkCheck" : "BookmarkPlus"}
+        icon={bookmarked ? "bookmark-check-02" : "bookmark-add-02"}
         bg={bookmarked ? "text-teal-500 opacity-100" : "opacity-20"}
         shadow={bookmarked ? "text-coal opacity-100" : ""}
         color={bookmarked ? "text-white fill-white" : ""}
@@ -119,7 +119,10 @@ export const EventCard = (xEvent: XEvent) => {
         />
       ) : (
         <div className="flex size-full items-center justify-center">
-          <Icon name="SpinnerBall" className="size-8 text-teal-300" />
+          <Iconx
+            name="spinners-bouncing-ball"
+            className="size-8 text-teal-300"
+          />
         </div>
       )}
       <CardFooter className="absolute -bottom-[2px] z-10 border-t-[0.33px] border-primary/40 bg-black/10">
@@ -150,9 +153,9 @@ export const EventCard = (xEvent: XEvent) => {
           {loading ? (
             <Spinner size="sm" color="default" />
           ) : (
-            <Icon
-              name="ArrowRight"
-              className="size-4 text-chalk shadow-coal drop-shadow-sm group-hover/btn:text-white"
+            <Iconx
+              name="arrow-right-02"
+              className="size-5 text-coal shadow-coal drop-shadow-sm"
             />
           )}
         </button>

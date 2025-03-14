@@ -1,10 +1,10 @@
-import { Icon } from "@/icons";
+import { Iconx } from "@/icons/icon";
 import { Button } from "@nextui-org/react";
 
 export const EventPhoto = () => (
   <div className="relative flex items-center justify-center border-primary/40 md:border-b lg:border-r xl:border-b-0">
     <div className="absolute">
-      <Icon name="ImageIcon" className="size-24 opacity-20" />
+      <Iconx name="image-upload" className="size-24 opacity-20" />
     </div>
     <div className="absolute top-0 flex h-10 w-full items-center justify-between px-4 text-xs">
       <p>Event Photo</p>
@@ -18,7 +18,7 @@ export const EventPhoto = () => (
         className="hover:bg-white"
       >
         Upload image
-        <Icon name="Upload" className="size-4" />
+        <Iconx name="image-upload" className="size-4" />
       </Button>
     </div>
   </div>

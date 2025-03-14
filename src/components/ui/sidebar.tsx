@@ -22,7 +22,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Icon } from "@/icons";
 import type { ComponentProps, ComponentRef, CSSProperties } from "react";
 import {
   createContext,
@@ -33,6 +32,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { Iconx } from "@/icons/icon";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -305,7 +305,7 @@ const SidebarTrigger = forwardRef<
       }}
       {...props}
     >
-      <Icon name="BouncyArrow" />
+      <Iconx name="energy" />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );

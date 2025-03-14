@@ -7,7 +7,7 @@ import { type UseWindow, useWindow } from "./useWindow";
 import type { ClassName } from "@/app/types";
 import { type Keys } from "./utils";
 import type { ToolbarProps, StaticToolbarProps } from "./types";
-import type { IconName } from "@/icons";
+import type { IconName } from "@/icons/types";
 
 export type WindowVariant = "demigod" | "god" | "goddess" | "adam" | "void";
 interface DialogWindowProps<S> extends UseWindow {

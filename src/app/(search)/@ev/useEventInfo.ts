@@ -3,7 +3,7 @@ import { getUserID } from "@/app/actions";
 import { useUserCtx } from "@/app/ctx/user";
 import { type XEvent } from "@/app/types";
 import { useMoment } from "@/hooks/useMoment";
-import { type IconName } from "@/icons";
+import { type IconName } from "@/icons/types";
 import { Err } from "@/utils/helpers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -28,7 +28,7 @@ export const useEventInfo = (xEvent: XEvent | undefined) => {
       const id = await getUserID();
       setUserId(id);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }, []);
 
@@ -52,12 +52,12 @@ export const useEventInfo = (xEvent: XEvent | undefined) => {
     end: end_date,
   });
 
-  const {xUser} = useUserCtx()
+  const { xUser } = useUserCtx();
 
   const isBookmarked = useMemo(() => {
-    if (!event_id) return false
-    return xUser?.bookmarks?.includes(event_id) ?? false
-  }, [xUser, event_id])
+    if (!event_id) return false;
+    return xUser?.bookmarks?.includes(event_id) ?? false;
+  }, [xUser, event_id]);
 
   const xEventInfo: InfoItem[] = useMemo(
     () => [
@@ -105,7 +105,7 @@ export const useEventInfo = (xEvent: XEvent | undefined) => {
     () => ({
       id: 3,
       label: "bookmark",
-      icon: bookmarks ? "BookmarkCheck" : ("BookmarkPlus" as IconName),
+      icon: bookmarks ? "bookmark-add-02" : "bookmark",
       active: !!bookmarks,
       fn: toggleBookmark,
     }),
@@ -113,49 +113,51 @@ export const useEventInfo = (xEvent: XEvent | undefined) => {
   );
 
   const likeItem = useMemo(
-    () => ({
-      id: 4,
-      label: "like",
-      icon: likes ? "HeartCheck" : ("Heart" as IconName),
-      active: !!likes,
-      fn: toggleLike,
-    }),
+    () =>
+      ({
+        id: 4,
+        label: "like",
+        icon: likes ? "heart-check" : "heart-add",
+        active: !!likes,
+        fn: toggleLike,
+      }) as PanelItem,
     [likes, toggleLike],
   );
 
-  const panelItems: PanelItem[] = useMemo(
-    () => [
-      {
-        id: 0,
-        label: "support",
-        icon: "Support",
-        active: false,
-        fn: async () => console.log("support clicked"),
-      },
-      {
-        id: 1,
-        label: "geolocation",
-        icon: "MapPin",
-        active: false,
-        fn: async () => console.log("geolocation clicked"),
-      },
-      {
-        id: 2,
-        label: "website",
-        icon: "Globe",
-        active: false,
-        fn: async () => console.log("website clicked"),
-      },
-      bookmarkItem,
-      likeItem,
-      {
-        id: 5,
-        label: "share",
-        icon: "Share",
-        active: false,
-        fn: async () => console.log("share clicked"),
-      },
-    ],
+  const panelItems = useMemo(
+    () =>
+      [
+        {
+          id: 0,
+          label: "support",
+          icon: "customer-support",
+          active: false,
+          fn: async () => console.log("support clicked"),
+        },
+        {
+          id: 1,
+          label: "geolocation",
+          icon: "location-04",
+          active: false,
+          fn: async () => console.log("geolocation clicked"),
+        },
+        {
+          id: 2,
+          label: "website",
+          icon: "globe",
+          active: false,
+          fn: async () => console.log("website clicked"),
+        },
+        bookmarkItem,
+        likeItem,
+        {
+          id: 5,
+          label: "share",
+          icon: "share",
+          active: false,
+          fn: async () => console.log("share clicked"),
+        },
+      ] as PanelItem[],
     [bookmarkItem, likeItem],
   );
 

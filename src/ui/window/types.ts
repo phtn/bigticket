@@ -1,7 +1,7 @@
 import type { ClassName } from "@/app/types";
 import type { ReactNode } from "react";
 import type { WindowVariant } from ".";
-import type { IconName } from "@/icons";
+import type { IconName } from "@/icons/types";
 
 export interface StaticToolbarProps {
   closeFn?: VoidFunction;

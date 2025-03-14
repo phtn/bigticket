@@ -78,7 +78,7 @@ export const Tickets = () => {
 
         {groups.length === 0 ? (
           <EmptyList
-            icon="Ticket"
+            icon="ticket-tilted"
             message={
               isPending ? "Getting your tickets..." : "You have no tickets yet."
             }

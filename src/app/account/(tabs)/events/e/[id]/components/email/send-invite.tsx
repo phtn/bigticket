@@ -73,7 +73,7 @@ const SendInvite = ({ vip_list, updateSentStatus }: SendInviteProps) => {
       className={cn({ "animate-enter": vip_list.length <= 1 })}
       label={buttonLabel}
       loading={loading}
-      end="MailSend"
+      end="mail-send"
       fullWidth
       lg
     />

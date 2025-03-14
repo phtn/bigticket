@@ -3,9 +3,9 @@
 import { LiveViewCtx, LiveViewCtxProvider } from "./ctx";
 import { use, useCallback, useEffect } from "react";
 import { Image } from "@nextui-org/react";
-import { Icon } from "@/icons";
 import { ScanCode } from "./components/scanner";
 import { cn } from "@/lib/utils";
+import { Iconx } from "@/icons/icon";
 
 export const Content = () => (
   <LiveViewCtxProvider>
@@ -89,8 +89,8 @@ const LiveView = () => {
           onClick={toggle}
           className="fixed bottom-10 right-10 z-50 flex size-16 items-center justify-center rounded-full border bg-chalk transition-all duration-300 active:scale-90 active:bg-gray-600 active:text-chalk"
         >
-          <Icon
-            name="QrCode"
+          <Iconx
+            name="qr-code"
             className={cn("size-7", { "text-peach": open })}
           />
         </button>

@@ -87,7 +87,7 @@ export const MediaContent = ({ xEvent }: MediaContentProps) => {
             <MediaBlock
               data={media_fields}
               label="Add Multimedia Assets"
-              icon="Play"
+              icon="play"
             />
 
             <div className="flex h-1/6 w-full items-end justify-between">
@@ -105,7 +105,7 @@ export const MediaContent = ({ xEvent }: MediaContentProps) => {
                   loading={pending || loading}
                   type="submit"
                   label="Add"
-                  end="Plus"
+                  end="plus-sign"
                   fullWidth
                   dark
                   xl

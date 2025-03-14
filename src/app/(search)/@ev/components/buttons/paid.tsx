@@ -1,11 +1,11 @@
 "use client";
 
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import NumberFlow, { continuous, NumberFlowGroup } from "@number-flow/react";
 import { type ReactNode, useCallback } from "react";
 import { useCart } from "./cart/ctx";
 import { type GetTicketProps } from "./d";
+import { Iconx } from "@/icons/icon";
 
 export const GetTickets = ({ ticketPrice, h }: GetTicketProps) => {
   const { open, toggle } = useCart();
@@ -41,8 +41,8 @@ const PaidButtonX = ({ price, children }: PaidButtonProps) => {
             )}
           >
             <div className={cn("flex items-center justify-end", {})}>
-              <Icon
-                name="Ticket"
+              <Iconx
+                name="ticket-tilted"
                 className="size-5 animate-enter text-teal-400 delay-300"
               />
               <NumberFlow
@@ -81,8 +81,8 @@ const TicketAdder = ({ fn }: TicketAdderProps) => (
       Get
     </span>
     <span className="animate-enter text-white delay-150">Tickets</span>
-    <Icon
-      name="ArrowRightDouble"
+    <Iconx
+      name="double-arrow"
       className="relative -left-1 size-7 animate-enter text-secondary delay-300"
     />
   </button>

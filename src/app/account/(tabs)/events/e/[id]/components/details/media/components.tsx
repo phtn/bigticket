@@ -3,7 +3,7 @@ import { BlockHeader } from "../components";
 import { type MediaField } from "../schema";
 import { Input } from "@nextui-org/react";
 import { inputClassNames } from "../../../editor";
-import { type IconName } from "@/icons";
+import { type IconName } from "@/icons/types";
 
 interface MediaBlockProps {
   data: MediaField[];

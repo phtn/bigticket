@@ -1,6 +1,7 @@
 import { SidebarCtx } from "@/app/ctx/sidebar";
 import type { ClassName } from "@/app/types";
-import { Icon, type IconName } from "@/icons";
+import { Iconx } from "@/icons/icon";
+import { type IconName } from "@/icons/types";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { Button } from "@nextui-org/react";
@@ -51,7 +52,7 @@ const HideButton = (props: { fn: VoidFunction }) => (
       "md:right-10",
     )}
   >
-    <Icon name="LeftChev" className="size-5 stroke-0 text-slate-500" />
+    <Iconx name="arrow-left-01" className="size-5 stroke-0 text-slate-500" />
   </Button>
 );
 
@@ -73,22 +74,22 @@ const IconWrapper = ({ children, className }: IconWrapperProps) => (
 
 const ItemCounter = (props: { count: number; color?: ClassName }) => (
   <div className="relative flex h-8 w-9 items-center justify-center">
-    <Icon
-      name="Squircle"
+    <Iconx
+      name="squircle"
       className={cn(
         "absolute right-[4px] size-8 opacity-20",
         props.color?.split(" ")[1],
       )}
     />
-    <Icon
-      name="Squircle"
+    <Iconx
+      name="squircle"
       className={cn(
         "absolute right-[1.5px] size-8 opacity-5",
         props.color?.split(" ")[1],
       )}
     />
-    <Icon
-      name="Squircle"
+    <Iconx
+      name="squircle"
       className="absolute right-[2px] size-8 text-ghost opacity-80"
     />
     <p
@@ -117,7 +118,7 @@ const GetAwayListItem = (l: Category) => (
   <div className="spacex-5 flex w-full items-center justify-between rounded-xl p-3 hover:bg-white">
     <div className="flex items-center space-x-2">
       <IconWrapper className={cn("mx-2", l.color)}>
-        <Icon name={l.icon} className="size-6 shrink-0" />
+        <Iconx name={l.icon} className="size-6 shrink-0" />
       </IconWrapper>
       <h2 className="text-sm tracking-tight text-primary/80">{l.label}</h2>
     </div>
@@ -142,7 +143,7 @@ const EventListItem = (l: Category) => (
   <div className="spacex-5 flex w-full items-center justify-between rounded-xl p-3 hover:bg-white">
     <div className="flex items-center space-x-2">
       <IconWrapper className={cn("mx-2", l.color)}>
-        <Icon name={l.icon} className="size-6 shrink-0 drop-shadow-sm" />
+        <Iconx name={l.icon} className="size-6 shrink-0 drop-shadow-sm" />
       </IconWrapper>
       <h2 className="text-sm capitalize tracking-tight text-primary/80">
         {l.label}
@@ -170,7 +171,7 @@ const events: Category[] = [
     keyId: "upcoming",
     label: "upcoming",
     href: "",
-    icon: "Upcoming",
+    icon: "event",
     count: 1,
     color: "bg- text-slate-800",
   },
@@ -179,7 +180,7 @@ const events: Category[] = [
     keyId: "nightlife",
     label: "Nightlife",
     href: "",
-    icon: "Cocktail",
+    icon: "event",
     count: 29,
     color: "bg-macl-indigo text-slate-800",
   },
@@ -188,7 +189,7 @@ const events: Category[] = [
     keyId: "concerts",
     label: "Concerts",
     href: "",
-    icon: "EGuitarFender",
+    icon: "event",
     count: 1,
     color: "bg-macl-mint text-slate-800",
   },
@@ -200,7 +201,7 @@ const getaways: Category[] = [
     keyId: "flights",
     label: "Flights",
     href: "",
-    icon: "Airplane2",
+    icon: "event",
     count: 0,
     color: "bg-amber-300/80 text-slate-800",
   },
@@ -209,7 +210,7 @@ const getaways: Category[] = [
     keyId: "hotels",
     label: "Hotels",
     href: "",
-    icon: "HotelRoom",
+    icon: "event",
     count: 1,
     color: "bg-macl-blue/10 text-slate-800",
   },
@@ -221,7 +222,7 @@ export const shops: Category[] = [
     keyId: "shopping",
     label: "Shopping",
     href: "",
-    icon: "Fire",
+    icon: "event",
     count: 0,
     color: "bg-macl-blue/10 text-macl-blue",
   },
@@ -230,7 +231,7 @@ export const shops: Category[] = [
     keyId: "restaurants",
     label: "Restaurants",
     href: "",
-    icon: "InfoLine",
+    icon: "information-circle",
     count: 1,
     color: "bg-macl-blue/10 text-macl-pink",
   },
@@ -239,7 +240,7 @@ export const shops: Category[] = [
     keyId: "wellness",
     label: "Wellness",
     href: "",
-    icon: "InfoLine",
+    icon: "information-circle",
     count: 1,
     color: "bg-macl-blue/10 text-macl-pink",
   },
@@ -248,7 +249,7 @@ export const shops: Category[] = [
     keyId: "vouchers",
     label: "Vouchers",
     href: "",
-    icon: "InfoLine",
+    icon: "information-circle",
     count: 1,
     color: "bg-macl-blue/10 text-macl-pink",
   },

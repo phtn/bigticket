@@ -1,8 +1,8 @@
 "use client";
 
-import { Icon } from "@/icons";
 import Link from "next/link";
 import { Brand, BrandName, Tickets, Title } from "../navbar/brand";
+import { Iconx } from "@/icons/icon";
 
 export const Proxima = () => {
   return (
@@ -23,9 +23,9 @@ export const Proxima = () => {
 
             <section className="dark:text-chalk-dark flex items-start justify-around space-x-4 px-2 pt-2 text-xs text-chalk">
               <div className="h-full py-0.5">
-                <Icon
-                  name="MapPin"
-                  className="dark:text-chalk-dark size-4 text-vanilla drop-shadow-md"
+                <Iconx
+                  name="location-01"
+                  className="dark:text-chalk-dark size-3.5 text-vanilla drop-shadow-md"
                 />
               </div>
               <div className="font-inst space-y-0.5">

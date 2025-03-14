@@ -1,6 +1,6 @@
 import { useCallback, useMemo, type PropsWithChildren, memo } from "react";
 import { Badge, Button, Image } from "@nextui-org/react";
-import { Icon, type IconName } from "@/icons";
+import { type IconName } from "@/icons/types";
 import { cn } from "@/lib/utils";
 import type {
   CartItemProps,
@@ -10,6 +10,7 @@ import type {
   TicketDetail,
 } from "./types";
 import { formatAsMoney } from "@/utils/helpers";
+import { Iconx } from "@/icons/icon";
 
 // Utility functions
 const undescriptor = (d: string): [string, string, string] => {
@@ -50,7 +51,7 @@ export const ModButton = memo(
       disabled={props.disabled}
       onPress={props.fn}
     >
-      <Icon name={props.icon} className="size-4 stroke-1" />
+      <Iconx name={props.icon} className="size-4 stroke-1" />
     </Button>
   ),
 );
@@ -74,7 +75,7 @@ export const ProductImage = memo(
           src={src ?? "/icon/logomark_v2.svg"}
           isBlurred
           className={cn(
-            "aspect-auto rounded-xl border-default-400/60 bg-white shadow-2xl md:h-36 md:w-40 portrait:h-20 portrait:w-24",
+            "aspect-auto rounded-xl border-default-400/60 bg-white md:h-36 md:w-40 portrait:h-20 portrait:w-24",
             { [opacity]: true },
           )}
         />
@@ -97,7 +98,7 @@ export const Header = memo(({ itemCount, amount }: HeaderProps) => (
       <PageHeader />
       <div className="flex w-full items-center justify-end space-x-3 md:space-x-6 lg:space-x-6">
         <Stat label="Tickets" value={itemCount} />
-        <Stat label="Subtotal" value={amount} dark />
+        <Stat label="Subtotal" value={amount} />
       </div>
     </div>
   </div>
@@ -117,7 +118,7 @@ export const Stat = memo(
       <Label>{label}</Label>
       <div
         className={cn(
-          "font-sans text-xl font-semibold tracking-wide lg:text-2xl",
+          "font-inter text-xl font-medium tracking-tight lg:text-2xl",
           {
             "font-light text-gray-800": !dark,
             "font-medium": dark,
@@ -175,12 +176,12 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
   return (
     <div
       className={cn(
-        "group flex h-40 flex-col items-start justify-between rounded-2xl bg-white md:h-64",
-        "cursor-pointer border-2 border-secondary p-2.5 portrait:px-2",
+        "group flex h-40 flex-col items-start justify-between rounded-2xl bg-white md:h-[15rem]",
+        "cursor-pointer border-[0.33px] border-primary bg-white px-4 py-3 shadow-md shadow-default/40",
         { [`bg-default/40 px-4 ${opacity} ${grayscale} md:px-8`]: isDisabled },
       )}
     >
-      <div className="flex w-full flex-grow items-start space-x-6 md:py-2">
+      <div className="flex w-full flex-grow items-start space-x-6 md:py-1">
         <ProductImage
           alt={itemName}
           src={item?.image ?? "/icon/logomark_v2.svg"}
@@ -198,13 +199,16 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
             </p>
           </div>
           <div className="flex items-center text-sm">
-            <Icon name="MapPin2" className="mr-2.5 md:mr-3 md:size-4" />
+            <Iconx name="location-01" className="mr-2.5 md:mr-3 md:size-4" />
             <p className="font-semibold capitalize leading-none tracking-tight md:text-sm lg:text-[16px]">
               {detail.venue}
             </p>
           </div>
           <div className="flex items-center text-xs">
-            <Icon name="Calendar" className="mr-2.5 md:mr-3 md:size-4" />
+            <Iconx
+              name="calendar-setting-01"
+              className="mr-2.5 md:mr-3 md:size-4"
+            />
             <p className="tracking-tight md:text-sm lg:text-[16px]">
               {detail.date}
             </p>
@@ -212,7 +216,7 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
         </div>
       </div>
 
-      <div className="flex h-full w-full cursor-pointer items-end justify-between md:mb-2 md:items-start md:space-x-1 xl:space-x-4">
+      <div className="flex h-full w-full cursor-pointer items-end justify-between md:p-2 xl:space-x-4">
         <div className="flex items-center space-x-2 font-inter">
           <p className="text-lg">{ticketPrice}</p>
           <span className="text-sm tracking-tighter opacity-80">
@@ -225,13 +229,13 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
             { "space-x-0": isDisabled },
           )}
         >
+          <ModButton fn={handleDelete} disabled={isDisabled} icon="close" />
           <ModButton
-            fn={handleDelete}
+            fn={handleDecrement}
+            icon="minus-sign"
             disabled={isDisabled}
-            icon="CloseLight"
           />
-          <ModButton fn={handleDecrement} icon="Minus" disabled={isDisabled} />
-          <ModButton fn={handleIncrement} icon="Plus" />
+          <ModButton fn={handleIncrement} icon="plus-sign" />
         </div>
       </div>
     </div>
@@ -327,3 +331,17 @@ const Item = (props: ListItemProps) => {
   );
 };
 */
+
+// const Line = (item: ItemProps) => (
+//   <div className="flex items-center justify-between">
+//     <div className="flex items-center space-x-3">
+//       <span>{item.name}</span>
+
+//       <Iconx name="close" className="size-2 text-orange-400" />
+//       <span>{item.quantity}</span>
+//     </div>
+//     <span className="tracking-wider">
+//       {formatAsMoney(item.quantity * item.price)}
+//     </span>
+//   </div>
+// );

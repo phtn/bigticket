@@ -1,5 +1,4 @@
 import { useToggle } from "@/hooks/useToggle";
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { BottomVaul } from "@/ui/vaul";
 import { log } from "@/utils/logger";
@@ -37,6 +36,7 @@ import {
 } from "../../../../create/static";
 import { EventDetailCtx, type EventDetailKey } from "./ctx";
 import { type EventField } from "./schema";
+import { Iconx } from "@/icons/icon";
 
 export interface EventDetailButtonProps extends EventField {
   name: EventDetailKey;
@@ -168,8 +168,8 @@ export const TicketCount = ({
             className="relative flex h-14 items-center justify-center rounded-md bg-primary text-white"
           >
             {item.value}
-            <Icon
-              name="Check"
+            <Iconx
+              name="check"
               className={cn(
                 "absolute right-3 top-3 hidden animate-enter text-secondary",
                 { flex: ticketCount === +item.value },

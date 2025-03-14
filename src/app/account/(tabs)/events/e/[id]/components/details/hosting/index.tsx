@@ -1,6 +1,5 @@
 import { useConvexCtx } from "@/app/ctx/convex";
 import { onSuccess, onWarn } from "@/app/ctx/toast";
-import { Icon } from "@/icons";
 import { Hyper } from "@/ui/button/button";
 import { HyperList } from "@/ui/list";
 import { Err, getInitials, opts } from "@/utils/helpers";
@@ -28,6 +27,7 @@ import { cohostReducer, initialCohostState } from "./reducer";
 import type { CohostContentProps, CohostWithDefaults } from "./types";
 import { checkedState, getCheckedKeys, updateProps } from "../utils";
 import toast from "react-hot-toast";
+import { Iconx } from "@/icons/icon";
 
 export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
   const [state, dispatch] = useReducer(cohostReducer, {
@@ -298,8 +298,8 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
               )}
             >
               {cohost.invitation_sent ? "Sent" : "Not Sent"}
-              <Icon
-                name="Check"
+              <Iconx
+                name="check"
                 className={cn("hidden size-2.5", {
                   flex: cohost.invitation_sent,
                 })}
@@ -318,7 +318,7 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
         <Hyper
           lg
           fullWidth
-          end="Minus"
+          end="minus-sign"
           destructive
           type="submit"
           loading={pending}
@@ -344,7 +344,7 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
         <div className="grid h-full w-full grid-cols-1 md:grid-cols-5 md:gap-0 md:rounded">
           <section className="h-fit border-b border-vanilla/20 sm:col-span-3 md:col-span-2 md:h-fit md:border-[0.33px]">
             <div className="mb-8 h-5/6 w-full space-y-6 p-6">
-              <BlockHeader label="Host Settings" icon="UserSettings2" />
+              <BlockHeader label="Host Settings" icon="user-settings" />
               <section className="-mx-6 h-fit rounded-sm bg-teal-300/20 px-4 py-3 text-justify text-tiny text-vanilla md:p-4 md:text-sm">
                 You can add co-hosts and event marshals to assist you with
                 ticket-scanning and other guest verification during the event.
@@ -412,7 +412,7 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
                   active={onEdit}
                   type="submit"
                   label={onEdit ? "Update" : "Add"}
-                  end={onEdit ? "ArrowRightUp" : "Plus"}
+                  end={onEdit ? "square-arrow-up-right" : "plus-sign"}
                   fullWidth
                   dark
                   xl

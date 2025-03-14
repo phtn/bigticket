@@ -236,7 +236,7 @@ export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
             <Hyper
               label="Save"
               type="submit"
-              end="ArrowRightUp"
+              end="square-arrow-up-right"
               fullWidth
               rounded
               dark
@@ -253,7 +253,7 @@ export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
 export const TypeAndCategory = () => {
   return (
     <div className="w-full space-y-6 p-6">
-      <BlockHeader label={"Category"} icon={"Settings2"} />
+      <BlockHeader label={"Category"} icon={"settings-01"} />
       <HyperList
         keyId="name"
         container="xl:flex w-full xl:space-y-0 space-y-6 xl:space-x-6"
@@ -300,7 +300,7 @@ const CategoryFields = () => {
 const DateTimeVenue = () => {
   return (
     <div className="w-full space-y-6 p-6">
-      <BlockHeader label={"date, time & venue"} icon={"TimeSched"} />
+      <BlockHeader label={"date, time & venue"} icon={"calendar-setting-01"} />
       <div className="w-full gap-6">
         <DateTimeFields />
       </div>

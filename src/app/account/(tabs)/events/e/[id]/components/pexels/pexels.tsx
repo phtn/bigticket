@@ -2,10 +2,10 @@ import { use, useActionState, useCallback, useMemo } from "react";
 import type { PexelParamItem, PexelParams, QueryData } from "./types";
 import { Avatar, Button, Form, Select, SelectItem } from "@nextui-org/react";
 import { HyperList } from "@/ui/list";
-import { Icon } from "@/icons";
 import { cn } from "@/lib/utils";
 import { EventEditorCtx } from "../../ctx";
 import { SidebarCtx } from "@/app/ctx/sidebar";
+import { Iconx } from "@/icons/icon";
 
 export const PexelParamList = ({ category }: { category?: string }) => {
   const { toggle } = use(SidebarCtx)!;
@@ -63,7 +63,7 @@ export const PexelParamList = ({ category }: { category?: string }) => {
             ? [state.query ?? initialState.locale ?? "party"]
             : [state.locale ?? initialState.locale ?? "jp-JA"]
         }
-        selectorIcon={<Icon name="ArrowVertical" />}
+        selectorIcon={<Iconx name="arrow-down-01" />}
         name={data.param}
         key={data.id}
         label={<div className="flex items-center gap-1">{data.label}</div>}
@@ -114,8 +114,8 @@ export const PexelParamList = ({ category }: { category?: string }) => {
         {(item) => (
           <SelectItem
             selectedIcon={(item) => (
-              <Icon
-                name="Check"
+              <Iconx
+                name="check"
                 className={cn("hidden size-3 text-teal-600", {
                   flex: item.isSelected,
                 })}

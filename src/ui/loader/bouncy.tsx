@@ -1,5 +1,5 @@
 import { type ClassName, type SetState } from "@/app/types";
-import { Icon } from "@/icons";
+import { Iconx } from "@/icons/icon";
 import { cn } from "@/lib/utils";
 import { Err } from "@/utils/helpers";
 import { useEffect, useState } from "react";
@@ -43,8 +43,8 @@ export const Bouncy = ({
     runWithDelay([0, 1], 800, setCurrent).catch(Err);
   }, []);
   return (
-    <Icon
-      name="SpinnerBall"
+    <Iconx
+      name="spinners-bouncing-ball"
       className={cn(
         className,
         "transition-colors duration-500",

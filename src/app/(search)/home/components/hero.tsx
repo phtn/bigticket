@@ -1,4 +1,4 @@
-import { Icon } from "@/icons";
+import { Iconx } from "@/icons/icon";
 import { cn } from "@/lib/utils";
 import { WarpDrive } from "@/ui/loader/warp";
 import { type HTMLAttributes, type ReactNode, forwardRef } from "react";
@@ -96,9 +96,9 @@ HeroSection.displayName = "HeroSection";
 
 const Badge = ({ badge }: { badge: string }) => (
   <h2 className="font-geist group mx-auto flex w-fit items-center gap-2 rounded-3xl border border-vanilla/15 bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent px-5 py-2 text-sm text-chalk/80 dark:from-zinc-300/5 dark:via-gray-400/5">
-    <Icon
-      name="Sparkle"
-      className="inline size-4 stroke-0 duration-300 group-hover:scale-[1.15]"
+    <Iconx
+      name="sparkle"
+      className="inline size-4 duration-300 group-hover:scale-[1.15]"
     />
     <span>{badge}</span>
   </h2>

@@ -1,4 +1,5 @@
-import { Icon, type IconName } from "@/icons";
+import { Iconx } from "@/icons/icon";
+import { type IconName } from "@/icons/types";
 import { cn } from "@/lib/utils";
 import { opts } from "@/utils/helpers";
 import Link, { type LinkProps } from "next/link";
@@ -35,9 +36,9 @@ export const HyperButton = ({ children, ...props }: HyperButtonProps) => {
       className="flex h-10 items-center gap-1 overflow-hidden rounded-[8px] border-[1.5px] border-primary/40 bg-goddess/80 px-4 drop-shadow-sm md:hover:bg-goddess"
     >
       {children}
-      <Icon name="Plus" className="size-5 text-peach" />
+      <Iconx name="plus-sign" className="size-5 text-peach" />
       <span className="text-5xl font-thin opacity-40">/</span>
-      <Icon name="Minus" className="size-5 text-peach" />
+      <Iconx name="minus-sign" className="size-5 text-peach" />
     </button>
   );
 };
@@ -63,7 +64,7 @@ export const Hyper = ({
 }: HyperButtonProps) => {
   const LabelOptions = useCallback(() => {
     const options = opts(
-      <Icon name="SpinnerBall" />,
+      <Iconx name="spinners-bouncing-ball" />,
       <span
         className={cn(
           "relative z-10 whitespace-nowrap font-inter text-xs font-semibold tracking-tight text-primary",
@@ -112,7 +113,7 @@ export const Hyper = ({
         )}
       >
         {start && (
-          <Icon
+          <Iconx
             name={start}
             className={cn("z-1 size-3.5 text-primary", {
               "text-chalk": dark || destructive,
@@ -122,7 +123,7 @@ export const Hyper = ({
         <LabelOptions />
         {children}
         {end && (
-          <Icon
+          <Iconx
             name={end}
             className={cn("size-3.5 text-primary", {
               "text-chalk": dark || (destructive && !active),
@@ -154,7 +155,7 @@ export const HyperLink = ({
 }: HyperLinkProps) => {
   const LabelOptions = useCallback(() => {
     const options = opts(
-      <Icon name="SpinnerBall" />,
+      <Iconx name="spinners-bouncing-ball" />,
       <span
         className={cn(
           "font-inter text-xs font-semibold tracking-tighter text-primary",
@@ -184,10 +185,10 @@ export const HyperLink = ({
         },
       )}
     >
-      {start && <Icon name={start} className="size-5 text-peach" />}
+      {start && <Iconx name={start} className="size-5 text-peach" />}
       <LabelOptions />
       {children}
-      {end && <Icon name={end} className="size-5 text-peach" />}
+      {end && <Iconx name={end} className="size-5 text-peach" />}
     </Link>
   );
 };

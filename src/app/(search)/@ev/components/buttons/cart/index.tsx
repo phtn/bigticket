@@ -1,5 +1,4 @@
 import { useAuth } from "@/app/ctx/auth/provider";
-import { ButtonIcon } from "@/ui/button";
 import { FloatingVaul } from "@/ui/vaul";
 import { moses, secureRef } from "@/utils/crypto";
 import { cn } from "@nextui-org/react";
@@ -8,7 +7,8 @@ import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { useCartStore } from "./useCartStore";
 import Link from "next/link";
-import { Icon } from "@/icons";
+import { Iconx } from "@/icons/icon";
+import { BtnIcon } from "@/ui/button";
 
 interface CartProps {
   open: boolean;
@@ -90,8 +90,8 @@ export const Cart = ({ open, toggle, ticketPrice }: CartProps) => {
                 <div>
                   <span className="font-extrabold">Checkout</span>
                 </div>
-                <Icon
-                  name="ArrowRightDouble"
+                <Iconx
+                  name="double-arrow"
                   className="transform-all -mb-0.5 size-5 text-teal-200 duration-1000 ease-out group-hover/checkout:translate-x-1 group-hover/checkout:text-teal-100"
                 />
               </div>
@@ -105,8 +105,8 @@ export const Cart = ({ open, toggle, ticketPrice }: CartProps) => {
                 )}
               >
                 <div className="relative">
-                  <Icon
-                    name="Mul"
+                  <Iconx
+                    name="multiply"
                     className={cn(
                       "absolute -right-2 bottom-1 z-50 size-3.5 text-peach transition-all duration-400",
                       { "translate-x-[3px]": count >= 10 },
@@ -145,16 +145,16 @@ export const Cart = ({ open, toggle, ticketPrice }: CartProps) => {
               </div>
             </NumberFlowGroup>
             <div className="flex items-center justify-center space-x-4">
-              <ButtonIcon
+              <BtnIcon
                 onClick={incdec(-1)}
-                icon="Minus"
+                icon="minus-sign"
                 bg="text-white opacity-100 group-hover/icon:text-white group-hover/icon:opacity-100"
                 color="text-primary font-bold"
               />
 
-              <ButtonIcon
+              <BtnIcon
                 onClick={incdec(1)}
-                icon="Plus"
+                icon="plus-sign"
                 bg="text-white opacity-100 group-hover/icon:text-white group-hover/icon:opacity-100"
                 color="text-primary font-bold"
               />

@@ -1,4 +1,4 @@
-import { Icon } from "@/icons";
+import { Iconx } from "@/icons/icon";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 
@@ -22,12 +22,9 @@ export const Topbar = ({ event_name }: TopbarProps) => {
         </h1>
       </div>
       <section className="flex gap-2 md:gap-4">
-        <Button size="sm" isIconOnly className="bg-transparent">
-          <Icon name="Tv" className="size-6 stroke-[0.5px] text-macl-gray" />
-        </Button>
         <Button size="sm" variant="solid" color="primary">
           Publish <span className="hidden md:flex">Event</span>
-          <Icon name="Launch" className="hidden size-4 md:flex" />
+          <Iconx name="rocket" className="hidden size-4 md:flex" />
         </Button>
       </section>
     </div>

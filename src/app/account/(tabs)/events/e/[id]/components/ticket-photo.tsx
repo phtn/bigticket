@@ -1,6 +1,6 @@
 import { type XEvent } from "@/app/types";
 import { useMoment } from "@/hooks/useMoment";
-import { Icon } from "@/icons";
+import { Iconx } from "@/icons/icon";
 import { cn } from "@/lib/utils";
 import { TicketStack } from "@/ui/card/ticket";
 import { useCallback, useState } from "react";
@@ -46,9 +46,9 @@ export const TicketPhoto = ({ xEvent }: TicketPhotoProps) => {
             key={item.label + item.id}
             className="relative flex items-center justify-center transition-all duration-300 active:scale-90 active:opacity-80"
           >
-            <Icon name="Squircle" className={`size-8 ${item.color}`} />
-            <Icon
-              name="Check"
+            <Iconx name="squircle" className={`size-8 ${item.color}`} />
+            <Iconx
+              name="check"
               className={cn("absolute hidden size-3 animate-enter text-white", {
                 flex: ticket_color === item.label,
               })}

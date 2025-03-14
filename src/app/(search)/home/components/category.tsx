@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { BlurFade } from "@/ui/blur/fade";
 import { useCallback } from "react";
 
 export interface Category {
@@ -67,10 +66,8 @@ export const CategoryButton = ({
     [selected],
   );
   return (
-    <BlurFade>
-      <button onClick={fn} className="">
-        <CategoryItem {...category} />
-      </button>
-    </BlurFade>
+    <button onClick={fn} className="">
+      <CategoryItem {...category} />
+    </button>
   );
 };

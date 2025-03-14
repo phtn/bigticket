@@ -1,4 +1,3 @@
-import { Icon } from "@/icons";
 import { HyperList } from "@/ui/list";
 import { Button, cn } from "@nextui-org/react";
 import { type FC } from "react";
@@ -8,6 +7,7 @@ import type {
   ItemCounterProps,
   SidebarListProps,
 } from "./types";
+import { Iconx } from "@/icons/icon";
 
 export const ListTitle: FC<{ title: string }> = ({ title }) => (
   <div className="flex h-10 w-full items-center justify-between space-x-3 px-2">
@@ -25,7 +25,7 @@ export const HideButton = (props: { fn: VoidFunction }) => (
     onPress={props.fn}
     className="group absolute right-6 top-6 z-[60] border-0"
   >
-    <Icon name="LeftChev" className="size-5 stroke-0 text-gray-600" />
+    <Iconx name="arrow-left-01" className="size-5 stroke-0 text-gray-600" />
   </Button>
 );
 
@@ -59,7 +59,7 @@ export const SidebarListItem = (item: CategoryItem) => (
   <div className="spacex-5 flex w-full items-center justify-between p-3 hover:bg-white">
     <div className="flex items-center space-x-2">
       <IconWrapper className={cn("mx-2")}>
-        <Icon name={item.icon} className="size-6 shrink-0" />
+        <Iconx name={item.icon} className="size-6 shrink-0" />
       </IconWrapper>
       <h2 className="text-sm capitalize tracking-tight text-primary/80">
         {item.label}
@@ -71,8 +71,8 @@ export const SidebarListItem = (item: CategoryItem) => (
 
 export const ItemCounter = ({ count }: ItemCounterProps) => (
   <div className="relative flex size-8 items-center justify-center">
-    <Icon
-      name="Squircle"
+    <Iconx
+      name="squircle"
       className="absolute size-8 text-macl-gray opacity-10"
     />
     <p className="absolute font-sans text-xs font-medium text-gray-600">

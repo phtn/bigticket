@@ -5,7 +5,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { AccountCtx } from "./ctx";
 import { opts } from "@/utils/helpers";
 import { Button, Spinner } from "@nextui-org/react";
-import { Icon } from "@/icons";
+import { Iconx } from "@/icons/icon";
 
 interface UserPfpProps {
   title: string;
@@ -24,7 +24,7 @@ export const PfpEditor = ({ title }: UserPfpProps) => {
   return (
     <SideVaul open={open} onOpenChange={toggleEditor} direction="right">
       <FlatWindow
-        icon={"User"}
+        icon={"user-circle"}
         title={title}
         variant="god"
         closeFn={toggleEditor}
@@ -45,8 +45,8 @@ export const PfpEditor = ({ title }: UserPfpProps) => {
               className="text-orange-50"
             >
               Save Photo
-              <Icon
-                name="CloudUpload"
+              <Iconx
+                name="cloud-upload"
                 className="size-4 stroke-transparent text-orange-400"
               />
             </Button>

@@ -1,6 +1,6 @@
 import type { CohostClearance } from "convex/events/d";
 import type { CohostField } from "../schema";
-import type { IconName } from "@/icons";
+import type { IconName } from "@/icons/types";
 import type { XEvent } from "@/app/types";
 
 export interface CohostBlockProps {

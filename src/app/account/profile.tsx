@@ -8,10 +8,10 @@ import { AccountContext, AccountCtx } from "./ctx";
 import { PfpEditor } from "./side-pfp";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Icon } from "@/icons";
 import { UserCtxProvider, useUserCtx } from "../ctx/user";
 import { useStorage } from "@/hooks/useStorage";
 import { useAuthStore } from "../ctx/auth/store";
+import { Iconx } from "@/icons/icon";
 
 export const Profile = memo(() => <ProfileContent />);
 Profile.displayName = "Profile";
@@ -74,8 +74,8 @@ export const Content = () => {
             <AvatarOptions />
           </div>
 
-          <Icon
-            name="Squircle"
+          <Iconx
+            name="squircle"
             className="absolute -right-2 bottom-2 z-[50] flex size-9 items-center text-secondary drop-shadow-sm transition-all duration-300 group-hover/edit:scale-110 md:right-1"
           />
           <input
@@ -91,8 +91,8 @@ export const Content = () => {
             onPress={browseFile}
             className="group absolute -right-1.5 bottom-2.5 z-50 data-[hover=true]:bg-transparent md:bottom-2.5 md:right-1.5"
           >
-            <Icon
-              name="Plus"
+            <Iconx
+              name="plus-sign"
               className="size-3.5 text-chalk group-hover:text-white"
             />
           </Button>

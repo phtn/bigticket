@@ -1,9 +1,9 @@
 "use client";
 
-import { Icon } from "@/icons";
 import { Card, CardHeader } from "@nextui-org/react";
 import { Header } from "./_components_/common";
 import { useUserCtx } from "../ctx/user";
+import { Iconx } from "@/icons/icon";
 
 export const Content = () => {
   const { xUser } = useUserCtx();
@@ -11,7 +11,7 @@ export const Content = () => {
     <div className="min-h-[80vh] w-full justify-center rounded-none pb-10 md:rounded-lg md:px-6">
       <div className="">
         <Header title="Activity">
-          <Icon name="Activity" className="size-4 text-macl-gray" />
+          <Iconx name="energy" className="size-4 text-macl-gray" />
         </Header>
 
         <div className="px-4 font-inter text-xs">

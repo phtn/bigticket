@@ -1,19 +1,19 @@
-import type { SVGProps } from "react";
-import { icons } from "./list";
+// import type { SVGProps } from "react";
+// import { icons } from "./list";
 
-export type IconName = keyof typeof icons;
-export type IconProps = SVGProps<SVGSVGElement> & { name: IconName };
+// export type IconName = keyof typeof icons;
+// export type IconProps = SVGProps<SVGSVGElement> & { name: IconName };
 
-export function Icon({
-  name,
-  fill = "none",
-  stroke = "currentColor",
-  ...props
-}: IconProps) {
-  const Component = icons[name];
-  if (!Component) {
-    console.error(`Icon "${name}" not found.`);
-    return null;
-  }
-  return <Component fill={fill} focusable={false} stroke={stroke} {...props} />;
-}
+// export function Icon({
+//   name,
+//   fill = "none",
+//   stroke = "currentColor",
+//   ...props
+// }: IconProps) {
+//   const Component = icons[name];
+//   if (!Component) {
+//     console.error(`Icon "${name}" not found.`);
+//     return null;
+//   }
+//   return <Component fill={fill} focusable={false} stroke={stroke} {...props} />;
+// }

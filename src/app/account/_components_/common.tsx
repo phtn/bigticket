@@ -1,8 +1,9 @@
-import { Icon, type IconName } from "@/icons";
+import { type IconName } from "@/icons/types";
 import { type ReactNode } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { type ClassName } from "@/app/types";
+import { Iconx } from "@/icons/icon";
 
 interface HeaderProps {
   children?: ReactNode;
@@ -27,8 +28,8 @@ export const Header = ({ title, children }: HeaderProps) => (
 
 export const Count = (props: { count: number | undefined }) => (
   <div className="relative flex size-8 items-center justify-center">
-    <Icon
-      name="Squircle"
+    <Iconx
+      name="squircle"
       className="absolute z-0 size-8 text-primary md:size-8"
     />
     <p className="z-1 relative font-inter text-sm font-bold text-chalk md:text-[16px]">
@@ -56,7 +57,7 @@ export const EmptyList = ({
         className,
       )}
     >
-      <Icon
+      <Iconx
         name={icon}
         className="pointer-events-none absolute size-40 text-gray-100"
       />
@@ -67,7 +68,7 @@ export const EmptyList = ({
         )}
       >
         <div className="flex animate-enter items-center justify-center font-inter text-sm font-medium tracking-tighter text-gray-600 opacity-80">
-          {loading ? <Icon name="SpinnerBall" /> : message}
+          {loading ? <Iconx name="spinners-bouncing-ball" /> : message}
         </div>
       </div>
     </div>

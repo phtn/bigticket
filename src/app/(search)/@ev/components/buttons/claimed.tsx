@@ -1,6 +1,6 @@
 import { Button, cn } from "@nextui-org/react";
-import { Icon } from "@/icons";
 import { type GetTicketProps } from "./d";
+import { Iconx } from "@/icons/icon";
 
 export const ViewTicket = ({ ticketCount = 0, fn }: GetTicketProps) => {
   return (
@@ -20,7 +20,7 @@ export const ViewTicket = ({ ticketCount = 0, fn }: GetTicketProps) => {
               Ticket{ticketCount > 1 && "s"}
             </span>
             Claimed
-            <Icon name="Check" className="text-teal-400" />
+            <Iconx name="check" className="text-teal-400" />
           </h2>
           <div className="flex items-center gap-1">
             <p className="font-inter text-sm font-semibold capitalize">

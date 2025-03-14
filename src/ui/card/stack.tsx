@@ -1,6 +1,6 @@
 "use client";
 
-import { Icon } from "@/icons";
+import { Iconx } from "@/icons/icon";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
@@ -147,8 +147,8 @@ export const Stack = ({
               onClick={handlePrev}
               className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800"
             >
-              <Icon
-                name="Fire"
+              <Iconx
+                name="energy"
                 className="h-5 w-5 text-black transition-transform duration-300 group-hover/button:rotate-12 dark:text-neutral-400"
               />
             </button>
@@ -156,8 +156,8 @@ export const Stack = ({
               onClick={handleNext}
               className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800"
             >
-              <Icon
-                name="ArrowRight"
+              <Iconx
+                name="arrow-right-02"
                 className="h-5 w-5 text-black transition-transform duration-300 group-hover/button:-rotate-12 dark:text-neutral-400"
               />
             </button>
