@@ -26,6 +26,7 @@ import { usePaymongo } from "@/hooks/usePaymongo";
 import { useRouter, useSearchParams } from "next/navigation";
 import { moses, secureRef } from "@/utils/crypto";
 import { guid } from "@/utils/helpers";
+import { env } from "@/env";
 
 const CART_STORAGE_KEY = "bigticket_cart";
 
@@ -272,9 +273,24 @@ export const attributes: Omit<
   send_email_receipt: true,
   show_description: true,
   show_line_items: true,
-  cancel_url: "https://re-up.ph",
-  success_url: "https://re-up.ph",
-  payment_method_types: ["gcash", "card", "grab_pay", "paymaya"],
+  cancel_url:
+    env.NODE_ENV === "production"
+      ? "https://bigticket.ph/payment/cancelled"
+      : "http://localhost:3000/payment/cancelled",
+  success_url:
+    env.NODE_ENV === "production"
+      ? "https://bigticket.ph/payment/success"
+      : "http://localhost:3000/payment/success",
+  payment_method_types: [
+    "gcash",
+    "card",
+    "grab_pay",
+    "paymaya",
+    "dob_ubp",
+    "brankas_bdo",
+    "brankas_metrobank",
+    "brankas_landbank",
+  ],
 };
 
 export const useOrder = () => {

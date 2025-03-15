@@ -1,10 +1,9 @@
 import { bookmarkEvent, likeEvent } from "@/app/account/(tabs)/events/actions";
-import { getUserID } from "@/app/actions";
+import { useAuth } from "@/app/ctx/auth/provider";
 import { useUserCtx } from "@/app/ctx/user";
 import { type XEvent } from "@/app/types";
 import { useMoment } from "@/hooks/useMoment";
 import { type IconName } from "@/icons/types";
-import { Err } from "@/utils/helpers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export interface InfoItem {
@@ -21,20 +20,14 @@ export interface PanelItem {
 }
 
 export const useEventInfo = (xEvent: XEvent | undefined) => {
-  const [userId, setUserId] = useState<string | null>(null);
-
-  const getUserId = useCallback(async () => {
-    try {
-      const id = await getUserID();
-      setUserId(id);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+  const { user } = useAuth();
+  const [userId, setUserId] = useState<string | null>(user?.id ?? null);
 
   useEffect(() => {
-    getUserId().catch(Err);
-  }, [getUserId]);
+    if (!userId && user) {
+      setUserId(user?.id);
+    }
+  }, [user, userId]);
 
   const {
     event_id,

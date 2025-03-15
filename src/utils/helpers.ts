@@ -8,70 +8,6 @@ export const getVersion = () => {
   return pkg.version;
 };
 
-export const deg2Rad = (deg: number | string): number => {
-  const getRad = (d: number) => (d * Math.PI) / 180;
-
-  if (typeof deg === "string") {
-    const parsed = parseInt(deg);
-    return getRad(parsed);
-  }
-
-  return getRad(deg);
-};
-
-export const rawUriDecoder = <T>(params: T) => {
-  return Object.entries(params as Record<string, string>).map(
-    ([key, value]) => ({
-      [key]: decodeRaw(encodeURIComponent(value ?? "")),
-    }),
-  );
-};
-
-const decodeRaw = (encoded: string) => {
-  let val = encoded.replace(/%20/g, "__P__");
-  val = decodeURIComponent(val);
-  return val.replace(/__P__/g, "+");
-};
-
-export const passwordSecure = (name: string, secure: boolean) => {
-  if (name === "email") return "email";
-  if (name === "password" && secure) {
-    return "password";
-  }
-  return "text";
-};
-
-export const removeLastEqualSign = (str: string) => {
-  const regex = /=+$/;
-  return str.replace(regex, "");
-};
-
-export const hashString = async (...args: string[]): Promise<string> => {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(args.join(""));
-
-  return crypto.subtle.digest("SHA-256", data).then((hash) => {
-    const encoded = btoa(
-      String.fromCharCode.apply(null, Array.from(new Uint8Array(hash))),
-    );
-    const sanitizedHash = encoded
-      .replace(/\+/g, "")
-      .replace(/\//g, "")
-      .replace(/=+$/, "");
-    return removeLastEqualSign(sanitizedHash);
-  });
-};
-
-export const createRefNo = async (
-  ...args: Array<string | undefined>
-): Promise<string> => {
-  if (args.every((arg) => arg !== undefined)) {
-    return `${await hashString(...args)}`;
-  } else {
-    return `${await hashString(new Date().getTime().toString(36))}`;
-  }
-};
-
 export const formatMobile = (mobile_number: string) => {
   const regex = /^0|^(63)|\D/g;
   if (mobile_number) {
@@ -86,53 +22,6 @@ export const opts = (...args: (ReactElement | null)[]) => {
     [true, args[0]],
     [false, args[1]],
   ]);
-};
-
-export function mapUnion<T extends string | number | symbol>() {
-  return {
-    // Record<[K in T], V> Record<keyof T, V>
-    build: <V>(entries: Record<T, V>): Map<T, V> => {
-      const map = new Map<T, V>();
-      (Object.entries(entries) as [T, V][]).forEach(([key, value]) => {
-        map.set(key, value);
-      });
-      return map;
-    },
-  };
-}
-
-export const decimal = (
-  num: string | number | undefined,
-  digits: number,
-): string => {
-  if (num === undefined) return "0.00";
-  const parsedNumber = typeof num === "string" ? parseFloat(num) : num;
-  return parsedNumber.toLocaleString("en-US", {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits,
-  });
-};
-
-export const prettyDate = (datestring: string | undefined): string => {
-  if (!datestring) return "";
-  const date = new Date(datestring);
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    timeZone: "UTC",
-  };
-  return date.toLocaleString("en-US", options);
-};
-
-export const getToday = () => {
-  const d = new Date();
-  const datestring = d.toLocaleDateString();
-  const date = prettyDate(datestring).split("at");
-  return date[0];
 };
 
 export type CopyFnParams = {
@@ -169,16 +58,6 @@ export const copyFn: CopyFn = async ({ name, text }) => {
     });
 };
 
-export const getNextElement = <T>(
-  array: T[],
-  currentIndex: number,
-  setState: Dispatch<SetStateAction<number>>,
-) => {
-  const nextIndex = (currentIndex + 1) % array.length; // Calculate the next index with wrap-around
-  setState(nextIndex);
-  return nextIndex;
-};
-
 export const getFileType = (file_type: string | undefined): string => {
   if (!file_type) {
     return "";
@@ -206,98 +85,6 @@ export const getFileSize = (bytes: number | undefined): string => {
   return `${roundedValue} ${units[unitIndex]}`;
 };
 
-export const withSpaces = (input: string): string => {
-  return input.replace(/_/g, " ");
-};
-
-const adj: string[] = [
-  "Magnetic",
-  "Spinning",
-  "Perturbed",
-  "Excited",
-  "Coherent",
-  "Super",
-  "Observant",
-  "Wavelike",
-  "Dual",
-  "Tunneling",
-  "Computing",
-  "Collective",
-  "Orbital",
-  "Proto",
-  "Meta",
-  "Fast",
-  "Sonic",
-  "Blazing",
-  "The Great",
-];
-
-const moons: string[] = [
-  "Moon",
-  "Phobos",
-  "Deimos",
-  "Io",
-  "Europa",
-  "Ganymede",
-  "Callisto",
-  "Mimas",
-  "Enceladus",
-  "Tethys",
-  "Dione",
-  "Rhea",
-  "Titan",
-  "Hyperion",
-  "Iapetus",
-  "Miranda",
-  "Ariel",
-  "Umbriel",
-  "Titania",
-  "Oberon",
-  "Triton",
-  "Nereid",
-  "Charon",
-  "Styx",
-  "Nix",
-  "Kerberos",
-  "Hydra",
-  "Messier",
-  "Eradani",
-  "Attractor",
-  "Hyperspace",
-];
-
-export const nameGenerator = (): string => {
-  const radj = Math.floor(Math.random() * adj.length);
-  const noun = Math.floor(Math.random() * moons.length);
-
-  return `${adj[radj]} ${moons[noun]}`;
-};
-
-export const getMonthAndYear = (
-  timeInMs: number,
-): { month: string; year: number } => {
-  const date = new Date(timeInMs);
-  const month = date.toLocaleString("en-US", { month: "long" });
-  const year = date.getFullYear();
-
-  return { month, year };
-};
-
-export const authHandler =
-  <T extends Error>(
-    setLoading: Dispatch<SetStateAction<boolean>>,
-    setError?: Dispatch<SetStateAction<T>>,
-  ) =>
-  (e: T) => {
-    onError(
-      e.message.includes("auth/invalid-credential")
-        ? "Invalid Credentials"
-        : e.message,
-    );
-    setLoading(false);
-    if (setError) setError(e);
-  };
-
 export const okHandler =
   (setLoading: Dispatch<SetStateAction<boolean>>, message?: string) => () => {
     setLoading(false);
@@ -306,27 +93,6 @@ export const okHandler =
 
 export const settle = (setLoading: Dispatch<SetStateAction<boolean>>) => () => {
   setLoading(false);
-};
-
-export const warnHandler =
-  <T extends Error>(
-    setLoading: Dispatch<SetStateAction<boolean>>,
-    setError?: Dispatch<SetStateAction<T>>,
-  ) =>
-  (e: T) => {
-    onWarn(
-      e.message.includes("auth/invalid-credential")
-        ? "Invalid Credentials"
-        : e.message,
-    );
-    setLoading(false);
-    if (setError) setError(e);
-  };
-
-export const sanitizeText = (value: string) => {
-  const spaces = value.replaceAll(" ", "_");
-  const commas: string = spaces.replaceAll(",", "");
-  return commas;
 };
 
 type FullnameParams = {
@@ -358,31 +124,6 @@ export const getInitials = (name: string | undefined) => {
   if (words.length >= 3) {
     return words[0]!.charAt(0) + words[words.length - 1]!.charAt(0);
   }
-};
-
-export const basedOnTime = (): string => {
-  const date = new Date();
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-  const localDate = new Date(
-    date.toLocaleString("en-US", { timeZone: timezone }),
-  );
-
-  const hours = localDate.getHours();
-
-  if (hours < 12) {
-    return "Good day,";
-  }
-
-  if (hours >= 12 && hours < 17) {
-    return "Good afternoon,";
-  }
-
-  if (hours >= 17 && hours < 20) {
-    return "Good evening,";
-  }
-
-  return "Good evening,";
 };
 
 export const charlimit = (
@@ -452,12 +193,6 @@ const s = () =>
 export const guid = () =>
   `${s()}${s()}-${s()}-${s()}-${s()}-${s()}${s()}${s()}`;
 
-export const svgToPath = (svg: string) => {
-  const p0 = svg.indexOf('d="');
-  const p1 = svg.indexOf('"', p0 + 3);
-  return svg.substring(p0 + 3, p1);
-};
-
 export const errHandler =
   <T>(
     setLoading: Dispatch<SetStateAction<boolean>>,
@@ -505,23 +240,6 @@ export const pasteFn = async (id: string) => {
     v.replaceAll('"', "");
   }
   return v;
-};
-
-export const normalizeTitle = (title: string | undefined) => {
-  if (!title) return [];
-  const words = title.split(" ");
-
-  if (words.length < 2) return [title];
-
-  const firstLine = words[0];
-  let secondLine = words[1];
-  const thirdLine = words[2];
-
-  if (thirdLine) {
-    secondLine = secondLine + " " + thirdLine;
-  }
-
-  return [firstLine, secondLine];
 };
 
 export const asyncR = async <T extends Promise<T>>(

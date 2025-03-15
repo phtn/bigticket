@@ -13,7 +13,6 @@ import {
 } from "react";
 import { useConvexCtx } from "../convex";
 import { Err } from "@/utils/helpers";
-import { useStorage } from "@/hooks/useStorage";
 import { useAuth } from "../auth/provider";
 import { useAuthStore } from "../auth/store";
 import toast from "react-hot-toast";
@@ -36,11 +35,19 @@ export const UserCtxProvider = ({ children }: { children: ReactNode }) => {
   const [isPending, startTransition] = useTransition();
   const [xUser, setXUser] = useState<SelectUser>();
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const { item, setItem } = useStorage<{ photoUrl: string | null }>(
-    user ? user.id : "xUser",
-  );
+
   const { vxFiles, vxUsers } = useConvexCtx();
   const { q } = useConvexUtils();
+
+  useEffect(() => {
+    if (xUser) {
+      const item = localStorage.getItem(xUser.id);
+      const pic = item
+        ? (JSON.parse(item) as { photoUrl: string } | null)
+        : null;
+      setPhotoUrl(pic?.photoUrl ?? null);
+    }
+  }, [xUser, vxUsers]);
 
   const vxUser = useQuery(api.users.get.byId, { id: q(user?.id) });
   const createNewUser = useCallback(
@@ -77,26 +84,26 @@ export const UserCtxProvider = ({ children }: { children: ReactNode }) => {
     if (!xUser?.photo_url) return null;
 
     // Check if we have a cached photo URL
-    const cached = item?.photoUrl;
-    if (cached) return cached;
+    if (photoUrl) return photoUrl;
 
     const url = xUser.photo_url;
 
     // Handle direct HTTPS urls
     if (url.startsWith("https")) {
-      setItem({ photoUrl: url });
+      setPhotoUrl(url);
       return url;
     }
 
     // Handle file storage urls
     const imageUrl = await vxFiles.getUrl(url);
     if (imageUrl) {
-      setItem({ photoUrl: imageUrl });
+      localStorage.setItem(xUser.id, JSON.stringify({ photoUrl: imageUrl }));
+      setPhotoUrl(imageUrl);
       return imageUrl;
     }
 
     return null;
-  }, [vxFiles, xUser?.photo_url, item, setItem]);
+  }, [vxFiles, xUser?.photo_url, photoUrl, xUser?.id]);
 
   // Update photo URL when user changes
   useEffect(() => {

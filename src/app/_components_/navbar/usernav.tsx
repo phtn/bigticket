@@ -12,7 +12,7 @@ import { Hyper } from "@/ui/button/button";
 import { BtnIcon } from "@/ui/button/button-icon";
 import { HyperList } from "@/ui/list";
 import { TextLoader } from "@/ui/loader/text";
-import { opts } from "@/utils/helpers";
+import { clearConsole, opts } from "@/utils/helpers";
 import {
   Avatar,
   Input,
@@ -20,7 +20,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
-import chalk from "chalk";
 import { useRouter } from "next/navigation";
 import {
   type JSX,
@@ -71,13 +70,9 @@ const UserSign = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSignin = () => {
-    const big = chalk.hex("#59D2CB").bold.bgBlack;
-    const ticket = chalk.hex("#fb923c").bold.bgBlack;
-    const cutout = chalk.gray.bgBlack.bold("●");
-    console.clear();
-    console.log(cutout + big(" BIG ") + ticket("ticket ") + cutout);
-  };
+  const handleSignin = useCallback(() => {
+    clearConsole();
+  }, []);
 
   return (
     <div className="absolute right-0 flex h-16 w-fit items-center px-4">
@@ -239,7 +234,7 @@ const UserAvatar = (props: { photo_url: string | null }) => {
   return (
     <div className="flex w-fit items-center px-4 md:gap-8">
       <Popover isOpen={open} placement="bottom-end" onOpenChange={toggle}>
-        <PopoverTrigger className="cursor-pointer border border-macl-gray">
+        <PopoverTrigger className="cursor-pointer">
           <Avatar
             alt="user-pfp"
             name="profile-picture"

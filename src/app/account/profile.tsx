@@ -1,29 +1,24 @@
 "use client";
 
+import { Iconx } from "@/icons/icon";
 import { cn } from "@/lib/utils";
 import { opts } from "@/utils/helpers";
 import { Button, Image, Spinner } from "@nextui-org/react";
-import { memo, use, useCallback } from "react";
-import { AccountContext, AccountCtx } from "./ctx";
-import { PfpEditor } from "./side-pfp";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { memo, useCallback } from "react";
 import { UserCtxProvider, useUserCtx } from "../ctx/user";
-import { useStorage } from "@/hooks/useStorage";
-import { useAuthStore } from "../ctx/auth/store";
-import { Iconx } from "@/icons/icon";
+import { AccountContext, useAccountCtx } from "./ctx";
+import { PfpEditor } from "./side-pfp";
 
 export const Profile = memo(() => <ProfileContent />);
 Profile.displayName = "Profile";
 
 export const Content = () => {
-  const { fileChange, inputFileRef, browseFile } = use(AccountCtx)!;
+  const { fileChange, inputFileRef, browseFile, updating, photoUrl } =
+    useAccountCtx();
 
   const { xUser } = useUserCtx();
-  const { user } = useAuthStore();
-  const { item } = useStorage<{ photoUrl: string | null }>(user?.id ?? "xUser");
-  const photoUrl = item?.photoUrl ?? null;
-
   const pathname = usePathname();
 
   const sub = pathname.split("/")[3];
@@ -41,6 +36,14 @@ export const Content = () => {
     );
     return <>{options.get(!photoUrl)}</>;
   }, [photoUrl]);
+
+  const AddPhotoOptions = useCallback(() => {
+    const options = opts(
+      <Spinner size="sm" className="text-white" />,
+      <Iconx name="plus-sign" className="size-4 text-white" />,
+    );
+    return <>{options.get(updating)}</>;
+  }, [updating]);
 
   return (
     <div className={cn("relative mb-8 w-full", { hidden: sub?.length === 1 })}>
@@ -91,10 +94,7 @@ export const Content = () => {
             onPress={browseFile}
             className="group absolute -right-1.5 bottom-2.5 z-50 data-[hover=true]:bg-transparent md:bottom-2.5 md:right-1.5"
           >
-            <Iconx
-              name="plus-sign"
-              className="size-3.5 text-chalk group-hover:text-white"
-            />
+            <AddPhotoOptions />
           </Button>
         </div>
         <PfpEditor title="Profile Picture" />

@@ -1,4 +1,11 @@
-import React, { createContext, useCallback, useMemo, useState } from "react";
+import {
+  createContext,
+  type FC,
+  type ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 
 interface CursorCtxValues {
   isInputHovered: boolean;
@@ -7,9 +14,7 @@ interface CursorCtxValues {
 
 export const CursorCtx = createContext<CursorCtxValues | null>(null);
 
-export const CursorProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const CursorProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [isInputHovered, setIsInputHovered] = useState<boolean>(false);
 
   const handleInputHover = useCallback(

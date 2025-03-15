@@ -1,8 +1,8 @@
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
-import { use, useCallback } from "react";
+import { useCallback } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { AccountCtx } from "./ctx";
+import { useAccountCtx } from "./ctx";
 import { opts } from "@/utils/helpers";
 import { Button, Spinner } from "@nextui-org/react";
 import { Iconx } from "@/icons/icon";
@@ -11,7 +11,7 @@ interface UserPfpProps {
   title: string;
 }
 export const PfpEditor = ({ title }: UserPfpProps) => {
-  const { open, toggleEditor, preview, save, saving } = use(AccountCtx)!;
+  const { open, toggleEditor, preview, saveFn, saving } = useAccountCtx();
 
   const ViewOptions = useCallback(() => {
     const options = opts(
@@ -38,7 +38,7 @@ export const PfpEditor = ({ title }: UserPfpProps) => {
           <div className="flex w-full items-center justify-end">
             <Button
               size="sm"
-              onPress={save}
+              onPress={saveFn}
               variant="solid"
               color="primary"
               isLoading={saving}
@@ -58,7 +58,7 @@ export const PfpEditor = ({ title }: UserPfpProps) => {
 };
 
 const CanvasWithZoom = () => {
-  const { canvasRef } = use(AccountCtx)!;
+  const { canvasRef } = useAccountCtx();
   return (
     <TransformWrapper initialScale={1}>
       <TransformComponent>

@@ -3,7 +3,6 @@
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
-import { MorphingText } from "../text/morph";
 import type { ClassName } from "@/app/types";
 
 interface NeonColorsProps {
@@ -94,7 +93,7 @@ const NeonCard: React.FC<NeonCardProps> = ({
           "dark:bg-neutral-900",
         )}
       >
-        <MorphingText className={className} texts={texts} />
+        {/* <MorphingText className={className} texts={texts} /> */}
       </div>
     </div>
   );

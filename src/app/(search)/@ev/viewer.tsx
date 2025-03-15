@@ -50,7 +50,7 @@ import { VIPAccess, VIPNoAccess } from "./components/buttons/vip";
 import { useEventInfo } from "./useEventInfo";
 import { useEventViewer, type Moments } from "./useEventViewer";
 import { useTicketCart } from "./useTicketCart";
-import { SelectUser } from "convex/users/d";
+import { type SelectUser } from "convex/users/d";
 
 export const EventViewer = () => {
   const allEvents = useQuery(api.events.get.all);
@@ -278,12 +278,12 @@ const MediaContainer = memo(({ xEvent, moments }: MediaContainerProps) => {
     <div className="mx-auto h-[calc(100vh-64px)] w-full max-w-6xl overflow-y-scroll font-inter tracking-tight md:h-full md:w-[30rem]">
       <Carousel className="w-full">
         <MediaComponent
-          event_name={event_name ?? null}
+          ref={ref}
           visible={visible}
+          event_name={event_name ?? null}
           narrow={moments.narrow}
           time={moments.start_time.compact}
           cover_src={xEvent?.cover_src ?? null}
-          ref={ref}
           gallery={mediaGallery}
         />
       </Carousel>

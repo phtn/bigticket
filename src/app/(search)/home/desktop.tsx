@@ -8,6 +8,7 @@ import { Collections } from "../../_components_/sidebar";
 import { categories, type Category } from "./components/category";
 import { Proxima } from "../../_components_/proxima";
 import { type XEvent } from "@/app/types";
+import { CursorProvider } from "@/app/ctx/cursor";
 
 interface DesktopViewProps {
   xEvents: XEvent[];
@@ -15,15 +16,17 @@ interface DesktopViewProps {
 
 export const DesktopView = ({ xEvents }: DesktopViewProps) => {
   return (
-    <div
-      className={cn(
-        "flex h-full w-screen overflow-hidden transition-all duration-300",
-      )}
-    >
-      <Collections />
-      <MainContent xEvents={xEvents} />
-      <HyperSpace />
-    </div>
+    <CursorProvider>
+      <div
+        className={cn(
+          "flex h-full w-screen overflow-hidden transition-all duration-300",
+        )}
+      >
+        <Collections />
+        <MainContent xEvents={xEvents} />
+        <HyperSpace />
+      </div>
+    </CursorProvider>
   );
 };
 
@@ -75,7 +78,7 @@ const MainContent = ({ xEvents }: MainContentProps) => {
             keyId="event_id"
             data={xEvents}
             component={EventCard}
-            container="overflow-scroll md:h-fit grid grid-cols-1 gap-4 sm:grid-cols-2 md::grid-cols-2 lg:grid-cols-3  px-4"
+            container="overflow-scroll min-h-[50vh] md:h-fit grid grid-cols-1 gap-4 sm:grid-cols-2 md::grid-cols-2 lg:grid-cols-3  px-4"
             delay={0.1}
           >
             <div
@@ -84,7 +87,7 @@ const MainContent = ({ xEvents }: MainContentProps) => {
             >
               <Hero>
                 <HyperList
-                  container="flex w-fit gap-4"
+                  container="flex md:w-fit w-screen px-4 overflow-x-auto gap-4"
                   data={categories}
                   component={CategoryItem}
                   direction="up"

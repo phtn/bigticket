@@ -6,6 +6,7 @@ import type { ChangeEvent, ReactNode, RefObject } from "react";
 import {
   createContext,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -13,6 +14,8 @@ import {
 } from "react";
 import { type ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
 import { useUserCtx } from "../ctx/user";
+import { convertToWebPFile } from "@/utils/webp";
+import { Err } from "@/utils/helpers";
 
 export interface Point {
   dx: number;
@@ -24,13 +27,15 @@ interface AccountCtxValues {
   fileChange: (e: ChangeEvent<HTMLInputElement>) => void;
   toggleEditor: VoidFunction;
   preview: string | null;
-  save: () => Promise<void>;
+  saveFn: () => Promise<void>;
   saving: boolean;
   inputFileRef: RefObject<HTMLInputElement | null>;
   canvasRef: RefObject<HTMLCanvasElement | null>;
   browseFile: VoidFunction;
   pending: boolean;
   photo_url: string | null;
+  updating: boolean;
+  photoUrl: string | null;
 }
 
 export const AccountCtx = createContext<AccountCtxValues | null>(null);
@@ -38,11 +43,54 @@ export const AccountCtx = createContext<AccountCtxValues | null>(null);
 export const AccountContext = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const { vxFiles, vxUsers } = useConvexCtx();
   const { xUser, isPending } = useUserCtx();
-
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (xUser) {
+      const item = localStorage.getItem(xUser.id);
+      const pic = item
+        ? (JSON.parse(item) as { photoUrl: string } | null)
+        : null;
+      setPhotoUrl(pic?.photoUrl ?? null);
+    }
+  }, [xUser, vxUsers]);
+
+  useEffect(() => {
+    const fetchAndCachePhotoUrl = async () => {
+      if (!xUser?.id) return;
+
+      // Try to get from localStorage first
+      const cached = localStorage.getItem(xUser.id);
+      const cachedData = cached
+        ? (JSON.parse(cached) as { photoUrl: string } | null)
+        : null;
+
+      if (cachedData?.photoUrl) {
+        setPhotoUrl(cachedData.photoUrl);
+      } else if (xUser.photo_url) {
+        // If not in cache but user has photo_url, fetch and cache it
+        try {
+          const imageUrl = await vxFiles.getUrl(xUser.photo_url);
+          if (imageUrl) {
+            localStorage.setItem(
+              xUser.id,
+              JSON.stringify({ photoUrl: imageUrl }),
+            );
+            setPhotoUrl(imageUrl);
+          }
+        } catch (error) {
+          console.error("Failed to fetch photo URL:", error);
+        }
+      }
+    };
+
+    fetchAndCachePhotoUrl().catch(Err);
+  }, [xUser, vxFiles]);
 
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -101,8 +149,8 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
 
   const createUrl = useCallback(async () => {
     if (selectedFile) {
-      const file = await convertToWebPFile(selectedFile, canvasRef);
-      return await vxFiles.create(file as File);
+      const file = await convertToWebPFile(selectedFile, canvasRef.current);
+      return await vxFiles.create(file);
     }
   }, [selectedFile, vxFiles]);
 
@@ -112,21 +160,39 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
     [vxUsers.mut],
   );
 
-  const save = useCallback(async () => {
-    setSaving(true);
-    const photo_url = await createUrl();
+  const saveFn = useCallback(async () => {
+    try {
+      setSaving(true);
 
-    if (xUser?.id && photo_url) {
-      const id = await updatePhotoUrl(xUser.id, photo_url);
-      if (id) {
-        onSuccess("Image uploaded!");
-        setOpen(false);
-        setSaving(false);
-      }
+      // Create new photo URL
+      const newPhotoUrl = await createUrl();
+      if (!newPhotoUrl || !xUser?.id) return;
+
+      // Update user's photo URL in database
+      const id = await updatePhotoUrl(xUser.id, newPhotoUrl);
+      if (!id) return;
+
+      // Get the publicly accessible URL
+      const imageUrl = await vxFiles.getUrl(newPhotoUrl);
+      if (!imageUrl) return;
+
+      // Update UI state and cache
+      setOpen(false);
+      setUpdating(true);
+
+      // Cache the new URL
+      localStorage.setItem(xUser.id, JSON.stringify({ photoUrl: imageUrl }));
+
+      // Update state
+      setPhotoUrl(imageUrl);
+      onSuccess("Image uploaded!");
+    } catch (error) {
+      console.error("Failed to save photo:", error);
+    } finally {
       setSaving(false);
+      setUpdating(false);
     }
-    setSaving(false);
-  }, [createUrl, updatePhotoUrl, xUser?.id]);
+  }, [createUrl, updatePhotoUrl, xUser?.id, vxFiles]);
 
   const value = useMemo(
     () => ({
@@ -134,7 +200,7 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       fileChange,
       toggleEditor,
       pending: isPending,
-      save,
+      saveFn,
       saving,
       inputFileRef,
       browseFile,
@@ -142,13 +208,15 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       preview,
       transformRef,
       photo_url: xUser?.photo_url ?? null,
+      updating,
+      photoUrl,
     }),
     [
       open,
       fileChange,
       toggleEditor,
       isPending,
-      save,
+      saveFn,
       saving,
       inputFileRef,
       browseFile,
@@ -156,64 +224,18 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       preview,
       transformRef,
       xUser?.photo_url,
+      updating,
+      photoUrl,
     ],
   );
 
   return <AccountCtx value={value}>{children}</AccountCtx>;
 };
 
-async function convertToWebPFile(
-  inputFile: File,
-  canvasRef: RefObject<HTMLCanvasElement | null>,
-  filename = "pfp.webp",
-) {
-  // Create an image element
-  const img = new Image();
-
-  // Create a canvas element
-  if (!canvasRef.current) return;
-  const canvas = canvasRef.current;
-  const ctx = canvas.getContext("2d");
-
-  // Load the image
-  const imageUrl = URL.createObjectURL(inputFile);
-
-  // Convert to webp using canvas
-  return new Promise((resolve, reject) => {
-    img.onload = () => {
-      // Set canvas size to match image
-      const dw = img.width * 0.6;
-      const dh = img.height * 0.4;
-      canvas.width = dw;
-      canvas.height = dh;
-
-      // Draw image onto canvas
-      ctx?.drawImage(img, 0, 0, dw, dh);
-
-      // Convert to webp
-      canvas.toBlob(
-        (blob) => {
-          if (blob) {
-            // Create File object from blob
-            const webpFile = new File([blob], filename, { type: "image/webp" });
-            resolve(webpFile);
-          } else {
-            reject(new Error("Canvas to Blob conversion failed"));
-          }
-
-          // Clean up
-          URL.revokeObjectURL(imageUrl);
-        },
-        "image/webp",
-        0.7,
-      ); // 0.8 is the quality (0-1)
-    };
-
-    img.onerror = () => {
-      URL.revokeObjectURL(imageUrl);
-      reject(new Error("Failed to load image"));
-    };
-
-    img.src = imageUrl;
-  });
-}
+export const useAccountCtx = () => {
+  const context = useContext(AccountCtx);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
