@@ -58,22 +58,23 @@ const CompanyLogo = () => {
 const CompanyInfo = () => {
   return (
     <div className="flex h-auto w-full flex-col justify-between border-l-[0.33px] border-dotted border-ticket leading-none">
-      <div className="flex h-2/3 w-full items-center border-b-[0.33px] border-dashed border-ticket/80 px-8">
-        <h1 className="text-lg font-black text-vanilla">
+      <div className="flex h-1/2 w-full flex-col justify-center border-b-[0.33px] border-dashed border-ticket/80 px-6 sm:h-2/3 sm:px-8">
+        <h1 className="font-black text-vanilla sm:text-lg">
           Big Ticket
-          <span className="ps-2 font-normal opacity-80">
+          <span className="ps-1 font-normal opacity-80">
             Ticketing Services
           </span>
         </h1>
+        <p className="text-xs opacity-60">Event Hosting Platform</p>
       </div>
-      <div className="flex h-1/3 items-center">
-        <div className="hidden items-center space-x-4 border-r-[0.33px] border-dotted border-ticket/80 px-8 text-sm opacity-80 sm:flex">
+      <div className="flex h-1/2 items-center sm:h-1/3">
+        <div className="hidden items-center space-x-4 border-r-[0.33px] border-dotted border-ticket/80 px-8 text-sm opacity-80 lg:flex">
           <Iconx name="location-01" className="size-4" />
           <p>Quezon City, Philippines</p>
         </div>
-        <div className="flex items-center space-x-6 px-8 text-sm opacity-80">
+        <div className="flex items-center space-x-4 px-6 text-sm opacity-80 sm:space-x-6 sm:px-8">
           <Iconx name="mail-send" className="size-4" />
-          <p className="text-sm">hq@bigticket.com</p>
+          <p className="text-sm text-secondary">hq@bigticket.com</p>
         </div>
       </div>
       {/* <p className="text-xs opacity-80">
@@ -94,7 +95,9 @@ const QuickLinks = () => {
 
   return (
     <div className="relative w-full border-l-[0.33px] border-t-[0.33px] border-dotted border-ticket p-8 text-center sm:border-t-0">
-      <h3 className="mb-4 text-sm font-semibold text-vanilla">Quick Links</h3>
+      <h3 className="mb-8 text-sm font-semibold text-vanilla sm:mb-4">
+        Quick Links
+      </h3>
       <ul className="space-y-3 text-xs opacity-80">
         <li>
           <Link
@@ -127,7 +130,7 @@ const QuickLinks = () => {
 const Resources = () => {
   return (
     <div className="border-l-[0.33px] border-t-[0.33px] border-dotted border-ticket p-8 text-center sm:border-t-0">
-      <h3 className="mb-4 text-sm font-bold text-vanilla">Resources</h3>
+      <h3 className="mb-8 text-sm font-bold text-vanilla sm:mb-4">Resources</h3>
       <ul className="space-y-3 text-xs opacity-80">
         <li>
           <Link href="/privacy-policy" className="">
