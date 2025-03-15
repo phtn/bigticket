@@ -97,8 +97,9 @@ const MainContent = ({ xEvents }: MainContentProps) => {
             </div>
           </HyperList>
         </section>
-      </main>
 
+        <div className="h-24"></div>
+      </main>
       <Proxima />
     </div>
   );

@@ -1,39 +1,42 @@
 "use client";
 
 import Link from "next/link";
-import { Iconx } from "@/icons/icon";
 import { Image } from "@nextui-org/react";
 import { Hyper } from "@/ui/button/button";
 
 export const Proxima = () => {
   return (
     <footer className="pt-12 text-chalk">
-      <div className="mx-auto px-4 py-12 md:px-6">
-        <div className="grid grid-cols-3 gap-8">
-          <div className="">
-            <div className="mb-4 flex items-center space-x-2">
-              <div className="flex aspect-square h-auto w-20 items-center justify-center rounded-full bg-white">
+      <div className="mx-auto px-4 py-12 md:px-16">
+        <div className="grid w-full grid-cols-2 gap-8 gap-y-16 sm:grid-cols-3 md:gap-y-8">
+          <div className="col-span-2 flex w-full justify-between sm:col-span-1 sm:block">
+            <div className="mb-4 flex items-center">
+              <div className="flex aspect-square h-auto w-14 items-center justify-center rounded-full bg-white sm:w-20">
                 <Image
                   src="/icon/logomark_v2.svg"
                   alt="big-ticket-logomark"
-                  className="size-14"
+                  className="size-10 sm:size-14"
                 />
               </div>
             </div>
-            <p className="mb-4 max-w-xs text-sm opacity-80">
-              Bringing events, experiences, and entertainment closer to you.
-            </p>
-            <div className="flex space-x-4">
-              <Link
-                href="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <Iconx name="ticket-tilted" className="h-5 w-5" />
-                <span className="sr-only">Twitter</span>
-              </Link>
+            <div className="mb-4 flex w-full justify-end opacity-80 sm:justify-start">
+              <div className="w-10 sm:hidden" />
+              <div className="w-fit space-y-3 pt-8 sm:max-w-xs">
+                <h1 className="text-lg font-bold text-vanilla">
+                  Big Ticket
+                  <span className="ps-2 opacity-80">
+                    Event Hosting Platform
+                  </span>
+                </h1>
+
+                <p className="text-sm opacity-80">
+                  Bring events, experiences, and entertainment closer to your
+                  audience.
+                </p>
+              </div>
             </div>
           </div>
-          <div>
+          <div className="text-center sm:text-left">
             <h3 className="mb-4 text-sm font-semibold text-vanilla">
               Quick Links
             </h3>
@@ -57,7 +60,7 @@ export const Proxima = () => {
             </ul>
           </div>
 
-          <div>
+          <div className="text-center sm:text-left">
             <h3 className="mb-4 text-sm font-bold text-vanilla">Resources</h3>
             <ul className="space-y-3 text-xs opacity-80">
               <li>
@@ -76,14 +79,20 @@ export const Proxima = () => {
             </ul>
           </div>
         </div>
-        <div className="mt-12 flex h-44 items-end border-t border-ticket pt-8">
-          <div className="grid w-full gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <div className="lg:col-span-2">
-              <div className="flex w-full max-w-sm space-x-2">
-                <Hyper label="Chat with us" rounded end="message-01" />
+        <div className="mt-12 flex h-32 items-end border-t-[0.33px] border-ticket pt-8 sm:h-44">
+          <div className="grid w-full grid-cols-2 gap-8">
+            <div className="">
+              <div className="flex w-full">
+                <Hyper
+                  label="Chat with us"
+                  className="px-2"
+                  rounded
+                  sm
+                  end="message-01"
+                />
               </div>
             </div>
-            <div className="flex items-end justify-start md:justify-end">
+            <div className="flex items-end justify-end">
               <p className="text-xs text-muted-foreground">
                 © {new Date().getFullYear()} Big Ticket
               </p>
