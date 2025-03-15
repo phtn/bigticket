@@ -3,104 +3,172 @@
 import Link from "next/link";
 import { Image } from "@nextui-org/react";
 import { Hyper } from "@/ui/button/button";
+import { Iconx } from "@/icons/icon";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 export const Proxima = () => {
   return (
-    <footer className="pt-12 text-chalk">
-      <div className="mx-auto px-4 py-12 md:px-16">
-        <div className="grid w-full grid-cols-2 gap-8 gap-y-16 sm:grid-cols-3 md:gap-y-8">
-          <div className="col-span-2 flex w-full justify-between sm:col-span-1 sm:block">
-            <div className="mb-4 flex items-center">
-              <div className="flex aspect-square h-auto w-14 items-center justify-center rounded-full bg-white sm:w-20">
-                <Image
-                  src="/icon/logomark_v2.svg"
-                  alt="big-ticket-logomark"
-                  className="size-10 sm:size-14"
-                />
-              </div>
-            </div>
-            <div className="mb-4 flex w-full justify-end opacity-80 sm:justify-start">
-              <div className="w-10 sm:hidden" />
-              <div className="w-fit space-y-3 pt-8 sm:max-w-xs">
-                <h1 className="text-lg font-bold text-vanilla">
-                  Big Ticket
-                  <span className="ps-2 opacity-80">
-                    Event Hosting Platform
-                  </span>
-                </h1>
-
-                <p className="text-sm opacity-80">
-                  Bring events, experiences, and entertainment closer to your
-                  audience.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="text-center sm:text-left">
-            <h3 className="mb-4 text-sm font-semibold text-vanilla">
-              Quick Links
-            </h3>
-            <ul className="space-y-3 text-xs opacity-80">
-              <li>
-                <Link
-                  href="#"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Upcoming Events
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/pricing"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Pricing
-                </Link>
-              </li>
-            </ul>
+    <footer className="text-chalk">
+      <div className="">
+        <div className="grid w-full grid-cols-2 border-y-[0.33px] border-dotted border-ticket sm:grid-cols-5 md:gap-y-8">
+          <div className="col-span-2 flex sm:col-span-3">
+            <CompanyLogo />
+            <CompanyInfo />
           </div>
 
-          <div className="text-center sm:text-left">
-            <h3 className="mb-4 text-sm font-bold text-vanilla">Resources</h3>
-            <ul className="space-y-3 text-xs opacity-80">
-              <li>
-                <Link href="/privacy-policy" className="">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/tos"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Terms of Use
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <QuickLinks />
+
+          <Resources />
         </div>
-        <div className="mt-12 flex h-32 items-end border-t-[0.33px] border-ticket pt-8 sm:h-44">
-          <div className="grid w-full grid-cols-2 gap-8">
-            <div className="">
-              <div className="flex w-full">
-                <Hyper
-                  label="Chat with us"
-                  className="px-2"
-                  rounded
-                  sm
-                  end="message-01"
-                />
-              </div>
-            </div>
-            <div className="flex items-end justify-end">
-              <p className="text-xs text-muted-foreground">
-                © {new Date().getFullYear()} Big Ticket
-              </p>
-            </div>
-          </div>
-        </div>
+        <InteractivePanel />
       </div>
     </footer>
+  );
+};
+
+const CompanyLogo = () => {
+  const [spin, setSpin] = useState(false);
+  useEffect(() => {
+    const interaval = setInterval(() => {
+      setSpin((prev) => !prev);
+    }, 15000);
+    return () => clearInterval(interaval);
+  }, []);
+  return (
+    <div className="relative p-8">
+      <div className="flex aspect-square h-auto w-14 items-center justify-center rounded-full bg-white sm:w-20">
+        <Image
+          src="/icon/logomark_v2.svg"
+          alt="big-ticket-logomark"
+          className="size-10 sm:size-14"
+        />
+      </div>
+      <Iconx
+        name="plus-sign"
+        className={cn(
+          "absolute -right-3 -top-3 text-ticket transition-transform duration-500",
+          { "-rotate-180": spin },
+        )}
+      />
+    </div>
+  );
+};
+
+const CompanyInfo = () => {
+  return (
+    <div className="flex h-auto w-full flex-col justify-between border-l-[0.33px] border-dotted border-ticket leading-none">
+      <div className="flex h-2/3 w-full items-center border-b-[0.33px] border-dashed border-ticket/80 px-8">
+        <h1 className="text-lg font-black text-vanilla">
+          Big Ticket
+          <span className="ps-2 font-normal opacity-80">
+            Ticketing Services
+          </span>
+        </h1>
+      </div>
+      <div className="flex h-1/3 items-center">
+        <div className="hidden items-center space-x-4 border-r-[0.33px] border-dotted border-ticket/80 px-8 text-sm opacity-80 sm:flex">
+          <Iconx name="location-01" className="size-4" />
+          <p>Quezon City, Philippines</p>
+        </div>
+        <div className="flex items-center space-x-6 px-8 text-sm opacity-80">
+          <Iconx name="mail-send" className="size-4" />
+          <p className="text-sm">hq@bigticket.com</p>
+        </div>
+      </div>
+      {/* <p className="text-xs opacity-80">
+        Bring events, experiences, and entertainment closer to your audience.
+      </p> */}
+    </div>
+  );
+};
+
+const QuickLinks = () => {
+  const [spin, setSpin] = useState(false);
+  useEffect(() => {
+    const interaval = setInterval(() => {
+      setSpin((prev) => !prev);
+    }, 12000);
+    return () => clearInterval(interaval);
+  }, []);
+
+  return (
+    <div className="relative w-full border-l-[0.33px] border-t-[0.33px] border-dotted border-ticket p-8 text-center sm:border-t-0">
+      <h3 className="mb-4 text-sm font-semibold text-vanilla">Quick Links</h3>
+      <ul className="space-y-3 text-xs opacity-80">
+        <li>
+          <Link
+            href="#"
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Upcoming Events
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/pricing"
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Pricing
+          </Link>
+        </li>
+      </ul>
+      <Iconx
+        name="plus-sign"
+        className={cn(
+          "absolute -bottom-3 -right-3 rotate-0 text-ticket transition-transform duration-300",
+          { "rotate-90": spin },
+        )}
+      />
+    </div>
+  );
+};
+
+const Resources = () => {
+  return (
+    <div className="border-l-[0.33px] border-t-[0.33px] border-dotted border-ticket p-8 text-center sm:border-t-0">
+      <h3 className="mb-4 text-sm font-bold text-vanilla">Resources</h3>
+      <ul className="space-y-3 text-xs opacity-80">
+        <li>
+          <Link href="/privacy-policy" className="">
+            Privacy Policy
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/tos"
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Terms of Use
+          </Link>
+        </li>
+      </ul>
+    </div>
+  );
+};
+
+const InteractivePanel = () => {
+  return (
+    <div className="mt-12 flex h-32 items-end pt-8 sm:h-44">
+      <div className="grid w-full grid-cols-2 gap-8">
+        <div className="">
+          <div className="hidden w-full">
+            <Hyper
+              label="Chat with us"
+              className="px-2"
+              rounded
+              sm
+              end="message-01"
+            />
+          </div>
+        </div>
+        <div className="flex items-end justify-end p-8">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Big Ticket
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
 
