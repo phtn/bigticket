@@ -1,0 +1,16 @@
+# .coderabbit.yaml
+reviews:
+  # Enable code review functionality
+  enabled: true
+  # Configure review style
+  style: "code improvement"
+  # Specify notification settings
+  notifications:
+    - type: "comment"
+      enabled: true
+  # Set assignees for reviews (optional)
+  assignees: []
+
+chat:
+  # Enable chat functionality
+  enabled: true
