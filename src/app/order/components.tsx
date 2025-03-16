@@ -200,7 +200,7 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
               {item?.name}
             </p>
           </div>
-          <div className="w-full space-y-1 overflow-hidden whitespace-nowrap rounded-md border-[0.33px] border-ice bg-gradient-to-r from-white/80 via-cake/80 to-cake/20 p-0.5 font-inter lg:w-fit lg:space-y-2 lg:px-2 lg:py-1.5 lg:pe-4">
+          <div className="w-full space-y-1 overflow-hidden whitespace-nowrap rounded-md border-[0.33px] border-ice bg-gradient-to-tr from-white/90 from-30% via-vanilla/5 to-vanilla/40 p-0.5 font-inter lg:w-fit lg:space-y-2 lg:px-2 lg:py-1.5 lg:pe-4">
             <div className="flex items-center">
               <Iconx
                 name="map-marker-fill"

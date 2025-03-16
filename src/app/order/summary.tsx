@@ -73,13 +73,13 @@ export function Summary({
         loading={loading}
         userDetails={userDetails}
       />
-      <CardFooter className="flex items-center rounded-none border-t-[0.33px] border-default/20 bg-gray-400 px-3 py-3 text-white">
-        <div className="flex w-full items-center justify-between space-x-2 text-xs text-vanilla">
+      <CardFooter className="flex items-center rounded-none border-t-[0.33px] border-ticket bg-ticket/60 px-3 py-3 text-white">
+        <div className="flex w-full items-center justify-between space-x-2 text-xs text-chalk/60">
           <div className="flex items-center space-x-1">
             <Iconx name="clock" className="size-3.5" />
             <span className="tracking-tight">Last Updated</span>
           </div>
-          <span className="font-normal tracking-tight drop-shadow-sm">
+          <span className="tracking-tight">
             {updated ? (
               formattedTime || "Loading..."
             ) : (

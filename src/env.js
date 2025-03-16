@@ -23,6 +23,7 @@ export const env = createEnv({
     //PAYMONGO
     PAYMONGO_PK: z.string(),
     PAYMONGO_SK: z.string(),
+    PAYMONGO_WHSK: z.string(),
 
     //BASE
     CC_API_KEY: z.string(),
@@ -74,6 +75,7 @@ export const env = createEnv({
     //PAYMONGO
     PAYMONGO_PK: process.env.PAYMONGO_PK,
     PAYMONGO_SK: process.env.PAYMONGO_SK,
+    PAYMONGO_WHSK: process.env.PAYMONGO_WHSK,
 
     //BASE
     NEXT_PUBLIC_ONCHAINKIT_API_KEY: process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY,

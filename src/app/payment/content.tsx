@@ -2,13 +2,8 @@
 
 import { type CheckoutParams } from "@/lib/paymongo/schema/zod.checkout";
 
-export type PaymentStatus = "success" | "failed" | "pending";
-interface ContentProps {
-  status: PaymentStatus;
-}
-
-export const Content = ({ status }: ContentProps) => {
-  return <main>Content = {status}</main>;
+export const Content = () => {
+  return <main>Content</main>;
 };
 
 export const example_cs = {
