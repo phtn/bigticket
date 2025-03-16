@@ -3,7 +3,13 @@
 import { type CheckoutParams } from "@/lib/paymongo/schema/zod.checkout";
 
 export const Content = () => {
-  return <main>Content</main>;
+  return (
+    <main className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">Payment Processing</h1>
+      {/* Add your payment processing UI here */}
+    </main>
+  );
+}
 };
 
 export const example_cs = {
