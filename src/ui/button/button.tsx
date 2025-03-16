@@ -22,6 +22,7 @@ export interface HyperProps {
   compact?: boolean;
   dim?: boolean;
   active?: boolean;
+  center?: boolean;
 }
 
 export interface HyperButtonProps
@@ -60,6 +61,7 @@ export const Hyper = ({
   compact = false,
   dim = false,
   active = false,
+  center = false,
   ...props
 }: HyperButtonProps) => {
   const LabelOptions = useCallback(() => {
@@ -84,8 +86,7 @@ export const Hyper = ({
     <button
       {...props}
       className={cn(
-        props.className,
-        "flex h-10 max-h-14 items-center justify-center overflow-hidden bg-white md:min-w-36",
+        "flex h-11 max-h-14 items-center justify-center overflow-hidden bg-white md:min-w-36",
         "group relative transition-all duration-300 active:scale-95",
         {
           "rounded-lg": rounded,
@@ -96,6 +97,7 @@ export const Hyper = ({
           "h-8": sm,
           "h-7": xs,
         },
+        props.className,
       )}
     >
       <div className="pointer-events-none absolute z-0 size-full bg-white/20" />
@@ -109,6 +111,7 @@ export const Hyper = ({
             "bg-macl-red": destructive,
             "bg-demigod hover:bg-teal-500": dim,
             "px-2": compact,
+            "px-0": center,
           },
         )}
       >
@@ -121,7 +124,7 @@ export const Hyper = ({
           />
         )}
         <LabelOptions />
-        {children}
+        <div className={props.className}>{children}</div>
         {end && (
           <Iconx
             name={end}

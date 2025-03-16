@@ -1,12 +1,6 @@
 import { HyperList } from "@/ui/list";
 import { formatAsMoney } from "@/utils/helpers";
-import {
-  Card,
-  CardHeader,
-  Spinner,
-  CardFooter,
-  Button,
-} from "@nextui-org/react";
+import { Card, CardHeader, Spinner, CardFooter } from "@nextui-org/react";
 import { useMemo, useState, useEffect } from "react";
 import type {
   Calc,
@@ -16,6 +10,7 @@ import type {
 } from "./types";
 import { useBase } from "@/hooks/useBase";
 import { Iconx } from "@/icons/icon";
+import { cn } from "@/lib/utils";
 
 export function Summary({
   refNumber,
@@ -78,10 +73,13 @@ export function Summary({
         loading={loading}
         userDetails={userDetails}
       />
-      <CardFooter className="flex items-center rounded-none border-t-[0.33px] border-default/20 bg-chalk/70 px-3 py-3 text-primary">
-        <div className="flex w-full items-center justify-between space-x-2 text-xs">
-          <span className="tracking-tight">Last Updated</span>{" "}
-          <span className="font-normal tracking-tight">
+      <CardFooter className="flex items-center rounded-none border-t-[0.33px] border-default/20 bg-gray-400 px-3 py-3 text-white">
+        <div className="flex w-full items-center justify-between space-x-2 text-xs text-vanilla">
+          <div className="flex items-center space-x-1">
+            <Iconx name="clock" className="size-3.5" />
+            <span className="tracking-tight">Last Updated</span>
+          </div>
+          <span className="font-normal tracking-tight drop-shadow-sm">
             {updated ? (
               formattedTime || "Loading..."
             ) : (
@@ -192,40 +190,44 @@ const SummaryContent = ({
               <div className="flex h-fit w-full justify-start">
                 Pay with crypto
               </div>
-              <Button
-                color="primary"
-                isLoading={isLoading}
-                isDisabled={state.modified}
-                onPress={handleCryptoCheckout}
-                className="flex h-11 w-full gap-3 rounded-[0.5rem] border-2 border-[#0052FF] bg-[#0052FF]"
+              <button
+                disabled={state.modified}
+                onClick={handleCryptoCheckout}
+                className="flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-[0.5rem] border-2 border-[#0052FF] bg-[#0052FF] px-0"
               >
                 <Iconx
-                  name="coinbase"
-                  className="size-3"
-                  viewBox={`0 0 48 48`}
+                  name={isLoading ? "spinner-ring" : "coinbase"}
+                  className="size-4"
+                  viewBox={isLoading ? `0 0 24 24` : `0 0 48 48`}
                 />
-                <p className="text-xs font-medium tracking-tight text-white drop-shadow-sm">
+                <p className="text-sm font-medium tracking-tight text-white drop-shadow-sm">
                   Pay
                 </p>
-              </Button>
+              </button>
             </div>
 
             <div className="h-20 w-full space-y-4">
               <div className="flex w-full justify-start whitespace-nowrap">
                 Pay with card or ewallets
               </div>
-              <Button
-                color="primary"
-                isDisabled={state.modified}
-                isLoading={loading}
-                onPress={paymongoCheckout}
-                className="flex h-11 w-full gap-2 rounded-[0.5rem] border-2 border-white bg-white"
+              <button
+                disabled={state.modified}
+                onClick={paymongoCheckout}
+                className="flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-[0.5rem] border-2 border-white bg-white text-[16px]"
               >
-                <Iconx name="paymongo" className="size-4" viewBox="0 0 32 32" />
-                <p className="text-xs font-medium tracking-tight text-[#22B47E] drop-shadow-sm">
+                <div className="flex aspect-square w-[18px] items-center justify-center rounded-full bg-[#002d16]">
+                  <Iconx
+                    name={loading ? "spinner-ring" : "paymongo-new"}
+                    className={cn("size-4 text-[#22B47E]", {
+                      "size-[14px] flex-shrink-0 text-[#e5f393]": loading,
+                    })}
+                    viewBox={loading ? "0 0 24 24" : "0 0 100 100"}
+                  />
+                </div>
+                <span className="text-sm font-medium tracking-tight text-[#002d16]">
                   Checkout
-                </p>
-              </Button>
+                </span>
+              </button>
             </div>
           </div>
         </div>

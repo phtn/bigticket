@@ -1,32 +1,30 @@
 "use client";
 
-import {
-  createContext,
-  useReducer,
-  type Dispatch,
-  type SetStateAction,
-  useContext,
-  type PropsWithChildren,
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  type ActionDispatch,
-} from "react";
+import { usePaymongo } from "@/hooks/usePaymongo";
 import type {
   Attributes,
   CheckoutParams,
   LineItem,
 } from "@/lib/paymongo/schema/zod.checkout";
-import { useAuth } from "../ctx/auth/provider";
-import { useCartStore } from "../(search)/@ev/components/buttons/cart/useCartStore";
-import type { ItemProps, ReducerState } from "./types";
-import { reducer, type ActionType } from "./reducer";
-import { usePaymongo } from "@/hooks/usePaymongo";
-import { useRouter, useSearchParams } from "next/navigation";
 import { moses, secureRef } from "@/utils/crypto";
 import { guid } from "@/utils/helpers";
-import { env } from "@/env";
+import { useSearchParams } from "next/navigation";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+  type ActionDispatch,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
+import { useCartStore } from "../(search)/@ev/components/buttons/cart/useCartStore";
+import { useAuth } from "../ctx/auth/provider";
+import { reducer, type ActionType } from "./reducer";
+import type { ItemProps, ReducerState } from "./types";
 
 const CART_STORAGE_KEY = "bigticket_cart";
 
@@ -37,7 +35,7 @@ interface OrderCtxValues {
   state: ReducerState;
   dispatch: ActionDispatch<[action: ActionType]>;
   amount: number;
-  checkoutSession: () => Promise<void>;
+  createCheckoutSession: () => Promise<void>;
   updateCart: (list: ItemProps[]) => Promise<void>;
   params: CheckoutParams;
   orderNumber: string;
@@ -51,15 +49,19 @@ const initialState: ReducerState = {
 
 export const OrderCtx = createContext<OrderCtxValues | null>(null);
 
-export const OrderProvider = ({ children }: PropsWithChildren) => {
+interface OrderProviderProps {
+  children: React.ReactNode;
+  node_env: boolean;
+}
+
+export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
   const { user } = useAuth();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [loading, setLoading] = useState(false);
   const [params, setParams] = useState<CheckoutParams>({} as CheckoutParams);
   const [productImage, setProductImage] = useState<string | null>(null);
-  const { checkout } = usePaymongo();
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const { checkout } = usePaymongo();
 
   const { count, eventName, eventId, userId, total, setCount } = useCartStore();
 
@@ -77,11 +79,11 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
     const urlRef = searchParams.get("r");
     if (urlRef) return urlRef;
     const refNo = moses(("b" + secureRef(8) + "t").toUpperCase());
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("r", refNo);
-    router.replace(`?${params.toString()}`);
+    // const params = new URLSearchParams(searchParams.toString());
+    // params.set("r", refNo);
+    // router.replace(`?${params.toString()}`);
     return refNo;
-  }, [searchParams, router]);
+  }, [searchParams]);
 
   // Convert cart items to LineItems
   const cartItems = useMemo(
@@ -114,7 +116,7 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
         console.error("Failed to parse saved cart:", error);
       }
     }
-  }, []); // Only run on mount
+  }, []);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
@@ -152,15 +154,15 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
           quantity: item.quantity,
           currency: "PHP" as const,
         }));
-        setOrderParams(setParams, lineItems, orderNumber, descriptor);
+        setOrderParams(setParams, lineItems, orderNumber, descriptor, node_env);
       } finally {
         setLoading(false);
       }
     },
-    [descriptor, orderNumber],
+    [descriptor, orderNumber, node_env],
   );
 
-  const checkoutSession = useCallback(async () => {
+  const createCheckoutSession = useCallback(async () => {
     setLoading(true);
     try {
       // Convert state items to PayMongo format
@@ -187,6 +189,19 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
             reference_number: orderNumber,
             statement_descriptor: descriptor,
             description: `bigticket.ph`,
+            billing: {
+              name: user?.user_metadata?.full_name as string,
+              email: user?.email,
+              phone: user?.user_metadata?.phone as string,
+              address: {
+                line1: "123 Main St",
+                line2: user?.user_metadata?.address as string,
+                city: "Manila",
+                state: "Metro Manila",
+                postal_code: "12345",
+                country: "PH",
+              },
+            },
           },
         },
       };
@@ -205,7 +220,7 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
     } finally {
       setLoading(false);
     }
-  }, [state.list, descriptor, setCount, checkout, orderNumber, dispatch]);
+  }, [state.list, descriptor, setCount, checkout, orderNumber, dispatch, user]);
 
   const value = useMemo(
     () => ({
@@ -215,7 +230,7 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
       state,
       dispatch,
       amount,
-      checkoutSession,
+      createCheckoutSession,
       updateCart,
       params,
       orderNumber,
@@ -227,7 +242,7 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
       state,
       dispatch,
       amount,
-      checkoutSession,
+      createCheckoutSession,
       updateCart,
       params,
       orderNumber,
@@ -252,11 +267,18 @@ const setOrderParams = (
   lineItems: LineItem[],
   refNumber: string | undefined,
   descriptor: string,
+  in_production: boolean,
 ) => {
   setState({
     data: {
       attributes: {
         ...attributes,
+        cancel_url: in_production
+          ? "https://bigticket.ph/payment/cancelled"
+          : "http://localhost:3000/payment/cancelled",
+        success_url: in_production
+          ? "https://bigticket.ph/payment/success"
+          : "http://localhost:3000/payment/success",
         line_items: paymongoReady(lineItems),
         reference_number: refNumber,
         statement_descriptor: descriptor,
@@ -266,21 +288,13 @@ const setOrderParams = (
   });
 };
 
-export const attributes: Omit<
+const attributes: Omit<
   Attributes,
   "line_items" | "description" | "reference_number" | "statement_descriptor"
 > = {
   send_email_receipt: true,
   show_description: true,
   show_line_items: true,
-  cancel_url:
-    env.NODE_ENV === "production"
-      ? "https://bigticket.ph/payment/cancelled"
-      : "http://localhost:3000/payment/cancelled",
-  success_url:
-    env.NODE_ENV === "production"
-      ? "https://bigticket.ph/payment/success"
-      : "http://localhost:3000/payment/success",
   payment_method_types: [
     "gcash",
     "card",

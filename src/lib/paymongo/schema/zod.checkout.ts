@@ -4,21 +4,21 @@ import { PaymentResourceSchema } from "./zod.payments";
 import { PaymentIntentResourceSchema } from "./zod.payment-intent";
 
 export const AddressSchema = z.object({
-  line1: z.string(),
-  line2: z.string(),
-  city: z.string(),
-  state: z.string(),
-  postal_code: z.string(),
-  country: z.string(),
+  line1: z.string().optional(),
+  line2: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  postal_code: z.string().optional(),
+  country: z.string().optional(),
 });
 
 export type Address = z.infer<typeof AddressSchema>;
 
 export const BillingSchema = z.object({
   address: AddressSchema.optional(),
-  name: z.string(),
-  email: z.string(),
-  phone: z.string(),
+  name: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
 });
 export type Billing = z.infer<typeof BillingSchema>;
 

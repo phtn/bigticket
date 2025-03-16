@@ -261,6 +261,36 @@ export const icons = {
     viewBox: `0 0 32 32`,
     set: `custom`,
   },
+  "paymongo-new": {
+    symbol: `<path fill="#e5f393" d="M68.812 17.46 60.76 49.788a3.02 3.02 0 0 1-2.93 2.29H45.406a3.02 3.02 0 0 0-2.93 2.29L39.23 67.402a3.02 3.02 0 0 1-2.93 2.291H23.42a3.02 3.02 0 0 0-2.93 2.29l-3.17 12.73a3.02 3.02 0 0 1-2.93 2.29H3.02a3.02 3.02 0 0 1-2.93-3.75l2.882-11.57a3.02 3.02 0 0 1 2.93-2.29h12.88a3.02 3.02 0 0 0 2.93-2.292l3.171-12.729a3.02 3.02 0 0 1 2.93-2.29h12.73a3.02 3.02 0 0 0 2.93-2.291l7.118-28.577a3.02 3.02 0 0 0-2.93-3.75H3.201a3.02 3.02 0 0 1-2.93-3.751L3.116 2.29A3.02 3.02 0 0 1 6.046 0h49.671c9.636 0 15.498 7.817 13.095 17.46Z"></path>`,
+    viewBox: `0 0 24 24`,
+    set: `custom`,
+  },
+  "map-marker-fill": {
+    symbol: `<path fill="currentColor" d="M18.296 4.637a8.71 8.71 0 0 0-12.57 0c-1.53 2-2 5-1.14 8.08c.88 3.33 3.23 5.74 5.12 7.67l.92 1a2 2 0 0 0 .63.45a1.86 1.86 0 0 0 1.51 0a2 2 0 0 0 .62-.44l.93-1c1.89-1.93 4.24-4.34 5.12-7.67c.81-3.09.39-6.09-1.14-8.09m-6.29 8.25a3.48 3.48 0 1 1 3.215-2.15a3.47 3.47 0 0 1-3.215 2.14z"></path>`,
+    viewBox: `0 0 24 24`,
+    set: `mage`,
+  },
+  "calendar-fill": {
+    symbol: `<path fill="currentColor" d="M17.75 3.935v-1.31a.75.75 0 1 0-1.5 0v1.25h-8.5v-1.25a.75.75 0 1 0-1.5 0v1.31a4.76 4.76 0 0 0-4 4.69v8.75A4.75 4.75 0 0 0 7 22.125h10a4.75 4.75 0 0 0 4.75-4.75v-8.75a4.76 4.76 0 0 0-4-4.69m-9.35 14h-1a.75.75 0 1 1 0-1.5h1a.75.75 0 1 1 0 1.5m0-3.08h-1a.75.75 0 1 1 0-1.5h1a.75.75 0 1 1 0 1.5m4.11 3.08h-1a.75.75 0 1 1 0-1.5h1a.75.75 0 1 1 0 1.5m0-3.08h-1a.75.75 0 1 1 0-1.5h1a.75.75 0 1 1 0 1.5m4.11 3.08h-1a.75.75 0 1 1 0-1.5h1a.75.75 0 1 1 0 1.5m0-3.08h-1a.75.75 0 1 1 0-1.5h1a.75.75 0 1 1 0 1.5m3.63-5H3.75v-1.25a3.24 3.24 0 0 1 2.5-3.15v1.15a.75.75 0 1 0 1.5 0v-1.25h8.5v1.25a.75.75 0 1 0 1.5 0v-1.15a3.24 3.24 0 0 1 2.5 3.15z"></path>`,
+    viewBox: `0 0 24 24`,
+    set: `mage`,
+  },
+  "calendar-outline": {
+    symbol: `<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 4.625H7a4 4 0 0 0-4 4v8.75a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-8.75a4 4 0 0 0-4-4m-14 6h18m-4-8v4m-10-4v4m.375 7.515h1.028m7.194 0h1.028m-5.139 0h1.028m-5.139 3.084h1.028m7.194 0h1.028m-5.139 0h1.028"></path>`,
+    viewBox: `0 0 24 24`,
+    set: `mage`,
+  },
+  "spinner-ring": {
+    symbol: `<path fill="currentColor" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"></path><path fill="currentColor" d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"></animateTransform></path>`,
+    viewBox: `0 0 24 24`,
+    set: `svg`,
+  },
+  clock: {
+    symbol: `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" color="currentColor"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4l2 2"></path></g>`,
+    viewBox: `0 0 24 24`,
+    set: `hugeicons`,
+  },
 };
 
 export type IconNameType = keyof typeof icons;

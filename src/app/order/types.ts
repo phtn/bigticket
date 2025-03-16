@@ -41,7 +41,7 @@ export interface ProductImageProps {
 
 export interface HeaderProps {
   itemCount: number | null;
-  amount: string;
+  total: number | null;
 }
 
 export interface StatProps {
@@ -56,7 +56,7 @@ export interface ReducerState {
   modified: boolean;
   history: ReducerState[];
 }
-interface UserDetails {
+export interface UserDetails {
   userName: string | undefined;
   userEmail: string | undefined;
   userPhone: string | undefined;

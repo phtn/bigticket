@@ -3,7 +3,7 @@
 import { useMoment } from "@/hooks/useMoment";
 import { usePaymongo } from "@/hooks/usePaymongo";
 import { cn } from "@/lib/utils";
-import { formatAsMoney, guid } from "@/utils/helpers";
+import { guid } from "@/utils/helpers";
 import { Button } from "@nextui-org/react";
 import { Suspense, useCallback, useEffect, useMemo } from "react";
 import { useCartStore } from "../(search)/@ev/components/buttons/cart/useCartStore";
@@ -13,10 +13,16 @@ import { OrderProvider, useOrder } from "./ctx";
 import { Summary } from "./summary";
 import type { ItemProps } from "./types";
 import { Iconx } from "@/icons/icon";
+import { moses, secureRef } from "@/utils/crypto";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export const Content = () => (
+interface OrderContentProps {
+  node_env: boolean;
+}
+
+export const Content = ({ node_env }: OrderContentProps) => (
   <Suspense>
-    <OrderProvider>
+    <OrderProvider node_env={node_env}>
       <OrderContent />
     </OrderProvider>
   </Suspense>
@@ -27,8 +33,9 @@ export const OrderContent = () => {
     amount,
     itemCount,
     updateCart,
-    checkoutSession,
+    createCheckoutSession,
     orderNumber,
+    loading: paymongoLoading,
     state,
     dispatch,
   } = useOrder();
@@ -45,6 +52,9 @@ export const OrderContent = () => {
     userEmail,
     userPhone,
   } = useCartStore();
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const userDetails = useMemo(
     () => ({ userName, userEmail, userPhone }),
@@ -105,6 +115,14 @@ export const OrderContent = () => {
   const saveFn = useCallback(async () => {
     if (!state.list) return;
     try {
+      const stale_pcs = localStorage.getItem("bigticket_pcs");
+      if (stale_pcs) {
+        localStorage.removeItem("bigticket_pcs");
+        const refNo = moses(("b" + secureRef(8) + "t").toUpperCase());
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("r", refNo);
+        router.replace(`?${params.toString()}`);
+      }
       await updateCart(state.list.filter((item) => item.quantity !== 0));
       dispatch({ type: "SAVE" });
       onSuccess("Cart updated successfully");
@@ -112,7 +130,7 @@ export const OrderContent = () => {
       console.error("Failed to update cart:", error);
       onError("Failed to update cart");
     }
-  }, [state.list, updateCart, dispatch]);
+  }, [state.list, updateCart, dispatch, router, searchParams]);
 
   const cancelFn = useCallback(() => {
     if (!state.list) return;
@@ -129,12 +147,12 @@ export const OrderContent = () => {
       if (state.modified) {
         await saveFn();
       }
-      await checkoutSession();
+      await createCheckoutSession();
     } catch (error) {
       console.error("Checkout failed:", error);
       onError("Checkout failed. Please try again.");
     }
-  }, [checkoutSession, saveFn, state.modified]);
+  }, [createCheckoutSession, saveFn, state.modified]);
 
   const fn = useMemo(
     () => ({ cancelFn, decrementFn, deleteFn, incrementFn, saveFn, undoFn }),
@@ -204,28 +222,26 @@ export const OrderContent = () => {
   }, [ModActions, fn, itemCount, state.list]);
 
   return (
-    <div className="flex border-t-[0.33px] border-primary/40 bg-gray-100 pb-16 pt-3 md:py-8">
-      <Wrapper>
-        <div className="col-span-6 h-fit md:col-span-5 md:h-full lg:col-span-6">
-          <Header
-            itemCount={newItemCount ?? itemCount}
-            amount={formatAsMoney(newAmount ?? amount ?? 0)}
-          />
-          <LineItems />
-        </div>
+    <Wrapper>
+      <div className="col-span-6 h-fit md:col-span-5 md:h-full lg:col-span-6">
+        <Header
+          itemCount={newItemCount ?? itemCount}
+          total={newAmount ?? amount ?? 0}
+        />
+        <LineItems />
+      </div>
 
-        <div className="md:col-span-5 lg:col-span-4">
-          <Summary
-            refNumber={orderNumber}
-            state={state}
-            updated={Date.now()}
-            checkoutFn={checkoutFn}
-            loading={loading}
-            userDetails={userDetails}
-          />
-        </div>
-      </Wrapper>
-    </div>
+      <div className="md:col-span-5 lg:col-span-4">
+        <Summary
+          refNumber={orderNumber}
+          state={state}
+          updated={Date.now()}
+          checkoutFn={checkoutFn}
+          loading={paymongoLoading}
+          userDetails={userDetails}
+        />
+      </div>
+    </Wrapper>
   );
 };
 
