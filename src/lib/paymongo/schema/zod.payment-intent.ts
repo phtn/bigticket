@@ -86,7 +86,6 @@ export type CreatePaymentIntentParams = z.infer<
 
 export const BaseRetrievePaymentIntentParamsSchema = z.object({
   id: z.string(),
-  client_key: z.string().optional(),
 });
 export type BaseRetrievePaymentIntentParams = z.infer<
   typeof BaseRetrievePaymentIntentParamsSchema

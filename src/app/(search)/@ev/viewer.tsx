@@ -59,6 +59,7 @@ export const EventViewer = () => {
   useEffect(() => {
     localStorage.removeItem("bigticket_cart");
     localStorage.removeItem("bigticket_pcs");
+    localStorage.removeItem("bigticket_tx");
     if (allEvents) {
       setEvents(allEvents);
     }

@@ -43,7 +43,7 @@ function parseSignature(signature: string): SignatureComponents {
 function verifySignature(
   components: SignatureComponents,
   payload: string,
-  webhookSecret: string
+  webhookSecret: string,
 ): boolean {
   const { timestamp, testModeSignature, liveModeSignature } = components;
 
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   if (!signature) {
     return NextResponse.json(
       { error: "Missing Paymongo-Signature header" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -77,22 +77,25 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const isValid = verifySignature(signatureComponents, payload, WHSK);
 
   if (!isValid) {
-    return NextResponse.json(
-      { error: "Invalid signature" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
   try {
     const event = JSON.parse(payload) as WebhookEvent;
     console.log("Webhook received:", event);
 
-    return NextResponse.json({ received: true });
+    return NextResponse.json({
+      data: event,
+      message: "webhook received",
+      status: 200,
+    });
   } catch (error) {
     console.error("Error parsing JSON:", error);
     return NextResponse.json(
-      { error: `Webhook error: ${error instanceof Error ? error.message : 'Unknown error'}` },
-      { status: 400 }
+      {
+        error: `Webhook error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      },
+      { status: 400 },
     );
   }
 }

@@ -1,7 +1,7 @@
 import { HyperList } from "@/ui/list";
 import { formatAsMoney } from "@/utils/helpers";
 import { Card, CardHeader, Spinner, CardFooter } from "@nextui-org/react";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
 import type {
   Calc,
   ItemProps,
@@ -11,6 +11,7 @@ import type {
 import { useBase } from "@/hooks/useBase";
 import { Iconx } from "@/icons/icon";
 import { cn } from "@/lib/utils";
+import { useMoment } from "@/hooks/useMoment";
 
 export function Summary({
   refNumber,
@@ -20,18 +21,7 @@ export function Summary({
   loading,
   userDetails,
 }: SummaryProps) {
-  const [formattedDate, setFormattedDate] = useState<string>("");
-  const [formattedTime, setFormattedTime] = useState<string>("");
-
-  useEffect(() => {
-    setFormattedDate(new Date().toLocaleDateString("en-US", options));
-  }, []);
-
-  useEffect(() => {
-    if (updated) {
-      setFormattedTime(new Date(updated).toLocaleTimeString("en-US", options));
-    }
-  }, [updated]);
+  const { event_date, compact } = useMoment({ start: updated });
 
   return (
     <Card className="overflow-hidden border-[0.33px] border-primary bg-primary text-chalk shadow-md shadow-default">
@@ -59,7 +49,7 @@ export function Summary({
           <div className="flex items-center justify-between text-xs tracking-tight">
             <p className="font-medium tracking-normal">Date</p>
             <div className="flex items-center font-light opacity-60">
-              {formattedDate ?? (
+              {compact ?? (
                 <Iconx name="spinners-3-dots-move" className="text-teal-300" />
               )}
             </div>
@@ -79,13 +69,7 @@ export function Summary({
             <Iconx name="clock" className="size-3.5" />
             <span className="tracking-tight">Last Updated</span>
           </div>
-          <span className="tracking-tight">
-            {updated ? (
-              formattedTime || "Loading..."
-            ) : (
-              <Spinner className="size-2.5 shrink-0 animate-spin" />
-            )}
-          </span>
+          <span className="tracking-tight">{event_date}</span>
         </div>
       </CardFooter>
     </Card>
@@ -283,10 +267,3 @@ export const CustomerInfo = () => (
 const Separator = () => (
   <div className="my-2.5 h-px border-b border-dotted border-ticket" />
 );
-
-const options: Intl.DateTimeFormatOptions = {
-  weekday: "long",
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-};

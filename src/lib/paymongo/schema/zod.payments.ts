@@ -13,6 +13,8 @@ export const PaymentStatusSchema = z.union([
   z.literal("fail"),
 ]);
 
+export type PaymentStatus = z.infer<typeof PaymentStatusSchema>;
+
 export const PaymentCardTypeSchema = z.object({
   id: z.string(),
   type: z.literal("card"),

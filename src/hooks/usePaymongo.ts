@@ -13,13 +13,6 @@ export const usePaymongo = () => {
 
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   const stale_pcs = localStorage.getItem("bigticket_pcs");
-  //   if (stale_pcs) {
-  //     window.location.href = stale_pcs;
-  //   }
-  // }, []);
-
   const checkout = useCallback(async (params: CheckoutParams) => {
     setLoading(true);
 
@@ -34,11 +27,21 @@ export const usePaymongo = () => {
 
     try {
       const session = await createCheckout(params);
+      // console.log("CHECKOUT SESSION", session);
       const url = session.attributes.checkout_url;
       setCheckoutSession(session);
       if (url) {
         localStorage.setItem("bigticket_csp", JSON.stringify(params));
+        localStorage.setItem(
+          "bigticket_tx",
+          JSON.stringify({
+            type: "paymongo",
+            cs: session.id,
+            pi: session.attributes.payment_intent.id,
+          }),
+        );
         window.location.href = url;
+
         localStorage.setItem("bigticket_pcs", url);
         setCheckoutUrl(url);
       }

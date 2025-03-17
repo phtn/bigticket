@@ -39,6 +39,7 @@ interface OrderCtxValues {
   updateCart: (list: ItemProps[]) => Promise<void>;
   params: CheckoutParams;
   orderNumber: string;
+  lastUpdate: number;
 }
 
 const initialState: ReducerState = {
@@ -59,6 +60,7 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [loading, setLoading] = useState(false);
   const [params, setParams] = useState<CheckoutParams>({} as CheckoutParams);
+  const [lastUpdate, setLastUpdate] = useState<number>(Date.now());
   const [productImage, setProductImage] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const { checkout } = usePaymongo();
@@ -107,6 +109,7 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
   useEffect(() => {
     const savedCart = localStorage.getItem(CART_STORAGE_KEY);
     if (savedCart) {
+      setLastUpdate(Date.now());
       try {
         const parsedCart = JSON.parse(savedCart) as ItemProps[];
         if (parsedCart.length > 0) {
@@ -154,12 +157,12 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
           quantity: item.quantity,
           currency: "PHP" as const,
         }));
-        setOrderParams(setParams, lineItems, orderNumber, descriptor, node_env);
+        setOrderParams(setParams, lineItems, orderNumber, descriptor);
       } finally {
         setLoading(false);
       }
     },
-    [descriptor, orderNumber, node_env],
+    [descriptor, orderNumber],
   );
 
   const createCheckoutSession = useCallback(async () => {
@@ -188,20 +191,26 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
             line_items: paymongoReady(lineItems),
             reference_number: orderNumber,
             statement_descriptor: descriptor,
-            description: `bigticket.ph`,
+            description: orderNumber,
             billing: {
               name: user?.user_metadata?.full_name as string,
               email: user?.email,
               phone: user?.user_metadata?.phone as string,
               address: {
-                line1: "123 Main St",
+                line1: "",
                 line2: user?.user_metadata?.address as string,
-                city: "Manila",
-                state: "Metro Manila",
-                postal_code: "12345",
+                city: "",
+                state: "",
+                postal_code: "",
                 country: "PH",
               },
             },
+            cancel_url: node_env
+              ? "https://bigticket.ph/payments/cancelled"
+              : "http://localhost:3000/payments/cancelled",
+            success_url: node_env
+              ? "https://bigticket.ph/payments/success"
+              : "http://localhost:3000/payments/success",
           },
         },
       };
@@ -220,7 +229,16 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
     } finally {
       setLoading(false);
     }
-  }, [state.list, descriptor, setCount, checkout, orderNumber, dispatch, user]);
+  }, [
+    state.list,
+    descriptor,
+    setCount,
+    checkout,
+    orderNumber,
+    dispatch,
+    user,
+    node_env,
+  ]);
 
   const value = useMemo(
     () => ({
@@ -234,6 +252,7 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
       updateCart,
       params,
       orderNumber,
+      lastUpdate,
     }),
     [
       itemCount,
@@ -246,6 +265,7 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
       updateCart,
       params,
       orderNumber,
+      lastUpdate,
     ],
   );
 
@@ -267,18 +287,11 @@ const setOrderParams = (
   lineItems: LineItem[],
   refNumber: string | undefined,
   descriptor: string,
-  in_production: boolean,
 ) => {
   setState({
     data: {
       attributes: {
         ...attributes,
-        cancel_url: in_production
-          ? "https://bigticket.ph/payment/cancelled"
-          : "http://localhost:3000/payment/cancelled",
-        success_url: in_production
-          ? "https://bigticket.ph/payment/success"
-          : "http://localhost:3000/payment/success",
         line_items: paymongoReady(lineItems),
         reference_number: refNumber,
         statement_descriptor: descriptor,

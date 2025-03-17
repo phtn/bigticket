@@ -1,0 +1,4 @@
+test = { 
+  "files" = ["src/app/__tests__/*.test.ts"],
+  "preload" = ["src/app/__tests__/setup.ts"]
+}

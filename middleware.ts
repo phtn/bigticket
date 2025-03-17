@@ -1,24 +1,22 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { useAuth } from "@/app/ctx/auth/provider";
+const { supabase } = useAuth();
 
-export function middleware(req: NextRequest) {
-  const uid = req.cookies.get("big-ticket--id")?.value;
+export async function middleware(req: NextRequest) {
+  const token = req.headers.get("Authorization");
 
-  if (!uid) {
+  if (!token || !token.startsWith("Bearer ")) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  // Parse the token to verify its validity
+  const parsedToken = token.replace("Bearer ", "");
+  const { data, error } = await supabase.auth.getUser(parsedToken);
+
+  if (!data) {
+    console.error(error);
     return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: [
-    "/account",
-    "/e/:path",
-    {
-      source: "/((?!.*\\..*|_next).*)",
-      missing: [{ type: "header", key: "next-action" }],
-    },
-    "/(api|trpc)(.*)",
-  ],
-};
