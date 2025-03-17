@@ -148,6 +148,7 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
   const updateCart = useCallback(
     async (list: ItemProps[]) => {
       setLoading(true);
+      setLastUpdate(Date.now());
       try {
         dispatch({ type: "SET", payload: list });
         const lineItems = list.map((item) => ({

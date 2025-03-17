@@ -4,14 +4,14 @@ import { beforeAll } from "bun:test";
 beforeAll(() => {
   // process.env.NODE_ENV = "test";
   process.env.SKIP_ENV_VALIDATION = "1";
-  
+
   // Add mock values for required env variables
-  process.env.NEXT_PUBLIC_CONVEX_URL = "https://test.convex.dev";
+  process.env.NEXT_PUBLIC_CONVEX_URL = "https://example-test.convex.dev";
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID = "test-client-id";
-  process.env.NEXT_PUBLIC_SUPABASE_URL = "https://test.supabase.co";
+  process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example-test.supabase.co";
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-anon-key";
   process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY = "test-api-key";
-  
+
   // Server-side env vars
   process.env.CONVEX_DEPLOYMENT = "test";
   process.env.PEXELS_API = "test-pexels-api";
@@ -23,9 +23,9 @@ beforeAll(() => {
   process.env.SMTP_FROM_EMAIL = "test@example.com";
   process.env.FIREBASE_STORAGE_BUCKET = "test-bucket";
   process.env.FIREBASE_STORAGE_TOKEN = "test-token";
-  process.env.PAYMONGO_PK = "test-pk";
-  process.env.PAYMONGO_SK = "test-sk";
-  process.env.PAYMONGO_WHSK = "test-whsk";
+  process.env.PAYMONGO_PK = "pk_test_1234567890";
+  process.env.PAYMONGO_SK = "sk_test_1234567890";
+  process.env.PAYMONGO_WHSK = "whsk_test_1234567890";
   process.env.CC_API_KEY = "test-cc-api-key";
   process.env.WC_PROJECT_ID = "test-wc-project-id";
 });

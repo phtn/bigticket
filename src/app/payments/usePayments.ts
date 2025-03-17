@@ -43,6 +43,9 @@ export const usePayments = () => {
           .catch((error) => {
             console.error(error);
           });
+      } else {
+        // TODO: Implement payment status for other payment methods (base)
+        setLoading(false);
       }
     } catch (error) {
       console.error(error);

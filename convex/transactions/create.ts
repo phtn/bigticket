@@ -7,7 +7,7 @@ import { type DataModel } from "@vx/dataModel";
 const create = mutation({
   args: TransactionSchema,
   handler: async ({ db }, data) => {
-    const tx = await checkTx(db, data.tx_id);
+    const tx = await checkTx(db, data.txn_id);
     if (tx !== null) {
       await db.patch(tx._id, {
         updated_at: Date.now(),
@@ -31,5 +31,5 @@ export const checkTx = async <DB extends GenericDatabaseWriter<DataModel>>(
 ) =>
   await db
     .query("transactions")
-    .withIndex("by_tx_id", (q) => q.eq("tx_id", id))
+    .withIndex("by_txn_id", (q) => q.eq("txn_id", id))
     .first();

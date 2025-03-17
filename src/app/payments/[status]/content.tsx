@@ -13,29 +13,20 @@ export const Content = ({
 }: {
   status: PaymentStatus & "cancelled";
 }) => {
-  const { paymentDetails, isPaid, loading: fetching } = usePayments();
-  // const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setLoading(false);
-  //   }, 2000);
-
-  //   return () => clearTimeout(timer);
-  // }, [status]);
+  const { paymentDetails, isPaid, loading } = usePayments();
 
   const updatedStatus = useMemo(() => {
     switch (status) {
       case "paid":
-        return fetching ? "Processing" : isPaid ? "Successful" : "Pending";
+        return loading ? "Processing" : isPaid ? "Successful" : "Pending";
       case "fail":
-        return fetching ? "Processing" : "Failed";
+        return loading ? "Processing" : "Failed";
       case "cancelled":
-        return fetching ? "Processing" : "Cancelled";
+        return loading ? "Processing" : "Cancelled";
       default:
         return "Processing";
     }
-  }, [status, fetching, isPaid]);
+  }, [status, loading, isPaid]);
 
   return (
     <main className="mx-auto h-[calc(100vh-64px)] bg-white p-6">
@@ -46,12 +37,12 @@ export const Content = ({
               className={cn(
                 "rounded-full bg-gray-100 p-2 transition-all duration-700 ease-out",
                 {
-                  "bg-green-50 p-4": !fetching && isPaid,
-                  "bg-yellow-50 p-4": !fetching && !isPaid,
+                  "bg-green-50 p-4": !loading && isPaid,
+                  "bg-yellow-50 p-4": !loading && !isPaid,
                 },
               )}
             >
-              {fetching || !isPaid ? (
+              {loading || !isPaid ? (
                 <Spinner size="lg" color="secondary" />
               ) : (
                 <Iconx
@@ -69,8 +60,8 @@ export const Content = ({
               Payment <span className="pl-1">{updatedStatus}</span>
             </h1>
             <p className="mx-auto max-w-sm text-center opacity-60">
-              {fetching ? (
-                "Receiveing payment confirmation"
+              {loading ? (
+                "Receivig payment confirmation"
               ) : (
                 <span className="animate-enter delay-1000">
                   Payment successfully completed!
@@ -79,7 +70,7 @@ export const Content = ({
             </p>
           </div>
 
-          {fetching || !isPaid ? null : (
+          {loading || !isPaid ? null : (
             <Button
               size="lg"
               color="warning"
@@ -95,12 +86,12 @@ export const Content = ({
         </div>
 
         <div className="h-[400px] w-80">
-          {fetching || !isPaid ? null : (
+          {loading || !isPaid ? null : (
             <div
               className={cn(
                 "relative mx-auto h-[400px] w-80 rounded-[40px] border-8 border-coal shadow-xl",
                 "duration-2000 delay-3000 translate-y-96 transition-transform",
-                { "translate-y-0": !fetching },
+                { "translate-y-0": !loading },
               )}
             >
               {/* <div className="absolute inset-x-0 top-0 z-10 h-6"> */}

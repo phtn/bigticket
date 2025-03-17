@@ -21,5 +21,5 @@ export default defineSchema({
   transactions: defineTable(TransactionSchema)
     .index("by_status", ["status"])
     .index("by_ref_no", ["ref_no"])
-    .index("by_tx_id", ["tx_id"]),
+    .index("by_txn_id", ["txn_id"]),
 });

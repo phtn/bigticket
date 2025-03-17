@@ -2,13 +2,12 @@ import { type PaymentStatus } from "@/lib/paymongo/schema/zod.payments";
 import { Content } from "./content";
 
 interface PaymentsPageProps {
-  params: Promise<{
+  params: {
     status: PaymentStatus & "cancelled";
-  }>;
+  };
 }
 
 const Page = async ({ params }: PaymentsPageProps) => {
-  const { status } = await params;
-  return <Content status={status} />;
+  return <Content {...params} />;
 };
 export default Page;
