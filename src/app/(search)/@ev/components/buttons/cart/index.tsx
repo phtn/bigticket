@@ -2,7 +2,7 @@ import { useAuth } from "@/app/ctx/auth/provider";
 import { FloatingVaul } from "@/ui/vaul";
 import { moses, secureRef } from "@/utils/crypto";
 import { cn } from "@nextui-org/react";
-import NumberFlow, { NumberFlowGroup, continuous } from "@number-flow/react";
+import NumberFlow, { NumberFlowGroup } from "@number-flow/react";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { useCartStore } from "./useCartStore";
@@ -116,8 +116,6 @@ export const Cart = ({ open, toggle, ticketPrice }: CartProps) => {
                   />
                   <NumberFlow
                     value={count}
-                    plugins={[continuous]}
-                    trend={0}
                     locales="en-US"
                     className="flex w-7 shrink-0 grow-0 items-center justify-center rounded-lg font-sans text-[16px] font-medium text-slate-200"
                   />
@@ -128,8 +126,6 @@ export const Cart = ({ open, toggle, ticketPrice }: CartProps) => {
                   })}
                 >
                   <NumberFlow
-                    plugins={[continuous]}
-                    trend={0}
                     willChange
                     className={cn(
                       "w-fit rounded-lg px-2 text-right font-inter text-lg font-medium tracking-tight text-teal-200",

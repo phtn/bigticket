@@ -2,19 +2,26 @@
 
 import { useMoment } from "@/hooks/useMoment";
 import { usePaymongo } from "@/hooks/usePaymongo";
+import { Iconx } from "@/icons/icon";
 import { cn } from "@/lib/utils";
+import { moses, secureRef } from "@/utils/crypto";
 import { guid } from "@/utils/helpers";
 import { Button } from "@nextui-org/react";
-import { Suspense, useCallback, useEffect, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  memo,
+  type PropsWithChildren,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import { useCartStore } from "../(search)/@ev/components/buttons/cart/useCartStore";
 import { onError, onInfo, onSuccess } from "../ctx/toast";
-import { CartItem, Header, Wrapper } from "./components";
+import { CartItem, Header } from "./components";
 import { OrderProvider, useOrder } from "./ctx";
 import { Summary } from "./summary";
 import type { ItemProps } from "./types";
-import { Iconx } from "@/icons/icon";
-import { moses, secureRef } from "@/utils/crypto";
-import { useRouter, useSearchParams } from "next/navigation";
 
 interface OrderContentProps {
   node_env: boolean;
@@ -38,6 +45,7 @@ export const OrderContent = () => {
     loading: paymongoLoading,
     state,
     dispatch,
+    lastUpdate,
   } = useOrder();
   const { loading } = usePaymongo();
   const {
@@ -235,7 +243,7 @@ export const OrderContent = () => {
         <Summary
           refNumber={orderNumber}
           state={state}
-          updated={Date.now()}
+          updated={lastUpdate}
           checkoutFn={checkoutFn}
           loading={paymongoLoading}
           userDetails={userDetails}
@@ -244,6 +252,15 @@ export const OrderContent = () => {
     </Wrapper>
   );
 };
+
+const Wrapper = memo(({ children }: PropsWithChildren) => (
+  <div className="flex overflow-scroll border-t-[0.33px] border-primary/40 bg-gray-300 pb-16 pt-3 sm:h-[calc(100vh-64px)] md:py-8">
+    <div className="grid w-full grid-cols-1 gap-y-10 px-2 sm:px-6 md:grid-cols-10 md:gap-x-6 md:gap-y-0 md:px-10 lg:gap-x-8 lg:px-14 xl:gap-x-12 xl:px-24">
+      {children}
+    </div>
+  </div>
+));
+Wrapper.displayName = "Wrapper";
 
 const descriptor = (
   venue: string | undefined,

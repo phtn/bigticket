@@ -10,6 +10,7 @@ import {
   EditCustomerParamsSchema,
   RetrieveCustomerParamsSchema,
 } from "@/lib/paymongo/schema/zod.customer";
+import { RetrievePaymentParamsSchema } from "@/lib/paymongo/schema/zod.payments";
 import { Paymongo } from "@/lib/paymongo/sdk";
 import { asyncR } from "@/lib/paymongo/utils";
 
@@ -22,6 +23,8 @@ const expireCheckout = proc.input(ExpireCheckoutParamsSchema);
 const createCustomer = proc.input(CreateCustomerParamsSchema);
 const retrieveCustomer = proc.input(RetrieveCustomerParamsSchema);
 const editCustomer = proc.input(EditCustomerParamsSchema);
+//
+const retrievePaymentIntent = proc.input(RetrievePaymentParamsSchema);
 
 export const paymongo = router({
   createCheckout: createCheckout.mutation(asyncR(pay.checkout.create)),
@@ -31,4 +34,8 @@ export const paymongo = router({
   createCustomer: createCustomer.mutation(asyncR(pay.customer.create)),
   retrieveCustomer: retrieveCustomer.query(asyncR(pay.customer.retrieve)),
   editCustomer: editCustomer.mutation(asyncR(pay.customer.edit)),
+  //
+  retrievePaymentIntent: retrievePaymentIntent.query(
+    asyncR(pay.paymentIntent.retrieve),
+  ),
 });

@@ -4,6 +4,7 @@ import type {
   PaymentIntentResource,
   RetrievePaymentIntentParamsUsingPublic,
   AttachPaymentIntentParamsUsingPublic,
+  BaseRetrievePaymentIntentParams,
 } from "@/lib/paymongo/schema/zod.payment-intent";
 
 export const createPaymentIntent = async (
@@ -21,6 +22,18 @@ export const createPaymentIntent = async (
 };
 
 export const retrievePaymentIntent = async (
+  data: BaseRetrievePaymentIntentParams,
+  axiosInstance: AxiosInstance,
+  config?: AxiosRequestConfig,
+) => {
+  const res = await axiosInstance.get<{ data: PaymentIntentResource }>(
+    `/payment_intents/${data.id}`,
+    config,
+  );
+  return res.data.data;
+};
+
+export const retrievePaymentIntentUsingPublic = async (
   data: RetrievePaymentIntentParamsUsingPublic,
   axiosInstance: AxiosInstance,
   config?: AxiosRequestConfig,

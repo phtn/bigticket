@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const value = useMemo(
     () => ({
+      supabase,
       user,
       isLoading,
       metadata: user?.user_metadata,
@@ -57,7 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading,
       logout,
     }),
-    [user, isLoading, updateUser, setLoading, logout],
+    [supabase, user, isLoading, updateUser, setLoading, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

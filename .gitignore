@@ -48,3 +48,6 @@ yarn-error.log*
 
 # shell scripts
 *.sh
+
+notes.md
+x_x

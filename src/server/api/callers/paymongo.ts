@@ -8,3 +8,6 @@ const asyncFn =
     await fn(params);
 
 export const createCheckout = asyncFn(api.paymongo.createCheckout);
+export const retrievePaymentIntent = asyncFn(
+  api.paymongo.retrievePaymentIntent,
+);
