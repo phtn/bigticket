@@ -2,7 +2,7 @@ import { Toaster, ToastBar } from "react-hot-toast";
 
 import { toast } from "react-hot-toast";
 import { Button } from "@nextui-org/react";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const barToast = () => (
   <Toaster>

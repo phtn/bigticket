@@ -1,4 +1,4 @@
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
 import { WarpDrive } from "@/ui/loader/warp";
 import { type HTMLAttributes, type ReactNode, forwardRef } from "react";

@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { useCartStore } from "./useCartStore";
 import Link from "next/link";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { BtnIcon } from "@/ui/button";
 
 interface CartProps {

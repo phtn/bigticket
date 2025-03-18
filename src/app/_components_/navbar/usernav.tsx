@@ -5,7 +5,7 @@ import { SidebarCtx } from "@/app/ctx/sidebar";
 import { useUserCtx } from "@/app/ctx/user";
 import { useScreen } from "@/hooks/useScreen";
 import { useToggle } from "@/hooks/useToggle";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { type IconName } from "@/icons/types";
 import { cn } from "@/lib/utils";
 import { Hyper } from "@/ui/button/button";

@@ -12,7 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { type XEvent } from "../types";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { BtnIcon } from "@/ui/button/button-icon";
 
 export const EventCard = (xEvent: XEvent) => {

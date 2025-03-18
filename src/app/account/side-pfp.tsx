@@ -5,7 +5,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useAccountCtx } from "./ctx";
 import { opts } from "@/utils/helpers";
 import { Button, Spinner } from "@nextui-org/react";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 interface UserPfpProps {
   title: string;

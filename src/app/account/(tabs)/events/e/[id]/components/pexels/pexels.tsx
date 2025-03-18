@@ -5,7 +5,7 @@ import { HyperList } from "@/ui/list";
 import { cn } from "@/lib/utils";
 import { EventEditorCtx } from "../../ctx";
 import { SidebarCtx } from "@/app/ctx/sidebar";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const PexelParamList = ({ category }: { category?: string }) => {
   const { toggle } = use(SidebarCtx)!;

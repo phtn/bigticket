@@ -3,7 +3,7 @@
 import { Card, CardHeader } from "@nextui-org/react";
 import { Header } from "./_components_/common";
 import { useUserCtx } from "../ctx/user";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const Content = () => {
   const { xUser } = useUserCtx();

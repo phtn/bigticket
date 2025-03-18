@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { type ButtonHTMLAttributes, useCallback } from "react";
 import { type IMenuItem, PopOptions } from "./components";
 import { useUserCtx } from "@/app/ctx/user";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { BtnIcon } from "@/ui/button";
 
 export const CohostedEventCard = (xEvent: XEvent) => {

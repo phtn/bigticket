@@ -1,6 +1,6 @@
 import { type XEvent } from "@/app/types";
 import { useMoment } from "@/hooks/useMoment";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
 import { TicketStack } from "@/ui/card/ticket";
 import { useCallback, useState } from "react";

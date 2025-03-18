@@ -3,7 +3,7 @@ import { HyperList } from "@/ui/list";
 import Link from "next/link";
 import { Brand, BrandName, TicketsMono, TitleMono } from "../navbar/brand";
 import type { TocProps, Section, FooterProps } from "./types";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { BtnIcon } from "@/ui/button/button-icon";
 
 export const Toc = ({ sections, isOpen, toggleFn, footer }: TocProps) => {

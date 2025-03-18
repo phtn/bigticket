@@ -4,7 +4,7 @@ import { Button, type ButtonProps } from "@nextui-org/react";
 import { type ChangeEvent, memo } from "react";
 import { type WindowVariant } from ".";
 import type { StaticToolbarProps, ToolbarProps } from "./types";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { BtnIcon } from "../button";
 
 const ToolbarComponent = <T,>({

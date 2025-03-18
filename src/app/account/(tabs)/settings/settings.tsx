@@ -12,7 +12,7 @@ import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
 import { getUserID } from "@/app/actions";
 import { Err } from "@/utils/helpers";
 import { BtnIcon } from "@/ui/button/button-icon";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const UserSettings = () => {
   const { q } = useConvexUtils();

@@ -3,7 +3,7 @@ import { Button, cn } from "@nextui-org/react";
 import { PrivateNoAccess, PrivateWithAccess } from "./private";
 import type { ReactNode } from "react";
 import chalk from "chalk";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 interface VIPAccesProps {
   ticketCount?: number;

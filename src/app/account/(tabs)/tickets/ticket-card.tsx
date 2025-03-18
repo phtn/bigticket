@@ -4,7 +4,7 @@ import { useCallback, useRef } from "react";
 import { useTicketViewer } from "./ctx";
 import { TicketStack } from "@/ui/card/ticket";
 import { motion, useInView } from "motion/react";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const TicketCard = (ticket: UserTicket) => {
   const { event_time, compact, event_day } = useMoment({

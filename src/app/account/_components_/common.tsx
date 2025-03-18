@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { type ClassName } from "@/app/types";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 interface HeaderProps {
   children?: ReactNode;

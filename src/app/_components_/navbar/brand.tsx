@@ -1,7 +1,7 @@
 "use client";
 
 import type { ClassName } from "@/app/types";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

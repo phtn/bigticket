@@ -13,7 +13,7 @@ import { CreateEvent } from "./create";
 import { EventCardAccount } from "./event-card";
 import { CohostedEventCard } from "./cohost-card";
 import { useUserEvents } from "./useUserEvents";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const Events = () => {
   const { x, pending } = usePreloadedUserEvents();

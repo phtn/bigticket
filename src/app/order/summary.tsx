@@ -9,7 +9,7 @@ import type {
   SummaryProps,
 } from "./types";
 import { useBase } from "@/hooks/useBase";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
 import { useMoment } from "@/hooks/useMoment";
 

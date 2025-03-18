@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Image } from "@nextui-org/react";
 import { Hyper } from "@/ui/button/button";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
