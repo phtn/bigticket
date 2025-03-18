@@ -72,8 +72,8 @@ export const OrderContent = () => {
   const { event_date } = useMoment({ start: eventDate });
 
   const description = useMemo(
-    () => descriptor(eventVenue, event_date, eventOrganizer),
-    [eventVenue, event_date, eventOrganizer],
+    () => descriptor(eventVenue, event_date, eventOrganizer, eventId),
+    [eventVenue, event_date, eventOrganizer, eventId],
   );
 
   useEffect(() => {
@@ -266,6 +266,7 @@ const descriptor = (
   venue: string | undefined,
   date: string | undefined,
   org: string | undefined,
+  event: string | undefined,
 ) => {
-  return `${venue}|>${date}|>(${org})`;
+  return `${venue}|>${date}|>${org}|>${event}`;
 };

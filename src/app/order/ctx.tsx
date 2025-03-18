@@ -25,8 +25,11 @@ import { useCartStore } from "../(search)/@ev/components/buttons/cart/useCartSto
 import { useAuth } from "../ctx/auth/provider";
 import { reducer, type ActionType } from "./reducer";
 import type { ItemProps, ReducerState } from "./types";
+import { type UserTicket } from "convex/events/d";
 
 const CART_STORAGE_KEY = "bigticket_cart";
+const TKT_STATIC = "bigticket_tkts";
+const TKT_DYNAMIC = "bigticket_tktd";
 
 interface OrderCtxValues {
   itemCount: number;
@@ -65,9 +68,22 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
   const searchParams = useSearchParams();
   const { checkout } = usePaymongo();
 
-  const { count, eventName, eventId, userId, total, setCount } = useCartStore();
+  const {
+    count,
+    eventId,
+    eventName,
+    eventType,
+    eventDate,
+    eventEndDate,
+    total,
+    setCount,
+    price,
+    userId,
+  } = useCartStore();
 
-  // Load product image
+  // const eventId = useMemo(() => searchParams.get("x"), [searchParams]);
+  // const userId = useMemo(() => searchParams.get("u"), [searchParams]);
+
   useEffect(() => {
     if (eventId) {
       const v = localStorage.getItem(`cover_${eventId}`);
@@ -76,14 +92,26 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
     }
   }, [eventId]);
 
-  // Get order number from URL or generate a new one
+  const descriptor = useMemo(
+    () => String(user?.user_metadata?.name ?? user?.email),
+    [user],
+  );
+
+  const itemCount = useMemo(
+    () => state.list.reduce((acc, item) => acc + item.quantity, 0),
+    [state.list],
+  );
+
+  const amount = useMemo(
+    () => state.list.reduce((acc, item) => acc + item.price * item.quantity, 0),
+    [state.list],
+  );
+
+  // Get order number from URL
   const orderNumber = useMemo(() => {
     const urlRef = searchParams.get("r");
     if (urlRef) return urlRef;
     const refNo = moses(("b" + secureRef(8) + "t").toUpperCase());
-    // const params = new URLSearchParams(searchParams.toString());
-    // params.set("r", refNo);
-    // router.replace(`?${params.toString()}`);
     return refNo;
   }, [searchParams]);
 
@@ -105,9 +133,25 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
     [count, eventName, userId, total, productImage],
   );
 
+  const ticket_static: Partial<UserTicket> = useMemo(
+    () => ({
+      user_id: userId,
+      event_id: eventId,
+      event_name: eventName,
+      event_start: eventDate,
+      event_date: eventDate,
+      event_end: eventEndDate,
+      ticket_type: eventType,
+      ticket_class: "premium",
+      ticket_price: price,
+    }),
+    [userId, eventId, eventName, eventDate, eventType, eventEndDate, price],
+  );
+
   // Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+
     if (savedCart) {
       setLastUpdate(Date.now());
       try {
@@ -125,29 +169,27 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
   useEffect(() => {
     if (state.list.length > 0) {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state.list));
+      localStorage.setItem(
+        TKT_DYNAMIC,
+        JSON.stringify({ ticket_count: itemCount }),
+      );
+      const ticketCache = localStorage.getItem(TKT_STATIC);
+      if (!ticketCache) {
+        localStorage.setItem(TKT_STATIC, JSON.stringify(ticket_static));
+      }
     } else {
       localStorage.removeItem(CART_STORAGE_KEY);
     }
-  }, [state.list]);
-
-  const descriptor = useMemo(
-    () => String(user?.user_metadata?.name ?? user?.email),
-    [user],
-  );
-
-  const itemCount = useMemo(
-    () => state.list.reduce((acc, item) => acc + item.quantity, 0),
-    [state.list],
-  );
-
-  const amount = useMemo(
-    () => state.list.reduce((acc, item) => acc + item.price * item.quantity, 0),
-    [state.list],
-  );
+  }, [state.list, itemCount, ticket_static]);
 
   const updateCart = useCallback(
     async (list: ItemProps[]) => {
       setLoading(true);
+      setLastUpdate(Date.now());
+      localStorage.setItem(
+        TKT_DYNAMIC,
+        JSON.stringify({ ticket_count: itemCount }),
+      );
       try {
         dispatch({ type: "SET", payload: list });
         const lineItems = list.map((item) => ({
@@ -162,7 +204,7 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
         setLoading(false);
       }
     },
-    [descriptor, orderNumber],
+    [descriptor, orderNumber, itemCount],
   );
 
   const createCheckoutSession = useCallback(async () => {

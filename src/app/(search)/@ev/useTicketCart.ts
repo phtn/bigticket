@@ -23,6 +23,7 @@ export const useTicketCart = (
         start_date,
         end_date,
         ticket_price,
+        tickets_sold,
       } = xEvent;
       if (!ticket_price) {
         onWarn("Ticket is unavailable.");
@@ -32,7 +33,7 @@ export const useTicketCart = (
         (_, i) => ({
           event_id: event_id,
           ticket_id: guid(),
-          ticket_index: i + 1,
+          ticket_index: (tickets_sold ?? 0) + i + 1,
           ticket_count: ticketCount,
           event_name: event_name!,
           event_url: event_url ?? "",
@@ -66,6 +67,7 @@ export const useTicketCart = (
           start_date,
           end_date,
           ticket_price,
+          tickets_sold,
         } = xEvent;
 
         if (!ticket_price) {
@@ -76,7 +78,7 @@ export const useTicketCart = (
           (_, i) => ({
             event_id,
             ticket_id: guid(),
-            ticket_index: i + 1,
+            ticket_index: (tickets_sold ?? 0) + i + 1,
             ticket_count: ticketCount,
             event_name: event_name!,
             event_url: event_url ?? "",

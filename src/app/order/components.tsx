@@ -5,13 +5,18 @@ import { cn } from "@/lib/utils";
 import type {
   CartItemProps,
   HeaderProps,
+  ItemDetail,
+  PricingProps,
   ProductImageProps,
+  QuantityControlProps,
+  QuantityHandler,
   StatProps,
   TicketDetail,
 } from "./types";
 import { formatAsMoney } from "@/utils/helpers";
 import { Iconx } from "@/icons/icon";
 import NumberFlow from "@number-flow/react";
+import { HyperList } from "@/ui/list";
 
 export const Header = memo(({ itemCount, total }: HeaderProps) => (
   <div className="overflow-hidden rounded-2xl border-[0.33px] border-primary/60 bg-white">
@@ -144,7 +149,7 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
     [item?.description],
   );
 
-  const ticketPrice = useMemo(
+  const price = useMemo(
     () => (item?.price ? formatAsMoney(item.price) : 0),
     [item?.price],
   );
@@ -156,12 +161,22 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
 
   // Memoize the handlers
   const handlers = useMemo(
-    () => ({
-      handleDelete: () => item?.id && fn.deleteFn(item.id),
-      handleIncrement: () => item?.id && fn.incrementFn(item.id),
-      handleDecrement: () => item?.id && fn.decrementFn(item.id),
-    }),
+    () =>
+      ({
+        delete: () => item?.id && fn.deleteFn(item.id),
+        increment: () => item?.id && fn.incrementFn(item.id),
+        decrement: () => item?.id && fn.decrementFn(item.id),
+      }) as QuantityHandler,
     [item?.id, fn],
+  );
+
+  const lineDetails = useMemo(
+    () =>
+      [
+        { value: detail.venue, icon: "map-marker-fill" },
+        { value: detail.date, icon: "calendar-outline" },
+      ] as ItemDetail[],
+    [detail],
   );
 
   return (
@@ -187,62 +202,66 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
               },
             )}
           >
-            <div className={cn("mb-2 h-fit w-full truncate lg:mb-1")}>
-              <p className="whitespace-pre-wrap text-lg font-bold leading-5 tracking-tight lg:text-2xl">
-                {item?.name}
-              </p>
-            </div>
-            <div className="_bg-gradient-to-tr w-full space-y-1 overflow-hidden whitespace-nowrap rounded-md p-0.5 font-inter lg:w-fit lg:space-y-2 lg:px-2 lg:py-1.5 lg:pe-4">
-              <div className="flex items-center">
-                <Iconx
-                  name="map-marker-fill"
-                  className="mr-2.5 size-3.5 opacity-60 md:mr-3"
-                />
-                <p className="text-sm capitalize tracking-tight">
-                  {detail.venue}
-                </p>
-              </div>
-              <div className="flex items-center text-[13px]">
-                <Iconx
-                  name="calendar-outline"
-                  className="mr-2.5 size-3.5 md:mr-3"
-                />
-                <p className="text-sm capitalize tracking-tight">
-                  {detail.date}
-                </p>
-              </div>
-            </div>
+            <LineItemTitle value={item?.name} />
+            <HyperList
+              data={lineDetails}
+              component={LineItemDetail}
+              container="w-full space-y-1 overflow-hidden whitespace-nowrap rounded-md p-0.5 font-inter lg:w-fit lg:space-y-2 lg:px-2 lg:py-1.5 lg:pe-4"
+            />
           </div>
         </div>
 
         <div className="flex h-full w-full cursor-pointer items-end justify-between md:p-2 xl:space-x-4">
-          <div className="flex items-center space-x-2 font-inter">
-            <p className="text-lg text-primary">{ticketPrice}</p>
-            <span className="text-sm tracking-tighter opacity-70">
-              per ticket
-            </span>
-          </div>
-          <div
-            className={cn(
-              "flex h-fit items-end space-x-4 rounded-full border-[0.33px] border-primary/10 bg-gray-400/60 p-1 opacity-100 md:h-fit md:items-center xl:space-x-4",
-              { "space-x-0": isDisabled },
-            )}
-          >
-            <ModButton
-              fn={handlers.handleDelete}
-              disabled={isDisabled}
-              icon="close"
-            />
-            <ModButton
-              fn={handlers.handleDecrement}
-              icon="minus-sign"
-              disabled={isDisabled}
-            />
-            <ModButton fn={handlers.handleIncrement} icon="plus-sign" />
-          </div>
+          <Pricing price={price} unit={"ticket"} />
+          <QuantityControls disabled={isDisabled} handlers={handlers} />
         </div>
       </div>
     </div>
   );
 });
 CartItem.displayName = "CartItem";
+
+const LineItemTitle = ({ value }: { value?: string }) => (
+  <div className={cn("mb-2 h-fit w-full truncate lg:mb-1")}>
+    <p className="whitespace-pre-wrap text-lg font-bold leading-5 tracking-tight lg:text-2xl">
+      {value}
+    </p>
+  </div>
+);
+
+const LineItemDetail = (item: ItemDetail) => (
+  <div className="flex items-center">
+    <Iconx name={item.icon} className="mr-2.5 size-3.5 opacity-60 md:mr-3" />
+    <p className="text-sm capitalize tracking-tight">{item.value}</p>
+  </div>
+);
+
+const Pricing = ({ price, unit }: PricingProps) => {
+  return (
+    <div className="flex items-center space-x-2 font-inter">
+      <p className="text-lg text-primary">{price}</p>
+      <span className="text-sm tracking-tighter opacity-70">
+        per <span className="pl-1.5">{unit}</span>
+      </span>
+    </div>
+  );
+};
+
+const QuantityControls = ({ disabled, handlers }: QuantityControlProps) => {
+  return (
+    <div
+      className={cn(
+        "flex h-fit items-end space-x-4 rounded-full border-[0.33px] border-primary/10 bg-gray-400/60 p-1 opacity-100 md:h-fit md:items-center xl:space-x-4",
+        { "space-x-0": disabled },
+      )}
+    >
+      <ModButton fn={handlers.delete} disabled={disabled} icon="close" />
+      <ModButton
+        fn={handlers.decrement}
+        icon="minus-sign"
+        disabled={disabled}
+      />
+      <ModButton fn={handlers.increment} icon="plus-sign" />
+    </div>
+  );
+};

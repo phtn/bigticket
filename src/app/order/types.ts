@@ -1,3 +1,5 @@
+import { type IconName } from "@/icons/types";
+
 export interface ItemProps {
   id: string;
   image: string | null;
@@ -81,4 +83,25 @@ export interface SummaryContentProps {
   paymongoCheckout: VoidFunction;
   loading: boolean;
   userDetails: UserDetails;
+}
+
+export interface ItemDetail {
+  value: string;
+  icon: IconName;
+}
+
+export interface PricingProps {
+  price: string | number;
+  unit: string | null;
+}
+
+export interface QuantityHandler {
+  delete: VoidFunction;
+  increment: VoidFunction;
+  decrement: VoidFunction;
+}
+
+export interface QuantityControlProps {
+  disabled: boolean;
+  handlers: QuantityHandler;
 }

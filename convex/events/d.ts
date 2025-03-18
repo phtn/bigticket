@@ -81,12 +81,12 @@ export const UserTicketSchema = v.object({
   event_start: v.float64(),
   event_end: v.float64(),
   event_date: v.float64(),
+  user_id: v.optional(v.string()),
   ticket_id: v.string(),
   ticket_type: v.string(),
   ticket_price: v.optional(v.number()),
   ticket_count: v.number(),
   ticket_url: v.optional(v.string()),
-  user_id: v.optional(v.string()),
   ticket_index: v.optional(v.number()),
   ticket_class: v.optional(v.string()),
   ticket_status: v.optional(v.string()),
@@ -172,6 +172,7 @@ export const EventSchema = v.object({
   //TICKETS
   ticket_count: v.optional(v.number()),
   ticket_price: v.optional(v.number()),
+  tickets_sold: v.optional(v.number()),
   min_age: v.optional(v.number()),
   max_age: v.optional(v.number()),
 
@@ -186,7 +187,6 @@ export const EventSchema = v.object({
   ticket_value: v.optional(v.number()),
   is_paid: v.optional(v.boolean()),
 
-  tickets_sold: v.optional(v.number()),
   tickets_refunded: v.optional(v.number()),
   tickets_voided: v.optional(v.number()),
 
