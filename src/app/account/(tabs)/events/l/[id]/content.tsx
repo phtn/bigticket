@@ -42,7 +42,7 @@ const LiveView = () => {
           <TitleSection />
           <Image
             radius="none"
-            src={cover_url ?? "/icon/logomark_v2.svg"}
+            src={cover_url ?? "/api/logo"}
             alt={event?.event_name}
             className={cn("aspect-square w-auto object-cover object-center", {
               "aspect-video": cover_url,

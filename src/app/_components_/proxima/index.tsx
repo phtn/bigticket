@@ -39,7 +39,7 @@ const CompanyLogo = () => {
     <div className="relative p-8">
       <div className="flex aspect-square h-auto w-14 items-center justify-center rounded-full bg-white sm:w-20">
         <Image
-          src="/icon/logomark_v2.svg"
+          src="/api/logo"
           alt="big-ticket-logomark"
           className="size-10 sm:size-14"
         />

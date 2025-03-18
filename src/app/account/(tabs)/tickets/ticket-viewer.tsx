@@ -1,12 +1,12 @@
 import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
 import { QrCodeGen } from "../../_components_/qr";
-import { use, useCallback } from "react";
-import { TicketViewerCtx } from "./ctx";
+import { useCallback } from "react";
+import { useTicketViewer } from "./ctx";
 import { opts } from "@/utils/helpers";
 
 export const TicketViewer = () => {
-  const { ticket, open, toggle } = use(TicketViewerCtx)!;
+  const { ticket, open, toggle } = useTicketViewer();
   const TicketStatusIndicator = useCallback(() => {
     const options = opts(<TicketScanned />, <TicketNotScanned />);
     return <>{options.get(ticket?.is_claimed ?? false)}</>;
@@ -30,12 +30,7 @@ export const TicketViewer = () => {
       >
         <div className="flex h-[calc(100vh-64px)] w-screen flex-col items-center justify-start overflow-hidden overflow-y-scroll bg-primary py-20 md:w-[30rem]">
           <div className="flex w-fit items-center rounded-[2.20rem] border border-primary bg-white">
-            <QrCodeGen
-              url={ticket?.ticket_url}
-              logo="/icon/logomark_v2.svg"
-              width={360}
-              height={360}
-            />
+            <QrCodeGen url={ticket?.ticket_url} width={360} height={360} />
           </div>
           <div className="flex h-24 w-full"></div>
           <TicketStatusIndicator />

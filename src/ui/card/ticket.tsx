@@ -1,6 +1,7 @@
 import { QrCodeGen } from "@/app/account/_components_/qr";
 import { cn } from "@/lib/utils";
-import { type ReactNode, useMemo } from "react";
+import { opts } from "@/utils/helpers";
+import { type ReactNode, useCallback } from "react";
 
 interface TicketStackProps {
   title?: string;
@@ -20,10 +21,12 @@ export const TicketStack = ({
   day,
   color,
 }: TicketStackProps) => {
-  const url = useMemo(
-    () => `https://${title}_${date}_${day}`,
-    [title, date, day],
-  );
+  const url = `https://${title}_${date}_${day}`;
+  const QrOptions = useCallback(() => {
+    const options = opts(<QrCodeGen url={url} />, null);
+    return <>{options.get(typeof title !== "undefined" && !!site)}</>;
+  }, [title, site, url]);
+
   return (
     <div className="group relative flex h-fit w-full items-center justify-center">
       <div
@@ -48,9 +51,7 @@ export const TicketStack = ({
         <div className="h-3"></div>
         <div className="flex h-28 items-end rounded-xl rounded-t-xl">
           <div className="flex h-[100px] w-[6.25rem] flex-shrink-0 items-center justify-center rounded-s-md border border-macd-gray bg-chalk">
-            {title && site && (
-              <QrCodeGen url={url} logo="/icon/logomark_v2.svg" />
-            )}
+            <QrOptions />
           </div>
           <div className="h-[100px] w-full rounded-e-md border border-l-0 border-macd-gray bg-chalk">
             <div className="flex h-1/2 w-full items-center border-b border-macl-gray px-2">

@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { HyperSpace } from "@/ui/cursor";
 import { HyperList } from "@/ui/list";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { EventCard } from "../event-card";
 import { Hero } from "./components/hero";
 import { Collections } from "../../_components_/sidebar";
@@ -9,6 +9,14 @@ import { categories, type Category } from "./components/category";
 import { Proxima } from "../../_components_/proxima";
 import { type XEvent } from "@/app/types";
 import { CursorProvider } from "@/app/ctx/cursor";
+import { fetchAndActivate, getValue } from "firebase/remote-config";
+import { remoteConfig } from "@/lib/firebase";
+import { cache } from "react";
+
+const getRemoteConfigValue = cache(async (key: string) => {
+  await fetchAndActivate(remoteConfig);
+  return getValue(remoteConfig, key).asString();
+});
 
 interface DesktopViewProps {
   xEvents: XEvent[];
@@ -35,6 +43,17 @@ interface MainContentProps {
 }
 
 const MainContent = ({ xEvents }: MainContentProps) => {
+  const [heroTitle, setHeroTitle] = useState<string>();
+
+  useEffect(() => {
+    getRemoteConfigValue("heroTitle").then(setHeroTitle).catch(console.error);
+  }, []);
+
+  const headline = useMemo(() => {
+    const [regular, gradient] = heroTitle?.split(" ") ?? ["", ""];
+    return { regular, gradient };
+  }, [heroTitle]);
+
   const [selected, setSelected] = useState<string>("all");
 
   const handleSelectCategory = useCallback(
@@ -85,7 +104,7 @@ const MainContent = ({ xEvents }: MainContentProps) => {
               key={"hero"}
               className="flex h-96 w-full items-center justify-center"
             >
-              <Hero>
+              <Hero headline={headline}>
                 <HyperList
                   container="flex md:w-fit w-screen px-4 overflow-x-auto gap-4"
                   data={categories}

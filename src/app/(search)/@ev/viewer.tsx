@@ -362,7 +362,7 @@ const MediaComponent = ({
   gallery,
 }: MediaProps) => {
   const { currentIndex } = useCarousel();
-  const [src, setSrc] = useState<string>("/png/wordmark.png");
+  const [src, setSrc] = useState<string>("/api/logo");
 
   useEffect(() => {
     clearConsole();

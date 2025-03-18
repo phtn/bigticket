@@ -80,6 +80,6 @@ const sections: Section[] = [
     keyId: 9,
     id: "contact-us",
     title: "Contact Us",
-    content: `If you have any questions about this Privacy Policy or our data practices, please contact our Data Protection Officer at hq@bigticket.ph or by mail at: Office of the Data Protection Officer, B6 L20 Sunflower St, Caloocan City 1425, Philippines.`,
+    content: `If you have any questions about this Privacy Policy or our data practices, please contact our Data Protection Officer at hq@bigticket.ph or by mail at: Office of the Data Protection Officer, 5F Crissant Plaza Bldg, Quezon City, 1119 Metro Manila, Philippines.`,
   },
 ];

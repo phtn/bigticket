@@ -51,3 +51,15 @@ export const byRole = query({
       .withIndex("by_role", (q) => q.eq("role", role))
       .collect(),
 });
+
+export const tickets = query({
+  args: { id: v.string() },
+  handler: async ({ db }, { id }) => {
+    const user = await db
+      .query("users")
+      .withIndex("by_uid", (q) => q.eq("id", id))
+      .unique();
+
+    return user?.tickets;
+  },
+});
