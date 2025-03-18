@@ -33,7 +33,7 @@ export const usePaymongo = () => {
       if (url) {
         localStorage.setItem("bigticket_csp", JSON.stringify(params));
         localStorage.setItem(
-          "bigticket_tx",
+          "bigticket_txn",
           JSON.stringify({
             type: "paymongo",
             cs: session.id,
@@ -53,7 +53,10 @@ export const usePaymongo = () => {
       }
       throw error;
     } finally {
-      setLoading(false);
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+      return () => clearTimeout(timer);
     }
   }, []);
 

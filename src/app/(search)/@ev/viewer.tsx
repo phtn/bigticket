@@ -52,14 +52,21 @@ import { useEventViewer, type Moments } from "./useEventViewer";
 import { useTicketCart } from "./useTicketCart";
 import { type SelectUser } from "convex/users/d";
 
+const tempCache = ["cart", "pcs", "csp", "txn", "tkts", "tktd"];
+
 export const EventViewer = () => {
   const allEvents = useQuery(api.events.get.all);
   const [events, setEvents] = useState<SelectEvent[]>();
 
+  const removeTempCache = useCallback(() => {
+    tempCache.forEach((key) => localStorage.removeItem(`bigticket_${key}`));
+  }, []);
+
   useEffect(() => {
-    localStorage.removeItem("bigticket_cart");
-    localStorage.removeItem("bigticket_pcs");
-    localStorage.removeItem("bigticket_tx");
+    removeTempCache();
+  }, [removeTempCache]);
+
+  useEffect(() => {
     if (allEvents) {
       setEvents(allEvents);
     }
@@ -269,7 +276,9 @@ const MediaContainer = memo(({ xEvent, moments }: MediaContainerProps) => {
     setEventDetails({
       eventId: xEvent?.event_id,
       eventName: xEvent?.event_name,
+      eventType: xEvent?.event_type,
       eventDate: xEvent?.start_date,
+      eventEndDate: xEvent?.end_date,
       eventVenue: xEvent?.venue_name ?? xEvent?.event_geo ?? "Not set",
       eventAddress: xEvent?.venue_address ?? "",
       eventOrganizer: xEvent?.host_name,

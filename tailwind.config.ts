@@ -191,7 +191,7 @@ export default {
         vanilla: "#F3FCEE",
         army: "#AAB5B5",
         darkarmy: "#4C5C67",
-        peach: "#fb923c",
+        peach: "#FB923C",
         "macl-red": "#FF3B2F",
         "macd-red": "#FE453A",
         "macl-orange": "#FF9500",

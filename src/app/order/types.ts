@@ -1,4 +1,4 @@
-import { IconName } from "@/icons/types";
+import { type IconName } from "@/icons/types";
 
 export interface ItemProps {
   id: string;

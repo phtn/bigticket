@@ -14,12 +14,13 @@ interface UserDetails {
 interface EventDetails {
   eventId: string | undefined;
   eventName: string | undefined;
+  eventType: string | undefined;
   eventDate: number | undefined;
+  eventEndDate: number | undefined;
   eventVenue: string | undefined;
   eventAddress: string | undefined;
   eventOrganizer: string | undefined;
 }
-
 interface CartStore extends OrderDetails, UserDetails, EventDetails {
   count: number;
   price: number | undefined;
@@ -46,6 +47,8 @@ export const useCartStore = create<CartStore>((set) => ({
   eventId: "",
   eventName: "",
   eventDate: 0,
+  eventEndDate: 0,
+  eventType: "public",
   eventVenue: "",
   eventAddress: "",
   eventOrganizer: "",

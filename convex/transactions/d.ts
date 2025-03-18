@@ -12,11 +12,14 @@ import { type Infer, v } from "convex/values";
  */
 export const TransactionSchema = v.object({
   txn_id: v.string(),
+  user_id: v.string(),
   rec_id: v.optional(v.string()),
   ref_no: v.optional(v.string()),
   type: v.optional(v.string()),
+  mode: v.optional(v.string()),
   status: v.optional(v.string()),
   amount: v.optional(v.float64()),
+  currency: v.optional(v.string()),
   updated_at: v.optional(v.float64()),
 });
 

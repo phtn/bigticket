@@ -1,6 +1,10 @@
 import { type PaymentIntentResource } from "@/lib/paymongo/schema/zod.payment-intent";
 import { retrievePaymentIntent } from "@/server/api/callers/paymongo";
+import { useMutation } from "convex/react";
 import { useCallback, useEffect, useState } from "react";
+import { api } from "@vx/api";
+import { useAuth } from "../ctx/auth/provider";
+import { Err } from "@/utils/helpers";
 
 interface BigTicketTransaction {
   type: "paymongo" | "base";
@@ -26,22 +30,25 @@ export const usePayments = () => {
   );
 
   useEffect(() => {
-    const tx = localStorage.getItem("bigticket_tx");
+    const txn = localStorage.getItem("bigticket_txn");
 
-    if (!tx) {
+    if (!txn) {
       setLoading(false);
       return;
     }
 
     try {
-      const parsedTx = JSON.parse(tx) as BigTicketTransaction;
+      const parsedTxn = JSON.parse(txn) as BigTicketTransaction;
 
-      if (parsedTx.type === "paymongo") {
+      if (parsedTxn.type === "paymongo") {
         // fetch payment intent
-        getPaymentStatus(parsedTx.pi)
+        getPaymentStatus(parsedTxn.pi)
           .then(setPaymentIntent)
           .catch((error) => {
             console.error(error);
+          })
+          .finally(() => {
+            setLoading(false);
           });
       } else {
         // TODO: Implement payment status for other payment methods (base)
@@ -53,12 +60,35 @@ export const usePayments = () => {
     }
   }, [getPaymentStatus]);
 
+  const saveFn = useMutation(api.transactions.create.default);
+  const { user } = useAuth();
+
   useEffect(() => {
-    if (paymentIntent) {
+    if (paymentIntent && user) {
       setIsPaid(paymentIntent.attributes.status === "succeeded");
       setPaymentDetails(createPaymentDetails(paymentIntent));
+
+      const saveTransaction = async () => {
+        try {
+          await saveFn({
+            txn_id: paymentIntent.id.substring(3),
+            user_id: user.id,
+            type: paymentIntent.attributes.payments[0]?.type,
+            amount: parseFloat(
+              (paymentIntent.attributes.amount / 100).toFixed(2),
+            ),
+            mode: paymentIntent.attributes.payments[0]?.attributes.source.type,
+            currency: paymentIntent.attributes.currency,
+            status: paymentIntent.attributes.status,
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      saveTransaction().catch(Err);
     }
-  }, [paymentIntent]);
+  }, [paymentIntent, saveFn, user]);
 
   return {
     paymentDetails,
@@ -71,13 +101,13 @@ const createPaymentDetails = (paymentIntent: PaymentIntentResource) => {
   const { attributes } = paymentIntent;
 
   const entry = {
-    amount: attributes.amount,
-    currency: attributes.currency,
+    amount: `${attributes.currency} ${(attributes.amount / 100).toFixed(2)}`,
+    type: paymentIntent.attributes.payments[0]?.type,
     refNo: attributes.description,
     status: attributes.payments[0]?.attributes.status,
-    paymentMethod: attributes.payments[0]?.attributes.source.type,
-    paymentSource: attributes.payments[0]?.attributes.source.id,
-    paidAt: attributes.payments[0]?.attributes.paid_at,
+    mode: attributes.payments[0]?.attributes.source.type,
+    source: attributes.payments[0]?.attributes.source.id.substring(4, 10),
+    date: +`${attributes.payments[0]?.attributes.paid_at}000`,
   };
 
   return Object.entries(entry).map(([key, value]) => ({ name: key, value }));
