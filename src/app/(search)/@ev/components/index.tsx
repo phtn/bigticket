@@ -1,10 +1,11 @@
+import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
+import { Bouncy } from "@/ui/loader/bouncy";
 import { Card } from "@nextui-org/react";
 import NumberFlow from "@number-flow/react";
 import { useCallback, useMemo } from "react";
 import { type InfoItem, type PanelItem } from "../useEventInfo";
-import { Iconx } from "@/icons/icon";
 
 interface ActionPanelProps {
   h: string;
@@ -74,7 +75,7 @@ export const EventGroupDetail = ({
       >
         <span>Organizers</span>
         {!debounced ? (
-          <Iconx name="spinners-bouncing-ball" />
+          <Bouncy colorMap={{ 0: "text-secondary", 1: "text-peach" }} />
         ) : (
           <span className="animate-enter">{host_name}</span>
         )}

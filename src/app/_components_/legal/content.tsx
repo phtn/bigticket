@@ -17,7 +17,7 @@ import type {
   Section,
 } from "./types";
 import { BtnIcon } from "@/ui/button/button-icon";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const Content = ({
   company,

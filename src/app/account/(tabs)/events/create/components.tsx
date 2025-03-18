@@ -34,7 +34,7 @@ import {
   ticket_count_options,
 } from "./static";
 import type { ClassName } from "@/app/types";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export interface OptionButtonProps {
   name: OptionKey;

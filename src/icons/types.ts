@@ -1,5 +1,5 @@
 import type { HTMLProps, SVGProps } from "react";
-import type { IconNameType } from "./icon-list";
+import type { IconNameType } from "./icons";
 export type IconList = Record<IconNameType, { content: string }>;
 export type ClassName = HTMLProps<HTMLElement>["className"];
 

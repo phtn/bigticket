@@ -1,4 +1,4 @@
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { type IconName } from "@/icons/types";
 import { cn } from "@/lib/utils";
 import { opts } from "@/utils/helpers";

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { FloatingVaul } from "@/ui/vaul";
 import { Image, Radio, RadioGroup } from "@nextui-org/react";
 

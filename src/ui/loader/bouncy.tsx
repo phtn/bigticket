@@ -1,5 +1,5 @@
 import { type ClassName, type SetState } from "@/app/types";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
 import { Err } from "@/utils/helpers";
 import { useEffect, useState } from "react";

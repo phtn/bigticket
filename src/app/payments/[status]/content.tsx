@@ -1,6 +1,6 @@
 "use client";
 
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { type PaymentStatus } from "@/lib/paymongo/schema/zod.payments";
 import { cn } from "@/lib/utils";
 import { cannonConfetti } from "@/ui/loader/confetti";

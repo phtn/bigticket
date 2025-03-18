@@ -36,7 +36,7 @@ import {
 } from "../../../../create/static";
 import { EventDetailCtx, type EventDetailKey } from "./ctx";
 import { type EventField } from "./schema";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export interface EventDetailButtonProps extends EventField {
   name: EventDetailKey;

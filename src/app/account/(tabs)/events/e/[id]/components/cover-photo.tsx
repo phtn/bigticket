@@ -1,6 +1,6 @@
 import { SidebarCtx } from "@/app/ctx/sidebar";
 import { useImage } from "@/hooks/useImage";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { usePexels } from "@/lib/pexels";
 import { cn } from "@/lib/utils";
 import { BtnIcon } from "@/ui/button";

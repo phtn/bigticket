@@ -14,24 +14,18 @@ import QRCodeStyling from "qr-code-styling";
 
 interface QrCodeProps {
   url: string | undefined;
-  logo: string;
+  logo?: string;
   width?: number;
   height?: number;
 }
 
-export const QrCodeGen = ({
-  url,
-  logo,
-  width = 100,
-  height = 100,
-}: QrCodeProps) => {
+export const QrCodeGen = ({ url, width = 100, height = 100 }: QrCodeProps) => {
   const options = useMemo<Options>(
     () => ({
       width,
       height,
       type: "svg" as DrawType,
       data: url,
-      image: logo,
       margin: 0.75,
       qrOptions: {
         typeNumber: 0 as TypeNumber,
@@ -68,7 +62,7 @@ export const QrCodeGen = ({
         round: 0,
       },
     }),
-    [url, logo, width, height]
+    [url, width, height],
   );
 
   const qrCode = useMemo(() => new QRCodeStyling(options), [options]);

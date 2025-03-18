@@ -1,6 +1,6 @@
 import { Button, cn } from "@nextui-org/react";
 import { type GetTicketProps } from "./d";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const ViewTicket = ({ ticketCount = 0, fn }: GetTicketProps) => {
   return (

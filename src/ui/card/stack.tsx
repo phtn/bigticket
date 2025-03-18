@@ -1,6 +1,6 @@
 "use client";
 
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";

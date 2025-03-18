@@ -5,7 +5,7 @@ import NumberFlow, { continuous, NumberFlowGroup } from "@number-flow/react";
 import { type ReactNode, useCallback } from "react";
 import { useCart } from "./cart/ctx";
 import { type GetTicketProps } from "./d";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const GetTickets = ({ ticketPrice, h }: GetTicketProps) => {
   const { open, toggle } = useCart();

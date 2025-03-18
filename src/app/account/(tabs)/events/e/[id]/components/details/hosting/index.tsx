@@ -27,7 +27,7 @@ import { cohostReducer, initialCohostState } from "./reducer";
 import type { CohostContentProps, CohostWithDefaults } from "./types";
 import { checkedState, getCheckedKeys, updateProps } from "../utils";
 import toast from "react-hot-toast";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
   const [state, dispatch] = useReducer(cohostReducer, {

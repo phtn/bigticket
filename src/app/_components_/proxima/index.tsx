@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Image } from "@nextui-org/react";
 import { Hyper } from "@/ui/button/button";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +39,7 @@ const CompanyLogo = () => {
     <div className="relative p-8">
       <div className="flex aspect-square h-auto w-14 items-center justify-center rounded-full bg-white sm:w-20">
         <Image
-          src="/icon/logomark_v2.svg"
+          src="/api/logo"
           alt="big-ticket-logomark"
           className="size-10 sm:size-14"
         />

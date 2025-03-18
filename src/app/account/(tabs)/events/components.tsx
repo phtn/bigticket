@@ -1,5 +1,5 @@
 import { useToggle } from "@/hooks/useToggle";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { type IconName } from "@/icons/types";
 import { HyperList } from "@/ui/list";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";

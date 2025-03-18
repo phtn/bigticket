@@ -22,8 +22,8 @@ const Content = () => {
   const variants = useMemo(
     () => ({
       normal: {
-        width: "8px",
-        height: "8px",
+        width: "0px",
+        height: "0px",
         borderRadius: "50%",
         opacity: 1,
       },

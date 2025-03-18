@@ -1,6 +1,6 @@
 import { SidebarCtx } from "@/app/ctx/sidebar";
 import type { ClassName } from "@/app/types";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { type IconName } from "@/icons/types";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";

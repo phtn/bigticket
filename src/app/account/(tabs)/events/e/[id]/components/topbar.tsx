@@ -1,4 +1,4 @@
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 

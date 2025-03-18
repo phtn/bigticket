@@ -29,7 +29,7 @@ import { vip_info, type VIPField, VIPZod } from "../schema";
 import { initialVIPState, vipReducer } from "./reducer";
 import type { VIPBlockProps, VIPContentProps, VIPWithDefaults } from "./types";
 import { checkedState } from "../utils";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { BtnIcon } from "@/ui/button";
 
 export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {

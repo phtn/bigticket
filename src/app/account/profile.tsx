@@ -1,6 +1,6 @@
 "use client";
 
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
 import { opts } from "@/utils/helpers";
 import { Button, Image, Spinner } from "@nextui-org/react";

@@ -7,7 +7,7 @@ import type {
   ItemCounterProps,
   SidebarListProps,
 } from "./types";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const ListTitle: FC<{ title: string }> = ({ title }) => (
   <div className="flex h-10 w-full items-center justify-between space-x-3 px-2">

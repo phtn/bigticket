@@ -2,48 +2,27 @@
 
 import { Header } from "@/app/account/_components_/common";
 import { Accordion, AccordionItem, Card, CardHeader } from "@nextui-org/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { memo } from "react";
 import { type SelectUser } from "convex/users/d";
 import { HyperList } from "@/ui/list";
 import { HyperLink } from "@/ui/button/button";
-import { useQuery } from "convex/react";
-import { api } from "@vx/api";
-import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
-import { getUserID } from "@/app/actions";
-import { Err } from "@/utils/helpers";
 import { BtnIcon } from "@/ui/button/button-icon";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
+import { useUserCtx } from "@/app/ctx/user";
 
 export const UserSettings = () => {
-  const { q } = useConvexUtils();
-  const [userId, setUserId] = useState<string>();
-  const x = useQuery(api.users.get.byId, { id: q(userId) });
-  const [xUser, setXUser] = useState<SelectUser | null>(null);
+  const { xUser } = useUserCtx();
 
-  const setId = useCallback(async () => {
-    setUserId((await getUserID()) ?? undefined);
-  }, []);
-
-  useEffect(() => {
-    setId().catch(Err);
-  }, [setId]);
-
-  useEffect(() => {
-    if (x) {
-      setXUser(x);
-    }
-  }, [x]);
-
-  const data: FieldItemProps[] = useMemo(
-    () => [
-      {
-        id: "nickname",
-        label: "Nickname",
-        value: xUser?.nickname,
-      },
-    ],
-    [xUser],
-  );
+  // const data: FieldItemProps[] = useMemo(
+  //   () => [
+  //     {
+  //       id: "nickname",
+  //       label: "Nickname",
+  //       value: xUser?.nickname,
+  //     },
+  //   ],
+  //   [xUser],
+  // );
 
   return (
     <div className="rounded- min-h-[80vh] w-full justify-center pb-10 md:rounded-lg md:px-6">
@@ -63,7 +42,13 @@ export const UserSettings = () => {
             </CardHeader>
             <HyperList
               container="flex items-center justify-start border-t-4 p-3"
-              data={data}
+              data={[
+                {
+                  id: "nickname",
+                  label: "Nickname",
+                  value: xUser?.nickname,
+                },
+              ]}
               component={FieldItem}
               itemStyle="w-full"
               keyId="id"
@@ -122,7 +107,7 @@ interface FieldItemProps {
   label: string;
   value?: string | number;
 }
-const FieldItem = (item: FieldItemProps) => (
+const FieldItem = memo((item: FieldItemProps) => (
   <div className="flex w-full items-center justify-between">
     <div className="space-y-1">
       <p className="font-medium opacity-60">{item.label}</p>
@@ -130,4 +115,5 @@ const FieldItem = (item: FieldItemProps) => (
     </div>
     <BtnIcon icon="pencil-edit-01" bg="text-gray-200" />
   </div>
-);
+));
+FieldItem.displayName = "FieldItem";

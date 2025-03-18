@@ -1,18 +1,13 @@
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
 import { WarpDrive } from "@/ui/loader/warp";
 import { type HTMLAttributes, type ReactNode, forwardRef } from "react";
 
-export interface HeroProps {
-  headline: string;
-  keywords: string[];
-}
-
 interface HeroSectionProps extends HTMLAttributes<HTMLDivElement> {
   badge?: string;
   headline?: {
-    regular: string;
-    gradient: string;
+    regular?: string;
+    gradient?: string;
   };
   description?: string;
   ctaText?: string;
@@ -65,7 +60,7 @@ const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(
               <Badge badge={badge} />
               <h1 className="font-geist mx-auto whitespace-nowrap bg-chalk bg-clip-text text-3xl tracking-tighter text-transparent dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)] md:text-6xl">
                 {headline.regular}
-                <span className="_from-teal-600 _to-pink-500 bg-gradient-to-r from-teal-300 to-orange-200 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-teal-300 to-orange-200 bg-clip-text pl-2 text-transparent">
                   {headline.gradient}
                 </span>
               </h1>
@@ -104,13 +99,20 @@ const Badge = ({ badge }: { badge: string }) => (
   </h2>
 );
 
-const Hero = ({ children }: { children: ReactNode }) => {
+interface HeroProps {
+  children?: ReactNode;
+  headline?: {
+    regular?: string;
+    gradient?: string;
+  };
+}
+const Hero = ({ children, headline }: HeroProps) => {
   return (
     <div className="relative w-full">
       <div className="absolute bottom-8 left-0 z-50 flex w-screen items-center justify-center text-white md:bottom-14">
         {children}
       </div>
-      <HeroSection />
+      <HeroSection headline={headline} />
     </div>
   );
 };

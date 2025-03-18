@@ -35,7 +35,7 @@ import {
   type OptionButtonProps,
 } from "./components";
 import { OptionCtx, OptionCtxProvider, type OptionKey } from "./ctx";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 
 export const CreateEvent = () => {
   const { open, toggle } = useToggle();

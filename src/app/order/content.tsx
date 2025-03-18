@@ -2,7 +2,7 @@
 
 import { useMoment } from "@/hooks/useMoment";
 import { usePaymongo } from "@/hooks/usePaymongo";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
 import { moses, secureRef } from "@/utils/crypto";
 import { guid } from "@/utils/helpers";

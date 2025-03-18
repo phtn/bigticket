@@ -14,7 +14,7 @@ import type {
   TicketDetail,
 } from "./types";
 import { formatAsMoney } from "@/utils/helpers";
-import { Iconx } from "@/icons/icon";
+import { Iconx } from "@/icons";
 import NumberFlow from "@number-flow/react";
 import { HyperList } from "@/ui/list";
 

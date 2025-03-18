@@ -102,7 +102,7 @@ export const Receipt = ({
           >
             <Image
               alt="big-ticket-logomark"
-              src="/icon/logomark_v3.svg"
+              src="/api/logo"
               className="aspect-square size-5"
             />
             <p className="text-[10px] opacity-80">
