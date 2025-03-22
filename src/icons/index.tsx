@@ -12,6 +12,23 @@ export const Iconx: FC<Omit<IconProps, "content">> = ({
 }) => {
   const icon = icons[name];
 
+  if (!icon.symbol) {
+    console.warn(`Icon "${name}" not found`);
+    return null;
+  }
+
+  // Validate icon.symbol to prevent XSS (if icon data comes from external sources)
+  const isSafeSvgContent =
+    typeof icon.symbol === "string" &&
+    /^<(?:path|circle|rect|line|polyline|polygon)(?:\s+[^>]*?)?\/?>$/.test(
+      icon.symbol,
+    );
+
+  if (!isSafeSvgContent) {
+    console.error(`Icon "${name}" contains potentially unsafe content`);
+    return null;
+  }
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -24,6 +41,8 @@ export const Iconx: FC<Omit<IconProps, "content">> = ({
       strokeWidth="1"
       strokeLinecap="round"
       strokeLinejoin="round"
+      role="img"
+      aria-hidden="true"
       {...props}
       dangerouslySetInnerHTML={{ __html: icon.symbol }}
     />
