@@ -44,7 +44,7 @@ const poet = Poetsen_One({
 export const metadata: Metadata = {
   title: "Big Ticket",
   description: "Excitement guaranteed!",
-  icons: [{ rel: "icon", url: "/icon/logomark_v2.svg" }],
+  icons: [{ rel: "icon", url: "/api/logo" }],
 };
 
 export default function RootLayout({
