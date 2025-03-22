@@ -82,8 +82,8 @@ const TicketAdder = ({ fn }: TicketAdderProps) => (
     </span>
     <span className="animate-enter text-white delay-150">Tickets</span>
     <Iconx
-      name="double-arrow"
-      className="relative -left-1 size-7 animate-enter text-secondary delay-300"
+      name="chevron-double-right"
+      className="relative -left-1 -mb-[1px] size-[26px] animate-enter text-secondary delay-300"
     />
   </button>
 );

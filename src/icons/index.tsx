@@ -20,9 +20,7 @@ export const Iconx: FC<Omit<IconProps, "content">> = ({
   // Validate icon.symbol to prevent XSS (if icon data comes from external sources)
   const isSafeSvgContent =
     typeof icon.symbol === "string" &&
-    /^<(?:path|circle|rect|line|polyline|polygon)(?:\s+[^>]*?)?\/?>$/.test(
-      icon.symbol,
-    );
+    /^<(?:path|circle|rect|line|polyline|polygon)(?:\s+[^>]*?)?\/?>$/;
 
   if (!isSafeSvgContent) {
     console.error(`Icon "${name}" contains potentially unsafe content`);

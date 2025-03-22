@@ -314,6 +314,11 @@ export const icons = {
     viewBox: `0 0 24 24`,
     set: `hugeicons`,
   },
+  "chevron-double-right": {
+    symbol: `<g fill="none" stroke="currentColor" stroke-dasharray="10" stroke-dashoffset="10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 12l-5 -5M12 12l-5 5"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="10;0"></animate></path><path d="M18 12l-5 -5M18 12l-5 5"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.3s" dur="0.3s" values="10;0"></animate></path></g>`,
+    viewBox: `0 0 24 24`,
+    set: `line`,
+  },
 };
 
 export type IconNameType = keyof typeof icons;

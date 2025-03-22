@@ -21,7 +21,7 @@ export const usePayments = () => {
   const [paymentIntent, setPaymentIntent] =
     useState<PaymentIntentResource | null>(null);
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetail[]>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isProcessing, setProcessing] = useState<boolean>(true);
   const [isPaid, setIsPaid] = useState<boolean>(false);
 
   const getPaymentStatus = useCallback(
@@ -33,7 +33,7 @@ export const usePayments = () => {
     const txn = localStorage.getItem("bigticket_txn");
 
     if (!txn) {
-      setLoading(false);
+      setProcessing(false);
       return;
     }
 
@@ -48,15 +48,15 @@ export const usePayments = () => {
             console.error(error);
           })
           .finally(() => {
-            setLoading(false);
+            setProcessing(false);
           });
       } else {
         // TODO: Implement payment status for other payment methods (base)
-        setLoading(false);
+        setProcessing(false);
       }
     } catch (error) {
       console.error(error);
-      setLoading(false);
+      setProcessing(false);
     }
   }, [getPaymentStatus]);
 
@@ -92,7 +92,7 @@ export const usePayments = () => {
 
   return {
     paymentDetails,
-    loading,
+    isProcessing,
     isPaid,
   };
 };

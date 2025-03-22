@@ -9,35 +9,37 @@ import html2canvas from "html2canvas";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePayments } from "../usePayments";
 import { Receipt } from "./receipt";
+import { opts } from "@/utils/helpers";
+import { AnimatePresence, motion } from "motion/react";
 
 export const Content = ({
   status,
 }: {
   status: PaymentStatus & "cancelled";
 }) => {
-  const { paymentDetails, isPaid, loading } = usePayments();
+  const { paymentDetails, isPaid, isProcessing } = usePayments();
 
   const updatedStatus = useMemo(() => {
     switch (status) {
       case "success":
-        return loading ? "Processing" : isPaid ? "Successful" : "Pending";
+        return isProcessing ? "Processing" : isPaid ? "Successful" : "Pending";
       case "fail":
-        return loading ? "Processing" : "Failed";
+        return isProcessing ? "Processing" : "Failed";
       case "cancelled":
-        return loading ? "Processing" : "Cancelled";
+        return isProcessing ? "Processing" : "Cancelled";
       default:
         return "Processing";
     }
-  }, [status, loading, isPaid]);
+  }, [status, isProcessing, isPaid]);
 
   useEffect(() => {
-    if (!loading && isPaid) {
+    if (!isProcessing && isPaid) {
       const timer = setTimeout(() => {
         cannonConfetti();
       }, 700);
       return () => clearTimeout(timer);
     }
-  }, [loading, isPaid]);
+  }, [isProcessing, isPaid]);
 
   const showConfetti = useCallback(() => {
     cannonConfetti();
@@ -101,81 +103,142 @@ export const Content = ({
             // Do nothing, user just cancelled
           } else {
             console.log("Error sharing receipt:", error);
-            alert("Failed to share receipt. Downloading instead.");
+            alert("Failed to share receipt. isProcessing instead.");
           }
           console.log("Error sharing receipt:", error);
         }
       } else {
         // Fallback for browsers that don't support the Web Share API
         alert(
-          "Web Share API not supported in your browser. Downloading instead.",
+          "Web Share API not supported in your browser. isProcessing instead.",
         );
         await handleDownload();
       }
     }
   };
 
+  const LoaderOptions = useCallback(() => {
+    const awaitingConfirmation = isProcessing || !isPaid;
+    const options = opts(
+      <Spinner
+        size="lg"
+        color={!isPaid ? "warning" : "secondary"}
+        className="scale-125"
+      />,
+      <Iconx
+        name={isProcessing ? "spinner-ring" : "confirm-circle"}
+        strokeWidth={0}
+        className="size-[64px] text-secondary"
+      />,
+    );
+    return (
+      <div
+        className={cn(
+          "flex aspect-square items-center rounded-full bg-gray-100 p-6 transition-all duration-3000 ease-out",
+          {
+            "bg-green-50": !isProcessing && isPaid,
+            "bg-yellow-50": isProcessing && !isPaid,
+          },
+        )}
+      >
+        {options.get(awaitingConfirmation)}
+      </div>
+    );
+  }, [isProcessing, isPaid]);
+
   return (
     <main className="mx-auto h-[calc(100vh-64px)] bg-white p-6">
       <div className="flex min-h-screen flex-col items-center justify-center bg-white px-4 py-6">
         <div className="mx-auto w-full max-w-md space-y-10 text-center">
           <div className="flex h-24 items-center justify-center">
-            <div
-              className={cn(
-                "flex aspect-square items-center rounded-full bg-gray-100 p-2 transition-all duration-3000 ease-out",
-                {
-                  "bg-green-50 p-6": !loading && isPaid,
-                  "bg-yellow-50 p-4": loading && !isPaid,
-                },
-              )}
-            >
-              {loading || !isPaid ? (
-                <Spinner
-                  size="lg"
-                  color={!isPaid ? "warning" : "secondary"}
-                  className="scale-125"
-                />
-              ) : (
-                <Iconx
-                  name={loading ? "spinner-ring" : "confirm-circle"}
-                  strokeWidth={0}
-                  className="size-[64px] text-secondary"
-                />
-              )}
-              {/* <Iconx
-                name={loading ? "spinners-3-dots-move" : "confirm-circle"}
-                className="size-16 text-secondary"
-              /> */}
-            </div>
+            <LoaderOptions />
           </div>
 
           {/* Success Message */}
           <div className="space-y-3">
-            <h1 className="text-3xl font-bold tracking-tight">
-              Payment <span className="pl-1">{updatedStatus}</span>
-            </h1>
-            <p className="mx-auto max-w-sm text-center opacity-60">
-              {loading || !isPaid ? (
-                "Receivig payment confirmation"
-              ) : (
-                <span className="animate-enter delay-1000">
-                  Payment successfully completed!
-                </span>
-              )}
-            </p>
+            <div className="relative flex h-14 justify-center space-x-2 text-3xl font-bold tracking-tight transition-all duration-500 will-change-transform">
+              <AnimatePresence>
+                {isProcessing && (
+                  <motion.span
+                    className="absolute animate-pulse will-change-transform"
+                    key={"processing"}
+                    initial={{ x: -65 }}
+                    exit={{
+                      opacity: 0,
+                      x: -250,
+                      scale: 0.5,
+                      transition: { duration: 0.4, ease: "easeIn" },
+                    }}
+                  >
+                    Processing
+                  </motion.span>
+                )}
+              </AnimatePresence>
+              <motion.span
+                className="absolute will-change-transform"
+                initial={{ x: 70 }}
+                animate={{
+                  x: !isProcessing ? -75 : 70,
+                  transition: {
+                    duration: 1.8,
+                    damping: 12,
+                    stiffness: 70,
+                    type: "spring",
+                    delay: 0.1,
+                    ease: "easeOut",
+                  },
+                }}
+              >
+                Payment
+              </motion.span>
+              <AnimatePresence>
+                {!isProcessing && isPaid && (
+                  <motion.span
+                    className="absolute will-change-transform"
+                    initial={{ opacity: 0, x: 70 }}
+                    animate={{
+                      opacity: 1,
+                      x: 62,
+                      transition: {
+                        duration: 0.8,
+                        damping: 15,
+                        stiffness: 70,
+                        type: "spring",
+                        delay: 0.25,
+                        ease: "easeInOut",
+                      },
+                    }}
+                  >
+                    {updatedStatus}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="flex w-full items-center justify-center">
+              <div className="w-fit rounded-full border border-peach px-3 py-1 font-medium opacity-50 transition-all duration-300">
+                {isProcessing || !isPaid ? (
+                  <span>Receiving payment confirmation</span>
+                ) : (
+                  <span>We have received your payment!</span>
+                )}
+              </div>
+            </div>
           </div>
 
-          {loading && !isPaid ? null : (
-            <Button
-              size="lg"
-              color="warning"
-              variant={"shadow"}
-              onPress={showConfetti}
-              className="delay-2000 mx-auto flex animate-enter items-center gap-2 border-gray-300 bg-peach px-16 text-white"
-            >
-              View Tickets
-            </Button>
-          )}
+          <div className="h-12">
+            {isProcessing && !isPaid ? null : (
+              <Button
+                size="lg"
+                color="warning"
+                variant={"shadow"}
+                onPress={showConfetti}
+                className="delay-2000 mx-auto flex animate-enter items-center gap-2 border-gray-300 bg-peach px-16 text-white"
+              >
+                <span className="font-bold">View Tickets</span>
+              </Button>
+            )}
+          </div>
 
           {/* Padding */}
           <div />
@@ -185,12 +248,12 @@ export const Content = ({
           ref={receiptRef}
           className="flex h-[460px] w-[340px] items-center md:w-screen"
         >
-          {loading && !isPaid ? null : (
+          {isProcessing && !isPaid ? null : (
             <Receipt
               data={paymentDetails}
               shareFn={handleShare}
               downloadFn={handleDownload}
-              loading={loading}
+              loading={isProcessing}
             />
           )}
         </div>

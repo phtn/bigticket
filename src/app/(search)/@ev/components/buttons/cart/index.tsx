@@ -86,13 +86,13 @@ export const Cart = ({ open, toggle, ticketPrice }: CartProps) => {
           <div className="absolute h-1 w-full rotate-[155deg] scale-125 bg-teal-100/20 opacity-0 blur transition-all delay-500 duration-5000 ease-in-out group-hover/float:h-14 group-hover/float:rotate-[500deg] group-hover/float:scale-150 group-hover/float:opacity-60" />
           <div className="flex w-full items-center justify-end space-y-2 px-1 font-inter text-white">
             <Link href={`/order/?u=${userId}&x=${eventId}&r=${refNo}`}>
-              <div className="group/checkout relative z-50 my-3 flex items-center space-x-1 rounded-xl px-3 py-1.5 font-bold italic tracking-tighter shadow-none transition-all duration-300 active:scale-90">
+              <div className="group/checkout relative z-50 my-3 flex items-center space-x-1 rounded-xl px-3 py-1.5 font-bold italic tracking-tighter shadow-none transition-all duration-300 hover:bg-teal-100/10 active:scale-90">
                 <div>
                   <span className="font-extrabold">Checkout</span>
                 </div>
                 <Iconx
-                  name="double-arrow"
-                  className="transform-all -mb-0.5 size-5 text-teal-200 duration-1000 ease-out group-hover/checkout:translate-x-1 group-hover/checkout:text-teal-100"
+                  name="chevron-double-right"
+                  className="transform-all size-[22px] text-teal-200 duration-1000 ease-out group-hover/checkout:translate-x-1 group-hover/checkout:text-teal-100"
                 />
               </div>
             </Link>
