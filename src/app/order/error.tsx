@@ -1,3 +1,5 @@
+"use client";
+
 import { ErrorComp } from "../_components_/error";
 
 export default function ErrorBoundary({

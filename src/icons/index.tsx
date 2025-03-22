@@ -12,7 +12,7 @@ export const Iconx: FC<Omit<IconProps, "content">> = ({
 }) => {
   const icon = icons[name];
 
-  if (!icon || !icon.symbol) {
+  if (!icon.symbol) {
     console.warn(`Icon "${name}" not found`);
     return null;
   }
@@ -20,7 +20,9 @@ export const Iconx: FC<Omit<IconProps, "content">> = ({
   // Validate icon.symbol to prevent XSS (if icon data comes from external sources)
   const isSafeSvgContent =
     typeof icon.symbol === "string" &&
-    /^<(?:path|circle|rect|line|polyline|polygon)(?:\s+[^>]*?)?\/?>$/;
+    /^<(?:path|circle|rect|line|polyline|polygon)(?:\s+[^>]*?)?\/?>$/.test(
+      icon.symbol,
+    );
 
   if (!isSafeSvgContent) {
     console.error(`Icon "${name}" contains potentially unsafe content`);
