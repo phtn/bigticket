@@ -13,6 +13,21 @@ import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
 import { useMoment } from "@/hooks/useMoment";
 
+/**
+ * Renders a stylized order summary card with order details and payment options.
+ *
+ * The component displays a header containing the title "Order Summary", the order reference number
+ * (or a loading indicator if missing), and the formatted event date derived from the last update timestamp.
+ * It delegates detailed order calculations and payment interactions to the SummaryContent component,
+ * and renders a footer showing the last updated date.
+ *
+ * @param refNumber - The order reference number; if absent, a loading indicator is shown.
+ * @param state - The current state of the order, used to configure child component behavior.
+ * @param updated - The timestamp representing when the order was last updated.
+ * @param checkoutFn - Callback invoked to initiate the checkout process.
+ * @param loading - Indicates whether order details are still loading.
+ * @param userDetails - Customer information associated with the order.
+ */
 export function Summary({
   refNumber,
   state,

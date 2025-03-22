@@ -273,6 +273,28 @@ export const clearConsole = () => {
   console.log(cutout + big(" BIG ") + ticket("ticket ") + cutout);
 };
 
+/**
+ * Formats a number as a currency string with customizable decimal places and currency display.
+ *
+ * This function uses the "en-US" locale to format the number. When a currency code is provided,
+ * it applies a currency style with that code; otherwise, it defaults to "PHP". If the value is not a whole number,
+ * it always displays two decimals. For whole numbers, it uses the supplied `decimal` parameter (defaulting to 0)
+ * to determine the minimum fraction digits. Finally, the formatted string replaces any occurrence of "PHP" with "X".
+ *
+ * @example
+ * // Formats a floating point number as USD with a symbol.
+ * formatAsMoney(123.45, 2, "USD", "symbol") // "$123.45"
+ *
+ * @example
+ * // Formats an integer with zero decimal places and replaces "PHP" with "X".
+ * formatAsMoney(123) // "X123"
+ *
+ * @param value - The numeric value to format.
+ * @param decimal - Optional minimum fraction digits for whole numbers; defaults to 0.
+ * @param currency - Optional ISO 4217 currency code; defaults to "PHP".
+ * @param currencyDisplay - Optional display style for the currency ("symbol", "narrowSymbol", "code", or "name").
+ * @returns The formatted currency string.
+ */
 export function formatAsMoney(
   value: number,
   decimal?: number,

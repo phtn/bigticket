@@ -47,6 +47,16 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/icon/tab.svg" }],
 };
 
+/**
+ * Renders the root layout of the Next.js application.
+ *
+ * This component establishes the base HTML structure by setting the language attribute, applying global font
+ * styles, and enabling antialiased rendering. It wraps the application content with global providers, includes
+ * a navigation bar, and inserts a spacer before rendering the child components.
+ *
+ * @param children - The content to be displayed within the layout.
+ * @returns The complete HTML structure for the application.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
