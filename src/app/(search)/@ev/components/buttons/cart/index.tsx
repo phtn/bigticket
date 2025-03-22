@@ -81,9 +81,9 @@ export const Cart = ({ open, toggle, ticketPrice }: CartProps) => {
     <FloatingVaul open={open} onOpenChange={toggle}>
       <div className="relative mt-2 flex h-36 w-5/6 items-center justify-center overflow-hidden rounded-[28px] bg-primary p-0.5 md:w-[24rem]">
         <div className="group/float relative z-50 m-1 flex size-full flex-col items-center justify-center rounded-[23px] bg-primary px-2 pb-3 transition-all duration-5000 ease-in-out">
-          <div className="absolute h-[24] w-full rotate-[18deg] scale-80 bg-teal-200/10 opacity-100 blur-xl transition-all delay-1000 duration-5000 ease-in-out group-hover/float:h-10 group-hover/float:rotate-[20deg] group-hover/float:scale-150" />
-          <div className="absolute h-px w-full rotate-[18deg] scale-80 bg-teal-200/10 opacity-100 blur transition-all delay-200 duration-5000 ease-in-out group-hover/float:h-32 group-hover/float:rotate-[175deg] group-hover/float:scale-150" />
-          <div className="absolute h-1 w-full rotate-[155deg] scale-125 bg-teal-100/20 opacity-0 blur transition-all delay-500 duration-5000 ease-in-out group-hover/float:h-14 group-hover/float:rotate-[500deg] group-hover/float:scale-150 group-hover/float:opacity-60" />
+          <div className="absolute h-[24] w-full rotate-[18deg] scale-80 bg-teal-200/10 opacity-100 blur-xl transition-all delay-1000 duration-5000 ease-in-out will-change-auto group-hover/float:h-10 group-hover/float:rotate-[20deg] group-hover/float:scale-150" />
+          <div className="absolute h-px w-full rotate-[18deg] scale-80 bg-teal-200/10 opacity-100 blur transition-all delay-200 duration-5000 ease-in-out will-change-auto group-hover/float:h-32 group-hover/float:rotate-[175deg] group-hover/float:scale-150" />
+          <div className="absolute h-1 w-full rotate-[155deg] scale-125 bg-teal-100/20 opacity-0 blur transition-all delay-500 duration-5000 ease-in-out will-change-auto group-hover/float:h-14 group-hover/float:rotate-[500deg] group-hover/float:scale-150 group-hover/float:opacity-60" />
           <div className="flex w-full items-center justify-end space-y-2 px-1 font-inter text-white">
             <Link href={`/order/?u=${userId}&x=${eventId}&r=${refNo}`}>
               <div className="group/checkout relative z-50 my-3 flex items-center space-x-1 rounded-xl px-3 py-1.5 font-bold italic tracking-tighter shadow-none transition-all duration-300 hover:bg-teal-100/10 active:scale-90">

@@ -37,6 +37,7 @@
     "@trpc/client": "^11.0.0-rc.828",
     "@trpc/react-query": "^11.0.0-rc.828",
     "@trpc/server": "^11.0.0-rc.828",
+    "@upstash/workflow": "^0.2.12",
     "@walletconnect/core": "^2.19.1",
     "@walletconnect/utils": "^2.19.1",
     "@yudiel/react-qr-scanner": "^2.2.1",

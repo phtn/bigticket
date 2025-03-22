@@ -1,10 +1,4 @@
-import {
-  useMemo,
-  type PropsWithChildren,
-  memo,
-  useState,
-  useEffect,
-} from "react";
+import { useMemo, type PropsWithChildren, memo } from "react";
 import { Badge, Button, Image } from "@nextui-org/react";
 import { type IconName } from "@/icons/types";
 import { cn } from "@/lib/utils";
@@ -147,7 +141,6 @@ export const ProductImage = memo(
 ProductImage.displayName = "ProductImage";
 
 export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
-  const [shouldAnimate, setShouldAnimate] = useState(true);
   const { isDisabled, opacity, grayscale } = getQuantityStyles(quantity);
 
   // Move these calculations outside the render cycle using useMemo
@@ -186,13 +179,6 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
     [detail],
   );
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShouldAnimate(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <div className="w-full overflow-hidden rounded-2xl border-[0.33px] border-primary/60 bg-white">
       <div
@@ -221,7 +207,7 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
               data={lineDetails}
               component={LineItemDetail}
               container="w-full space-y-1 overflow-hidden whitespace-nowrap rounded-md p-0.5 font-inter lg:w-fit lg:space-y-2 lg:px-2 lg:py-1.5 lg:pe-4"
-              disableAnimation={!shouldAnimate}
+              disableAnimation={true}
             />
           </div>
         </div>

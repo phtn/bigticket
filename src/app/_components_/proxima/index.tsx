@@ -6,11 +6,16 @@ import { Hyper } from "@/ui/button/button";
 import { Iconx } from "@/icons";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { type ClassName } from "@/app/types";
 
-export const Proxima = () => {
+interface Props {
+  className?: ClassName;
+}
+
+export const Proxima = ({ className }: Props) => {
   return (
-    <footer className="text-chalk">
-      <div className="">
+    <footer className={cn("w-full text-chalk", className)}>
+      <div className="w-full">
         <div className="grid w-full grid-cols-2 border-y-[0.33px] border-dotted border-ticket sm:grid-cols-5 md:gap-y-8">
           <div className="col-span-2 flex sm:col-span-3">
             <CompanyLogo />
@@ -47,7 +52,7 @@ const CompanyLogo = () => {
       <Iconx
         name="plus-sign"
         className={cn(
-          "absolute -right-3 -top-3 text-ticket transition-transform duration-500",
+          "absolute -right-3 -top-3 opacity-30 transition-transform duration-500",
           { "-rotate-180": spin },
         )}
       />
@@ -58,23 +63,23 @@ const CompanyLogo = () => {
 const CompanyInfo = () => {
   return (
     <div className="flex h-auto w-full flex-col justify-between border-l-[0.33px] border-dotted border-ticket leading-none">
-      <div className="flex h-1/2 w-full flex-col justify-center border-b-[0.33px] border-dashed border-ticket/80 px-6 sm:h-2/3 sm:px-8">
-        <h1 className="font-black text-vanilla sm:text-lg">
+      <div className="flex h-2/3 w-full flex-col justify-center space-y-1 border-b-[0.33px] border-dashed border-ticket/60 px-6 sm:h-2/3 sm:px-8 md:h-1/2 md:space-y-0.5">
+        <h1 className="font-black tracking-tight sm:text-lg">
           Big Ticket
-          <span className="ps-1 font-normal opacity-80">
-            Ticketing Services
-          </span>
+          <span className="ps-1 font-normal opacity-80"></span>
         </h1>
-        <p className="text-xs opacity-60">Event Hosting Platform</p>
+        <p className="text-sm tracking-tight opacity-60">
+          A Social Events Hosting Platform
+        </p>
       </div>
-      <div className="flex h-1/2 items-center sm:h-1/3">
+      <div className="flex h-1/3 items-center tracking-tight sm:h-1/3 md:h-1/2">
         <div className="hidden items-center space-x-4 border-r-[0.33px] border-dotted border-ticket/80 px-8 text-sm opacity-80 lg:flex">
           <Iconx name="location-01" className="size-4" />
           <p>Quezon City, Philippines</p>
         </div>
         <div className="flex items-center space-x-4 px-6 text-sm opacity-80 sm:space-x-6 sm:px-8">
           <Iconx name="mail-send" className="size-4" />
-          <p className="text-sm text-secondary">hq@bigticket.com</p>
+          <p className="text-sm">hq@bigticket.com</p>
         </div>
       </div>
       {/* <p className="text-xs opacity-80">
@@ -94,10 +99,8 @@ const QuickLinks = () => {
   }, []);
 
   return (
-    <div className="relative w-full border-l-[0.33px] border-t-[0.33px] border-dotted border-ticket p-8 text-center sm:border-t-0">
-      <h3 className="mb-8 text-sm font-semibold text-vanilla sm:mb-4">
-        Quick Links
-      </h3>
+    <div className="relative w-full border-t-[0.33px] border-dotted border-ticket p-8 text-center sm:border-l-[0.33px] sm:border-t-0">
+      <h3 className="mb-8 text-sm font-semibold sm:mb-4">Quick Links</h3>
       <ul className="space-y-3 text-xs opacity-80">
         <li>
           <Link
@@ -119,7 +122,7 @@ const QuickLinks = () => {
       <Iconx
         name="plus-sign"
         className={cn(
-          "absolute -bottom-3 -right-3 rotate-0 text-ticket transition-transform duration-300",
+          "absolute -bottom-3 -right-3 rotate-0 opacity-30 transition-transform duration-300",
           { "rotate-90": spin },
         )}
       />
@@ -130,7 +133,7 @@ const QuickLinks = () => {
 const Resources = () => {
   return (
     <div className="border-l-[0.33px] border-t-[0.33px] border-dotted border-ticket p-8 text-center sm:border-t-0">
-      <h3 className="mb-8 text-sm font-bold text-vanilla sm:mb-4">Resources</h3>
+      <h3 className="mb-8 text-sm font-bold sm:mb-4">Resources</h3>
       <ul className="space-y-3 text-xs opacity-80">
         <li>
           <Link href="/privacy-policy" className="">

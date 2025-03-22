@@ -97,7 +97,7 @@ const MainContent = ({ xEvents }: MainContentProps) => {
             keyId="event_id"
             data={xEvents}
             component={EventCard}
-            container="overflow-scroll min-h-[50vh] md:h-fit grid grid-cols-1 gap-4 sm:grid-cols-2 md::grid-cols-2 lg:grid-cols-3  px-4"
+            container="overflow-scroll scroll-smooth will-change-scroll min-h-[50vh] md:h-fit grid grid-cols-1 gap-4 sm:grid-cols-2 md::grid-cols-2 lg:grid-cols-3  px-4"
             delay={0.1}
           >
             <div

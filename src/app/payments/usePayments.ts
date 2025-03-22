@@ -1,10 +1,11 @@
 import { type PaymentIntentResource } from "@/lib/paymongo/schema/zod.payment-intent";
 import { retrievePaymentIntent } from "@/server/api/callers/paymongo";
+import { Err, formatAsMoney, guid } from "@/utils/helpers";
+import { api } from "@vx/api";
+import { type UserTicket } from "convex/events/d";
 import { useMutation } from "convex/react";
 import { useCallback, useEffect, useState } from "react";
-import { api } from "@vx/api";
 import { useAuth } from "../ctx/auth/provider";
-import { Err } from "@/utils/helpers";
 
 interface BigTicketTransaction {
   type: "paymongo" | "base";
@@ -17,12 +18,13 @@ export interface PaymentDetail {
   value: string | number | boolean | undefined | null;
 }
 
-export const usePayments = () => {
+export const usePayments = (product?: string) => {
   const [paymentIntent, setPaymentIntent] =
     useState<PaymentIntentResource | null>(null);
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetail[]>();
   const [isProcessing, setProcessing] = useState<boolean>(true);
   const [isPaid, setIsPaid] = useState<boolean>(false);
+  const [ticketsAdded, setTicketsAdded] = useState<boolean>(false);
 
   const getPaymentStatus = useCallback(
     async (id: string) => await retrievePaymentIntent({ id }),
@@ -61,26 +63,62 @@ export const usePayments = () => {
   }, [getPaymentStatus]);
 
   const saveFn = useMutation(api.transactions.create.default);
+  const updateUserTickets = useMutation(api.users.update.tickets);
   const { user } = useAuth();
 
   useEffect(() => {
+    const tkts = localStorage.getItem("bigticket_tkts");
+    const tktd = localStorage.getItem("bigticket_tktd");
+    const parsedTickets = tkts && (JSON.parse(tkts) as UserTicket);
+
+    const parsedTicketD =
+      tktd && (JSON.parse(tktd) as { ticket_count: number });
+
     if (paymentIntent && user) {
       setIsPaid(paymentIntent.attributes.status === "succeeded");
       setPaymentDetails(createPaymentDetails(paymentIntent));
 
       const saveTransaction = async () => {
         try {
-          await saveFn({
-            txn_id: paymentIntent.id.substring(3),
-            user_id: user.id,
-            type: paymentIntent.attributes.payments[0]?.type,
-            amount: parseFloat(
-              (paymentIntent.attributes.amount / 100).toFixed(2),
-            ),
-            mode: paymentIntent.attributes.payments[0]?.attributes.source.type,
-            currency: paymentIntent.attributes.currency,
-            status: paymentIntent.attributes.status,
-          });
+          if (parsedTickets && parsedTicketD) {
+            await saveFn({
+              txn_id: paymentIntent.id.substring(3),
+              user_id: user.id,
+              product_name: parsedTickets.event_name,
+              product_type: product ?? "ticket",
+              quantity: parsedTicketD.ticket_count,
+              type: paymentIntent.attributes.payments[0]?.type,
+              amount: parseFloat(
+                (paymentIntent.attributes.amount / 100).toFixed(2),
+              ),
+              mode: paymentIntent.attributes.payments[0]?.attributes.source
+                .type,
+              currency: paymentIntent.attributes.currency,
+              status: paymentIntent.attributes.status,
+              ref_no:
+                paymentIntent.attributes.payments[0]?.attributes.description,
+            });
+
+            if (!product) {
+              const tickets = Array.from({
+                length: parsedTicketD.ticket_count,
+              }).map(
+                () =>
+                  ({
+                    ...parsedTickets,
+                    event_url: `https://bigticket.ph/x?=${parsedTickets.event_id}`,
+                    ticket_count: parsedTicketD.ticket_count,
+                    ticket_id: guid(),
+                  }) as UserTicket,
+              );
+              await updateUserTickets({
+                id: user.id,
+                tickets,
+              }).then(() => {
+                setTicketsAdded(true);
+              });
+            }
+          }
         } catch (error) {
           console.error(error);
         }
@@ -88,11 +126,12 @@ export const usePayments = () => {
 
       saveTransaction().catch(Err);
     }
-  }, [paymentIntent, saveFn, user]);
+  }, [paymentIntent, saveFn, user, updateUserTickets, product]);
 
   return {
     paymentDetails,
     isProcessing,
+    ticketsAdded,
     isPaid,
   };
 };
@@ -101,7 +140,7 @@ const createPaymentDetails = (paymentIntent: PaymentIntentResource) => {
   const { attributes } = paymentIntent;
 
   const entry = {
-    amount: `${attributes.currency} ${(attributes.amount / 100).toFixed(2)}`,
+    amount: `${attributes.currency} ${formatAsMoney(attributes.amount / 100, 2)}`,
     type: paymentIntent.attributes.payments[0]?.type,
     refNo: attributes.description,
     status: attributes.payments[0]?.attributes.status,

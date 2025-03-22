@@ -14,6 +14,7 @@ import { useCallback, useState } from "react";
 import { type XEvent } from "../types";
 import { Iconx } from "@/icons";
 import { BtnIcon } from "@/ui/button/button-icon";
+import { Bouncy } from "@/ui/loader/bouncy";
 
 export const EventCard = (xEvent: XEvent) => {
   const { event_day, event_time, narrow } = useMoment({
@@ -119,10 +120,11 @@ export const EventCard = (xEvent: XEvent) => {
         />
       ) : (
         <div className="flex size-full items-center justify-center">
-          <Iconx
+          <Bouncy colorMap={{ 0: "text-peach", 1: "text-secondary" }} />
+          {/* <Iconx
             name="spinners-bouncing-ball"
             className="size-8 text-teal-300"
-          />
+          /> */}
         </div>
       )}
       <CardFooter className="absolute -bottom-[2px] z-10 border-t-[0.33px] border-primary/40 bg-black/10">
