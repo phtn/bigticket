@@ -1,6 +1,6 @@
 import { HyperList } from "@/ui/list";
 import { formatAsMoney } from "@/utils/helpers";
-import { Card, CardHeader, Spinner, CardFooter } from "@nextui-org/react";
+import { Card, CardHeader, CardFooter } from "@nextui-org/react";
 import { useMemo } from "react";
 import type {
   Calc,
@@ -40,7 +40,11 @@ export function Summary({
                   </span>
                 </div>
               ) : (
-                <Spinner className="ml-2 size-2.5 shrink-0 animate-spin" />
+                <Iconx
+                  strokeWidth={0}
+                  name="spinners-3-dots-move"
+                  className="text-orange-300"
+                />
               )}
             </div>
           </div>

@@ -28,6 +28,13 @@ export const env = createEnv({
     //BASE
     CC_API_KEY: z.string(),
     WC_PROJECT_ID: z.string(),
+
+    //RE_UP_API
+    RE_UP_API: z.string(),
+
+    //UPSTASH
+    UPSTASH_WORKFLOW_URL: z.string().url(),
+    QSTASH_TOKEN: z.string(),
   },
 
   client: {
@@ -102,6 +109,13 @@ export const env = createEnv({
 
     //WALLETCONNECT
     WC_PROJECT_ID: process.env.WC_PROJECT_ID,
+
+    //RE_UP_API
+    RE_UP_API: process.env.RE_UP_API,
+
+    //UPSTASH
+    UPSTASH_WORKFLOW_URL: process.env.UPSTASH_WORKFLOW_URL,
+    QSTASH_TOKEN: process.env.QSTASH_TOKEN,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

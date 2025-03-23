@@ -1,8 +1,7 @@
 import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
-import { Bouncy } from "@/ui/loader/bouncy";
-import { Card } from "@nextui-org/react";
+import { Card, Spinner } from "@nextui-org/react";
 import NumberFlow from "@number-flow/react";
 import { useCallback, useMemo } from "react";
 import { type InfoItem, type PanelItem } from "../useEventInfo";
@@ -70,12 +69,12 @@ export const EventGroupDetail = ({
   return (
     <div className="row-span-2 h-full">
       <div
-        className="flex h-1/2 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white px-4 font-semibold"
+        className="flex h-1/2 min-h-5 items-center justify-between border-b-[0.33px] border-zinc-400 bg-white px-4 font-semibold"
         style={{ height: h }}
       >
         <span>Organizers</span>
         {!debounced ? (
-          <Bouncy colorMap={{ 0: "text-secondary", 1: "text-peach" }} />
+          <Spinner size="sm" color="primary" />
         ) : (
           <span className="animate-enter">{host_name}</span>
         )}
@@ -86,7 +85,7 @@ export const EventGroupDetail = ({
       >
         <span>{is_online ? "Website" : "Venue"}</span>
         {!debounced ? (
-          <Iconx name="spinners-3-dots-move" />
+          <Iconx name="spinners-3-dots-move" className="" strokeWidth={0} />
         ) : (
           <div className="overflow-x-scroll text-right">
             {is_online ? (

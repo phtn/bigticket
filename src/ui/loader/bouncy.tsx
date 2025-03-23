@@ -40,15 +40,15 @@ export const Bouncy = ({
 }: BouncyProps) => {
   const [current, setCurrent] = useState(0);
   useEffect(() => {
-    runWithDelay([0, 1], 800, setCurrent).catch(Err);
+    runWithDelay([0, 1], 650, setCurrent).catch(Err);
   }, []);
   return (
     <Iconx
       name="spinners-bouncing-ball"
       className={cn(
-        className,
-        "transition-colors duration-500",
+        "transition-colors duration-700",
         colorMap[current],
+        className,
       )}
     />
   );

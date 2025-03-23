@@ -273,12 +273,17 @@ export const clearConsole = () => {
   console.log(cutout + big(" BIG ") + ticket("ticket ") + cutout);
 };
 
-export function formatAsMoney(value: number) {
+export function formatAsMoney(
+  value: number,
+  decimal?: number,
+  currency?: string,
+  currencyDisplay?: "symbol" | "narrowSymbol" | "code" | "name",
+) {
   const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "PHP",
-    currencyDisplay: "narrowSymbol",
-    minimumFractionDigits: value !== Math.floor(value) ? 2 : 0,
+    style: currency ? "currency" : undefined,
+    currency: currency ?? "PHP",
+    currencyDisplay: currencyDisplay,
+    minimumFractionDigits: value !== Math.floor(value) ? 2 : (decimal ?? 0),
     maximumFractionDigits: 2,
   });
   return formatter.format(value).replace("PHP", "X");
