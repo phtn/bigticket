@@ -66,14 +66,13 @@ export const usePayments = (product?: string) => {
   const updateUserTickets = useMutation(api.users.update.tickets);
   const { user } = useAuth();
 
+  const tkts = localStorage.getItem("bigticket_tkts");
+  const tktd = localStorage.getItem("bigticket_tktd");
+
+  const parsedTicketD = tktd && (JSON.parse(tktd) as { ticket_count: number });
+  const parsedTickets = tkts && (JSON.parse(tkts) as UserTicket);
+
   useEffect(() => {
-    const tkts = localStorage.getItem("bigticket_tkts");
-    const tktd = localStorage.getItem("bigticket_tktd");
-    const parsedTickets = tkts && (JSON.parse(tkts) as UserTicket);
-
-    const parsedTicketD =
-      tktd && (JSON.parse(tktd) as { ticket_count: number });
-
     if (paymentIntent && user) {
       setIsPaid(paymentIntent.attributes.status === "succeeded");
       setPaymentDetails(createPaymentDetails(paymentIntent));
@@ -98,26 +97,6 @@ export const usePayments = (product?: string) => {
               ref_no:
                 paymentIntent.attributes.payments[0]?.attributes.description,
             });
-
-            if (!product) {
-              const tickets = Array.from({
-                length: parsedTicketD.ticket_count,
-              }).map(
-                () =>
-                  ({
-                    ...parsedTickets,
-                    event_url: `https://bigticket.ph/x?=${parsedTickets.event_id}`,
-                    ticket_count: parsedTicketD.ticket_count,
-                    ticket_id: guid(),
-                  }) as UserTicket,
-              );
-              await updateUserTickets({
-                id: user.id,
-                tickets,
-              }).then(() => {
-                setTicketsAdded(true);
-              });
-            }
           }
         } catch (error) {
           console.error(error);
@@ -126,12 +105,38 @@ export const usePayments = (product?: string) => {
 
       saveTransaction().catch(Err);
     }
-  }, [paymentIntent, saveFn, user, updateUserTickets, product]);
+  }, [paymentIntent, saveFn, user, parsedTicketD, parsedTickets, product]);
+
+  useEffect(() => {
+    if (!product && parsedTicketD && parsedTickets && user) {
+      const tickets = Array.from({
+        length: parsedTicketD.ticket_count,
+      }).map(
+        () =>
+          ({
+            ...parsedTickets,
+            event_url: `https://bigticket.ph/x?=${parsedTickets.event_id}`,
+            ticket_count: parsedTicketD.ticket_count,
+            ticket_id: guid(),
+          }) as UserTicket,
+      );
+      updateUserTickets({
+        id: user.id,
+        tickets,
+      })
+        .then(() => {
+          setTicketsAdded(true);
+        })
+        .catch(Err);
+    }
+  }, [parsedTicketD, user, parsedTickets, product, updateUserTickets]);
 
   return {
     paymentDetails,
     isProcessing,
     ticketsAdded,
+    parsedTicketD,
+    parsedTickets,
     isPaid,
   };
 };

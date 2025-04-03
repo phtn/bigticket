@@ -12,7 +12,7 @@ import {
 } from "@/lib/paymongo/schema/zod.customer";
 import { RetrievePaymentParamsSchema } from "@/lib/paymongo/schema/zod.payments";
 import { Paymongo } from "@/lib/paymongo/sdk";
-import { asyncR } from "@/lib/paymongo/utils";
+import { asyncR } from "../utils";
 
 const pay = Paymongo(env.PAYMONGO_SK);
 
