@@ -23,7 +23,6 @@ import {
 import toast from "react-hot-toast";
 import { Nebula } from "../";
 import { inputClassNames } from "../../../editor";
-import SendInvite from "../../email/send-invite";
 import { BlockHeader } from "../components";
 import { vip_info, type VIPField, VIPZod } from "../schema";
 import { initialVIPState, vipReducer } from "./reducer";
@@ -31,6 +30,7 @@ import type { VIPBlockProps, VIPContentProps, VIPWithDefaults } from "./types";
 import { checkedState } from "../utils";
 import { Iconx } from "@/icons";
 import { BtnIcon } from "@/ui/button";
+import { XndInvite } from "../../email/resend/send-vip-invite";
 
 export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   const [event, setEvent] = useState<SelectEvent | null>();
@@ -341,7 +341,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
           label={`Remove ${count > 1 ? `(${count})` : "(1)"}`}
           className={cn("delay-100", { "animate-enter": count <= 1 })}
         />
-        <SendInvite vip_list={checked} updateSentStatus={updateSentStatus} />
+        <XndInvite vip_list={checked} updateSentStatus={updateSentStatus} />
       </div>,
       null,
     );

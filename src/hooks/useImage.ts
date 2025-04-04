@@ -185,7 +185,7 @@ export async function urlToFile(
 
 export async function urlsToFiles(urls: (string | null)[]) {
   const filePromises = urls?.map(async (url) => {
-    if (!url) url = "_";
+    url ??= "_";
     const fileData = await urlToFile(url);
     return fileData;
   });

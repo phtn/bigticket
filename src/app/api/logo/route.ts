@@ -13,7 +13,7 @@ function computeETag(content: string) {
 
 export async function GET(request: NextRequest) {
   try {
-    const logoRef = ref(storage, "logomark_v3.svg");
+    const logoRef = ref(storage, "public/browser.svg");
 
     const url = await getDownloadURL(logoRef);
 

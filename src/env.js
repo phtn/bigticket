@@ -35,6 +35,10 @@ export const env = createEnv({
     //UPSTASH
     UPSTASH_WORKFLOW_URL: z.string().url(),
     QSTASH_TOKEN: z.string(),
+
+    //RESEND
+    RESEND_API: z.string(),
+    SEND_FROM: z.string(),
   },
 
   client: {
@@ -116,6 +120,10 @@ export const env = createEnv({
     //UPSTASH
     UPSTASH_WORKFLOW_URL: process.env.UPSTASH_WORKFLOW_URL,
     QSTASH_TOKEN: process.env.QSTASH_TOKEN,
+
+    //RESEND
+    RESEND_API: process.env.RESEND_API,
+    SEND_FROM: process.env.SEND_FROM,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

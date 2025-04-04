@@ -66,7 +66,7 @@ export const Hyper = ({
 }: HyperButtonProps) => {
   const LabelOptions = useCallback(() => {
     const options = opts(
-      <Iconx name="spinners-bouncing-ball" />,
+      <Iconx name="spinners-3-dots-move" className="shrink-0 stroke-0" />,
       <span
         className={cn(
           "relative z-10 whitespace-nowrap font-inter text-xs font-semibold tracking-tight text-primary",
@@ -118,7 +118,7 @@ export const Hyper = ({
         {start && (
           <Iconx
             name={start}
-            className={cn("z-1 size-3.5 text-primary", {
+            className={cn("z-1 size-5 shrink-0 text-primary", {
               "text-chalk": dark || destructive,
             })}
           />
@@ -128,7 +128,7 @@ export const Hyper = ({
         {end && (
           <Iconx
             name={end}
-            className={cn("size-3.5 text-primary", {
+            className={cn("size-5 shrink-0 text-primary", {
               "text-chalk": dark || (destructive && !active),
               "text-macd-blue": active,
             })}
