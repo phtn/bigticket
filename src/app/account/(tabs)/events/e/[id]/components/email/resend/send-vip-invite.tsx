@@ -9,9 +9,14 @@ import { Err } from "@/utils/helpers";
 export interface XndInviteProps {
   vip_list: VIP[];
   updateSentStatus: (email: string, vip: VIP) => Promise<void>;
+  createLog: (type: string, description?: string) => Promise<void>;
 }
 
-export const XndInvite = ({ vip_list, updateSentStatus }: XndInviteProps) => {
+export const XndInvite = ({
+  vip_list,
+  updateSentStatus,
+  createLog,
+}: XndInviteProps) => {
   const [sending, setSending] = useState(false);
 
   const xnd = useCallback(async () => {
@@ -33,8 +38,16 @@ export const XndInvite = ({ vip_list, updateSentStatus }: XndInviteProps) => {
             error: "Failed to send invitation",
           });
           await updateSentStatus(vip.email, vip);
+          await createLog(
+            "email",
+            `Sent invitation to ${vip.email}: successful`,
+          );
         } catch (error) {
           console.error("Error sending email:", error);
+          await createLog(
+            "email",
+            `${vip.email}: failed ${error instanceof Error ? error.message : "unknown error"}`,
+          );
         } finally {
           setSending(false);
         }
@@ -44,7 +57,7 @@ export const XndInvite = ({ vip_list, updateSentStatus }: XndInviteProps) => {
         console.log(res);
       })
       .catch(Err(setSending));
-  }, [vip_list, updateSentStatus]);
+  }, [vip_list, updateSentStatus, createLog]);
 
   const buttonLabel = sending
     ? `Sending...`
@@ -54,7 +67,7 @@ export const XndInvite = ({ vip_list, updateSentStatus }: XndInviteProps) => {
     <Hyper
       onClick={xnd}
       disabled={sending || vip_list.length === 0}
-      className={cn({
+      className={cn("portrait:w-full", {
         "w-40 animate-enter": vip_list.length <= 1,
         "text-primary": sending,
       })}

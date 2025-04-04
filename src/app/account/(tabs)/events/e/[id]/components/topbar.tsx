@@ -21,7 +21,7 @@ export const Topbar = ({ event_name }: TopbarProps) => {
           {event_name}
         </h1>
       </div>
-      <section className="flex gap-2 md:gap-4">
+      <section className="flex gap-2 pe-4 md:gap-4">
         <Button size="sm" variant="solid" color="primary">
           Publish <span className="hidden md:flex">Event</span>
           <Iconx name="rocket" className="hidden size-4 md:flex" />

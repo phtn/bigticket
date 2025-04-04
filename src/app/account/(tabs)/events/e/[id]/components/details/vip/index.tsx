@@ -31,10 +31,18 @@ import { checkedState } from "../utils";
 import { Iconx } from "@/icons";
 import { BtnIcon } from "@/ui/button";
 import { XndInvite } from "../../email/resend/send-vip-invite";
+import { type SelectUser } from "convex/users/d";
 
 export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   const [event, setEvent] = useState<SelectEvent | null>();
+  const [vx, setVx] = useState<SelectUser | null>(null);
+  const { vxEvents, vxLogs } = useConvexCtx();
   const { q } = useConvexUtils();
+  const getUser = useQuery(api.users.get.byId, { id: q(user_id) });
+
+  useEffect(() => {
+    setVx(getUser ?? null);
+  }, [getUser]);
 
   const queryEvent = useQuery(api.events.get.byId, {
     id: q(event_id),
@@ -75,8 +83,6 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     [vipList],
   );
 
-  const { vxEvents } = useConvexCtx();
-
   const initialState: VIP = useMemo(
     () => ({
       name: "",
@@ -116,6 +122,20 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     [vxEvents.mut],
   );
 
+  const createLog = useCallback(
+    async (type: string, description?: string) => {
+      if (!user_id) return;
+      await vxLogs.mut.create({
+        type,
+        user_id,
+        event_id,
+        description,
+        created_by: vx?.nickname,
+      });
+    },
+    [vxLogs.mut, user_id, event_id, vx?.nickname],
+  );
+
   const updateVIPList = useCallback(
     async (data: VIPWithDefaults) => {
       if (!event_id) return;
@@ -124,11 +144,17 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         try {
           if (onEdit) {
             dispatch({ type: "UPDATE_VIP", payload: data });
-            console.log("update");
+            await createLog(
+              "vip",
+              `update::${data.email}|>ticket_count:${data.ticket_count}`,
+            );
             return await updateEventVIP(event_id, data as VIP);
           }
           dispatch({ type: "ADD_VIP", payload: data });
-          console.log("add");
+          await createLog(
+            "vip",
+            `add::${data.email}|>ticket_count:${data.ticket_count}`,
+          );
           return await updateEventVIP(event_id, data as VIP);
         } catch (error) {
           dispatch({ type: "REMOVE_VIP", payload: [data.email] });
@@ -136,7 +162,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         }
       });
     },
-    [event_id, updateEventVIP, onEdit],
+    [event_id, updateEventVIP, onEdit, createLog],
   );
 
   const addVIP = useCallback(
@@ -201,16 +227,20 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
 
       startTransition(async () => {
         const updates = Promise.all(
-          checked.map((vip) => {
+          checked.map(async (vip) => {
             const vipUpdate = {
               ...vip,
               ticket_count: 0,
             };
+            await createLog(
+              "vip",
+              `delete::${vip.email}|>ticket_count:${vip.ticket_count}`,
+            );
             return updateEventVIP(event_id, vipUpdate);
           }),
         );
 
-        toast
+        await toast
           .promise(updates, {
             loading: "Removing VIPs...",
             success: `Removed ${count} VIP${count > 1 ? "s" : ""}`,
@@ -222,7 +252,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
           });
       });
     },
-    [vipList, count, event_id, updateEventVIP, checked],
+    [vipList, count, event_id, updateEventVIP, checked, createLog],
   );
 
   const updateSentStatus = useCallback(
@@ -339,9 +369,15 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
           onClick={handleRemoveVIPs}
           disabled={pending || count === 0}
           label={`Remove ${count > 1 ? `(${count})` : "(1)"}`}
-          className={cn("delay-100", { "animate-enter": count <= 1 })}
+          className={cn("delay-100", {
+            "animate-enter portrait:w-full": count <= 1,
+          })}
         />
-        <XndInvite vip_list={checked} updateSentStatus={updateSentStatus} />
+        <XndInvite
+          vip_list={checked}
+          updateSentStatus={updateSentStatus}
+          createLog={createLog}
+        />
       </div>,
       null,
     );
@@ -350,22 +386,20 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         {options.get(count > 0)}
       </div>
     );
-  }, [count, checked, pending, handleRemoveVIPs, updateSentStatus]);
+  }, [count, checked, pending, handleRemoveVIPs, updateSentStatus, createLog]);
 
   const VIPGuestList = useCallback(() => {
     return (
       <section className="relative col-span-3 min-h-96 w-full border-vanilla/20 text-chalk md:border-[0.33px]">
         <div className="h-full w-full overflow-hidden overflow-y-scroll">
-          <div className="flex h-14 w-full items-center justify-between border-b-3 border-vanilla/20 px-4 font-inter text-tiny font-bold md:h-11">
+          <div className="flex h-20 w-full items-center justify-between border-b-3 border-vanilla/20 px-4 font-inter text-tiny font-bold md:h-20">
             <div className="flex w-full items-center justify-between font-normal">
               <div className="flex items-center">
-                <div className="w-0"></div>
-                <div className="flex items-center gap-2 font-semibold">
-                  <span className="flex items-center gap-2">
-                    <Iconx name="energy" className="size-4 text-orange-400" />{" "}
-                    Guest List
+                <div className="flex items-center gap-4 text-lg font-semibold">
+                  <span className="font-sans tracking-tight text-vanilla">
+                    Guests
                   </span>
-                  <div className="flex size-5 items-center justify-center rounded-full bg-vanilla/5 font-sans text-sm font-semibold text-vanilla">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-vanilla/5 font-sans font-semibold text-vanilla">
                     {vipList ? (
                       vipList.length
                     ) : (
@@ -375,23 +409,11 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
                 </div>
               </div>
               <div className="flex items-center text-chalk">
-                <div className="flex w-14 items-center justify-center gap-1 text-xs md:w-20 md:justify-end">
-                  <span className="hidden font-bold tracking-tight md:flex">
-                    Tickets
-                  </span>
-                  <Iconx
-                    name="ticket-horizontal"
-                    className="-mt-[1px] size-4 text-vanilla"
-                  />
+                <div className="flex w-14 items-center justify-center gap-1 md:w-20">
+                  <Iconx name="ticket-horizontal" className="text-vanilla" />
                 </div>
                 <div className="flex w-14 items-center justify-center gap-1 text-xs md:w-28 md:justify-end">
-                  <span className="hidden font-semibold tracking-tight md:flex">
-                    Invite
-                  </span>
-                  <Iconx
-                    name="mail-send"
-                    className="-mt-[1px] size-4 text-vanilla"
-                  />
+                  <Iconx name="mail-send" className="text-vanilla" />
                 </div>
               </div>
             </div>
@@ -447,7 +469,7 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
     <Nebula>
       <Form action={action}>
         <div className="grid h-full w-full grid-cols-1 overflow-hidden md:grid-cols-5 md:rounded-[8.77px]">
-          <section className="col-span-2 h-fit space-y-6 border-b-[0.33px] border-vanilla/20">
+          <section className="col-span-2 h-fit space-y-6 border-b-[0.33px] border-vanilla/20 portrait:border-b-8 portrait:border-white">
             <VIPxBlock />
 
             <div className="flex h-1/6 w-full items-end justify-between border-r-[0.0px] border-vanilla/20">

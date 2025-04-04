@@ -445,9 +445,9 @@ const CohostList = ({ cohostList, children }: CohostListProps) => {
   return (
     <section className="relative border-vanilla/20 text-chalk md:col-span-3 md:border-y md:border-r">
       <div className="h-96 w-full overflow-hidden overflow-y-scroll">
-        <div className="flex h-11 w-full items-center justify-between border-b-3 border-vanilla/20 px-3 font-inter text-tiny font-bold">
-          <div className="flex w-full items-center justify-between gap-6 md:justify-start">
-            <span>Co-host List</span>
+        <div className="flex h-14 w-full items-center justify-between border-b-3 border-vanilla/20 px-3 font-inter text-tiny font-bold md:h-20">
+          <div className="flex w-full items-center justify-between gap-6 text-lg tracking-tight md:justify-start">
+            <span>Co-hosts</span>
             <span className="font-sans font-normal">{cohostList.length}</span>
           </div>
         </div>
