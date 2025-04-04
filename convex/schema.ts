@@ -2,6 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { UserSchema } from "./users/d";
 import { EventSchema } from "./events/d";
 import { TransactionSchema } from "./transactions/d";
+import { LogSchema } from "./logs/d";
 
 export default defineSchema({
   users: defineTable(UserSchema)
@@ -22,4 +23,8 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_ref_no", ["ref_no"])
     .index("by_txn_id", ["txn_id"]),
+  logs: defineTable(LogSchema)
+    .index("by_log_id", ["log_id"])
+    .index("by_log_type", ["type"])
+    .index("by_user_id", ["user_id"]),
 });

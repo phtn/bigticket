@@ -78,6 +78,7 @@ export const EventEditor = () => {
             <EventDetails tabs={tabs} />
           </EventDetailCtxProvider>
         </div>
+        <div className="h-96"></div>
       </div>
     </main>
   );
