@@ -7,7 +7,7 @@ interface TopbarProps {
 }
 export const Topbar = ({ event_name }: TopbarProps) => {
   return (
-    <div className="flex h-20 w-full items-center justify-between px-3 md:px-4">
+    <div className="flex h-20 w-full items-center justify-between px-2 md:px-4">
       <div className="space-y-1 whitespace-nowrap md:ps-4">
         <Link href="/account/events" className="group">
           <div className="flex items-center gap-2 text-tiny">

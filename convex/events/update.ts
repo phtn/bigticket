@@ -103,7 +103,7 @@ export const vip = mutation({
 
     if (!event?.vip_list) {
       await db.patch(event._id, {
-        vip_list: [{ ...vip, idx: 1 }],
+        vip_list: [{ ...vip }],
         updated_at: Date.now(),
       });
       return "success";

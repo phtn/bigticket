@@ -1,14 +1,19 @@
 import { useConvexCtx } from "@/app/ctx/convex";
+import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
 import { onSuccess, onWarn } from "@/app/ctx/toast";
+import { Iconx } from "@/icons";
+import { cn } from "@/lib/utils";
 import { Hyper } from "@/ui/button/button";
 import { HyperList } from "@/ui/list";
 import { Err, getInitials, opts } from "@/utils/helpers";
-import { Checkbox, CheckboxGroup, Form, Input, User } from "@nextui-org/react";
+import { Checkbox, Form, User } from "@nextui-org/react";
+import { api } from "@vx/api";
 import type { Cohost, CohostClearance } from "convex/events/d";
+import { useQuery } from "convex/react";
+import { type SelectUser } from "convex/users/d";
 import {
   type ChangeEvent,
   type MouseEvent,
-  type ReactNode,
   startTransition,
   useActionState,
   useCallback,
@@ -17,19 +22,28 @@ import {
   useReducer,
   useState,
 } from "react";
-import { inputClassNames } from "../../../editor";
+import toast from "react-hot-toast";
+import { Nebula } from "../";
+import { XndInvite } from "../../email/resend/send-vip-invite";
 import { BlockHeader } from "../components";
 import { type CohostField, CohostZod } from "../schema";
-import { Nebula } from "../";
-import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
-import { cn } from "@/lib/utils";
+import { checkedState, updateProps } from "../utils";
+import { Clearances, CohostList, FieldItem, Reference } from "./components";
 import { cohostReducer, initialCohostState } from "./reducer";
 import type { CohostContentProps, CohostWithDefaults } from "./types";
-import { checkedState, getCheckedKeys, updateProps } from "../utils";
-import toast from "react-hot-toast";
-import { Iconx } from "@/icons";
 
 export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
+  const { vxEvents, vxLogs } = useConvexCtx();
+  const [vx, setVx] = useState<SelectUser | null>(null);
+  const { q } = useConvexUtils();
+  const qUser = useQuery(api.users.get.byId, { id: q(user_id) });
+
+  useEffect(() => {
+    if (qUser) {
+      setVx(qUser);
+    }
+  }, [qUser]);
+
   const [state, dispatch] = useReducer(cohostReducer, {
     ...initialCohostState,
     cohostList: xEvent?.cohost_list ?? ([] as CohostWithDefaults[]),
@@ -73,10 +87,28 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
     }
   }, [selectedCohost, onEdit]);
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormValues((prev) => ({ ...prev, [name]: value }));
-  };
+  const createLog = useCallback(
+    async (type: string, description?: string) => {
+      if (!user_id) return;
+      await vxLogs.mut.create({
+        type,
+        user_id,
+        event_id: xEvent?.event_id,
+        description,
+        created_by: vx?.nickname,
+      });
+    },
+    [vxLogs.mut, user_id, xEvent?.event_id, vx?.nickname],
+  );
+
+  const handleInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      const { name, value } = e.target;
+      setFormValues((prev) => ({ ...prev, [name]: value }));
+    },
+    [setFormValues],
+  );
 
   const cohost_info: CohostField[] = useMemo(
     () => [
@@ -84,6 +116,7 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
         name: "name",
         type: "text",
         label: "Name",
+        onChange: handleInputChange,
         placeholder: "Name of the co-host",
         value: formValues.name,
         required: false,
@@ -92,22 +125,21 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
         name: "email",
         type: "email",
         label: "Email",
+        onChange: handleInputChange,
         value: formValues.email,
         placeholder: "Email receiving the invitation",
         required: true,
       },
     ],
-    [formValues],
+    [formValues, handleInputChange],
   );
 
-  const { vxEvents } = useConvexCtx();
   const updateEventCohost = useCallback(
     async (id: string, cohost: Cohost) => {
       await vxEvents.mut.updateEventCohost({ id, cohost });
     },
     [vxEvents.mut],
   );
-  const { q } = useConvexUtils();
 
   const updateCohostList = useCallback(
     async (data: Cohost) => {
@@ -228,6 +260,31 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
     });
   }, []);
 
+  const updateSentStatus = useCallback(
+    async (email: string, data: Cohost) => {
+      if (!xEvent?.event_id) return;
+
+      try {
+        dispatch({
+          type: "UPDATE_COHOST",
+          payload: {
+            ...data,
+            email,
+            invitation_sent: true,
+          },
+        });
+        await updateEventCohost(xEvent.event_id, {
+          ...data,
+          email,
+          invitation_sent: true,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [xEvent?.event_id, updateEventCohost],
+  );
+
   // Add effect to update clearance values when cohost is selected
   useEffect(() => {
     if (selectedCohost?.clearance) {
@@ -247,37 +304,37 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
           color="secondary"
           classNames={{
             base: cn(
-              "flex items-center relative min-w-full justify-between p-4",
-              "hover:bg-vanilla/5 rounded-sm cursor-pointer",
+              "flex items-center relative min-w-full justify-between py-4",
+              "md:hover:bg-macl-orange/5 data-[selected=true]:bg-teal-400/10 rounded-sm md:cursor-pointer",
             ),
             label: "flex items-center tracking-tight w-full max-w-full",
-            icon: "text-primary",
-            wrapper: "ml-4",
+            icon: "text-chalk",
+            wrapper: "md:ml-4 bg-white border-blue-500",
           }}
           isSelected={cohost.checked}
           onValueChange={handleChangeSelected}
         >
           <div
             className={cn(
-              "absolute -left-12 top-0 z-10 font-sans text-[10px] text-vanilla opacity-40",
-              { "text-teal-400 opacity-100": cohost.checked },
+              "absolute -left-8 -top-5 z-10 font-sans text-[10px] text-primary opacity-80 md:-left-12",
+              { "text-teal-600 opacity-100": cohost.checked },
             )}
           >
             {cohost.idx}
           </div>
-          <div className="flex w-full items-center justify-between ps-2 md:ps-0">
+          <div className="flex w-full items-center justify-between">
             <User
               classNames={{
-                name: "whitespace-nowrap font-semibold text-chalk text-xs font-inter",
+                name: "whitespace-nowrap font-semibold md:text-sm text-primary ",
               }}
               avatarProps={{
                 size: "sm",
                 fallback: getInitials(cohost.name)?.toUpperCase(),
                 className:
-                  "text-[16px] hidden overflow-hidden md:flex ml-2 mr-1 bg-macd-orange/50 rounded-md border-vanilla/20 text-vanilla/90 flex-grow-0 font-semibold",
+                  "overflow-hidden md:flex md:ml-2 md:mr-1 bg-macd-blue rounded-full text-chalk md:text-lg flex-grow-0 font-semibold",
               }}
               description={
-                <p className="font-inter text-tiny text-vanilla/80">
+                <p className="truncate text-primary/60 md:text-sm">
                   {cohost.email}
                 </p>
               }
@@ -285,25 +342,54 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
             />
           </div>
 
-          <div className="flex items-center justify-end whitespace-nowrap text-chalk">
-            <div className="flex w-14 items-center justify-center gap-[1.5px] text-sm font-medium text-vanilla md:w-20">
-              <span className="font-sans">cleareances...</span>
+          <div className="flex items-center justify-end whitespace-nowrap">
+            <div className="flex w-20 items-center justify-end space-x-1">
+              <span
+                className={cn("hidden size-5 rounded-md bg-warning", {
+                  flex: cohost.clearance?.add_vip,
+                })}
+              />
+              <span
+                className={cn("hidden size-5 rounded-md bg-secondary", {
+                  flex: cohost.clearance?.scan_code,
+                })}
+              />
+              <span
+                className={cn("hidden size-5 rounded-md bg-danger", {
+                  flex: cohost.clearance?.view_guest_list,
+                })}
+              />
             </div>
             <div
               className={cn(
-                "flex w-14 items-center justify-center gap-[1.5px] text-xs font-semibold tracking-tighter text-vanilla/40 md:w-28 md:justify-end",
+                "flex w-12 items-center justify-end text-xs font-semibold tracking-tight text-primary/60 md:pe-2 lg:w-24",
                 {
-                  "text-teal-400": cohost.invitation_sent,
+                  "text-macd-blue": cohost.invitation_sent,
                 },
               )}
             >
-              {cohost.invitation_sent ? "Sent" : "Not Sent"}
-              <Iconx
-                name="check"
-                className={cn("hidden size-2.5", {
-                  flex: cohost.invitation_sent,
+              <div
+                className={cn("flex items-center space-x-0.5", {
+                  "": cohost.invitation_sent,
                 })}
-              />
+              >
+                {/* <span>{cohost.invitation_sent ? "Confirmed" : "Not Sent"}</span> */}
+                <Iconx
+                  name={
+                    cohost.invitation_sent
+                      ? "mail-sent"
+                      : cohost.confirmed
+                        ? "mail-received"
+                        : "mail-not-sent"
+                  }
+                  className={cn("rounded-lg text-macl-gray", {
+                    "bg-gradient-to-b from-macd-blue/15 via-sky-400/5 to-transparent text-macl-blue":
+                      cohost.invitation_sent,
+                    "bg-gradient-to-b from-teal-400/15 via-teal-400/5 to-transparent text-teal-500":
+                      cohost.confirmed,
+                  })}
+                />
+              </div>
             </div>
           </div>
         </Checkbox>
@@ -318,170 +404,114 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
         <Hyper
           lg
           fullWidth
-          end="minus-sign"
           destructive
           type="submit"
+          end="minus-sign"
           loading={pending}
           onClick={handleRemoveCohost}
           disabled={pending || count === 0}
           label={`Remove ${count > 1 ? `(${count})` : "(1)"}`}
-          className={cn("delay-100", { "animate-enter": count <= 1 })}
+          className={cn("border-t border-macl-red delay-100", {
+            "animate-enter": count <= 1,
+          })}
         />
-        {/* <SendInvite vip_list={checked} updateSentStatus={updateSentStatus} /> */}
+        <XndInvite
+          list={checked}
+          type="COHOST_INVITE"
+          updateSentStatus={updateSentStatus}
+          createLog={createLog}
+          host={vx?.nickname}
+        />
       </div>,
       null,
     );
     return (
-      <div className="absolute bottom-[0.77px] right-[0.77px] flex w-fit overflow-hidden rounded-br-md md:min-w-36">
+      <div className="absolute bottom-0 right-0 flex w-fit overflow-hidden rounded-br-md md:min-w-36">
         {options.get(count > 0)}
       </div>
     );
-  }, [count, pending, handleRemoveCohost]);
+  }, [
+    count,
+    pending,
+    checked,
+    createLog,
+    vx?.nickname,
+    updateSentStatus,
+    handleRemoveCohost,
+  ]);
 
   return (
-    <Nebula>
-      <Form action={action}>
-        <div className="grid h-full w-full grid-cols-1 md:grid-cols-5 md:gap-0 md:rounded">
-          <section className="h-fit border-b border-vanilla/20 sm:col-span-3 md:col-span-2 md:h-fit md:border-[0.33px]">
-            <div className="mb-8 h-5/6 w-full space-y-6 p-6">
-              <BlockHeader label="Host Settings" icon="user-settings" />
-              <section className="-mx-6 h-fit rounded-sm bg-teal-300/20 px-4 py-3 text-justify text-tiny text-vanilla md:p-4 md:text-sm">
-                You can add co-hosts and event marshals to assist you with
-                ticket-scanning and other guest verification during the event.
-                Fill out the name and email, select access clearances, then
-                click add. You can add multiple co-hosts for this event.
-              </section>
-              <div className="space-y-8">
-                {cohost_info.map((field) => (
-                  <Input
-                    key={field.name}
-                    id={field.name}
-                    label={field.label}
-                    name={field.name}
-                    type={field.type}
-                    onChange={handleInputChange}
-                    classNames={inputClassNames}
-                    placeholder={field.placeholder}
-                    isRequired={field.required}
-                    value={field.value}
-                    validationBehavior="native"
-                    className="appearance-none"
-                    isClearable
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="flex h-fit w-full border-t-[0.33px] border-vanilla/20 px-6 py-8 backdrop-blur-sm lg:px-4 xl:px-6">
-              <CheckboxGroup
-                onValueChange={handleAccessValuesChange}
-                value={getCheckedKeys(clearanceValues)}
-                label="Select Access clearances"
-                orientation="horizontal"
-                color="primary"
-                description="Choose co-host access clearances for this event."
-                className="w-full"
-                classNames={{
-                  wrapper: "",
-                  base: "w-full",
-                  label:
-                    "text-white pb-4 font-bold w-full text-lg font-inter tracking-tighter",
-                  description: "text-chalk/60 text-xs pt-4",
-                }}
-              >
+    <div className="space-y-6">
+      <div className="grid h-full w-full grid-cols-1 gap-6 px-2 md:grid-cols-5 md:rounded md:px-0">
+        <section className="h-fit border-b border-vanilla/20 sm:col-span-3 md:col-span-2 md:h-fit md:border-[0.33px]">
+          <Nebula>
+            <Form action={action}>
+              <div className="mb-8 h-5/6 w-full space-y-6 p-6">
+                <BlockHeader label="Host Settings" icon="user-settings" />
+                <section className="h-fit rounded bg-gray-400/10 p-2 text-justify text-xs text-chalk lg:p-4 lg:text-sm">
+                  You can add co-hosts and event marshals to assist you with
+                  ticket-scanning and other guest verification during the event.
+                  Fill out the name and email, select access clearances, then
+                  click add. You can add multiple co-hosts for this event.
+                </section>
                 <HyperList
-                  data={Object.entries(clearanceValues).map((c) => c)}
-                  component={ClearanceItem}
-                  container="flex flex-col lg:flex-row xl:space-x-5 lg:space-x-2 whitespace-nowrap space-y-2 lg:space-y-0 w-full justify-between xl:justify-start"
-                  itemStyle="xl:py-1.5 ps-1.5 pe-2 border-0 lg:w-fit w-full overflow-hidden rounded-xl hover:bg-primary/35 hover:border-chalk/20"
-                />
-              </CheckboxGroup>
-            </div>
-
-            <div className="flex h-1/6 w-full items-end justify-between">
-              <div className="flex w-full items-center border-t-[0.33px] border-vanilla/20 text-chalk">
-                <div className="flex h-14 w-full items-center justify-between gap-3 border-r-[0.33px] border-vanilla/20 px-3">
-                  <p className="font-inter text-xs font-semibold tracking-tight">
-                    Confirmed
-                  </p>
-                  <p className="font-sans text-sm">0</p>
-                </div>
-                <Hyper
-                  disabled={pending}
-                  loading={pending}
-                  active={onEdit}
-                  type="submit"
-                  label={onEdit ? "Update" : "Add"}
-                  end={onEdit ? "square-arrow-up-right" : "plus-sign"}
-                  fullWidth
-                  dark
-                  xl
+                  data={cohost_info}
+                  component={FieldItem}
+                  container="space-y-8"
                 />
               </div>
-            </div>
-          </section>
 
-          <CohostList cohostList={cohostList}>
-            <HyperList
-              data={cohostList}
-              component={RowItem}
-              container=""
-              keyId="email"
-            />
-            <ListActions />
-          </CohostList>
-        </div>
-      </Form>
-    </Nebula>
+              <Clearances
+                onChangeFn={handleAccessValuesChange}
+                values={clearanceValues}
+              />
+
+              <div className="flex h-1/6 w-full items-end justify-between">
+                <div className="flex w-full items-center border-t-[0.33px] border-vanilla/20 text-chalk">
+                  <div className="flex h-14 w-full items-center justify-between gap-3 border-r-[0.33px] border-vanilla/20 px-3">
+                    <p className="font-inter text-xs font-semibold tracking-tight">
+                      Confirmed
+                    </p>
+                    <p className="font-sans text-sm">0</p>
+                  </div>
+                  <SubmitButton loading={pending} state={onEdit} />
+                </div>
+              </div>
+            </Form>
+          </Nebula>
+        </section>
+
+        <CohostList cohostList={cohostList}>
+          <HyperList
+            data={cohostList}
+            component={RowItem}
+            itemStyle="border-b-[0.33px] flex justify-center w-full py-[8.5px] border-macl-gray"
+            keyId="email"
+          />
+          <ListActions />
+        </CohostList>
+      </div>
+      <div className="h-96 px-2 md:px-0">
+        <Reference />
+      </div>
+    </div>
   );
 };
 
-interface CohostListProps {
-  cohostList: CohostWithDefaults[];
-  children: ReactNode;
+interface SubmitButtonProps {
+  loading: boolean;
+  state: boolean;
 }
-
-const CohostList = ({ cohostList, children }: CohostListProps) => {
-  return (
-    <section className="relative border-vanilla/20 text-chalk md:col-span-3 md:border-y md:border-r">
-      <div className="h-96 w-full overflow-hidden overflow-y-scroll">
-        <div className="flex h-14 w-full items-center justify-between border-b-3 border-vanilla/20 px-3 font-inter text-tiny font-bold md:h-20">
-          <div className="flex w-full items-center justify-between gap-6 text-lg tracking-tight md:justify-start">
-            <span>Co-hosts</span>
-            <span className="font-sans font-normal">{cohostList.length}</span>
-          </div>
-        </div>
-        {children}
-      </div>
-      <div className="absolute bottom-2 right-2">
-        {/* <Hyper cohost_list={xEvent?.cohost_list} /> */}
-      </div>
-    </section>
-  );
-};
-
-const ClearanceItem = (props: [string, boolean]) => {
-  return (
-    <Checkbox
-      name={props[0]}
-      color={
-        props[0] === "scan_code"
-          ? "secondary"
-          : props[0] === "add_vip"
-            ? "warning"
-            : "danger"
-      }
-      className="flex data-[selected=true]:bg-primary/30"
-      classNames={{
-        base: "flex max-w-lg h-14 md:max-w-none px-3",
-        label:
-          "text-chalk flex w-full capitalize text-sm tracking-tighter font-medium",
-        icon: "stroke-2 size-5 text-white",
-        wrapper: "",
-      }}
-      value={props[0]}
-    >
-      <div className="flex w-full">{props[0].replaceAll("_", " ")}</div>
-    </Checkbox>
-  );
-};
+const SubmitButton = ({ loading, state }: SubmitButtonProps) => (
+  <Hyper
+    disabled={loading}
+    loading={loading}
+    active={state}
+    type="submit"
+    label={state ? "Update" : "Add"}
+    end={state ? "square-arrow-up-right" : "plus-sign"}
+    fullWidth
+    dark
+    xl
+  />
+);

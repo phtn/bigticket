@@ -319,6 +319,36 @@ export const icons = {
     viewBox: `0 0 24 24`,
     set: `line`,
   },
+
+  key: {
+    symbol: `<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15.5 14.5a6 6 0 1 0-5.47-3.53L2.5 18.5v3h3v-2h2v-2h2l3.53-3.53c.754.34 1.59.53 2.47.53m2-8l-1 1" color="currentColor"></path>`,
+    viewBox: `0 0 24 24`,
+    set: `hugeicons`,
+  },
+
+  "mail-sent": {
+    symbol: `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" color="currentColor"><path d="m6.912 6.838l2.942 1.74c1.715 1.014 2.4 1.014 4.116 0l2.942-1.74m-2 10.5s.5 0 1 1c0 0 1.588-2.5 3-3"></path><path d="m22 10.312l-.041-3.874c-.011-1.475-.808-4.426-3.905-4.426H6.105C4.737 1.912 2 2.347 2 7.142v7.11c0 1.22.272 2.863 1.61 3.853c.866.64 2.001.7 3.074.753l2.247.111"></path><path d="M21.98 16.96c0 2.783-2.245 5.04-5.016 5.04s-5.018-2.257-5.018-5.04c0-2.785 2.247-5.042 5.018-5.042s5.017 2.257 5.017 5.041"></path></g>`,
+    viewBox: `0 0 24 24`,
+    set: `hugeicons`,
+  },
+
+  "mail-not-sent": {
+    symbol: `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" color="currentColor"><path d="m7 7.5l2.942 1.74c1.715 1.014 2.4 1.014 4.116 0L17 7.5"></path><path d="M21.993 11c.012-.826.009-.649-.009-1.476c-.065-3.065-.098-4.598-1.229-5.733c-1.131-1.136-2.705-1.175-5.854-1.254a115 115 0 0 0-5.802 0c-3.149.079-4.723.118-5.854 1.254c-1.131 1.135-1.164 2.668-1.23 5.733a69 69 0 0 0 0 2.952c.066 3.065.099 4.598 1.23 5.733c1.131 1.136 2.705 1.175 5.854 1.254q1.454.037 2.901.037m3-5l3.5 3.5m0 0l3.5 3.5M18.5 18L15 21.5m3.5-3.5l3.5-3.5"></path></g>`,
+    viewBox: `0 0 24 24`,
+    set: `hugeicons`,
+  },
+
+  "mail-received": {
+    symbol: `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" color="currentColor"><path d="m7 7.5l2.942 1.74c1.715 1.014 2.4 1.014 4.116 0L17 7.5"></path><path d="M21.996 10c-.003-.367-.007-.23-.012-.473c-.065-3.067-.098-4.6-1.229-5.736s-2.705-1.175-5.854-1.254c-1.94-.05-3.862-.05-5.802 0c-3.149.079-4.723.118-5.854 1.254S2.08 6.46 2.015 9.526a69 69 0 0 0 0 2.953c.066 3.066.099 4.6 1.23 5.735S5.95 19.39 9.099 19.47c.608.015 1.397.025 1.901.031m4.586-.853c-.629.369-2.277 1.121-1.273 2.063c.49.46 1.037.789 1.723.789h3.92c.686 0 1.233-.329 1.723-.789c1.004-.942-.644-1.694-1.273-2.063a4.8 4.8 0 0 0-4.82 0"></path><path d="M19.996 14a2 2 0 1 1-4 0a2 2 0 0 1 4 0"></path></g>`,
+    viewBox: `0 0 24 24`,
+    set: `hugeicons`,
+  },
+
+  "mail-send-2": {
+    symbol: `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" color="currentColor"><path d="M13.5 19.49c-1.467.02-2.929.01-4.401-.027c-3.149-.079-4.723-.118-5.854-1.254c-1.131-1.135-1.164-2.668-1.23-5.733a69 69 0 0 1 0-2.952c.066-3.065.099-4.598 1.23-5.733C4.376 2.655 5.95 2.616 9.099 2.537a115 115 0 0 1 5.802 0c3.149.079 4.723.118 5.854 1.254c1.131 1.135 1.164 2.668 1.23 5.733Q22 10.264 22 11"></path><path d="m7 7.5l2.942 1.74c1.715 1.014 2.4 1.014 4.116 0L17 7.5M16 16c.491-.506 1.8-2.5 2.5-2.5M21 16c-.491-.506-1.8-2.5-2.5-2.5m0 0v8"></path></g>`,
+    viewBox: `0 0 24 24`,
+    set: `hugeicons`,
+  },
 };
 
 export type IconNameType = keyof typeof icons;

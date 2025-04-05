@@ -32,6 +32,7 @@ import { Iconx } from "@/icons";
 import { BtnIcon } from "@/ui/button";
 import { XndInvite } from "../../email/resend/send-vip-invite";
 import { type SelectUser } from "convex/users/d";
+import { ListHeader } from "./components";
 
 export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   const [event, setEvent] = useState<SelectEvent | null>();
@@ -256,20 +257,20 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
   );
 
   const updateSentStatus = useCallback(
-    async (email: string, vip: VIP) => {
+    async (email: string, data: VIP) => {
       if (!event_id) return;
 
       try {
         dispatch({
           type: "UPDATE_VIP",
           payload: {
-            ...vip,
+            ...data,
             email,
             invitation_sent: true,
           },
         });
         await updateEventVIP(event_id, {
-          ...vip,
+          ...data,
           email,
           invitation_sent: true,
         });
@@ -374,9 +375,11 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
           })}
         />
         <XndInvite
-          vip_list={checked}
-          updateSentStatus={updateSentStatus}
+          list={checked}
+          type="VIP_INVITE"
           createLog={createLog}
+          updateSentStatus={updateSentStatus}
+          host={vx?.nickname}
         />
       </div>,
       null,
@@ -386,38 +389,21 @@ export const VIPContent = ({ user_id, event_id }: VIPContentProps) => {
         {options.get(count > 0)}
       </div>
     );
-  }, [count, checked, pending, handleRemoveVIPs, updateSentStatus, createLog]);
+  }, [
+    count,
+    checked,
+    pending,
+    handleRemoveVIPs,
+    updateSentStatus,
+    createLog,
+    vx?.nickname,
+  ]);
 
   const VIPGuestList = useCallback(() => {
     return (
       <section className="relative col-span-3 min-h-96 w-full border-vanilla/20 text-chalk md:border-[0.33px]">
         <div className="h-full w-full overflow-hidden overflow-y-scroll">
-          <div className="flex h-20 w-full items-center justify-between border-b-3 border-vanilla/20 px-4 font-inter text-tiny font-bold md:h-20">
-            <div className="flex w-full items-center justify-between font-normal">
-              <div className="flex items-center">
-                <div className="flex items-center gap-4 text-lg font-semibold">
-                  <span className="font-sans tracking-tight text-vanilla">
-                    Guests
-                  </span>
-                  <div className="flex size-8 items-center justify-center rounded-full bg-vanilla/5 font-sans font-semibold text-vanilla">
-                    {vipList ? (
-                      vipList.length
-                    ) : (
-                      <Iconx name="spinners-bouncing-ball" />
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center text-chalk">
-                <div className="flex w-14 items-center justify-center gap-1 md:w-20">
-                  <Iconx name="ticket-horizontal" className="text-vanilla" />
-                </div>
-                <div className="flex w-14 items-center justify-center gap-1 text-xs md:w-28 md:justify-end">
-                  <Iconx name="mail-send" className="text-vanilla" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <ListHeader count={vipList.length} />
           <HyperList
             disableAnimation
             data={vipList}

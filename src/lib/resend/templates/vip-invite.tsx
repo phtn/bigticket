@@ -14,19 +14,26 @@ import {
   Tailwind,
   Text,
 } from "@react-email/components";
-import type { VIP } from "convex/events/d";
+
+export interface VIPInvitationProps {
+  name: string;
+  ticket_count: number;
+  event_id: string;
+  event_name: string;
+  host?: string;
+}
 
 export const VIPInvitation = ({
   name,
   ticket_count,
   event_id,
   event_name,
-}: VIP) => {
+  host,
+}: VIPInvitationProps) => {
   const baseUrl = `https://bigticket.ph`;
   const tickets = ticket_count > 1 ? "tickets" : "ticket";
   const previewText = `You are invited with ${ticket_count} VIP ${tickets}!`;
   const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${env.FIREBASE_STORAGE_BUCKET}.firebasestorage.app/o/public%2Fwordmark.png?alt=media&token=${env.FIREBASE_STORAGE_TOKEN}`;
-  // https://firebasestorage.googleapis.com/v0/b/big-ticket-5c666.firebasestorage.app/o/public%2Fwordmark.png?alt=media&token=4da7a5a5-540f-44c2-be12-111424fa0136
   return (
     <Html>
       <Head />
@@ -80,8 +87,11 @@ export const VIPInvitation = ({
             <Section className="px-4 pb-10 pt-4">
               <Text className="text-justify text-[12px] leading-[24px] text-[#666666]">
                 This invitation was intended for{" "}
-                <span className="text-black">{name}</span>. This invite was sent
-                from <span className="text-black">{"IP"}</span> located in{" "}
+                <span className="text-black">
+                  {name} from {host}
+                </span>
+                . This invite was sent from{" "}
+                <span className="text-black">{"IP"}</span> located in{" "}
                 <span className="text-black">{"Manila, Philippines"}</span>. If
                 you were not expecting this invitation, you can ignore this
                 email. If you are concerned about your account&apos;s safety,

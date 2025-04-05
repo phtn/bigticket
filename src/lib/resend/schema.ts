@@ -32,6 +32,7 @@ export const EmailOptionsSchema = z.object({
   data: z.record(z.string(), z.any()),
   text: z.string().max(100).optional(),
   attachments: AttachmentsSchema,
+  host: z.string().optional(),
 });
 
 export type EmailOptions = z.infer<typeof EmailOptionsSchema>;

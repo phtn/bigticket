@@ -24,7 +24,7 @@ export const FieldBlock = ({ pending, children }: FieldBlockProps) => {
       {
         name: "min_age",
         type: "text",
-        label: "Minimum Age Limit",
+        label: "Min Age Limit",
         placeholder: "Minimum age allowed for entry.",
         required: false,
         value: min_age?.toString(),
@@ -32,7 +32,7 @@ export const FieldBlock = ({ pending, children }: FieldBlockProps) => {
       {
         name: "max_age",
         type: "text",
-        label: "Maximum Age Limit",
+        label: "Max Age Limit",
         placeholder: "Maximum age allowed for entry.",
         required: false,
         value: max_age?.toString(),

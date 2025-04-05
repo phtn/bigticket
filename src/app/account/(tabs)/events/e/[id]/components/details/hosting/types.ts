@@ -2,6 +2,7 @@ import type { CohostClearance } from "convex/events/d";
 import type { CohostField } from "../schema";
 import type { IconName } from "@/icons/types";
 import type { XEvent } from "@/app/types";
+import { type ReactNode } from "react";
 
 export interface CohostBlockProps {
   data: CohostField[];
@@ -52,3 +53,13 @@ export type CohostAction =
   | { type: "SET_PENDING"; payload: boolean }
   | { type: "SET_LOADING"; payload: boolean }
   | { type: "RESET" };
+
+export interface CohostListProps {
+  cohostList: CohostWithDefaults[];
+  children: ReactNode;
+}
+
+export interface ClearancesProps {
+  onChangeFn: (v: string[]) => void;
+  values: CohostClearance;
+}

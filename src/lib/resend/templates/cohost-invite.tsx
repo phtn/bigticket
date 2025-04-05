@@ -19,7 +19,7 @@ export interface CohostInvitationProps {
   name: string;
   event_id: string;
   event_name: string;
-  host: string;
+  host?: string;
 }
 
 export const CohostInvitation = ({
@@ -30,8 +30,7 @@ export const CohostInvitation = ({
 }: CohostInvitationProps) => {
   const baseUrl = `https://bigticket.ph`;
   const previewText = `You are invited to be a co-host for the ${event_name} event!`;
-  const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${env.FIREBASE_STORAGE_BUCKET}.firebasestorage.app/o/wordmark.png?alt=media&token=${env.FIREBASE_STORAGE_TOKEN}`;
-  const backupUrl = `https://nt5z0eivn0.ufs.sh/f/Vt8KHVjAitXarsJJzIM9F1nEbfGKBL7YMWNcipkCUS4wjQas`;
+  const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${env.FIREBASE_STORAGE_BUCKET}.firebasestorage.app/o/public%2Fwordmark.png?alt=media&token=${env.FIREBASE_STORAGE_TOKEN}`;
   return (
     <Html>
       <Head />
@@ -41,7 +40,7 @@ export const CohostInvitation = ({
           <Container className="flex w-fit max-w-[465px] rounded-lg border-[0.33px] border-[#14141b] bg-white p-[24px] shadow-lg">
             <Section className="mt-[32px]">
               <Img
-                src={imageUrl ?? backupUrl}
+                src={imageUrl}
                 width="auto"
                 height="100"
                 alt="big-ticket-wordmark"
@@ -56,7 +55,7 @@ export const CohostInvitation = ({
                 <strong className="tracking-tighter">Hello, {name} 👋🏽 </strong>
               </Text>
               <Text className="text-justify text-[14px] leading-[24px] text-[#14141b]">
-                You are invited to be a co-host for{" "}
+                You are invited to be a co-host for the{" "}
                 <strong>{event_name}</strong> event by {host}.
               </Text>
             </Section>
@@ -66,7 +65,7 @@ export const CohostInvitation = ({
                 href={baseUrl + `/?x=${event_id}`}
               >
                 <Text className="whitespace-nowrap pl-[24px] text-center text-[16px] font-semibold tracking-tight text-[#F3FCEE]">
-                  Confirm <strong>now</strong>
+                  Click <strong>here</strong> to accept invitation
                 </Text>
               </Button>
             </Section>
