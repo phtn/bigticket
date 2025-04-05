@@ -79,7 +79,16 @@ export const BasicInfoSchema = z.object({
   event_name: z.string().min(1).max(100).optional(),
   event_desc: z.string().max(100).optional(),
   event_url: z.string().max(100).optional(),
+  venue_name: z.string().max(100).optional(),
+  venue_address: z.string().max(100).optional(),
+  is_online: z.boolean().default(false),
+  is_private: z.boolean().default(false),
+  category: z.string().max(100).optional(),
+  subcategory: z.string().max(100).optional(),
+  start_date: z.number().optional(),
+  end_date: z.number().optional(),
 });
+export type BasicInfoType = z.infer<typeof BasicInfoSchema>;
 
 export const TicketInfoSchema = z.object({
   ticket_price: z.string().max(100),

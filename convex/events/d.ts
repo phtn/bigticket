@@ -110,8 +110,8 @@ export const BasicInfoSchema = v.object({
   end_date: v.optional(v.float64()),
   category: v.optional(v.string()),
   subcategory: v.optional(v.string()),
-  is_private: v.optional(v.boolean()),
-  is_online: v.optional(v.boolean()),
+  is_private: v.boolean(),
+  is_online: v.boolean(),
 });
 export type BasicInfo = Infer<typeof BasicInfoSchema>;
 

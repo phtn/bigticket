@@ -242,7 +242,7 @@ export const pasteFn = async (id: string) => {
   return v;
 };
 
-export const asyncR = async <T extends Promise<T>>(
+export const awaitPromise = async <T extends Promise<T>>(
   promise: Promise<T> | (() => Promise<T> | T) | T[] | T,
   loading?: string,
   success?: string,

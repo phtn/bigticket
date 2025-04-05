@@ -21,7 +21,7 @@ import { useFormStateTicket } from "./store";
 import { EventDetailItem, FieldBlock, FieldItem } from "./components";
 import type { ContentProps } from "./types";
 import { useConvexCtx } from "@/app/ctx/convex";
-import { asyncR } from "@/utils/helpers";
+import { awaitPromise } from "@/utils/helpers";
 
 export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
   const {
@@ -125,7 +125,7 @@ export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
       };
       console.log(payload);
       const promise = updateEventTicketInfo(xEvent.event_id, payload);
-      await asyncR(promise);
+      await awaitPromise(promise);
       reset(payload);
 
       return payload;

@@ -2,20 +2,26 @@ import { HyperList } from "@/ui/list";
 import { Form } from "@nextui-org/react";
 import {
   type ChangeEvent,
+  type ReactNode,
   useActionState,
   useCallback,
   useEffect,
   useMemo,
+  useState,
 } from "react";
 import { EventDetailActionSheet } from "../action-sheet";
 import { BlockHeader } from "../components";
-import { access_info, BasicInfoSchema, type EventField } from "../schema";
+import {
+  BasicInfoSchema,
+  type BasicInfoType,
+  type EventField,
+} from "../schema";
 import { useEventDetail } from "../ctx";
 import { useMoment } from "@/hooks/useMoment";
 import { EventCategory, EventDate } from "../../../../../create/components";
 import { Nebula } from "../";
 import { Hyper } from "@/ui/button/button";
-import { type BasicInfo } from "convex/events/d";
+import { type SelectEvent } from "convex/events/d";
 import { useFormStateBasic } from "./store";
 import {
   EventDetailItem,
@@ -25,9 +31,16 @@ import {
 } from "./components";
 import type { BasicContentProps } from "./types";
 import { useConvexCtx } from "@/app/ctx/convex";
-import { asyncR } from "@/utils/helpers";
+import { awaitPromise } from "@/utils/helpers";
+import { useQuery } from "convex/react";
+import { api } from "@vx/api";
+import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
 
-export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
+export const BasicContent = ({ event_id, pending }: BasicContentProps) => {
+  const [x, setx] = useState<SelectEvent | null>(null);
+  const { q } = useConvexUtils();
+  const qEvent = useQuery(api.events.get.byId, { id: q(event_id) });
+
   const {
     is_online,
     is_private,
@@ -40,33 +53,39 @@ export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
     event_url,
     venue_name,
     venue_address,
+    setVenueName,
+    setVenueAddress,
     reset,
-    setXEvent,
+    setEvent,
     setCategory,
     setSubcategory,
     setStartDate,
     setEndDate,
-    xEvent,
+    event,
   } = useFormStateBasic();
 
   useEffect(() => {
-    setXEvent(x);
-    reset({
-      is_online: xEvent?.is_online ?? false,
-      is_private: xEvent?.is_private ?? false,
-      category: xEvent?.category ?? "party",
-      start_date: xEvent?.start_date ?? 0,
-      end_date: xEvent?.end_date ?? 0,
-      event_name: xEvent?.event_name ?? "Event name",
-      event_desc: xEvent?.event_desc,
-      event_url: xEvent?.event_url,
-      venue_name: xEvent?.venue_name,
-      venue_address: xEvent?.venue_address,
-    });
-  }, [x, setXEvent, xEvent, reset]);
+    if (qEvent) {
+      setx(qEvent);
+      setEvent(qEvent);
+      reset({
+        is_online: qEvent.is_online ?? false,
+        is_private: qEvent.is_private ?? false,
+        category: qEvent.category ?? "party",
+        subcategory: qEvent.subcategory ?? "nightlife",
+        start_date: qEvent.start_date ?? Date.now(),
+        end_date: qEvent.end_date ?? Date.now() + 36000000,
+        event_name: qEvent.event_name,
+        event_desc: qEvent.event_desc,
+        event_url: qEvent.event_url,
+        venue_name: qEvent.event_geo ?? qEvent.venue_name ?? "",
+        venue_address: qEvent.venue_address ?? "",
+      });
+    }
+  }, [qEvent, reset, setEvent]);
 
-  const initialValues: BasicInfo | null = useMemo(() => {
-    if (!xEvent?.event_id) return null;
+  const initialValues: BasicInfoType | null = useMemo(() => {
+    if (!x) return null;
     return {
       event_name,
       event_desc,
@@ -77,16 +96,20 @@ export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
       venue_name,
       venue_address,
       subcategory,
+      start_date,
+      end_date,
     };
   }, [
-    xEvent,
-    category,
-    subcategory,
-    is_online,
-    is_private,
+    x,
+    event_name,
     event_desc,
     event_url,
-    event_name,
+    is_online,
+    is_private,
+    category,
+    subcategory,
+    start_date,
+    end_date,
     venue_name,
     venue_address,
   ]);
@@ -94,18 +117,20 @@ export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
   const { vxEvents } = useConvexCtx();
 
   const updateEventBasicInfo = useCallback(
-    async (id: string, basicInfo: BasicInfo) =>
+    async (id: string, basicInfo: BasicInfoType) =>
       await vxEvents.mut.updateEventBasicInfo({ id, basicInfo }),
     [vxEvents.mut],
   );
 
   const saveFn = useCallback(
-    async (initialValues: BasicInfo | null, fd: FormData) => {
-      if (!xEvent?.event_id) return null;
+    async (initialValues: BasicInfoType | null, fd: FormData) => {
+      if (!event?.event_id) return null;
       const updates = BasicInfoSchema.safeParse({
         event_name: fd.get("event_name") as string,
         event_desc: fd.get("event_desc") as string,
         event_url: fd.get("event_url") as string,
+        venue_name: fd.get("venue_name") as string,
+        venue_address: fd.get("venue_address") as string,
       });
 
       if (updates.error) {
@@ -119,19 +144,16 @@ export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
         ...formData,
         is_online,
         is_private,
+        start_date,
         category,
         subcategory,
-        start_date,
         end_date,
-        venue_name,
-        venue_address,
       };
-      const promise = updateEventBasicInfo(xEvent.event_id, payload);
-
-      await asyncR(promise);
+      const promise = updateEventBasicInfo(event.event_id, payload);
+      await awaitPromise(promise);
       reset(payload);
 
-      return formData;
+      return payload;
     },
     [
       is_online,
@@ -140,11 +162,9 @@ export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
       subcategory,
       start_date,
       end_date,
-      venue_name,
-      venue_address,
       updateEventBasicInfo,
       reset,
-      xEvent?.event_id,
+      event?.event_id,
     ],
   );
 
@@ -221,15 +241,145 @@ export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
     handleChangeEndDate,
   ]);
 
-  const [, action] = useActionState(saveFn, initialValues);
+  const [state, action] = useActionState(saveFn, initialValues);
+
+  const basic_info: EventField[] = useMemo(
+    () => [
+      {
+        name: "event_name",
+        type: "text",
+        label: "Event name",
+        value: state?.event_name ?? event_name,
+        placeholder: "The name of the event",
+        required: true,
+      },
+      {
+        name: "event_desc",
+        type: "text",
+        label: "A brief description of your event.",
+        placeholder: "What best describes your event?",
+        required: false,
+        value: state?.event_desc ?? event_desc,
+      },
+      {
+        name: "event_url",
+        type: "text",
+        label: "Website URL",
+        placeholder: "Your event's official website.",
+        required: false,
+        value: state?.event_url ?? event_url,
+      },
+    ],
+    [
+      event_name,
+      event_desc,
+      event_url,
+      state?.event_url,
+      state?.event_desc,
+      state?.event_name,
+    ],
+  );
+
+  const access_info: EventField[] = useMemo(
+    () => [
+      {
+        name: "is_online",
+        type: "checkbox",
+        checked: state?.is_online,
+        label: "online--onsite",
+        placeholder: "Access.",
+        required: true,
+      },
+      {
+        name: "is_private",
+        type: "checkbox",
+        checked: state?.is_private,
+        label: "private--public",
+        placeholder: "Audience.",
+        required: true,
+      },
+    ],
+    [state],
+  );
+  const cat_info: EventField[] = useMemo(
+    () => [
+      {
+        name: "category",
+        label: "Category",
+        value: state?.category ?? category,
+      },
+      {
+        name: "subcategory",
+        label: "Subcategory",
+        value: state?.subcategory ?? subcategory,
+      },
+    ],
+    [state?.category, state?.subcategory, category, subcategory],
+  );
+
+  const BasicInfoBlock = useCallback(() => {
+    return <FieldBlock data={basic_info} pending={pending} />;
+  }, [basic_info, pending]);
+
+  const VenueFields = useCallback(() => {
+    const handleChangeVenueName = (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      setVenueName(e.target.value);
+    };
+    const handleChangeVenueAddress = (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      setVenueAddress(e.target.value);
+    };
+
+    const venue_fields: EventField[] = [
+      {
+        label: "Event Venue",
+        value: state?.venue_name ?? venue_name,
+        name: "venue_name",
+        type: "text",
+        placeholder: "Venue name",
+        onChange: handleChangeVenueName,
+      },
+      {
+        label: "Complete Address",
+        value: state?.venue_address ?? venue_address,
+        name: "venue_address",
+        type: "text",
+        placeholder: "Venue address",
+        onChange: handleChangeVenueAddress,
+      },
+    ];
+    return (
+      <HyperList
+        container="grid w-full grid-cols-2 gap-6"
+        data={venue_fields}
+        component={FieldItem}
+        keyId="name"
+        delay={0.2}
+      />
+    );
+  }, [venue_name, venue_address, state, setVenueName, setVenueAddress]);
 
   return (
     <Nebula>
       <Form action={action}>
         <div className="grid w-full grid-cols-1 gap-0 pb-6 md:grid-cols-2 md:rounded-lg lg:grid-cols-3 xl:gap-6">
-          <FieldBlock pending={pending} />
-          <TypeAndCategory />
-          <DateTimeVenue />
+          <BasicInfoBlock />
+          <TypeAndCategory>
+            <HyperList
+              keyId="name"
+              container="xl:flex w-full xl:space-y-0 space-y-6 xl:space-x-6"
+              itemStyle="w-full"
+              data={access_info}
+              component={SwitchItem}
+            />
+
+            <CategoryFields data={cat_info} />
+          </TypeAndCategory>
+          <DateTimeVenue>
+            <DateTimeFields />
+            <VenueFields />
+          </DateTimeVenue>
         </div>
         <div className="flex h-24 w-full items-center justify-end px-6">
           <div className="w-full max-w-sm rounded-[9px] border border-secondary bg-coal md:max-w-fit">
@@ -250,46 +400,22 @@ export const BasicContent = ({ xEvent: x, pending }: BasicContentProps) => {
   );
 };
 
-export const TypeAndCategory = () => {
+export const TypeAndCategory = ({ children }: { children: ReactNode }) => {
   return (
     <div className="w-full space-y-6 p-6">
       <BlockHeader label={"Category"} icon={"settings-01"} />
-      <HyperList
-        keyId="name"
-        container="xl:flex w-full xl:space-y-0 space-y-6 xl:space-x-6"
-        itemStyle="w-full"
-        data={access_info}
-        component={SwitchItem}
-      />
-      <CategoryFields />
+      {children}
     </div>
   );
 };
 
-const CategoryFields = () => {
-  const { category, subcategory } = useFormStateBasic();
-
-  const cat_info: EventField[] = useMemo(
-    () => [
-      {
-        name: "category",
-        label: "Category",
-        value: category,
-      },
-      {
-        name: "subcategory",
-        label: "Subcategory",
-        value: subcategory,
-      },
-    ],
-    [category, subcategory],
-  );
+const CategoryFields = ({ data }: { data: EventField[] }) => {
   return (
     <div className="w-full space-y-6">
       <HyperList
         delay={0.1}
         keyId="name"
-        data={cat_info}
+        data={data}
         component={EventDetailItem}
         container="relative w-full space-y-6"
       />
@@ -297,47 +423,23 @@ const CategoryFields = () => {
   );
 };
 
-const DateTimeVenue = () => {
+const DateTimeVenue = ({ children }: { children: ReactNode }) => {
   return (
     <div className="w-full space-y-6 p-6">
       <BlockHeader label={"date, time & venue"} icon={"calendar-setting-01"} />
-      <div className="w-full gap-6">
-        <DateTimeFields />
-      </div>
+      <div className="w-full space-y-6">{children}</div>
     </div>
   );
 };
 
 const DateTimeFields = () => {
-  const {
-    start_date,
-    end_date,
-    setVenueName,
-    setVenueAddress,
-    venue_name,
-    venue_address,
-  } = useFormStateBasic();
+  const { start_date, end_date } = useFormStateBasic();
   const { start_time, end_time } = useMoment({
     start: start_date,
     end: end_date,
   });
 
-  const handleChangeVenueName = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      e.preventDefault();
-      setVenueName(e.target.value);
-    },
-    [setVenueName],
-  );
-  const handleChangeVenueAddress = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      e.preventDefault();
-      setVenueAddress(e.target.value);
-    },
-    [setVenueAddress],
-  );
-
-  const fields: EventField[] = useMemo(
+  const dt_fields: EventField[] = useMemo(
     () => [
       {
         label: "Start・Date・Time",
@@ -349,47 +451,17 @@ const DateTimeFields = () => {
         value: `${end_time.date} ・ ${end_time.full}`,
         name: "end_date",
       },
-      {
-        label: "Event Venue",
-        defaultValue: venue_name,
-        name: "venue_name",
-        placeholder: "Name of event place.",
-        onChange: handleChangeVenueName,
-      },
-      {
-        label: "Complete Address",
-        defaultValue: venue_address,
-        name: "venue_address",
-        placeholder: "Event venue address.",
-        onChange: handleChangeVenueAddress,
-      },
     ],
-    [
-      end_time,
-      start_time,
-      venue_name,
-      venue_address,
-      handleChangeVenueAddress,
-      handleChangeVenueName,
-    ],
+    [end_time, start_time],
   );
 
   return (
-    <div className="w-full space-y-6">
-      <HyperList
-        container="grid w-full grid-cols-2 gap-6"
-        data={fields.slice(0, 2)}
-        component={EventDetailItem}
-        keyId="name"
-        delay={0.1}
-      />
-      <HyperList
-        container="grid w-full grid-cols-1 gap-6"
-        data={fields.slice(2)}
-        component={FieldItem}
-        keyId="name"
-        delay={0.2}
-      />
-    </div>
+    <HyperList
+      container="grid w-full grid-cols-2 gap-6"
+      data={dt_fields}
+      component={EventDetailItem}
+      keyId="name"
+      delay={0.1}
+    />
   );
 };

@@ -1,10 +1,11 @@
-import { type XEvent } from "@/app/types";
+import { type EventField } from "../schema";
 
 export interface BasicContentProps {
-  xEvent: XEvent | null;
+  event_id?: string;
   pending: boolean;
 }
 
 export interface FieldBlockProps {
+  data: EventField[];
   pending: boolean;
 }

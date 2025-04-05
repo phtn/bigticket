@@ -1,13 +1,12 @@
-import { type XEvent } from "@/app/types";
-import { type BasicInfo } from "convex/events/d";
+import { type SelectEvent, type BasicInfo } from "convex/events/d";
 import { create } from "zustand";
 
 interface FormStateBasic {
-  xEvent: XEvent | null;
-  is_online?: boolean;
-  is_private?: boolean;
-  category: string;
-  subcategory: string;
+  event: SelectEvent | null;
+  is_online: boolean;
+  is_private: boolean;
+  category: string | undefined;
+  subcategory: string | undefined;
   start_date: number;
   end_date: number;
   event_name: string;
@@ -15,7 +14,7 @@ interface FormStateBasic {
   event_url: string;
   venue_name: string;
   venue_address: string;
-  setXEvent: (xEvent: XEvent | null) => void;
+  setEvent: (event: SelectEvent | null) => void;
   setIsOnline: (is_online: boolean) => void;
   setIsPrivate: (is_private: boolean) => void;
   setCategory: (category: string) => void;
@@ -31,19 +30,19 @@ interface FormStateBasic {
 }
 
 export const useFormStateBasic = create<FormStateBasic>((set) => ({
-  xEvent: null,
+  event: null,
   is_online: false,
   is_private: false,
   category: "party",
   subcategory: "nightlife",
-  start_date: 0,
-  end_date: 0,
+  start_date: Date.now(),
+  end_date: Date.now() + 36000000,
   event_name: "",
   event_desc: "",
   event_url: "",
   venue_name: "",
   venue_address: "",
-  setXEvent: (xEvent: XEvent | null) => set({ xEvent }),
+  setEvent: (event: SelectEvent | null) => set({ event }),
   setIsOnline: (is_online: boolean) => set({ is_online }),
   setIsPrivate: (is_private: boolean) => set({ is_private }),
   setCategory: (category: string) => set({ category }),

@@ -29,7 +29,7 @@ export const EventEditor = () => {
       {
         value: "info",
         title: "Info",
-        content: <BasicContent xEvent={xEvent} pending={pending} />,
+        content: <BasicContent event_id={event_id} pending={pending} />,
       },
       {
         value: "tickets",
@@ -90,7 +90,7 @@ export const inputClassNames = {
   label: "ps-5 opacity-60 tracking-tight text-[15px] leading-5",
   input: [
     "font-bold tracking-tight shadow-none font-inter bg-white",
-    "placeholder:font-semibold focus:placeholder:opacity-40 placeholder:opacity-100 placeholder:drop-shadow-sm shadow-coal placeholder:text-peach placeholder:text-sm",
+    "placeholder:font-semibold focus:placeholder:opacity-40 placeholder:opacity-100 placeholder:drop-shadow-sm shadow-coal placeholder:text-teal-600 placeholder:text-sm",
     "",
   ],
 };
