@@ -1,5 +1,6 @@
 import { bookmarkEvent, likeEvent } from "@/app/account/(tabs)/events/actions";
 import { useAuth } from "@/app/ctx/auth/provider";
+import { onInfo } from "@/app/ctx/toast";
 import { useUserCtx } from "@/app/ctx/user";
 import { type XEvent } from "@/app/types";
 import { useMoment } from "@/hooks/useMoment";
@@ -125,7 +126,7 @@ export const useEventInfo = (xEvent: XEvent | undefined) => {
           label: "support",
           icon: "customer-support",
           active: false,
-          fn: async () => console.log("support clicked"),
+          fn: async () => onInfo("support clicked"),
         },
         {
           id: 1,

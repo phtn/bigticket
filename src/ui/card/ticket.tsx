@@ -9,6 +9,7 @@ interface TicketStackProps {
   day?: string;
   site?: string;
   time?: string;
+  address?: string;
   tickets?: number;
   color?: string;
 }
@@ -16,6 +17,7 @@ export const TicketStack = ({
   title,
   date,
   tickets,
+  address,
   time,
   site,
   day,
@@ -49,26 +51,29 @@ export const TicketStack = ({
           </h1>
         </div>
         <div className="h-3"></div>
-        <div className="flex h-28 items-end rounded-xl rounded-t-xl">
+        <div className="flex h-28 items-end rounded-xl rounded-t-xl font-sans">
           <div className="flex h-[100px] w-[6.25rem] flex-shrink-0 items-center justify-center rounded-s-md border border-macd-gray bg-chalk">
             <QrOptions />
           </div>
           <div className="h-[100px] w-full rounded-e-md border border-l-0 border-macd-gray bg-chalk">
-            <div className="flex h-1/2 w-full items-center border-b border-macl-gray px-2">
-              <span className="text-lg font-extrabold -tracking-wider">
+            <div className="flex h-1/2 w-full flex-col items-start border-b border-macl-gray px-2">
+              <span className="font-inter text-lg font-bold -tracking-wider">
                 {site}
+              </span>
+              <span className="font-mono text-[11px] tracking-tighter">
+                {address}
               </span>
             </div>
             <div className="flex h-1/4 items-center justify-between whitespace-nowrap px-1">
               <span className="place-self-start font-mono text-[8px] italic tracking-tighter">
                 Date|Time:
               </span>
-              <span className="font-inter text-sm font-semibold tracking-tighter">
+              <span className="text-sm font-semibold tracking-tight">
                 {date}
               </span>
             </div>
-            <div className="flex h-1/4 items-center justify-end gap-1 space-x-0.5 whitespace-nowrap px-1 text-xl font-extrabold -tracking-wider">
-              <span>{day?.substring(0, 3)}</span>
+            <div className="flex h-1/4 items-center justify-end gap-1 space-x-0.5 whitespace-nowrap px-1 font-inter text-xl font-bold tracking-tighter">
+              <span className="uppercase">{day}</span>
               <span className="">&middot;</span>
               <span>{time}</span>
             </div>

@@ -1,19 +1,15 @@
 import type { ClassName } from "@/app/types";
 import { cn } from "@/lib/utils";
-import type { PropsWithChildren, ReactNode } from "react";
+import { useCallback, type PropsWithChildren } from "react";
 import { type DialogProps, Drawer } from "vaul";
+import { type DrawerProps } from "./types";
 
-interface ComponentProps {
-  children: ReactNode;
-  title?: string;
-  description?: string;
-}
 const Component = ({
   children,
   title,
   description,
   ...props
-}: ComponentProps & DialogProps) => {
+}: DrawerProps & DialogProps) => {
   return (
     <Drawer.Root {...props}>
       <Drawer.Portal>
@@ -37,7 +33,7 @@ const BottomComponent = ({
   title,
   description,
   dismissible = false,
-}: ComponentProps & DialogProps) => {
+}: DrawerProps & DialogProps) => {
   return (
     <Drawer.Root
       open={open}
@@ -94,7 +90,13 @@ const FloatingComponent = ({
   title,
   description,
   ...props
-}: ComponentProps & DialogProps) => {
+}: DrawerProps & DialogProps) => {
+  const handleClose = useCallback(() => {
+    if (onOpenChange) {
+      onOpenChange(false);
+    }
+  }, [onOpenChange]);
+
   return (
     <Drawer.Root
       {...props}
@@ -106,7 +108,7 @@ const FloatingComponent = ({
       <Drawer.Portal>
         <Drawer.Content className="fixed bottom-0 right-0 z-[100] flex h-72 flex-col items-center justify-center bg-white/10 outline-none md:w-[30rem] xl:w-[30rem] portrait:w-full">
           <Handle
-            close={() => !open}
+            close={handleClose}
             className="w-12 border-peach bg-peach text-peach"
           />
           <Drawer.Title className="hidden">{title}</Drawer.Title>

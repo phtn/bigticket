@@ -1,3 +1,4 @@
+import { useConvexCtx } from "@/app/ctx/convex";
 import { type XEvent } from "@/app/types";
 import { useMoment } from "@/hooks/useMoment";
 import { Iconx } from "@/icons";
@@ -9,17 +10,31 @@ interface TicketPhotoProps {
   xEvent: XEvent | null;
 }
 export const TicketPhoto = ({ xEvent }: TicketPhotoProps) => {
-  const [ticket_color, setTicketColor] = useState("bg-macl-mint");
-  const { event_time, compact, event_day } = useMoment({
+  const [ticket_color, setTicketColor] = useState(xEvent?.ticket_color);
+  const { vxEvents } = useConvexCtx();
+
+  const updateTicketColor = useCallback(
+    async (color: number) => {
+      if (!xEvent?.event_id) return;
+      await vxEvents.mut.updateTicketColor({
+        id: xEvent?.event_id,
+        ticket_color: color,
+      });
+    },
+    [vxEvents.mut, xEvent],
+  );
+
+  const { event_time, full_date, event_day } = useMoment({
     start: xEvent?.start_date,
     end: xEvent?.end_date,
   });
 
   const handleColorSelect = useCallback(
-    (color: string) => () => {
+    (color: number) => async () => {
       setTicketColor(color);
+      await updateTicketColor(color);
     },
-    [],
+    [updateTicketColor],
   );
   return (
     <div className="relative flex h-full justify-center border-t-0 border-macl-gray bg-white sm:border-t md:rounded-md md:border">
@@ -31,18 +46,19 @@ export const TicketPhoto = ({ xEvent }: TicketPhotoProps) => {
       <div className="flex h-[360px] items-center justify-center bg-tan md:h-[400px]">
         <TicketStack
           title={xEvent?.event_name}
-          date={compact}
+          date={full_date}
           time={event_time.compact}
-          site={xEvent?.event_geo ?? xEvent?.event_url}
+          site={xEvent?.venue_name ?? xEvent?.event_geo ?? xEvent?.event_url}
+          address={xEvent?.venue_address}
           day={event_day}
           tickets={xEvent?.ticket_count}
-          color={ticket_color}
+          color={palette_one?.[ticket_color ?? 5]?.label}
         />
       </div>
       <div className="absolute bottom-0 flex h-20 w-full items-center justify-start overflow-x-scroll border-primary/40 px-4 md:space-x-1.5 md:border-t lg:justify-center lg:space-x-2 lg:px-2">
         {palette_one.map((item) => (
           <button
-            onClick={handleColorSelect(item.label)}
+            onClick={handleColorSelect(item.id)}
             key={item.label + item.id}
             className="relative flex items-center justify-center transition-all duration-300 active:scale-90 active:opacity-80"
           >
@@ -50,7 +66,7 @@ export const TicketPhoto = ({ xEvent }: TicketPhotoProps) => {
             <Iconx
               name="check"
               className={cn("absolute hidden size-3 animate-enter text-white", {
-                flex: ticket_color === item.label,
+                flex: ticket_color === item.id,
               })}
             />
           </button>

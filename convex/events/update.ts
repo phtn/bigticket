@@ -18,7 +18,6 @@ export const status = mutation({
     if (event === null) {
       return null;
     }
-
     await db.patch(event._id, { is_active, updated_at: Date.now() });
     return event._id;
   },
@@ -260,5 +259,40 @@ export const ticketInfo = mutation({
     });
 
     return "success";
+  },
+});
+
+export const ticketColor = mutation({
+  args: { id: v.string(), ticket_color: v.number() },
+  handler: async ({ db }, { id, ticket_color }) => {
+    const event = await checkEvent(db, id);
+    if (event === null) {
+      return null;
+    }
+
+    await db.patch(event._id, { ticket_color, updated_at: Date.now() });
+    return event._id;
+  },
+});
+
+export const cohostConfirmation = mutation({
+  args: { id: v.string(), email: v.string() },
+  handler: async ({ db }, { id, email }) => {
+    const event = await checkEvent(db, id);
+    if (event === null) {
+      return null;
+    }
+
+    const cohost_list =
+      event?.cohost_list?.filter((cohost) => cohost.email === "email") ?? [];
+
+    let cohost = event.cohost_list?.find((cohost) => cohost.email === email);
+    cohost = { ...cohost, email, confirmed: true };
+
+    await db.patch(event._id, {
+      cohost_list: [...cohost_list, cohost],
+      updated_at: Date.now(),
+    });
+    return event._id;
   },
 });

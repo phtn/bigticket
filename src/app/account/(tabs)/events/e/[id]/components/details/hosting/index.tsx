@@ -325,7 +325,7 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
           <div className="flex w-full items-center justify-between">
             <User
               classNames={{
-                name: "whitespace-nowrap font-semibold md:text-sm text-primary ",
+                name: "whitespace-nowrap font-semibold md:text-[15px] font-sans text-primary tracking-normal",
               }}
               avatarProps={{
                 size: "sm",
@@ -334,7 +334,7 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
                   "overflow-hidden md:flex md:ml-2 md:mr-1 bg-macd-blue rounded-full text-chalk md:text-lg flex-grow-0 font-semibold",
               }}
               description={
-                <p className="truncate text-primary/60 md:text-sm">
+                <p className="truncate text-primary/80 md:text-sm">
                   {cohost.email}
                 </p>
               }
@@ -376,10 +376,10 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
                 {/* <span>{cohost.invitation_sent ? "Confirmed" : "Not Sent"}</span> */}
                 <Iconx
                   name={
-                    cohost.invitation_sent
-                      ? "mail-sent"
-                      : cohost.confirmed
-                        ? "mail-received"
+                    cohost.confirmed
+                      ? "mail-received"
+                      : cohost.invitation_sent
+                        ? "mail-sent"
                         : "mail-not-sent"
                   }
                   className={cn("rounded-lg text-macl-gray", {
@@ -472,7 +472,12 @@ export const HostSettings = ({ xEvent, user_id }: CohostContentProps) => {
                     <p className="font-inter text-xs font-semibold tracking-tight">
                       Confirmed
                     </p>
-                    <p className="font-sans text-sm">0</p>
+                    <p className="font-sans text-sm">
+                      {
+                        cohostList.filter((cohost) => cohost.confirmed === true)
+                          .length
+                      }
+                    </p>
                   </div>
                   <SubmitButton loading={pending} state={onEdit} />
                 </div>

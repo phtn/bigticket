@@ -1,7 +1,6 @@
 import { mutation } from "@vx/server";
 import { EventSchema } from "./d";
 import { guid } from "@/utils/helpers";
-import { doc } from "convex/utils";
 import { type GenericDatabaseWriter } from "convex/server";
 import { type DataModel } from "@vx/dataModel";
 
@@ -20,6 +19,7 @@ const create = mutation({
       ...data,
       event_id: data.event_id,
       host_id: data.host_id,
+      ticket_color: 0,
       event_code: guid(),
       updated_at: Date.now(),
     });

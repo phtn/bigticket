@@ -13,11 +13,11 @@ import { FlatWindow } from "@/ui/window";
 import { clearConsole } from "@/utils/helpers";
 import { Spinner } from "@nextui-org/react";
 import { api } from "@vx/api";
-import { type SelectEvent } from "convex/events/d";
 import { useQuery } from "convex/react";
+import { type SelectUser } from "convex/users/d";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  startTransition,
+  memo,
   useCallback,
   useEffect,
   useMemo,
@@ -25,7 +25,6 @@ import {
   useState,
   type ReactNode,
   type RefObject,
-  memo,
 } from "react";
 import {
   ActionPanel,
@@ -50,13 +49,10 @@ import { VIPAccess, VIPNoAccess } from "./components/buttons/vip";
 import { useEventInfo } from "./useEventInfo";
 import { useEventViewer, type Moments } from "./useEventViewer";
 import { useTicketCart } from "./useTicketCart";
-import { type SelectUser } from "convex/users/d";
-
 const tempCache = ["cart", "pcs", "csp", "txn", "tkts", "tktd"];
 
 export const EventViewer = () => {
-  const allEvents = useQuery(api.events.get.all);
-  const [events, setEvents] = useState<SelectEvent[]>();
+  const events = useQuery(api.events.get.all);
 
   const removeTempCache = useCallback(() => {
     tempCache.forEach((key) => localStorage.removeItem(`bigticket_${key}`));
@@ -64,17 +60,12 @@ export const EventViewer = () => {
 
   useEffect(() => {
     removeTempCache();
+    clearConsole();
   }, [removeTempCache]);
 
-  useEffect(() => {
-    if (allEvents) {
-      setEvents(allEvents);
-    }
-  }, [allEvents]);
-
   const searchParams = useSearchParams();
-  const eventId = searchParams.get("x");
   const { xEvents } = useEvents(events ?? []);
+  const eventId = searchParams.get("x");
   const { xEvent, moments } = useEventViewer({ xEvents, eventId });
   const { open, toggle } = useToggle();
   const router = useRouter();
@@ -123,11 +114,14 @@ const useTicketManagement = (
   xEvent: XEvent | undefined,
   xUser: SelectUser | undefined,
 ) => {
-  const [hasClaimed, setHasClaimed] = useState(false);
-
   const isVip = useMemo(
     () => IsVIP(xEvent?.vip_list, xUser?.email),
     [xEvent?.vip_list, xUser?.email],
+  );
+
+  const hasClaimed = useMemo(
+    () => HasClaimedTickets(isVip, xEvent?.vip_list, xUser?.email),
+    [isVip, xEvent?.vip_list, xUser?.email],
   );
 
   const isPrivate = useMemo(
@@ -141,12 +135,6 @@ const useTicketManagement = (
       0,
     [xEvent?.vip_list, xUser?.email],
   );
-
-  useEffect(() => {
-    startTransition(() => {
-      setHasClaimed(HasClaimedTickets(isVip, xEvent?.vip_list, xUser?.email));
-    });
-  }, [isVip, xEvent?.vip_list, xUser?.email]);
 
   return { hasClaimed, isVip, isPrivate, ticketCount };
 };
@@ -272,8 +260,8 @@ const MediaContainer = memo(({ xEvent, moments }: MediaContainerProps) => {
 
   const { setEventDetails } = useCartStore();
 
-  useEffect(() => {
-    setEventDetails({
+  const eventDetails = useMemo(
+    () => ({
       eventId: xEvent?.event_id,
       eventName: xEvent?.event_name,
       eventType: xEvent?.event_type,
@@ -282,8 +270,15 @@ const MediaContainer = memo(({ xEvent, moments }: MediaContainerProps) => {
       eventVenue: xEvent?.venue_name ?? xEvent?.event_geo ?? "Not set",
       eventAddress: xEvent?.venue_address ?? "",
       eventOrganizer: xEvent?.host_name,
-    });
-  }, [xEvent, setEventDetails]);
+    }),
+    [xEvent],
+  );
+
+  useEffect(() => {
+    if (eventDetails.eventId) {
+      setEventDetails(eventDetails);
+    }
+  }, [eventDetails, setEventDetails]);
 
   return (
     <div className="mx-auto h-[calc(100vh-64px)] w-full max-w-6xl overflow-y-scroll font-inter tracking-tight md:h-full md:w-[30rem]">
@@ -352,46 +347,41 @@ interface MediaProps {
   gallery: MediaItem[];
 }
 
-const MediaComponent = ({
-  visible,
-  cover_src,
-  event_name,
-  narrow,
-  time,
-  ref,
-  gallery,
-}: MediaProps) => {
-  const { currentIndex } = useCarousel();
-  const [src, setSrc] = useState<string>("/api/logo");
+const MediaComponent = memo(
+  ({
+    visible,
+    cover_src,
+    event_name,
+    narrow,
+    time,
+    ref,
+    gallery,
+  }: MediaProps) => {
+    const { currentIndex } = useCarousel();
+    const src = useMemo(() => cover_src ?? "/api/logo", [cover_src]);
 
-  useEffect(() => {
-    clearConsole();
-    startTransition(() => {
-      if (!!cover_src) {
-        setSrc(cover_src);
-      }
-    });
-  }, [cover_src]);
+    const data: MediaItem[] = useMemo(
+      () => [
+        {
+          type: "image",
+          title: "cover-for-" + event_name?.toLowerCase(),
+          src,
+          alt: `${event_name?.toLowerCase()}-cover`,
+        },
+        ...gallery,
+      ],
+      [event_name, gallery, src],
+    );
 
-  const data: MediaItem[] = useMemo(
-    () => [
-      {
-        type: "image",
-        title: "cover-for-" + event_name?.toLowerCase(),
-        src: src,
-        alt: `${event_name?.toLowerCase()}-cover`,
-      },
-      ...gallery,
-    ],
-    [event_name, gallery, src],
-  );
+    return (
+      <div className="group/media relative overflow-hidden">
+        <MultiMediaCarousel ref={ref} data={data} />
+        {visible && currentIndex === 0 && (
+          <TitleDisplay event_name={event_name} narrow={narrow} time={time} />
+        )}
+      </div>
+    );
+  },
+);
 
-  return (
-    <div className="group/media relative overflow-hidden">
-      <MultiMediaCarousel ref={ref} data={data} />
-      {visible && currentIndex === 0 && (
-        <TitleDisplay event_name={event_name} narrow={narrow} time={time} />
-      )}
-    </div>
-  );
-};
+MediaComponent.displayName = "MediaComponent";

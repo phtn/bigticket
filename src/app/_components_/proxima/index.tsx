@@ -7,6 +7,7 @@ import { Iconx } from "@/icons";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { type ClassName } from "@/app/types";
+import dynamic from "next/dynamic";
 
 interface Props {
   className?: ClassName;
@@ -178,69 +179,14 @@ const InteractivePanel = () => {
   );
 };
 
-// export const Proxima = () => {
-//   return (
-//     <div className="flex h-full max-h-[50vh] w-full rounded-t-3xl bg-gray-600">
-//       <div className="flex w-full flex-col justify-stretch overflow-clip border border-macd-blue p-4">
-//         {/* <div className="relative z-20 h-full w-full border-[0.33_px] px-4 xl:px-10"></div> */}
+const ProximaFallback = () => (
+  <div className="fixed bottom-0 left-0 right-0 h-16 w-full animate-pulse bg-coal/20" />
+);
 
-//         <div className="z-20 flex h-fit w-full border border-tan text-xs leading-none text-chalk xl:px-10">
-//           <div className="space-y-8 border">
-//             <div className="flex aspect-square h-auto w-20 items-center justify-center rounded-full bg-white">
-//               <Image
-//                 src="/icon/logomark_v2.svg"
-//                 alt="big-ticket-logomark"
-//                 className="size-14"
-//               />
-//             </div>
-
-//             <section className="flex h-fit w-full items-start justify-around space-x-2 border pb-8 text-xs text-chalk">
-//               <div className="h-full py-0.5">
-//                 <Iconx
-//                   name="location-01"
-//                   className="size-3.5 text-chalk drop-shadow-md"
-//                 />
-//               </div>
-//               <div className="space-y-0.5 whitespace-nowrap not-italic opacity-60">
-//                 <address className="not-italic">5F Crissant Plaza Bldg</address>
-//                 <address className="not-italic">272 Commonwealth Ave</address>
-//                 <address className="not-italic">
-//                   Quezon City, 1119 Metro Manila
-//                 </address>
-//               </div>
-//             </section>
-//           </div>
-//           <div className="flex h-full w-full items-end space-x-4"></div>
-//           <div className="flex w-full items-center justify-center"></div>
-//         </div>
-
-//         <div className="relative z-20 flex h-fit w-full items-end justify-between space-x-4 border border-ticket px-4 py-4 text-xs leading-none text-chalk/60 xl:px-10">
-//           <div className="flex items-end space-x-4">
-//             <p className="flex w-fit space-x-2 font-medium tracking-tight">
-//               <span className="font-light">
-//                 &copy;&nbsp;{new Date().getFullYear()}
-//               </span>
-//               <span>BigTicket</span>
-//               <span className="hidden font-light sm:flex">
-//                 Ticketing Services
-//               </span>
-//             </p>
-//           </div>
-//           <div className="flex items-end space-x-1.5 font-inter text-tiny tracking-tight">
-//             <Link href={"/privacy-policy"} className="hover:underline">
-//               <p className="">Privacy Policy</p>
-//             </Link>
-//             <p className="opacity-60">&middot;</p>
-
-//             <Link
-//               href={"/tos"}
-//               className="underline-offset-2 hover:text-secondary hover:underline"
-//             >
-//               <p className="">Terms of Use</p>
-//             </Link>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
+export const DynamicProxima = dynamic(
+  () => import("../../_components_/proxima").then((mod) => mod.Proxima),
+  {
+    ssr: false,
+    loading: () => <ProximaFallback />,
+  },
+);

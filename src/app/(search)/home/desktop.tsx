@@ -6,7 +6,7 @@ import { EventCard } from "../event-card";
 import { Hero } from "./components/hero";
 import { Collections } from "../../_components_/sidebar";
 import { categories, type Category } from "./components/category";
-import { Proxima } from "../../_components_/proxima";
+import { DynamicProxima } from "../../_components_/proxima";
 import { type XEvent } from "@/app/types";
 import { CursorProvider } from "@/app/ctx/cursor";
 import { fetchAndActivate, getValue } from "firebase/remote-config";
@@ -119,7 +119,7 @@ const MainContent = ({ xEvents }: MainContentProps) => {
 
         <div className="h-40"></div>
       </main>
-      <Proxima />
+      <DynamicProxima />
     </div>
   );
 };

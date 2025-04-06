@@ -72,7 +72,8 @@ export const deleteAccountID = async () => {
 };
 ////////////////////
 /// USER_EMAIL
-export const setUserEmail = async (id: string) => {
+export const setUserEmail = async (id: string | undefined) => {
+  if (!id) return;
   const cookieStore = await cookies();
   cookieStore.set("big-ticket--user-email", id, { ...defaultOpts, path: "/" });
 };

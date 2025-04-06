@@ -7,7 +7,7 @@ import { env } from "@/env";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { onError } from "@/app/ctx/toast";
 import { useSession } from "./useSession";
-import { setUserID } from "@/app/actions";
+import { setUserEmail, setUserID } from "@/app/actions";
 import { log } from "@/utils/logger";
 import { useAuthStore } from "./store";
 
@@ -91,6 +91,7 @@ export const GoogleOneTap = () => {
             } else {
               updateUser(data.user);
               await setUserID(data.user.id);
+              await setUserEmail(data.user.email);
             }
           } catch (err) {
             log("Error authenticating", typeof err === "object" ? err : null);

@@ -10,6 +10,7 @@ export const useVxEvents = () => {
     updateEventVIP: useMutation(api.events.update.vip),
     updateEventViews: useMutation(api.events.update.views),
     updateEventStatus: useMutation(api.events.update.status),
+    updateTicketColor: useMutation(api.events.update.ticketColor),
     updateCoverUrl: useMutation(api.events.update.cover_url),
     updatePhotoUrl: useMutation(api.events.update.photo_url),
     updateEventCohost: useMutation(api.events.update.cohost),
@@ -17,6 +18,7 @@ export const useVxEvents = () => {
     updateEventBasicInfo: useMutation(api.events.update.basicInfo),
     updateEventTicketInfo: useMutation(api.events.update.ticketInfo),
     updateEventIsCoverLight: useMutation(api.events.update.isCoverLight),
+    updateCohostConfirmation: useMutation(api.events.update.cohostConfirmation),
   };
 
   const qry = {

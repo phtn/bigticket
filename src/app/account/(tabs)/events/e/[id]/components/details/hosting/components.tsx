@@ -124,24 +124,24 @@ export const Reference = () => {
   const reference_items = [
     { icon: "key", label: "Access Clearances" },
     { icon: "mail-send", label: "Invitation Sent Status" },
-    { icon: "mail-not-sent", label: "Not Sent" },
+    { icon: "mail-not-sent", label: "Invitation Not Sent" },
     {
       icon: "mail-sent",
-      label: "Email Sent",
+      label: "Invitation Sent",
       style:
         "text-macl-blue bg-gradient-to-b from-blue-400/15 via-sky-300/10 to-transparent",
     },
     {
       icon: "mail-received",
-      label: "Invitation Received & Confirmed",
+      label: "Invitation Sent, Received & Confirmed",
       style:
         "text-teal-600 bg-gradient-to-b from-teal-400/15 via-teal-300/10 to-transparent",
     },
   ] as LegendItemProps[];
 
   const access_items = [
-    { style: "bg-warning", label: "Add VIP" },
     { style: "bg-secondary", label: "Scan Code" },
+    { style: "bg-warning", label: "Add VIP" },
     { style: "bg-danger", label: "View Guest List" },
   ] as LegendItemProps[];
 

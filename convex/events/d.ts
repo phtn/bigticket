@@ -190,6 +190,7 @@ export const EventSchema = v.object({
   tickets_refunded: v.optional(v.number()),
   tickets_voided: v.optional(v.number()),
 
+  ticket_color: v.optional(v.number()),
   total_attendees: v.optional(v.number()),
   // VIP
   vip_list: v.optional(v.array(VIPSchema)),
