@@ -1,3 +1,3 @@
-import { Content } from "./content";
-const Page = async () => <Content />;
+import { QrScanView } from "./content";
+const Page = async () => <QrScanView />;
 export default Page;

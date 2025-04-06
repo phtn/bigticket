@@ -3,9 +3,11 @@
 import { LiveViewCtx, LiveViewCtxProvider } from "./ctx";
 import { use, useCallback, useEffect } from "react";
 import { Image } from "@nextui-org/react";
-import { ScanCode } from "./components/scanner";
+// import { ScanCode } from "./components/scanner";
 import { cn } from "@/lib/utils";
 import { Iconx } from "@/icons";
+import { Scanner } from "./components/qr-scanner";
+import { useToggle } from "@/hooks/useToggle";
 
 export const Content = () => (
   <LiveViewCtxProvider>
@@ -94,9 +96,77 @@ const LiveView = () => {
             className={cn("size-7", { "text-peach": open })}
           />
         </button>
-        {open && (
+        {/* {open && (
           <div className="fixed top-36 z-50 h-fit w-full md:left-1/4 md:flex md:h-[36rem] md:w-fit md:justify-center">
-            <ScanCode />
+            <Scanner on={open} />
+          </div>
+        )} */}
+        {open && (
+          <div className="fixed top-0 z-50 h-fit w-full md:left-1/4 md:flex md:h-[36rem] md:w-fit md:justify-center">
+            <Scanner on={open} toggle={toggle} />
+          </div>
+        )}
+      </div>
+    </main>
+  );
+};
+
+export const QrScanView = () => {
+  const { open, toggle } = useToggle();
+  // const TitleSection = useCallback(
+  //   () => (
+  //     <section className="absolute left-4 top-4 z-50 w-full overflow-clip text-ellipsis bg-ticket/30 backdrop-blur-md">
+  //       <p className="max-w-[45ch] bg-gradient-to-br from-white/60 via-white/80 to-white/60 bg-clip-text text-tiny font-bold uppercase text-transparent">
+  //         {event?.venue_name ?? event?.event_geo}
+  //       </p>
+  //       <h4 className="p-[1px font-inter text-xl font-bold capitalize tracking-tight text-chalk shadow-coal drop-shadow-sm">
+  //         {event?.event_name}
+  //       </h4>
+  //     </section>
+  //   ),
+  //   [event?.event_geo, event?.venue_name, event?.event_name],
+  // );
+  return (
+    <main className="flex h-[calc(100vh-65px)] justify-center overflow-hidden bg-void">
+      <div className="container h-full w-full">
+        <div className="relative h-3/6 md:h-4/6">
+          <h4 className="p-[1px font-inter text-xl font-bold capitalize tracking-tight text-chalk shadow-coal drop-shadow-sm">
+            QR-SCANNER
+          </h4>
+          {/* <TitleSection /> */}
+          <div className="grid h-8 w-full grid-cols-3 items-center tracking-tighter">
+            <div className="flex w-full items-center justify-between bg-white px-6">
+              {/* <span>Tickets</span> <span>{event?.ticket_count}</span> */}
+            </div>
+            <div className="flex w-full items-center justify-between bg-teal-500 px-6">
+              {/* <span>Scanned</span> <span>{event?.ticket_count}</span> */}
+            </div>
+            <div className="flex w-full items-center justify-between bg-peach px-6">
+              {/* <span>Remaining</span> <span>{event?.ticket_count}</span> */}
+            </div>
+          </div>
+        </div>
+        <div className="h-3/6 md:h-2/6">
+          <div className="size-full">
+            <div className="h-3/6"></div>
+            <div className="h-3/6 w-full bg-peach"></div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center">
+          <button
+            onClick={toggle}
+            className="fixed bottom-10 z-50 flex size-16 items-center justify-center rounded-full border border-teal-300 bg-primary transition-all duration-300 active:scale-90 active:bg-gray-600 active:text-chalk"
+          >
+            <Iconx
+              name="qr-code"
+              className={cn("size-7 text-teal-400", { "text-peach": open })}
+            />
+          </button>
+        </div>
+        {open && (
+          <div className="fixed top-0 z-50 h-fit w-full md:left-1/4 md:flex md:h-[36rem] md:w-fit md:justify-center">
+            <Scanner on={open} toggle={toggle} />
           </div>
         )}
       </div>

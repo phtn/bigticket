@@ -288,9 +288,16 @@ export const cohostConfirmation = mutation({
 
     let cohost = event.cohost_list?.find((cohost) => cohost.email === email);
     cohost = { ...cohost, email, confirmed: true };
+    const cohost_email_list = event?.cohost_email_list ?? [email];
+    if (cohost_email_list) {
+      if (!cohost_email_list.includes(email)) {
+        cohost_email_list.push(email);
+      }
+    }
 
     await db.patch(event._id, {
       cohost_list: [...cohost_list, cohost],
+      cohost_email_list,
       updated_at: Date.now(),
     });
     return event._id;

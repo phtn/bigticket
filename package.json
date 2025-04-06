@@ -65,6 +65,7 @@
     "nodemailer-express-handlebars": "^7.0.0",
     "pexels": "^1.4.0",
     "qr-code-styling": "^1.9.1",
+    "qr-scanner": "^1.4.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
