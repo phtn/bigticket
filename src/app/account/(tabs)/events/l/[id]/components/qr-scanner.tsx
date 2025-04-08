@@ -1,99 +1,103 @@
-import "./styles.css";
-import { useCallback, useEffect, useRef, useState } from "react";
-import QRScanner from "qr-scanner";
-import type QrScanner from "qr-scanner";
-import { Err } from "@/utils/helpers";
+import { useSoundFX } from "@/hooks/use-sfx";
 import { Iconx } from "@/icons";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+import { Particles } from "@/ui/loader/particles";
+import { Err } from "@/utils/helpers";
+import type QrScanner from "qr-scanner";
+import QRScanner from "qr-scanner";
+import {
+  type RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import "./styles.css";
 
 interface QrScannerProps {
   on: boolean;
-  toggle: VoidFunction;
+  closeFn: VoidFunction;
+  ref: RefObject<QrScanner | null>;
 }
 
-export const Scanner = ({ on, toggle }: QrScannerProps) => {
-  const [qrOn, setQrOn] = useState<boolean>(on);
-
+export const Scanner = ({ on, closeFn, ref }: QrScannerProps) => {
   const v = useRef<HTMLVideoElement>(null);
   const b = useRef<HTMLDivElement>(null);
-  const s = useRef<QrScanner | null>(null);
+  // const s = useRef<QrScanner | null>(null);
+  const { startSFX } = useSoundFX();
 
   const [scannedResult, setScannedResult] =
     useState<QrScanner.ScanResult | null>(null);
+
   const onScanSuccess = useCallback((result: QrScanner.ScanResult) => {
-    console.log(result);
     setScannedResult(result);
+    console.log(result);
   }, []);
 
   const onScanFail = useCallback((error: string | Error) => {
-    console.log(error);
+    console.log("QR Scan failed:", error);
   }, []);
 
-  const handlerStartQr = useCallback(() => {
-    setQrOn(true);
-  }, []);
-
-  const handlerStopQr = useCallback(() => {
-    setQrOn(false);
-
-    toggle();
-  }, [toggle]);
-
+  // Initialize QR Scanner
   useEffect(() => {
-    let vref: HTMLVideoElement | null = null;
-    if (v.current && !s.current) {
-      vref = v.current;
-      s.current = new QRScanner(v.current, onScanSuccess, {
-        onDecodeError: onScanFail,
-        preferredCamera: "environment",
-        highlightScanRegion: true,
-        highlightCodeOutline: true,
-        overlay: b.current ?? undefined,
-      });
-      s.current.start().then(handlerStartQr).catch(Err);
-    }
+    if (!v.current || ref.current) return;
+
+    ref.current = new QRScanner(v.current, onScanSuccess, {
+      onDecodeError: onScanFail,
+      preferredCamera: "environment",
+      highlightScanRegion: true,
+      highlightCodeOutline: true,
+      overlay: b.current ?? undefined,
+    });
 
     return () => {
-      if (!vref) {
-        s.current?.stop();
-      }
+      ref.current?.destroy();
+      ref.current = null;
     };
-  });
+  }, [onScanSuccess, onScanFail, ref]);
 
+  // Handle scanner state
   useEffect(() => {
-    if (qrOn) {
-      s.current?.start().catch(Err);
+    if (on) {
+      ref.current
+        ?.start()
+        .then(() => startSFX())
+        .catch(Err);
     } else {
-      s.current?.stop();
+      ref.current?.stop();
     }
-  }, [qrOn]);
+  }, [on, startSFX, ref]);
 
   return (
-    <div className="qr-reader w-full">
+    <div className="qr-reader max-w-sm">
       <video ref={v} className=""></video>
       <div ref={b} className="qr-box relative">
-        <Iconx
-          name="spinners-pulse-rings-multiple"
-          className="absolute left-10 top-10 size-16 text-teal-200"
-        />
-        <Image
-          src={"/svg/reader.svg"}
-          alt="qr-frame"
-          width={0}
-          height={0}
-          className="qr-frame aspect-square size-full scale-125 animate-pulse"
-        />
+        <div className="qr-frame flex h-full items-center px-6">
+          <div className="qr-frame-corner flex h-80 w-full items-center justify-center rounded-3xl border-4 border-teal-400/60">
+            <div className="h-16 w-full border-b border-teal-100/60 bg-gradient-to-t from-teal-200/20 via-teal-300/10 to-transparent">
+              <Particles
+                vy={-0.5}
+                className="relative inset-0 z-[80] h-16 select-none opacity-60"
+                quantity={69}
+                color="#fff"
+                ease={20}
+                refresh
+              />
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="flex items-center justify-center">
-        <button
-          onClick={handlerStopQr}
-          className={cn(
-            "fixed bottom-10 z-50 flex size-16 items-center justify-center rounded-full border bg-chalk transition-all duration-300 active:scale-90 active:bg-gray-600 active:text-chalk",
-          )}
-        >
-          <Iconx name="stop-bold" className="size-7 text-primary" />
-        </button>
+      <div className="relative z-[100] hidden items-center justify-center">
+        <div className="fixed bottom-10 z-[100] flex items-center justify-center rounded-full border-2 border-coal/30 bg-coal/30 p-1.5">
+          <button
+            onClick={closeFn}
+            className={cn(
+              "relative z-[100] flex size-16 items-center justify-center rounded-full border-2 border-teal-400 bg-void transition-all duration-300 active:scale-90 active:bg-gray-600 active:text-chalk",
+            )}
+          >
+            <Iconx name="stop-bold" className="size-7 text-teal-300" />
+          </button>
+        </div>
       </div>
       <div className="fixed bottom-0 flex h-10 w-full items-center bg-peach px-6">
         {scannedResult ? (

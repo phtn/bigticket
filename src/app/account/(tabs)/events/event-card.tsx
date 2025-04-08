@@ -9,7 +9,12 @@ import { BtnIcon } from "@/ui/button";
 import { opts } from "@/utils/helpers";
 import { Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { type ButtonHTMLAttributes, type ReactNode, useCallback } from "react";
+import {
+  type ButtonHTMLAttributes,
+  type ReactNode,
+  useCallback,
+  useState,
+} from "react";
 
 export const EventCardAccount = (xEvent: XEvent) => {
   const {
@@ -27,26 +32,38 @@ export const EventCardAccount = (xEvent: XEvent) => {
     end: end_date,
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
   const handleEditRoute = useCallback(async () => {
     const userId = await getUserID();
     if (!userId) return;
+    setIsLoading(true);
     router.push(`/account/events/e/${event_id}---${userId}`);
   }, [router, event_id]);
 
   const handleLiveViewRoute = useCallback(async () => {
     const userId = await getUserID();
     if (!userId) return;
+    setIsLoading(true);
     router.push(`/account/events/l/${event_id}---${userId.split("-").pop()}`);
   }, [router, event_id]);
 
   const EventButtonOptions = useCallback(() => {
     const options = opts(
-      <LiveViewButton event_id={event_id} onClick={handleLiveViewRoute} />,
-      <EditButton event_id={event_id} onClick={handleEditRoute} />,
+      <LiveViewButton
+        isLoading={isLoading}
+        event_id={event_id}
+        onClick={handleLiveViewRoute}
+      />,
+      <EditButton
+        isLoading={isLoading}
+        event_id={event_id}
+        onClick={handleEditRoute}
+      />,
     );
     return <>{options.get(is_active ?? false)}</>;
-  }, [event_id, handleEditRoute, handleLiveViewRoute, is_active]);
+  }, [event_id, handleEditRoute, handleLiveViewRoute, is_active, isLoading]);
 
   const DateTime = useCallback(
     () => (
@@ -162,6 +179,7 @@ const Footer = ({ children }: { children: ReactNode }) => {
 };
 
 interface EventButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  isLoading: boolean;
   event_id?: string;
 }
 
@@ -174,10 +192,10 @@ const EditButton = (props: EventButtonProps) => {
         "active:scale-95 active:opacity-90",
         "group/btn transition-all duration-300",
       )}
-      {...props}
+      onClick={props.onClick}
     >
       <Iconx
-        name={"pencil-edit-01"}
+        name={props.isLoading ? "spinner-ring" : "pencil-edit-01"}
         className="size-5 text-chalk shadow-coal drop-shadow-sm group-hover/btn:text-white"
       />
     </button>

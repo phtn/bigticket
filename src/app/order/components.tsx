@@ -131,7 +131,7 @@ export const ProductImage = memo(
           isBlurred
           disableAnimation
           className={cn(
-            "aspect-auto rounded-xl border-default-400/60 bg-white md:h-36 md:w-40 portrait:h-20 portrait:w-24",
+            "aspect-auto max-h-40 w-auto rounded-xl border-default-400/60 bg-white md:w-40 portrait:h-16",
           )}
         />
       </Badge>
@@ -212,7 +212,7 @@ export const CartItem = memo(({ item, quantity, fn }: CartItemProps) => {
           </div>
         </div>
 
-        <div className="flex h-full w-full cursor-pointer items-end justify-between md:p-2 xl:space-x-4">
+        <div className="flex h-full w-full cursor-pointer items-end justify-between md:p-2 xl:space-x-1">
           <Pricing price={price} unit={"ticket"} />
           <QuantityControls disabled={isDisabled} handlers={handlers} />
         </div>
@@ -224,7 +224,7 @@ CartItem.displayName = "CartItem";
 
 const LineItemTitle = ({ value }: { value?: string }) => (
   <div className={cn("mb-2 h-fit w-full truncate lg:mb-1")}>
-    <p className="whitespace-pre-wrap text-lg font-bold leading-5 tracking-tight lg:text-2xl">
+    <p className="whitespace-pre-wrap font-inter text-lg font-extrabold leading-5 tracking-tighter lg:text-2xl">
       {value}
     </p>
   </div>
@@ -233,16 +233,18 @@ const LineItemTitle = ({ value }: { value?: string }) => (
 const LineItemDetail = (item: ItemDetail) => (
   <div className="flex items-center">
     <Iconx name={item.icon} className="mr-2.5 size-3.5 opacity-60 md:mr-3" />
-    <p className="text-sm capitalize tracking-tight">{item.value}</p>
+    <p className="text-sm font-medium capitalize tracking-tight">
+      {item.value}
+    </p>
   </div>
 );
 
 const Pricing = ({ price, unit }: PricingProps) => {
   return (
-    <div className="flex items-center space-x-2 font-inter">
-      <p className="text-lg text-primary">{price}</p>
+    <div className="flex items-center space-x-1.5 font-inter">
+      <p className="text-lg text-primary">₱{price}</p>
       <span className="text-sm tracking-tighter opacity-70">
-        per <span className="pl-1.5">{unit}</span>
+        per <span className="pl-0.5">{unit}</span>
       </span>
     </div>
   );
@@ -252,7 +254,7 @@ const QuantityControls = ({ disabled, handlers }: QuantityControlProps) => {
   return (
     <div
       className={cn(
-        "flex h-fit items-end space-x-4 rounded-full border-[0.33px] border-primary/10 bg-gray-400/60 p-1 opacity-100 md:h-fit md:items-center xl:space-x-4",
+        "flex h-fit items-end space-x-4 rounded-full border-[0.33px] border-primary/10 bg-macl-gray/60 p-1 opacity-100 md:h-fit md:items-center xl:space-x-4",
         { "space-x-0": disabled },
       )}
     >

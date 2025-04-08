@@ -68,7 +68,7 @@ export const EventEditor = () => {
           <Carousel className="md:max-h-[480px]">
             <div className="grid h-fit w-full grid-cols-1 gap-10 md:min-h-[400px] md:grid-cols-2 md:gap-6 md:px-4">
               <CoverPhoto id={event_id} cover_url={xEvent?.cover_url} />
-              <TicketPhoto xEvent={xEvent} />
+              <TicketPhoto />
             </div>
           </Carousel>
         </div>

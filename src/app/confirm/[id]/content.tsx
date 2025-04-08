@@ -58,7 +58,7 @@ export const Content = ({ id }: { id: string }) => {
   };
   return (
     <div className="border-t border-macl-gray">
-      <main className="flex justify-center p-20">
+      <main className="flex justify-center px-6 py-14 md:p-20">
         <ConfirmationCard />
       </main>
       <div
@@ -72,7 +72,7 @@ export const Content = ({ id }: { id: string }) => {
       </div>
 
       <div className="pt-64">
-        <DynamicProxima className="text-primary" />
+        <DynamicProxima className="border-t-8 border-macl-gray bg-primary pt-8 text-chalk" />
       </div>
     </div>
   );
@@ -84,11 +84,11 @@ interface ConfirmProps {
 }
 
 const Cohosted = ({ confirmFn, loading }: ConfirmProps) => (
-  <div className="flex h-96 items-center justify-center rounded-md border border-primary bg-white drop-shadow-md md:w-1/2">
-    <div className="space-y-16 text-center">
-      <h1 className="text-3xl font-bold md:text-4xl">
+  <div className="flex h-64 w-full items-center justify-center rounded-md border border-primary bg-white drop-shadow-md md:h-96 md:w-1/2">
+    <div className="space-y-10 text-center md:space-y-16">
+      <h1 className="text-xl font-bold md:text-4xl">
         Accept
-        <span className="mx-3 rounded-lg bg-peach px-2 text-white md:rounded-xl">
+        <span className="mx-3 rounded-lg bg-peach px-2 tracking-tighter text-white md:rounded-xl">
           Co-host
         </span>
         Invite?
@@ -105,7 +105,7 @@ const Cohosted = ({ confirmFn, loading }: ConfirmProps) => (
               <Spinner size="sm" color="secondary" />
             </div>
           ) : (
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 text-sm">
               <span className="flex space-x-1.5 font-bold text-teal-400">
                 <span className="font-extrabold md:hidden">Tap</span>
                 <span className="hidden font-extrabold md:flex">Click</span>

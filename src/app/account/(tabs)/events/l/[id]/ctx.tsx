@@ -7,12 +7,16 @@ import { useToggle } from "@/hooks/useToggle";
 import { Err } from "@/utils/helpers";
 import { type IDetectedBarcode } from "@yudiel/react-qr-scanner";
 import { type SelectEvent } from "convex/events/d";
+import { useQuery } from "convex/react";
+import { api } from "@vx/api";
 import { usePathname } from "next/navigation";
 import {
   createContext,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   useTransition,
 } from "react";
@@ -21,7 +25,11 @@ import type {
   Dispatch,
   SetStateAction,
   TransitionStartFunction,
+  RefObject,
 } from "react";
+import { useConvexUtils } from "@/app/ctx/convex/useConvexUtils";
+import type QrScanner from "qr-scanner";
+import { useSoundFX } from "@/hooks/use-sfx";
 
 interface TicketData {
   user_account: string | undefined;
@@ -38,6 +46,8 @@ interface LiveViewCtxValues {
   getQrcode: (data: IDetectedBarcode[]) => void;
   qrcode: string | null;
   ticket_data: TicketData | null;
+  closeScanner: VoidFunction;
+  scannerRef: RefObject<QrScanner | null>;
 }
 export const LiveViewCtx = createContext<LiveViewCtxValues | null>(null);
 
@@ -51,16 +61,11 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const ids = pathname.split("/").pop();
   const [event_id] = ids?.split("---") ?? ["", ""];
-
   const [pending, fn] = useTransition();
   const { open, toggle } = useToggle();
-  const [event, setEvent] = useState<SelectEvent | null>(null);
 
-  const { vxFiles, vxUsers, vxEvents } = useConvexCtx();
-
-  const getEventById = vxEvents.qry.getEventById as (
-    id: string,
-  ) => SelectEvent | null;
+  const { vxFiles, vxUsers } = useConvexCtx();
+  const { q } = useConvexUtils();
 
   const setFn = <T,>(
     tx: TransitionStartFunction,
@@ -72,19 +77,7 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  useEffect(() => {
-    if (event_id) {
-      setFn(
-        fn,
-        async () => {
-          const event = getEventById(event_id);
-          setEvent(event);
-          return event;
-        },
-        setEvent,
-      );
-    }
-  }, [event_id, getEventById]);
+  const event = useQuery(api.events.get.byId, { id: q(event_id) }) ?? null;
 
   useEffect(() => {
     if (event?.cover_url) {
@@ -170,6 +163,15 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
     console.log(pending, event_id);
   }, [pending, event_id]);
 
+  const scannerRef = useRef<QrScanner | null>(null);
+  const { stopSFX } = useSoundFX();
+
+  const closeScanner = useCallback(() => {
+    scannerRef.current?.stop();
+    stopSFX();
+    toggle();
+  }, [stopSFX, toggle, scannerRef]);
+
   const value = useMemo(
     () => ({
       event,
@@ -181,6 +183,8 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
       getQrcode,
       qrcode,
       ticket_data,
+      closeScanner,
+      scannerRef,
     }),
     [
       event,
@@ -192,7 +196,17 @@ export const LiveViewCtxProvider = ({ children }: { children: ReactNode }) => {
       getQrcode,
       qrcode,
       ticket_data,
+      closeScanner,
+      scannerRef,
     ],
   );
   return <LiveViewCtx value={value}>{children}</LiveViewCtx>;
+};
+
+export const useScanView = () => {
+  const context = useContext(LiveViewCtx);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };

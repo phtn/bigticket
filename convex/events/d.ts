@@ -187,6 +187,7 @@ export const EventSchema = v.object({
   ticket_value: v.optional(v.number()),
   is_paid: v.optional(v.boolean()),
 
+  tickets_scanned_count: v.optional(v.number()),
   tickets_refunded: v.optional(v.number()),
   tickets_voided: v.optional(v.number()),
 

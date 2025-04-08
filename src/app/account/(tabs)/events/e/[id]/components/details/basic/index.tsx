@@ -351,7 +351,7 @@ export const BasicContent = ({ event_id, pending }: BasicContentProps) => {
     ];
     return (
       <HyperList
-        container="grid w-full grid-cols-2 gap-6"
+        container="w-full space-y-6"
         data={venue_fields}
         component={FieldItem}
         keyId="name"

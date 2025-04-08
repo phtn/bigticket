@@ -18,12 +18,15 @@ export const Content = ({
 }: {
   status: PaymentStatus & "cancelled";
 }) => {
-  const { paymentDetails, isPaid, isProcessing } = usePayments();
+  const { paymentDetails, isPaid, isProcessing } = usePayments(
+    undefined,
+    status,
+  );
 
   const updatedStatus = useMemo(() => {
     switch (status) {
       case "success":
-        return isProcessing ? "Processing" : isPaid ? "Successful" : "Pending";
+        return isProcessing ? "Processing" : isPaid ? "Successful" : "Complete";
       case "fail":
         return isProcessing ? "Processing" : "Failed";
       case "cancelled":
@@ -126,7 +129,7 @@ export const Content = ({
   };
 
   const LoaderOptions = useCallback(() => {
-    const awaitingConfirmation = isProcessing || !isPaid;
+    const awaitingConfirmation = isProcessing && !isPaid;
     const options = opts(
       <Spinner
         size="lg"
@@ -136,7 +139,9 @@ export const Content = ({
       <Iconx
         name={isProcessing ? "spinner-ring" : "confirm-circle"}
         strokeWidth={0}
-        className="size-[64px] text-secondary"
+        className={cn("size-[64px] text-secondary", {
+          "text-macl-blue": !isPaid,
+        })}
       />,
     );
     return (
@@ -189,7 +194,13 @@ export const Content = ({
                   className="absolute will-change-transform"
                   initial={{ x: 70 }}
                   animate={{
-                    x: !isProcessing && isPaid ? -80 : 70,
+                    x: isProcessing
+                      ? 70
+                      : isPaid
+                        ? -80
+                        : status === "cancelled"
+                          ? -70
+                          : -70,
                     transition: {
                       duration: 1.8,
                       damping: 12,
@@ -203,7 +214,7 @@ export const Content = ({
                   Payment
                 </motion.span>
                 <AnimatePresence>
-                  {!isProcessing && isPaid && (
+                  {!isProcessing && (
                     <motion.span
                       style={{ containIntrinsicSize: "auto" }}
                       className="absolute will-change-transform"
@@ -238,13 +249,20 @@ export const Content = ({
                     className={cn(
                       "flex w-fit items-center rounded-full px-3 py-1",
                       "border-3 text-sm font-medium transition-all duration-300",
-                      "border-gray-100 bg-white text-teal-700",
-                      { "bg-teal-300/5": isPaid },
+                      "border-gray-100 bg-white tracking-tight text-teal-700",
+                      {
+                        "bg-teal-300/5": isPaid,
+                        "border-macd-blue/25": !isPaid,
+                      },
                     )}
                   >
-                    {isProcessing || !isPaid ? (
+                    {isProcessing && !isPaid ? (
                       <span className="animate-pulse text-macl-gray duration-500">
                         Receiving payment confirmation
+                      </span>
+                    ) : !isProcessing && !isPaid ? (
+                      <span className="animate-enter text-macl-blue">
+                        This transaction has been completed.
                       </span>
                     ) : (
                       <span className="animate-enter">
@@ -263,7 +281,7 @@ export const Content = ({
             ref={receiptRef}
             className="flex h-[460px] w-[340px] items-center px-4 md:w-screen"
           >
-            {isProcessing && !isPaid ? null : (
+            {isPaid && (
               <Receipt
                 data={paymentDetails}
                 shareFn={handleShare}
