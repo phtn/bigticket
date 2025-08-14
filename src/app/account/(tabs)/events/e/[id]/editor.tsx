@@ -5,15 +5,15 @@ import { type JSX, useMemo } from "react";
 import { CoverPhoto } from "./components/cover-photo";
 import { EventDetails } from "./components/details";
 import { BasicContent } from "./components/details/basic";
-import { EventDetailCtxProvider } from "./components/details/ctx";
 import { HostSettings } from "./components/details/hosting";
 import { MediaContent } from "./components/details/media";
+import { TicketContent } from "./components/details/ticket";
 import { VIPContent } from "./components/details/vip";
+import { EventDetailCtxProvider } from "./components/email/ctx";
 import { ImageQuery } from "./components/pexels";
 import { TicketPhoto } from "./components/ticket-photo";
 import { Topbar } from "./components/topbar";
 import { useEventEditor } from "./ctx";
-import { TicketContent } from "./components/details/ticket";
 
 export interface TabItem {
   title: string;

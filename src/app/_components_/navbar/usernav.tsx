@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { Hyper } from "@/ui/button/button";
 import { BtnIcon } from "@/ui/button/button-icon";
 import { HyperList } from "@/ui/list";
-import { TextLoader } from "@/ui/loader/text";
 import { clearConsole, opts } from "@/utils/helpers";
 import {
   Avatar,
@@ -74,18 +73,27 @@ const UserSign = () => {
     clearConsole();
   }, []);
 
+  const UserSignin = () => {
+    return (
+      <div className="flex items-center justify-center gap-x-3.5">
+        <span className="text-zinc-600">Sign in with</span>
+        <span className="">
+          <Iconx name="google" className="size-5" />
+        </span>
+      </div>
+    );
+  };
+
   return (
-    <div className="absolute right-0 flex h-16 w-fit items-center px-4">
-      {ready ? (
+    <div className="absolute right-0 flex h-9 w-fit items-center px-3">
+      {ready && (
         <Hyper
-          onClick={handleSignin}
           compact
-          label="Sign in"
-          className="small-ticket bg-ticket/40 text-chalk hover:bg-teal-500 hover:text-white"
+          onClick={handleSignin}
+          label={<UserSignin />}
+          className="rounded bg-transparent text-base hover:bg-ticket/10"
           dim
         />
-      ) : (
-        <TextLoader color="text-ticket" />
       )}
     </div>
   );

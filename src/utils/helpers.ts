@@ -38,7 +38,6 @@ export const charLimit = (
   if (!text) return;
   return text.substring(0, chars ?? 35);
 };
-
 export const copyFn: CopyFn = async ({ name, text }) => {
   if (!navigator?.clipboard) {
     onWarn("Clipboard not supported");

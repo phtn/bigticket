@@ -37,7 +37,7 @@ export const Tickets = () => (
   <div className="relative left-4 z-0 flex size-6 items-center justify-center">
     <Iconx
       name="ticket-fill"
-      className="absolute -bottom-[2px] -left-1 size-7 -rotate-[155deg] stroke-white text-macl-mint opacity-80"
+      className="absolute -bottom-[0px] -left-0.5 size-7 -rotate-[135deg] scale-95 stroke-white text-macl-mint"
     />
     <Iconx
       name="ticket-fill"

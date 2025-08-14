@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getRemoteConfig } from "firebase/remote-config";
 import { getStorage } from "firebase/storage";
 import { env } from "@/env";
@@ -15,6 +16,7 @@ const config = {
 
 // Initialize Firebase
 const app = initializeApp(config);
+export const auth = getAuth(app);
 export const remoteConfig = getRemoteConfig(app);
 remoteConfig.settings.minimumFetchIntervalMillis = 3600000;
 export const storage = getStorage(app);

@@ -1,28 +1,7 @@
-import { Toaster, ToastBar } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 import { toast } from "react-hot-toast";
-import { Button } from "@nextui-org/react";
 import { Iconx } from "@/icons";
-
-export const barToast = () => (
-  <Toaster>
-    {(t) => (
-      <ToastBar toast={t}>
-        {() => (
-          <>
-            <Iconx name="energy" className="text-red-500" />
-            <p>Butt fuck yea!</p>
-            {t.type !== "loading" && (
-              <Button variant="shadow" color="primary">
-                Close
-              </Button>
-            )}
-          </>
-        )}
-      </ToastBar>
-    )}
-  </Toaster>
-);
 
 export const onSuccess = (msg: string) => toast.success(msg);
 export const onInfo = (msg: string) =>

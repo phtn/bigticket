@@ -47,7 +47,7 @@ type SidebarContext = {
   setOpen: (open: boolean) => void;
   openMobile: boolean;
   setOpenMobile: (open: boolean) => void;
-  isMobile: boolean;
+  isMobile: boolean | undefined;
   toggleSidebar: () => void;
 };
 
@@ -82,7 +82,7 @@ const SidebarProvider = forwardRef<
     },
     ref,
   ) => {
-    const isMobile = useIsMobile();
+    const { isMobile } = useIsMobile();
     const [openMobile, setOpenMobile] = useState(false);
 
     // This is the internal state of the sidebar.

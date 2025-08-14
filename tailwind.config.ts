@@ -7,7 +7,8 @@ const nextuicfg = {
     light: {
       colors: {
         default: "#E1E2E2",
-        background: "#F2F5F7",
+        // background: "#F2F5F7",
+        background: "#000000",
         foreground: "#1B1F22",
         primary: {
           DEFAULT: "#1B1F22",
@@ -220,25 +221,15 @@ export default {
         "macl-gray": "#8E8E93",
         "macd-gray": "#98989D",
         google: "#464749",
+        kick: "oklch(0.8689 0.2758 140.23)",
         ticket: "#34373A",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // popover: {
-        //   DEFAULT: "hsl(var(--popover))",
-        //   foreground: "hsl(var(--popover-foreground))",
-        // },
-        // primary: {
-        //   DEFAULT: "hsl(var(--primary))",
-        //   foreground: "hsl(var(--primary-foreground))",
-        // },
-        // secondary: {
-        // 	DEFAULT: 'hsl(var(--secondary))',
-        // 	foreground: 'hsl(var(--secondary-foreground))'
-        // },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -271,6 +262,23 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
     },
   },

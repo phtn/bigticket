@@ -1,27 +1,27 @@
+import { useConvexCtx } from "@/app/ctx/convex";
+import { useMoment } from "@/hooks/useMoment";
+import { Hyper } from "@/ui/button/button";
 import { HyperList } from "@/ui/list";
+import { awaitPromise } from "@/utils/helpers";
 import { Form } from "@nextui-org/react";
+import { type TicketInfo } from "convex/events/d";
 import {
-  type ChangeEvent,
-  type MouseEvent,
+  useActionState,
   useCallback,
   useEffect,
-  useActionState,
   useMemo,
+  type ChangeEvent,
+  type MouseEvent,
 } from "react";
+import { Nebula } from "../";
+import { EventDate, TicketCount } from "../../../../../create/components";
 import { EventDetailActionSheet } from "../action-sheet";
 import { BlockHeader } from "../components";
 import { TicketInfoSchema, type EventField } from "../schema";
-import { useEventDetail } from "../ctx";
-import { useMoment } from "@/hooks/useMoment";
-import { EventDate, TicketCount } from "../../../../../create/components";
-import { Nebula } from "../";
-import { Hyper } from "@/ui/button/button";
-import { type TicketInfo } from "convex/events/d";
-import { useFormStateTicket } from "./store";
 import { EventDetailItem, FieldBlock, FieldItem } from "./components";
+import { useFormStateTicket } from "./store";
 import type { ContentProps } from "./types";
-import { useConvexCtx } from "@/app/ctx/convex";
-import { awaitPromise } from "@/utils/helpers";
+import { useEventDetail } from "../../email/ctx";
 
 export const TicketContent = ({ xEvent: x, pending }: ContentProps) => {
   const {

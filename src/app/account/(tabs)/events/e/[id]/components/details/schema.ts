@@ -2,7 +2,7 @@ import { type InputProps } from "@nextui-org/react";
 import type { Cohost, EventGallery, InsertEvent, VIP } from "convex/events/d";
 import type { ReactNode } from "react";
 import { z } from "zod";
-import { type EventDetailKey } from "./ctx";
+import { type EventDetailKey } from "../email/ctx";
 
 export type FieldData = string | number | boolean | undefined;
 export interface EventDetailField {

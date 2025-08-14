@@ -7,7 +7,7 @@ export default function SearchLayout({
   ev: ReactNode;
 }) {
   return (
-    <main className="h-screen w-full">
+    <main className="h-screen w-full" suppressHydrationWarning>
       <div className="flex-grow">{children}</div>
       {ev}
     </main>

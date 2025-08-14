@@ -34,9 +34,10 @@ import {
   event_type_options,
   ticket_count_options,
 } from "../../../../create/static";
-import { EventDetailCtx, type EventDetailKey } from "./ctx";
+// import { EventDetailCtx, type EventDetailKey } from "@/ctx/";
 import { type EventField } from "./schema";
 import { Iconx } from "@/icons";
+import { EventDetailCtx, type EventDetailKey } from "../email/ctx";
 
 export interface EventDetailButtonProps extends EventField {
   name: EventDetailKey;
@@ -56,6 +57,7 @@ export const EventDetailOption = ({
     },
     [toggle, setSelectedEventDetail],
   );
+
   return (
     <button
       id={name}

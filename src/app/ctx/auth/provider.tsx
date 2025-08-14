@@ -1,5 +1,7 @@
 "use client";
 
+import { deleteAccountID, deleteUserID } from "@/app/actions";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import {
   createContext,
   useCallback,
@@ -8,11 +10,9 @@ import {
   useMemo,
   type ReactNode,
 } from "react";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useAuthStore } from "./store";
-import { useSession } from "./useSession";
 import type { AuthCtxValues } from "./types";
-import { deleteAccountID, deleteUserID } from "@/app/actions";
+import { useSession } from "./useSession";
 
 export const AuthContext = createContext<AuthCtxValues | null>(null);
 

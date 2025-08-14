@@ -16,7 +16,7 @@ import {
   type BasicInfoType,
   type EventField,
 } from "../schema";
-import { useEventDetail } from "../ctx";
+import { useEventDetail } from "../../email/ctx";
 import { useMoment } from "@/hooks/useMoment";
 import { EventCategory, EventDate } from "../../../../../create/components";
 import { Nebula } from "../";

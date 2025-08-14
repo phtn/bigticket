@@ -9,7 +9,7 @@ export interface HyperProps {
   children?: ReactNode;
   end?: IconName;
   start?: IconName;
-  label?: string;
+  label?: ReactNode;
   loading?: boolean;
   dark?: boolean;
   rounded?: boolean;
@@ -69,7 +69,7 @@ export const Hyper = ({
       <Iconx name="spinners-3-dots-move" className="shrink-0 stroke-0" />,
       <span
         className={cn(
-          "relative z-10 whitespace-nowrap font-inter text-xs font-semibold tracking-tight text-primary",
+          "relative z-10 whitespace-nowrap font-sans text-base font-semibold tracking-tight text-primary",
           {
             "text-chalk": dark || (destructive && !active),
             "text-primary": dim,

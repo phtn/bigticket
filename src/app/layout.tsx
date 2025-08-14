@@ -9,7 +9,6 @@ import {
   Geist_Mono,
 } from "next/font/google";
 import { type ReactNode } from "react";
-import { Navbar } from "./_components_/navbar";
 import Providers from "./ctx";
 
 const geist = Geist({
@@ -63,14 +62,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geist.variable} ${mono.variable} ${inter.variable} ${cherry.variable} ${lucky.variable} ${poet.variable} antialiased`}
     >
-      <body>
-        <Providers>
-          <Navbar />
-          <div className="relative h-16" />
-          {children}
-        </Providers>
+      <body className="">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
