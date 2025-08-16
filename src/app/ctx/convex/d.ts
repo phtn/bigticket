@@ -5,11 +5,43 @@ import type {
   InsertEvent,
   SelectEvent,
   UserTicket,
+  AccountTicket,
   VIP,
 } from "convex/events/d";
 import type { InsertUser, SelectUser, UpdateUser } from "convex/users/d";
+import type {
+  InsertAccount,
+  SelectAccount,
+  UpdateAccount,
+} from "convex/accounts/d";
 
 export interface DConvexCtxValues {
+  // ACCOUNTS
+  account: {
+    create: (args: InsertAccount) => Promise<Id<"accounts"> | null>;
+    get: {
+      byEmail: (email: string) => Promise<SelectAccount | null>;
+      byAccountId: (account_id: string) => Promise<SelectAccount | null>;
+      byRole: (role: string[]) => Promise<SelectAccount[]>;
+    };
+    update: {
+      info: (args: UpdateAccount) => Promise<Id<"accounts"> | null>;
+      status: (
+        id: string,
+        is_active: boolean,
+      ) => Promise<Id<"accounts"> | null>;
+      role: (id: string, role: string) => Promise<Id<"accounts"> | null>;
+      photo_url: (
+        id: string,
+        photo_url: string,
+      ) => Promise<Id<"accounts"> | null>;
+      likes: (id: string, target_id: string) => Promise<string | null>;
+      bookmarks: (id: string, target_id: string) => Promise<string | null>;
+      followers: (id: string, target_id: string) => Promise<string | null>;
+      following: (id: string, target_id: string) => Promise<string | null>;
+      tickets: (id: string, tickets: AccountTicket[]) => Promise<string | null>;
+    };
+  };
   usr: {
     create: (args: InsertUser) => Promise<Id<"users"> | null>;
     get: {

@@ -4,7 +4,7 @@ import { useConvexCtx } from "@/app/ctx/convex";
 import { usePreloadedUserEvents } from "@/app/ctx/event/user";
 import { type XEvent } from "@/app/types";
 import { useImage } from "@/hooks/useImage";
-import { log } from "@/utils/logger";
+import { Log } from "@/utils/logger";
 import { usePathname } from "next/navigation";
 import {
   type ChangeEvent,
@@ -104,7 +104,7 @@ export const EventEditorCtxProvider = ({
       startTransition(() => {
         setQuery(q);
         setLocale(l);
-        log("query-data", [q, l]);
+        Log("query-data", [q, l]);
       });
     },
     [startTransition],

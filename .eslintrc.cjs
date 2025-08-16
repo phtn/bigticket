@@ -14,8 +14,10 @@ const config = {
     "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/non-nullable-type-assertion-style": "off",
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
@@ -23,12 +25,14 @@ const config = {
         fixStyle: "inline-type-imports",
       },
     ],
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
-      {
-        argsIgnorePattern: "^_",
-      },
-    ],
+    // "@typescript-eslint/no-unused-vars": [
+    //   "warn",
+    //   {
+    //     argsIgnorePattern: "^_",
+
+    //   },
+
+    // ],
     "@typescript-eslint/require-await": "off",
     "@typescript-eslint/no-misused-promises": [
       "error",

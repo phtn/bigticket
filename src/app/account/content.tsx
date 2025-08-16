@@ -2,11 +2,11 @@
 
 import { Card, CardHeader } from "@nextui-org/react";
 import { Header } from "./_components_/common";
-import { useUserCtx } from "../ctx/user";
+import { useAccountCtx } from "@/app/ctx/accounts";
 import { Iconx } from "@/icons";
 
 export const Content = () => {
-  const { xUser } = useUserCtx();
+  const { xAccount } = useAccountCtx();
   return (
     <div className="min-h-[80vh] w-full justify-center rounded-none pb-10 md:rounded-lg md:px-6">
       <div className="">
@@ -24,7 +24,7 @@ export const Content = () => {
                 <h2 className="font-light">
                   Impressions:{" "}
                   <span className="font-semibold">
-                    {xUser?.impressions ?? 0}
+                    {xAccount?.impressions ?? 0}
                   </span>
                 </h2>
               </div>
@@ -33,13 +33,13 @@ export const Content = () => {
               <div className="w-full space-y-1">
                 <p className="font-medium">Followers</p>
                 <p className="text-lg font-bold">
-                  {xUser?.follower_count ?? 0}
+                  {xAccount?.follower_count ?? 0}
                 </p>
               </div>
               <div className="w-full space-y-1">
                 <p className="font-medium">Following</p>
                 <p className="text-lg font-bold">
-                  {xUser?.following_count ?? 0}
+                  {xAccount?.following_count ?? 0}
                 </p>
               </div>
             </div>

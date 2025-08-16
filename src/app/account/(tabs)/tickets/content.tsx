@@ -1,15 +1,15 @@
 "use client";
 
-import { UserCtxProvider } from "@/app/ctx/user";
+import { AccountCtxProvider } from "@/app/ctx/accounts";
 import { TicketViewerCtxProvider } from "./ctx";
 import { Tickets } from "./tickets";
 
 export const Content = () => {
   return (
-    <UserCtxProvider>
+    <AccountCtxProvider>
       <TicketViewerCtxProvider>
         <Tickets />
       </TicketViewerCtxProvider>
-    </UserCtxProvider>
+    </AccountCtxProvider>
   );
 };

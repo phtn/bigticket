@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@custom-variant dark (&:is(.dark *)); /* eslint-disable-line */
-
 ::-webkit-scrollbar {
   display: none;
 }

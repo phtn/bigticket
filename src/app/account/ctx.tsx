@@ -13,7 +13,7 @@ import {
   useState,
 } from "react";
 import { type ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
-import { useUserCtx } from "../ctx/user";
+import { useAccountCtx } from "@/app/ctx/accounts";
 import { convertToWebPFile } from "@/utils/webp";
 import { Err } from "@/utils/helpers";
 
@@ -22,7 +22,7 @@ export interface Point {
   dy: number;
 }
 
-interface AccountCtxValues {
+interface AccountProfileCtxValues {
   open: boolean;
   fileChange: (e: ChangeEvent<HTMLInputElement>) => void;
   toggleEditor: VoidFunction;
@@ -38,47 +38,53 @@ interface AccountCtxValues {
   photoUrl: string | null;
 }
 
-export const AccountCtx = createContext<AccountCtxValues | null>(null);
+export const AccountProfileCtx = createContext<AccountProfileCtxValues | null>(
+  null,
+);
 
-export const AccountContext = ({ children }: { children: ReactNode }) => {
+export const AccountProfileContext = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [updating, setUpdating] = useState(false);
-  const { vxFiles, vxUsers } = useConvexCtx();
-  const { xUser, isPending } = useUserCtx();
+  const { vxFiles, vxAccounts } = useConvexCtx();
+  const { xAccount, isPending } = useAccountCtx();
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
-    if (xUser) {
-      const item = localStorage.getItem(xUser.id);
+    if (xAccount) {
+      const item = localStorage.getItem(xAccount.uid);
       const pic = item
         ? (JSON.parse(item) as { photoUrl: string } | null)
         : null;
       setPhotoUrl(pic?.photoUrl ?? null);
     }
-  }, [xUser, vxUsers]);
+  }, [xAccount, vxAccounts]);
 
   useEffect(() => {
     const fetchAndCachePhotoUrl = async () => {
-      if (!xUser?.id) return;
+      if (!xAccount?.uid) return;
 
       // Try to get from localStorage first
-      const cached = localStorage.getItem(xUser.id);
+      const cached = localStorage.getItem(xAccount.uid);
       const cachedData = cached
         ? (JSON.parse(cached) as { photoUrl: string } | null)
         : null;
 
       if (cachedData?.photoUrl) {
         setPhotoUrl(cachedData.photoUrl);
-      } else if (xUser.photo_url) {
+      } else if (xAccount.photo_url) {
         // If not in cache but user has photo_url, fetch and cache it
         try {
-          const imageUrl = await vxFiles.getUrl(xUser.photo_url);
+          const imageUrl = await vxFiles.getUrl(xAccount.photo_url);
           if (imageUrl) {
             localStorage.setItem(
-              xUser.id,
+              xAccount.uid,
               JSON.stringify({ photoUrl: imageUrl }),
             );
             setPhotoUrl(imageUrl);
@@ -90,7 +96,7 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
     };
 
     fetchAndCachePhotoUrl().catch(Err);
-  }, [xUser, vxFiles]);
+  }, [xAccount, vxFiles]);
 
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -156,8 +162,8 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
 
   const updatePhotoUrl = useCallback(
     async (id: string, photo_url: string) =>
-      await vxUsers.mut.updatePhotoUrl({ id, photo_url }),
-    [vxUsers.mut],
+      await vxAccounts.mut.updatePhotoUrl({ id, photo_url }),
+    [vxAccounts.mut],
   );
 
   const saveFn = useCallback(async () => {
@@ -166,10 +172,10 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
 
       // Create new photo URL
       const newPhotoUrl = await createUrl();
-      if (!newPhotoUrl || !xUser?.id) return;
+      if (!newPhotoUrl || !xAccount?.uid) return;
 
       // Update user's photo URL in database
-      const id = await updatePhotoUrl(xUser.id, newPhotoUrl);
+      const id = await updatePhotoUrl(xAccount.uid, newPhotoUrl);
       if (!id) return;
 
       // Get the publicly accessible URL
@@ -181,7 +187,10 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       setUpdating(true);
 
       // Cache the new URL
-      localStorage.setItem(xUser.id, JSON.stringify({ photoUrl: imageUrl }));
+      localStorage.setItem(
+        xAccount.uid,
+        JSON.stringify({ photoUrl: imageUrl }),
+      );
 
       // Update state
       setPhotoUrl(imageUrl);
@@ -192,7 +201,7 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       setSaving(false);
       setUpdating(false);
     }
-  }, [createUrl, updatePhotoUrl, xUser?.id, vxFiles]);
+  }, [createUrl, updatePhotoUrl, xAccount?.uid, vxFiles]);
 
   const value = useMemo(
     () => ({
@@ -207,7 +216,7 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       canvasRef,
       preview,
       transformRef,
-      photo_url: xUser?.photo_url ?? null,
+      photo_url: xAccount?.photo_url ?? null,
       updating,
       photoUrl,
     }),
@@ -223,17 +232,17 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
       canvasRef,
       preview,
       transformRef,
-      xUser?.photo_url,
+      xAccount?.photo_url,
       updating,
       photoUrl,
     ],
   );
 
-  return <AccountCtx value={value}>{children}</AccountCtx>;
+  return <AccountProfileCtx value={value}>{children}</AccountProfileCtx>;
 };
 
-export const useAccountCtx = () => {
-  const context = useContext(AccountCtx);
+export const useAccountProfileCtx = () => {
+  const context = useContext(AccountProfileCtx);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }

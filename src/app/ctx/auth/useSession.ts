@@ -2,7 +2,7 @@ import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import type { AuthError, Session, User } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { setUserID } from "@/app/actions";
-import { log } from "@/utils/logger";
+import { Log } from "@/utils/logger";
 
 interface SessionState {
   isLoading: boolean;
@@ -61,7 +61,7 @@ export const useSession = () => {
         isLoading: false,
       });
     } catch (error) {
-      log("Session error:", error instanceof Error ? error : "Unknown error");
+      Log("Session error:", error instanceof Error ? error : "Unknown error");
       updateState({
         error: error as AuthError,
         session: null,
@@ -117,7 +117,7 @@ export const useSession = () => {
       if (error instanceof Error && error.name === "NotSupportedError") {
         return false;
       }
-      log("FedCM check error:", error as Error);
+      Log("FedCM check error:", error as Error);
       return false;
     }
   }, []);

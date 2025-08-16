@@ -7,10 +7,7 @@ import { useCallback } from "react";
 import { updateUserTickets } from "./actions";
 import toast from "react-hot-toast";
 
-export const useTicketCart = (
-  xEvent: XEvent | undefined,
-  ticketCount: number,
-) => {
+export const useTicketCart = (xEvent: XEvent | null, ticketCount: number) => {
   const getVIPTicket = useCallback(async () => {
     const user_id = await getUserID();
     if (!user_id) return null;

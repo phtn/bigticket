@@ -2,19 +2,19 @@ import { cn } from "@/lib/utils";
 import { HyperList } from "@/ui/list";
 import { opts } from "@/utils/helpers";
 import { Spinner } from "@nextui-org/react";
-import { type UserTicket } from "convex/events/d";
+import { type AccountTicket } from "convex/events/d";
 import { useCallback, useMemo } from "react";
 import { Count, EmptyList, Header } from "../../_components_/common";
 import { TicketCard } from "./ticket-card";
 import { TicketViewer } from "./ticket-viewer";
-import { useUserCtx } from "@/app/ctx/user";
+import { useAccountCtx } from "@/app/ctx/accounts";
 
 export const Tickets = () => {
-  const { xUser, isPending } = useUserCtx();
+  const { xAccount, isPending } = useAccountCtx();
 
   const ticketsByEvent = useCallback(
-    (arr: UserTicket[] | undefined): Map<string, UserTicket[]> => {
-      const map = new Map<string, UserTicket[]>();
+    (arr: AccountTicket[] | undefined): Map<string, AccountTicket[]> => {
+      const map = new Map<string, AccountTicket[]>();
 
       if (!arr) {
         return map;
@@ -33,8 +33,8 @@ export const Tickets = () => {
   );
 
   const eventGroups = useMemo(
-    () => ticketsByEvent(xUser?.tickets) ?? [],
-    [xUser?.tickets, ticketsByEvent],
+    () => ticketsByEvent(xAccount?.tickets) ?? [],
+    [xAccount?.tickets, ticketsByEvent],
   );
   const groups = useMemo(
     () => Array.from(eventGroups.entries()),
@@ -65,7 +65,7 @@ export const Tickets = () => {
             >
               <div key={"x"} className="md:rounded-t-md">
                 <Header title={String(group[0])}>
-                  {xUser ? (
+                  {xAccount ? (
                     <Counter count={group[1].length} />
                   ) : (
                     <Spinner size="sm" />

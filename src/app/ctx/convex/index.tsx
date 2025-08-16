@@ -7,6 +7,7 @@ import { createContext, useContext } from "react";
 import { useVxFiles, type VxFiles } from "./useVxFiles";
 import { useVxEvents, type VxEvents } from "./useVxEvents";
 import { useVxUsers, type VxUsers } from "./useVxUsers";
+import { useVxAccounts, type VxAccounts } from "./useVxAccounts";
 import { useVxLogs, type VxLogs } from "./useVxLogs";
 
 interface ConvexProviderProps {
@@ -14,9 +15,10 @@ interface ConvexProviderProps {
 }
 
 interface ConvexCtxValues {
-  vxFiles: VxFiles;
+  vxAccounts: VxAccounts;
   vxEvents: VxEvents;
   vxUsers: VxUsers;
+  vxFiles: VxFiles;
   vxLogs: VxLogs;
 }
 
@@ -24,14 +26,16 @@ const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 export const ConvexCtx = createContext<ConvexCtxValues | null>(null);
 
 const CtxProvider = ({ children }: ConvexProviderProps) => {
+  const vxAccounts = useVxAccounts();
+  const vxEvents = useVxEvents();
   const vxUsers = useVxUsers();
   const vxFiles = useVxFiles();
-  const vxEvents = useVxEvents();
   const vxLogs = useVxLogs();
   const value = {
+    vxAccounts,
+    vxEvents,
     vxUsers,
     vxFiles,
-    vxEvents,
     vxLogs,
   };
 

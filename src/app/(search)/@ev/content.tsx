@@ -1,12 +1,14 @@
 "use client";
 
-import { EventViewer } from "@/app/(search)/@ev/viewer";
+import { EventViewer } from "@/app/(search)/@ev/event-viewer";
+import { EventsProvider } from "@/app/ctx/event/events";
 import { CartCtxProvider } from "./components/buttons/cart/ctx";
-
 export const EVContent = () => {
   return (
-    <CartCtxProvider>
-      <EventViewer />
-    </CartCtxProvider>
+    <EventsProvider>
+      <CartCtxProvider>
+        <EventViewer />
+      </CartCtxProvider>
+    </EventsProvider>
   );
 };

@@ -1,8 +1,8 @@
 "use client";
 
+import { useAccountCtx } from "@/app/ctx/accounts";
 import { CursorCtx } from "@/app/ctx/cursor";
 import { SidebarCtx } from "@/app/ctx/sidebar";
-import { useUserCtx } from "@/app/ctx/user";
 import { useScreen } from "@/hooks/useScreen";
 import { useToggle } from "@/hooks/useToggle";
 import { Iconx } from "@/icons";
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { Hyper } from "@/ui/button/button";
 import { BtnIcon } from "@/ui/button/button-icon";
 import { HyperList } from "@/ui/list";
+import { TextLoader } from "@/ui/loader/text";
 import { clearConsole, opts } from "@/utils/helpers";
 import {
   Avatar,
@@ -19,6 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
+import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import {
   type JSX,
@@ -36,7 +38,7 @@ interface NavItem {
 }
 
 export const UserNav = () => {
-  const { photoUrl } = useUserCtx();
+  const { photoUrl } = useAccountCtx();
 
   const navs: NavItem[] = useMemo(
     () => [
@@ -65,7 +67,7 @@ export const UserNav = () => {
 const UserSign = () => {
   const [ready, setReady] = useState(false);
   useEffect(() => {
-    const timer = setTimeout(() => setReady(true), 5000);
+    const timer = setTimeout(() => setReady(true), 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -78,23 +80,47 @@ const UserSign = () => {
       <div className="flex items-center justify-center gap-x-3.5">
         <span className="text-zinc-600">Sign in with</span>
         <span className="">
-          <Iconx name="google" className="size-5" />
+          <Iconx name="google" className="size-4" />
         </span>
       </div>
     );
   };
 
+  const { xAccount } = useAccountCtx();
+
   return (
-    <div className="absolute right-0 flex h-9 w-fit items-center px-3">
-      {ready && (
+    <div className="absolute right-0 flex h-16 w-fit items-center space-x-4 px-3">
+      {ready ? (
+        <motion.div
+          initial={{ opacity: 0.5, scale: 1.3, x: 100 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          transition={{
+            type: "spring",
+            visualDuration: 0.5,
+            bounce: 0.2,
+            ease: "easeInOut",
+          }}
+        >
+          <Hyper
+            compact
+            onClick={handleSignin}
+            label={<UserSignin />}
+            className="rounded text-base dark:bg-transparent"
+            dim
+          />
+        </motion.div>
+      ) : (
+        <TextLoader />
+      )}
+      <div>
         <Hyper
           compact
-          onClick={handleSignin}
-          label={<UserSignin />}
-          className="rounded bg-transparent text-base hover:bg-ticket/10"
+          onClick={() => console.log(xAccount)}
+          label={"Log Session"}
+          className="rounded text-base dark:bg-transparent"
           dim
         />
-      )}
+      </div>
     </div>
   );
 };

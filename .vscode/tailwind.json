@@ -1,0 +1,21 @@
+{
+  "version": 1.1,
+  "atDirectives": [
+    {
+      "name": "@apply",
+      "description": "Use @apply to inline any existing utility classes into your own custom CSS."
+    },
+    {
+      "name": "@layer",
+      "description": "Use @layer to tell Tailwind which layer a set of custom styles belong to."
+    },
+    {
+      "name": "@tailwind",
+      "description": "Use @tailwind to insert Tailwind's base, components, utilities and variants styles into your CSS."
+    },
+    {
+      "name": "@import",
+      "description": "Import Tailwind CSS."
+    }
+  ]
+}

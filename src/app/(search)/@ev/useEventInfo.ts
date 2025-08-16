@@ -20,7 +20,7 @@ export interface PanelItem {
   fn: () => Promise<void>;
 }
 
-export const useEventInfo = (xEvent: XEvent | undefined) => {
+export const useEventInfo = (xEvent: XEvent | null) => {
   const { user } = useAuth();
   const [userId, setUserId] = useState<string | null>(user?.id ?? null);
 

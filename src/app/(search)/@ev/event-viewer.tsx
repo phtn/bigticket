@@ -1,4 +1,4 @@
-import { useEvents } from "@/app/(search)/home/useEvents";
+import { useEvents } from "@/app/ctx/event/events";
 import { useUserCtx } from "@/app/ctx/user";
 import { type XEvent } from "@/app/types";
 import { useDime } from "@/hooks/useDime";
@@ -12,8 +12,6 @@ import { SideVaul } from "@/ui/vaul";
 import { FlatWindow } from "@/ui/window";
 import { clearConsole } from "@/utils/helpers";
 import { Spinner } from "@nextui-org/react";
-import { api } from "@vx/api";
-import { useQuery } from "convex/react";
 import { type SelectUser } from "convex/users/d";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -52,8 +50,6 @@ import { useTicketCart } from "./useTicketCart";
 const tempCache = ["cart", "pcs", "csp", "txn", "tkts", "tktd"];
 
 export const EventViewer = () => {
-  const events = useQuery(api.events.get.all);
-
   const removeTempCache = useCallback(() => {
     tempCache.forEach((key) => localStorage.removeItem(`bigticket_${key}`));
   }, []);
@@ -64,16 +60,26 @@ export const EventViewer = () => {
   }, [removeTempCache]);
 
   const searchParams = useSearchParams();
-  const { xEvents } = useEvents(events ?? []);
   const eventId = searchParams.get("x");
-  const { xEvent, moments } = useEventViewer({ xEvents, eventId });
+  const { events, selectEvent, selectedEvent } = useEvents();
+
+  // Update selected event when URL changes
+  useEffect(() => {
+    selectEvent(eventId);
+  }, [eventId, selectEvent]);
+
+  const { moments } = useEventViewer({
+    xEvents: events,
+    eventId: selectedEvent?.event_id ?? null,
+  });
   const { open, toggle } = useToggle();
   const router = useRouter();
 
   const handleCloseDrawer = useCallback(() => {
     router.push("/", { scroll: false });
+    selectEvent(null);
     toggle();
-  }, [toggle, router]);
+  }, [toggle, router, selectEvent]);
 
   usePops(open, toggle);
 
@@ -89,12 +95,12 @@ export const EventViewer = () => {
       <FlatWindow
         closeFn={handleCloseDrawer}
         title=""
-        variant={xEvent?.is_cover_light ? undefined : "void"}
+        variant={selectedEvent?.is_cover_light ? undefined : "void"}
         className={cn("absolute z-50 w-full rounded-none border-0")}
         wrapperStyle="border-gray-500 md:border-l-2"
       >
         <Container>
-          <MediaContainer xEvent={xEvent} moments={moments} />
+          <MediaContainer xEvent={selectedEvent} moments={moments} />
         </Container>
       </FlatWindow>
     </SideVaul>
@@ -105,13 +111,13 @@ const Container = ({ children }: { children: ReactNode }) => (
 );
 
 interface MediaContainerProps {
-  xEvent: XEvent | undefined;
+  xEvent: XEvent | null;
   moments: Moments;
 }
 
 // Custom hook for ticket management
 const useTicketManagement = (
-  xEvent: XEvent | undefined,
+  xEvent: XEvent | null,
   xUser: SelectUser | undefined,
 ) => {
   const isVip = useMemo(

@@ -13,7 +13,7 @@ type DataType =
 
 type Classifiable = DataType;
 
-export const log = (label: string, data: Classifiable) => {
+export const Log = (label: string, data: Classifiable) => {
   const stack = new Error().stack;
   const lines = stack?.split("\n");
   const fn = lines?.[2]?.match(/at (\S+)/)?.[1] ?? "anon";

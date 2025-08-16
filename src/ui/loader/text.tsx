@@ -5,7 +5,7 @@ import { useDime } from "@/hooks/useDime";
 import { cn } from "@nextui-org/react";
 import { useEffect, useRef } from "react";
 import anime from "animejs";
-import { log } from "@/utils/logger";
+import { Log } from "@/utils/logger";
 
 interface TextLoaderProps {
   size?: number;
@@ -72,13 +72,13 @@ export const TextLoader = ({
         <div
           onClick={() => {
             const target = dotsRef.current[i];
-            log("ref", target?.getBoundingClientRect().left);
+            Log("ref", target?.getBoundingClientRect().left);
           }}
           key={i}
           ref={(ref) => {
             dotsRef.current[i] = ref;
           }}
-          className={cn("leading-none text-white drop-shadow-md", color)}
+          className={cn("drop-shadow-xs leading-none text-zinc-400", color)}
           style={{
             position: "absolute",
             transform: "translateY(-50%)",

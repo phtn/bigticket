@@ -13,6 +13,10 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as accounts_create from "../accounts/create.js";
+import type * as accounts_d from "../accounts/d.js";
+import type * as accounts_get from "../accounts/get.js";
+import type * as accounts_update from "../accounts/update.js";
 import type * as events_create from "../events/create.js";
 import type * as events_d from "../events/d.js";
 import type * as events_get from "../events/get.js";
@@ -41,6 +45,10 @@ import type * as utils from "../utils.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  "accounts/create": typeof accounts_create;
+  "accounts/d": typeof accounts_d;
+  "accounts/get": typeof accounts_get;
+  "accounts/update": typeof accounts_update;
   "events/create": typeof events_create;
   "events/d": typeof events_d;
   "events/get": typeof events_get;

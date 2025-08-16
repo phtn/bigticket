@@ -10,6 +10,7 @@ import {
 } from "next/font/google";
 import { type ReactNode } from "react";
 import Providers from "./ctx";
+import { Navbar, Spacer } from "./_components_/navbar";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -65,8 +66,12 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geist.variable} ${mono.variable} ${inter.variable} ${cherry.variable} ${lucky.variable} ${poet.variable} antialiased`}
     >
-      <body className="">
-        <Providers>{children}</Providers>
+      <body className="bg-foreground">
+        <Providers>
+          <Navbar />
+          <Spacer />
+          {children}
+        </Providers>
       </body>
     </html>
   );

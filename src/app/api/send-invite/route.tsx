@@ -34,8 +34,8 @@ const transporter = nodemailer.createTransport({
   tls: {
     rejectUnauthorized: false,
   },
-  logger: true, // Enable logging
-  debug: true, // Include debug info
+  logger: false,
+  debug: false,
 });
 
 export async function POST(req: Request) {

@@ -1,7 +1,7 @@
 import { useToggle } from "@/hooks/useToggle";
 import { cn } from "@/lib/utils";
 import { BottomVaul } from "@/ui/vaul";
-import { log } from "@/utils/logger";
+import { Log } from "@/utils/logger";
 import {
   CalendarDate,
   CalendarDateTime,
@@ -50,7 +50,7 @@ export const EventDetailOption = ({
   const { toggle, setSelectedEventDetail } = use(EventDetailCtx)!;
   const handleClick = useCallback(
     (name: EventDetailKey) => (e: MouseEvent) => {
-      log("check", name);
+      Log("check", name);
       e.preventDefault();
       setSelectedEventDetail(name);
       toggle();

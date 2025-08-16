@@ -1,17 +1,16 @@
+import { CursorProvider } from "@/app/ctx/cursor";
+import { type XEvent } from "@/app/types";
+import { remoteConfig } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 import { HyperSpace } from "@/ui/cursor";
 import { HyperList } from "@/ui/list";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { EventCard } from "../event-card";
-import { Hero } from "./components/hero";
-import { Collections } from "../../_components_/sidebar";
-import { categories, type Category } from "./components/category";
-import { DynamicProxima } from "../../_components_/proxima";
-import { type XEvent } from "@/app/types";
-import { CursorProvider } from "@/app/ctx/cursor";
 import { fetchAndActivate, getValue } from "firebase/remote-config";
-import { remoteConfig } from "@/lib/firebase";
-import { cache } from "react";
+import { cache, useCallback, useEffect, useMemo, useState } from "react";
+import { DynamicProxima } from "../../_components_/proxima";
+import { Collections } from "../../_components_/sidebar";
+import { EventCard } from "../event-card";
+import { categories, type Category } from "./components/category";
+import { Hero } from "./components/hero";
 
 const getRemoteConfigValue = cache(async (key: string) => {
   await fetchAndActivate(remoteConfig);

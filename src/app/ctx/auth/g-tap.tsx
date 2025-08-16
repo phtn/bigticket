@@ -1,58 +1,39 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
-import { Err } from "@/utils/helpers";
-import { type CredentialResponse } from "google-one-tap";
+import { setCookie } from "@/app/actions";
+import { useAccountAuthStore } from "@/app/ctx/auth/g-store";
+import { onError } from "@/app/ctx/toast";
 import { env } from "@/env";
 import { auth } from "@/lib/firebase";
+import { Err } from "@/utils/helpers";
+import { Log } from "@/utils/logger";
+import { type InsertAccount } from "convex/accounts/d";
 import {
   GoogleAuthProvider,
   signInWithCredential,
-  type User as FirebaseUser,
+  type User as FirebaseAccount,
 } from "firebase/auth";
-import { onError } from "@/app/ctx/toast";
-import { useSession } from "./useSession";
-import { setUserEmail, setUserID } from "@/app/actions";
-import { Log } from "@/utils/logger";
-import { useAuthStore } from "./store";
-import { type User as SupabaseUser } from "@supabase/supabase-js";
+import { type CredentialResponse } from "google-one-tap";
+import { useCallback, useEffect } from "react";
 
 export const GoogleOneTap = () => {
-  const { user, updateUser } = useAuthStore();
-  const { isLoading, session } = useSession();
+  const { account, updateAccount, isAuthed } = useAccountAuthStore();
 
-  // Convert Firebase User to Supabase User format
-  const convertFirebaseUserToSupabase = useCallback(
-    (firebaseUser: FirebaseUser): SupabaseUser => {
+  // Check if user is already authenticated
+
+  // Convert Firebase Account to Supabase Account format
+  const parseAccountSchema = useCallback(
+    (firebaseAccount: FirebaseAccount): InsertAccount => {
       return {
-        id: firebaseUser.uid,
-        aud: "authenticated",
-        role: "authenticated",
-        email: firebaseUser.email ?? "",
-        phone: firebaseUser.phoneNumber ?? "",
-        last_sign_in_at: new Date().toISOString(),
-        app_metadata: {},
-        user_metadata: {
-          name: firebaseUser.displayName ?? "",
-          full_name: firebaseUser.displayName ?? "",
-          avatar_url: firebaseUser.photoURL ?? "",
-          email: firebaseUser.email ?? "",
-          email_verified: firebaseUser.emailVerified,
-          iss:
-            "https://securetoken.google.com/" + firebaseUser.uid.split("|")[0],
-          sub: firebaseUser.uid,
-          provider_id: "google.com",
-        },
-        identities: [],
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        is_anonymous: false,
+        ...firebaseAccount,
+        email: firebaseAccount.email ?? "",
+        updated_at: Date.now(),
       };
     },
     [],
   );
 
-  const generateNonce = useCallback(() => {
+  const generateNonce = useCallback(async () => {
     const nonce = btoa(
       String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32))),
     );
@@ -74,7 +55,8 @@ export const GoogleOneTap = () => {
   }, []);
 
   useEffect(() => {
-    if (true) {
+    // Only initialize Google One Tap if account is NOT authenticated
+    if (isAuthed) {
       return;
     }
 
@@ -118,14 +100,15 @@ export const GoogleOneTap = () => {
             const credential = GoogleAuthProvider.credential(
               response.credential,
             );
-            const result = await signInWithCredential(auth, credential);
+            const { user: acct } = await signInWithCredential(auth, credential);
 
-            if (result.user) {
-              const supabaseUser = convertFirebaseUserToSupabase(result.user);
-              updateUser(supabaseUser);
-              await setUserID(result.user.uid);
-              await setUserEmail(result.user.email ?? undefined);
-              Log("Firebase Auth Success", result.user.uid);
+            if (acct) {
+              // const account = parseAccountSchema(acct);
+
+              updateAccount(acct);
+              await setCookie("userId", acct.uid ?? null);
+              await setCookie("userEmail", acct.email ?? "");
+              Log("Firebase Auth Success", acct.uid);
             }
           } catch (err) {
             Log(
@@ -137,8 +120,8 @@ export const GoogleOneTap = () => {
         })().catch(Err);
       };
 
-      if (!user) {
-        Log("No user session, loading Google script", true);
+      if (!isAuthed) {
+        Log("No account session, loading Google script", true);
         loadGoogleScript();
       }
     };
@@ -148,14 +131,7 @@ export const GoogleOneTap = () => {
     }, 3000);
 
     return () => clearTimeout(timeout);
-  }, [
-    isLoading,
-    session,
-    generateNonce,
-    updateUser,
-    user,
-    convertFirebaseUserToSupabase,
-  ]);
+  }, [isAuthed, generateNonce, updateAccount, account, parseAccountSchema]);
 
   return (
     <div id="tap-dat-ass" className="hidden">

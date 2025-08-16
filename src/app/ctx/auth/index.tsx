@@ -3,8 +3,8 @@
 import { type ReactNode } from "react";
 import Convex from "@/app/ctx/convex";
 import SessionProvider from "./session";
-import { UserCtxProvider } from "../user";
-import { AuthProvider } from "./provider";
+import { AccountAuthProvider } from "./account-provider";
+import { AccountCtxProvider } from "../accounts";
 
 interface RootAuthProviderProps {
   children: ReactNode;
@@ -13,11 +13,11 @@ interface RootAuthProviderProps {
 const RootAuthProvider = ({ children }: RootAuthProviderProps) => {
   return (
     <SessionProvider>
-      <AuthProvider>
+      <AccountAuthProvider>
         <Convex>
-          <UserCtxProvider>{children}</UserCtxProvider>
+          <AccountCtxProvider>{children}</AccountCtxProvider>
         </Convex>
-      </AuthProvider>
+      </AccountAuthProvider>
     </SessionProvider>
   );
 };

@@ -5,7 +5,7 @@ import { UserNav } from "./usernav";
 
 export const Navbar = () => {
   return (
-    <div className="_flex fixed z-[100] hidden h-0 w-full bg-white">
+    <div className="fixed z-[100] flex h-16 w-full items-center justify-between bg-white">
       <Logo />
       <UserNav />
     </div>
@@ -20,3 +20,5 @@ export const Logo = () => (
     </BrandName>
   </Brand>
 );
+
+export const Spacer = () => <div className="relative h-16" />;

@@ -3,25 +3,25 @@
 import { Header } from "@/app/account/_components_/common";
 import { Accordion, AccordionItem, Card, CardHeader } from "@nextui-org/react";
 import { memo } from "react";
-import { type SelectUser } from "convex/users/d";
+import { type SelectAccount } from "convex/accounts/d";
 import { HyperList } from "@/ui/list";
 import { HyperLink } from "@/ui/button/button";
 import { BtnIcon } from "@/ui/button/button-icon";
 import { Iconx } from "@/icons";
-import { useUserCtx } from "@/app/ctx/user";
+import { useAccountCtx } from "@/app/ctx/accounts";
 
 export const UserSettings = () => {
-  const { xUser } = useUserCtx();
+  const { xAccount } = useAccountCtx();
 
   // const data: FieldItemProps[] = useMemo(
   //   () => [
   //     {
   //       id: "nickname",
   //       label: "Nickname",
-  //       value: xUser?.nickname,
+  //       value: xAccount?.nickname,
   //     },
   //   ],
-  //   [xUser],
+  //   [xAccount],
   // );
 
   return (
@@ -46,7 +46,7 @@ export const UserSettings = () => {
                 {
                   id: "nickname",
                   label: "Nickname",
-                  value: xUser?.nickname,
+                  value: xAccount?.nickname,
                 },
               ]}
               component={FieldItem}
@@ -103,7 +103,7 @@ export const UserSettings = () => {
 };
 
 interface FieldItemProps {
-  id: keyof SelectUser;
+  id: keyof SelectAccount;
   label: string;
   value?: string | number;
 }

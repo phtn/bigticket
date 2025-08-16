@@ -98,6 +98,7 @@ export const UserTicketSchema = v.object({
 });
 
 export type UserTicket = Infer<typeof UserTicketSchema>;
+export type AccountTicket = Infer<typeof UserTicketSchema>;
 
 export const BasicInfoSchema = v.object({
   event_name: v.optional(v.string()),

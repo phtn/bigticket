@@ -4,7 +4,7 @@ import { type PaymentIntentResource } from "@/lib/paymongo/schema/zod.payment-in
 import { retrievePaymentIntent } from "@/server/api/callers/paymongo";
 import { Err, formatAsMoney, guid } from "@/utils/helpers";
 import { api } from "@vx/api";
-import { type UserTicket } from "convex/events/d";
+import { type AccountTicket } from "convex/events/d";
 import { useMutation } from "convex/react";
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../ctx/auth/provider";
@@ -31,10 +31,10 @@ export const usePayments = (product?: string, status?: string) => {
   const [ticketsAdded, setTicketsAdded] = useState<boolean>(false);
   const [storedData, setStoredData] = useState<{
     transaction: BigTicketTransaction | null;
-    tickets: UserTicket;
+    tickets: AccountTicket;
     ticketDetails: { ticket_count: number };
   } | null>(null);
-  const [tickets, setTickets] = useState<UserTicket[] | null>(null);
+  const [tickets, setTickets] = useState<AccountTicket[] | null>(null);
 
   useEffect(() => {
     if (status === "cancelled") {
@@ -54,7 +54,7 @@ export const usePayments = (product?: string, status?: string) => {
     const tktd = localStorage.getItem("bigticket_tktd");
     setStoredData({
       transaction: txn ? (JSON.parse(txn) as BigTicketTransaction) : null,
-      tickets: JSON.parse(tkts!) as UserTicket,
+      tickets: JSON.parse(tkts!) as AccountTicket,
       ticketDetails: JSON.parse(tktd!) as { ticket_count: number },
     });
   }, []);

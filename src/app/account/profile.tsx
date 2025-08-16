@@ -7,8 +7,8 @@ import { Button, Image, Spinner } from "@nextui-org/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { memo, useCallback } from "react";
-import { UserCtxProvider, useUserCtx } from "../ctx/user";
-import { AccountContext, useAccountCtx } from "./ctx";
+import { AccountCtxProvider, useAccountCtx } from "../ctx/accounts";
+import { AccountProfileContext, useAccountProfileCtx } from "./ctx";
 import { PfpEditor } from "./side-pfp";
 
 export const Profile = memo(() => <ProfileContent />);
@@ -16,9 +16,9 @@ Profile.displayName = "Profile";
 
 export const Content = () => {
   const { fileChange, inputFileRef, browseFile, updating, photoUrl } =
-    useAccountCtx();
+    useAccountProfileCtx();
 
-  const { xUser } = useUserCtx();
+  const { xAccount } = useAccountCtx();
   const pathname = usePathname();
 
   const sub = pathname.split("/")[3];
@@ -27,7 +27,7 @@ export const Content = () => {
     const options = opts(
       <Spinner size="sm" color="primary" />,
       <Image
-        alt="user-pfp"
+        alt="accounts-pfp"
         radius="none"
         src={photoUrl ?? undefined}
         className="aspect-auto w-24 md:w-28 lg:w-32"
@@ -56,21 +56,21 @@ export const Content = () => {
           <div className="whitespace-nowrap leading-none md:space-y-1">
             <Link
               className="flex items-center"
-              href={`/account/profile/?a=${xUser?.account_id}`}
+              href={`/account/profile/?a=${xAccount?.account_id}`}
             >
               <h2 className="font-semibold tracking-tight">
-                {xUser?.nickname}
+                {xAccount?.nickname}
               </h2>
             </Link>
             <h3 className="text-xs tracking-tight md:text-sm">
-              @{xUser?.username ?? xUser?.email?.split("@").shift()}
+              @{xAccount?.username ?? xAccount?.email?.split("@").shift()}
             </h3>
           </div>
 
           <div className="md:px-1.5 md:pt-2.5"></div>
         </div>
         <div
-          id="user-pfp"
+          id="accounts-pfp"
           className="group/edit absolute bottom-0 mx-4 size-24 rounded-full bg-gray-200 p-1.5 md:mx-6 md:size-28 lg:size-32"
         >
           <div className="flex size-full items-center justify-center overflow-clip rounded-full bg-gray-200">
@@ -103,9 +103,9 @@ export const Content = () => {
   );
 };
 const ProfileContent = () => (
-  <AccountContext>
-    <UserCtxProvider>
+  <AccountProfileContext>
+    <AccountCtxProvider>
       <Content />
-    </UserCtxProvider>
-  </AccountContext>
+    </AccountCtxProvider>
+  </AccountProfileContext>
 );

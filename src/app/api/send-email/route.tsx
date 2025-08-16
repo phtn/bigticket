@@ -56,8 +56,8 @@ const transporter = nodemailer.createTransport({
     pass: env.SMTP_PASSWORD,
   },
   tls: { rejectUnauthorized: false },
-  logger: true,
-  debug: true,
+  logger: false,
+  debug: false,
 });
 
 // Next.js API Route (Streaming Response)

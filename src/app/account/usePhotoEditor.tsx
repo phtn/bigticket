@@ -1,4 +1,3 @@
-import { log } from "console";
 import {
   type MouseEvent,
   useCallback,
@@ -7,6 +6,7 @@ import {
   useState,
 } from "react";
 import { type ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
+import { Log } from "@/utils/logger";
 
 export const usePhotoEditor = () => {
   const [isDragging, setIsDragging] = useState(false);
@@ -47,9 +47,9 @@ export const usePhotoEditor = () => {
       const clientX = event.clientX - rect.left;
       const clientY = event.clientY - rect.top;
 
-      log("left", rect.left);
-      log("top", rect.top);
-      log("state", instance.startCoords);
+      Log("left", rect.left);
+      Log("top", rect.top);
+      Log("state", instance.startCoords);
 
       // Adjust for zoom and pan offsets
       const adjustedX = (clientX - (instance.startCoords?.x ?? 0)) / 2;

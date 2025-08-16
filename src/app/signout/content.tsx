@@ -1,14 +1,13 @@
 "use client";
 
+import { auth } from "@/lib/firebase";
 import { ChineBorder } from "@/ui/card/border";
-import { motion } from "motion/react";
-import { useSignOut } from "./useSignOut";
-import { useCallback, useEffect } from "react";
-import { Err } from "@/utils/helpers";
 import { Bouncy } from "@/ui/loader/bouncy";
+import { Err } from "@/utils/helpers";
+import { motion } from "motion/react";
+import { useCallback, useEffect } from "react";
 
 export const Content = () => {
-  const { cleanUp } = useSignOut();
   const timer = useCallback(
     () =>
       setTimeout(() => {
@@ -17,11 +16,12 @@ export const Content = () => {
     [],
   );
   useEffect(() => {
-    cleanUp()
+    auth
+      .signOut()
       .then(() => timer())
       .catch(Err);
     return () => clearTimeout(timer());
-  }, [cleanUp, timer]);
+  }, [timer]);
 
   return (
     <div className="flex h-[calc(100vh-64px)] w-full justify-center bg-void py-8">

@@ -8,6 +8,7 @@ import type {
 } from "@/lib/paymongo/schema/zod.checkout";
 import { moses, secureRef } from "@/utils/crypto";
 import { guid } from "@/utils/helpers";
+import { type UserTicket } from "convex/events/d";
 import { useSearchParams } from "next/navigation";
 import {
   createContext,
@@ -22,10 +23,9 @@ import {
   type SetStateAction,
 } from "react";
 import { useCartStore } from "../(search)/@ev/components/buttons/cart/useCartStore";
-import { useAuth } from "../ctx/auth/provider";
+import { useAccountAuth } from "../ctx/auth/account-provider";
 import { reducer, type ActionType } from "./reducer";
 import type { ItemProps, ReducerState } from "./types";
-import { type UserTicket } from "convex/events/d";
 
 const CART_STORAGE_KEY = "bigticket_cart";
 const TKT_STATIC = "bigticket_tkts";
@@ -59,7 +59,7 @@ interface OrderProviderProps {
 }
 
 export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
-  const { user } = useAuth();
+  const { account } = useAccountAuth();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [loading, setLoading] = useState(false);
   const [params, setParams] = useState<CheckoutParams>({} as CheckoutParams);
@@ -82,7 +82,7 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
   } = useCartStore();
 
   // const eventId = useMemo(() => searchParams.get("x"), [searchParams]);
-  // const userId = useMemo(() => searchParams.get("u"), [searchParams]);
+  // const accountId = useMemo(() => searchParams.get("u"), [searchParams]);
 
   useEffect(() => {
     if (eventId) {
@@ -93,8 +93,8 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
   }, [eventId]);
 
   const descriptor = useMemo(
-    () => String(user?.user_metadata?.name ?? user?.email),
-    [user],
+    () => String(account?.displayName ?? account?.email),
+    [account],
   );
 
   const itemCount = useMemo(
@@ -124,18 +124,18 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
             id: guid(),
             name: eventName,
             amount: total,
-            description: userId,
+            description: account?.uid,
             quantity: 1,
             currency: "PHP" as const,
             images: [productImage],
           }) as LineItem,
       ),
-    [count, eventName, userId, total, productImage],
+    [count, eventName, account, total, productImage],
   );
 
   const ticket_static: Partial<UserTicket> = useMemo(
     () => ({
-      user_id: userId,
+      account_id: account?.uid,
       event_id: eventId,
       event_name: eventName,
       event_start: eventDate,
@@ -145,7 +145,7 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
       ticket_class: "premium",
       ticket_price: price,
     }),
-    [userId, eventId, eventName, eventDate, eventType, eventEndDate, price],
+    [account, eventId, eventName, eventDate, eventType, eventEndDate, price],
   );
 
   // Load cart from localStorage on mount
@@ -235,12 +235,12 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
             statement_descriptor: descriptor,
             description: orderNumber,
             billing: {
-              name: user?.user_metadata?.full_name as string,
-              email: user?.email,
-              phone: user?.user_metadata?.phone as string,
+              name: account?.displayName as string,
+              email: account?.email as string,
+              phone: account?.phoneNumber as string,
               address: {
                 line1: "",
-                line2: user?.user_metadata?.address as string,
+                line2: account?.email as string,
                 city: "",
                 state: "",
                 postal_code: "",
@@ -278,7 +278,7 @@ export const OrderProvider = ({ children, node_env }: OrderProviderProps) => {
     checkout,
     orderNumber,
     dispatch,
-    user,
+    account,
     node_env,
   ]);
 

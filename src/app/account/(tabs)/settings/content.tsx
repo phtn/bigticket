@@ -1,10 +1,10 @@
 "use client";
 
-import { UserCtxProvider } from "@/app/ctx/user";
+import { AccountCtxProvider } from "@/app/ctx/accounts";
 import { UserSettings } from "./settings";
 
 export const Content = () => (
-  <UserCtxProvider>
+  <AccountCtxProvider>
     <UserSettings />
-  </UserCtxProvider>
+  </AccountCtxProvider>
 );

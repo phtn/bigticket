@@ -1,10 +1,15 @@
 import { defineSchema, defineTable } from "convex/server";
+import { AccountSchema } from "./accounts/d";
 import { UserSchema } from "./users/d";
 import { EventSchema } from "./events/d";
 import { TransactionSchema } from "./transactions/d";
 import { LogSchema } from "./logs/d";
 
 export default defineSchema({
+  accounts: defineTable(AccountSchema)
+    .index("by_uid", ["uid", "nickname"])
+    .index("by_email", ["email"])
+    .index("by_account_id", ["account_id"]),
   users: defineTable(UserSchema)
     .index("by_uid", ["id", "nickname"])
     .index("by_email", ["email"])

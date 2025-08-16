@@ -1,6 +1,6 @@
 import { type XEvent } from "@/app/types";
 import { useMoment } from "@/hooks/useMoment";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 interface EventViewerHookProps {
   xEvents: XEvent[];
@@ -20,11 +20,8 @@ export interface Moments {
 }
 
 export const useEventViewer = ({ xEvents, eventId }: EventViewerHookProps) => {
-  const [xEvent, setXEvent] = useState<XEvent>();
-
-  useEffect(() => {
-    const x = xEvents.find((x) => x.event_id === eventId);
-    setXEvent(x);
+  const xEvent = useMemo(() => {
+    return xEvents.find((x) => x.event_id === eventId);
   }, [eventId, xEvents]);
 
   const { start_time, narrow } = useMoment({
