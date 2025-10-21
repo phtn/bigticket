@@ -47,10 +47,10 @@ const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(
         ref={ref}
         {...props}
       >
-        <div className="absolute top-0 z-[0] h-full w-screen bg-void/10" />
+        <div className="_bg-void/10 absolute top-0 z-[0] h-full w-screen" />
         <WarpDrive
-          gridColor="#132123aa"
-          className="absolute -top-4 z-10 flex h-full w-full items-center justify-center bg-coal p-0 shadow-none"
+          gridColor="#fff"
+          className="absolute -top-4 z-10 flex h-full w-full items-center justify-center bg-slate-500 p-0 shadow-none"
         >
           <div />
         </WarpDrive>

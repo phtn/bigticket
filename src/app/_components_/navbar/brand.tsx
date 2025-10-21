@@ -48,13 +48,13 @@ export const Tickets = () => (
 
 export const Title = () => (
   <Link href={"/"} className="z-1 relative h-12 px-2">
-    <h2 className="absolute left-[6.5px] top-[2px] md:top-[1px]">
-      <span className="font-lucky text-[33px] font-extrabold text-white">
+    <h2 className="absolute left-[6.5px] top-[2px] md:-top-2">
+      <span className="hidden font-lucky text-[33px] font-extrabold text-white">
         BIG
       </span>
     </h2>
     <h2 className="absolute top-0 space-x-1">
-      <span className="font-lucky text-3xl font-bold tracking-[0.8px] text-primary-800">
+      <span className="font-lucky text-3xl font-bold tracking-[0.8px] text-primary-100">
         BIG
       </span>
       <span className="font-cherry text-3xl font-light text-orange-400">

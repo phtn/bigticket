@@ -1,34 +1,34 @@
-import { bookmarkEvent, likeEvent } from "@/app/account/(tabs)/events/actions";
-import { useAuth } from "@/app/ctx/auth/provider";
-import { onInfo } from "@/app/ctx/toast";
-import { useUserCtx } from "@/app/ctx/user";
-import { type XEvent } from "@/app/types";
-import { useMoment } from "@/hooks/useMoment";
-import { type IconName } from "@/icons/types";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {bookmarkEvent, likeEvent} from '@/app/account/(tabs)/events/actions'
+import {useAccountCtx} from '@/app/ctx/accounts'
+import {useAccountAuth} from '@/app/ctx/auth/account-provider'
+import {onInfo} from '@/app/ctx/toast'
+import {type XEvent} from '@/app/types'
+import {useMoment} from '@/hooks/useMoment'
+import {type IconName} from '@/icons/types'
+import {useCallback, useEffect, useMemo, useState} from 'react'
 
 export interface InfoItem {
-  label: string;
-  value: string | number;
+  label: string
+  value: string | number
 }
 
 export interface PanelItem {
-  id: number;
-  label: string;
-  icon: IconName;
-  active: boolean;
-  fn: () => Promise<void>;
+  id: number
+  label: string
+  icon: IconName
+  active: boolean
+  fn: () => Promise<void>
 }
 
 export const useEventInfo = (xEvent: XEvent | null) => {
-  const { user } = useAuth();
-  const [userId, setUserId] = useState<string | null>(user?.id ?? null);
+  const {account} = useAccountAuth()
+  const [userId, setUserId] = useState<string | null>(account?.uid ?? null)
 
   useEffect(() => {
-    if (!userId && user) {
-      setUserId(user?.id);
+    if (!userId && account) {
+      setUserId(account?.uid)
     }
-  }, [user, userId]);
+  }, [account, userId])
 
   const {
     event_id,
@@ -39,37 +39,37 @@ export const useEventInfo = (xEvent: XEvent | null) => {
     end_date,
     views,
     tickets_sold,
-  } = xEvent ?? {};
+  } = xEvent ?? {}
 
-  const { compact, event_time, durationHrs } = useMoment({
+  const {compact, event_time, durationHrs} = useMoment({
     start: start_date,
     end: end_date,
-  });
+  })
 
-  const { xUser } = useUserCtx();
+  const {xAccount} = useAccountCtx()
 
   const isBookmarked = useMemo(() => {
-    if (!event_id) return false;
-    return xUser?.bookmarks?.includes(event_id) ?? false;
-  }, [xUser, event_id]);
+    if (!event_id) return false
+    return xAccount?.bookmarks?.includes(event_id) ?? false
+  }, [xAccount, event_id])
 
   const xEventInfo: InfoItem[] = useMemo(
     () => [
       {
-        label: "Ticket Sales",
-        value: is_private ? "PRIVATE EVENT" : "OPEN",
+        label: 'Ticket Sales',
+        value: is_private ? 'PRIVATE EVENT' : 'OPEN',
       },
       {
-        label: is_private ? "Tickets Claimed" : "Tickets Sold",
+        label: is_private ? 'Tickets Claimed' : 'Tickets Sold',
         value: tickets_sold ?? 0,
       },
-      { label: "Tickets Remaining", value: "50" },
-      { label: "Date", value: compact },
-      { label: "Time", value: event_time.compact },
-      { label: "Duration", value: getDuration(durationHrs) },
-      { label: "Likes", value: likes ?? 0 },
-      { label: "Views", value: views ?? 0 },
-      { label: "Bookmarks", value: bookmarks ?? 0 },
+      {label: 'Tickets Remaining', value: '50'},
+      {label: 'Date', value: compact},
+      {label: 'Time', value: event_time.compact},
+      {label: 'Duration', value: getDuration(durationHrs)},
+      {label: 'Likes', value: likes ?? 0},
+      {label: 'Views', value: views ?? 0},
+      {label: 'Bookmarks', value: bookmarks ?? 0},
     ],
     [
       views,
@@ -81,86 +81,86 @@ export const useEventInfo = (xEvent: XEvent | null) => {
       durationHrs,
       compact,
     ],
-  );
+  )
 
   const toggleLike = useCallback(async () => {
     if (userId && event_id) {
-      await likeEvent(userId, event_id);
+      await likeEvent(userId, event_id)
     }
-  }, [event_id, userId]);
+  }, [event_id, userId])
 
   const toggleBookmark = useCallback(async () => {
     if (userId && event_id) {
-      await bookmarkEvent(userId, event_id);
+      await bookmarkEvent(userId, event_id)
     }
-  }, [event_id, userId]);
+  }, [event_id, userId])
 
   const bookmarkItem = useMemo(
     () => ({
       id: 3,
-      label: "bookmark",
-      icon: bookmarks ? "bookmark-add-02" : "bookmark",
+      label: 'bookmark',
+      icon: bookmarks ? 'bookmark-add-02' : 'bookmark',
       active: !!bookmarks,
       fn: toggleBookmark,
     }),
     [bookmarks, toggleBookmark],
-  );
+  )
 
   const likeItem = useMemo(
     () =>
       ({
         id: 4,
-        label: "like",
-        icon: likes ? "heart-check" : "heart-add",
+        label: 'like',
+        icon: likes ? 'heart-check' : 'heart-add',
         active: !!likes,
         fn: toggleLike,
       }) as PanelItem,
     [likes, toggleLike],
-  );
+  )
 
   const panelItems = useMemo(
     () =>
       [
         {
           id: 0,
-          label: "support",
-          icon: "customer-support",
+          label: 'support',
+          icon: 'customer-support',
           active: false,
-          fn: async () => onInfo("support clicked"),
+          fn: async () => onInfo('support clicked'),
         },
         {
           id: 1,
-          label: "geolocation",
-          icon: "location-04",
+          label: 'geolocation',
+          icon: 'location-04',
           active: false,
-          fn: async () => console.log("geolocation clicked"),
+          fn: async () => console.log('geolocation clicked'),
         },
         {
           id: 2,
-          label: "website",
-          icon: "globe",
+          label: 'website',
+          icon: 'globe',
           active: false,
-          fn: async () => console.log("website clicked"),
+          fn: async () => console.log('website clicked'),
         },
         bookmarkItem,
         likeItem,
         {
           id: 5,
-          label: "share",
-          icon: "share",
+          label: 'share',
+          icon: 'share',
           active: false,
-          fn: async () => console.log("share clicked"),
+          fn: async () => console.log('share clicked'),
         },
       ] as PanelItem[],
     [bookmarkItem, likeItem],
-  );
+  )
 
-  return { xEventInfo, panelItems, toggleBookmark, isBookmarked };
-};
+  return {xEventInfo, panelItems, toggleBookmark, isBookmarked}
+}
 
 const getDuration = (duration: number | undefined) => {
-  if (!duration) return "0 hours";
+  if (!duration) return '0 hours'
   return duration % +duration.toFixed(2) === 0
-    ? `${duration} hour${duration > 1 ? "s" : ""}`
-    : `${duration.toFixed(0)} hour${duration > 1 ? "s " : " "} ${+(duration % +duration.toFixed(2)).toFixed(2) * 60}m`;
-};
+    ? `${duration} hour${duration > 1 ? 's' : ''}`
+    : `${duration.toFixed(0)} hour${duration > 1 ? 's ' : ' '} ${+(duration % +duration.toFixed(2)).toFixed(2) * 60}m`
+}

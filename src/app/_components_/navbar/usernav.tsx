@@ -78,9 +78,9 @@ const UserSign = () => {
   const UserSignin = () => {
     return (
       <div className="flex items-center justify-center gap-x-3.5">
-        <span className="text-zinc-600">Sign in with</span>
+        <span className="text-zinc-300">Sign in with</span>
         <span className="">
-          <Iconx name="google" className="size-4" />
+          <Iconx name="google" className="size-4 text-zinc-600" />
         </span>
       </div>
     );
@@ -101,13 +101,12 @@ const UserSign = () => {
             ease: "easeInOut",
           }}
         >
-          <Hyper
-            compact
+          <button
             onClick={handleSignin}
-            label={<UserSignin />}
-            className="rounded text-base dark:bg-transparent"
-            dim
-          />
+            className="text-base text-orange-100 dark:bg-transparent"
+          >
+            <UserSignin />
+          </button>
         </motion.div>
       ) : (
         <TextLoader />
@@ -117,7 +116,7 @@ const UserSign = () => {
           compact
           onClick={() => console.log(xAccount)}
           label={"Log Session"}
-          className="rounded text-base dark:bg-transparent"
+          className="hidden rounded text-base dark:bg-transparent"
           dim
         />
       </div>

@@ -225,6 +225,7 @@ export default {
         ticket: "#34373A",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        vibe: "#e4e4e6",
 
         card: {
           DEFAULT: "hsl(var(--card))",

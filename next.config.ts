@@ -12,6 +12,12 @@ const config = {
         protocol: "https",
         hostname: env.NEXT_PUBLIC_CONVEX_URL,
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };

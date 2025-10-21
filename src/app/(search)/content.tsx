@@ -27,7 +27,7 @@ export const Content = memo(() => {
   }
   return (
     <EventsProvider>
-      <ViewOptions />
+      <Home />
       <GoogleOneTap />
     </EventsProvider>
   );

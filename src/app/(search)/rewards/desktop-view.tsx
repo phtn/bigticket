@@ -9,7 +9,7 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import { useMemo } from "react";
-import { Logo } from "@/app/_components_/navbar";
+import { Logo } from "@/app/_components_/navbar/logo";
 
 export const DesktopView = () => {
   const sidebarItems = useMemo(
